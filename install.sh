@@ -25,9 +25,10 @@ echo "installed geckodriver binary in $install_dir"
 # required for selenium to drive a Chrome browser.
 
 install_dir="/usr/local/bin"
-version=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-#if [[ $(uname) == "Darwin" ]]; then
-url=http://chromedriver.storage.googleapis.com/$version/chromedriver_mac32.zip
+version=$(curl -s -L -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
+if [[ $(uname) == "Darwin" ]]; then
+    url=http://chromedriver.storage.googleapis.com/$version/chromedriver_mac32.zip
+    curl -s -L "$url" | tar -xz 
     #url=https://chromedriver.storage.googleapis.com/$version/chromedriver_mac64.zip
 #elif [[ $(uname) == "Linux" ]]; then
 #    url=https://chromedriver.storage.googleapis.com/$version/chromedriver_linux64.zip
@@ -49,5 +50,6 @@ sudo pip install pyvirtualdisplay
 sudo pip install textstat
 sudo pip install fsspec>=0.3.3
 sudo pip install textblob
-python -c "import nltk;nltk.download('punkt')"
-python -c "nltk.download('stopwords')"
+sudo pip install twython
+python3 -c "import nltk;nltk.download('punkt')"
+python3 -c "nltk.download('stopwords')"
