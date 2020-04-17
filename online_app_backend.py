@@ -43,9 +43,6 @@ def metricsp(rg):
 def filter_empty(the_list):
     the_list = [ tl for tl in the_list if tl is not None ]
     the_list = [ tl for tl in the_list if type(tl) is not type(str('')) ]
-
-    #simport pdb
-    #pdb.set_trace()
     return [ tl for tl in the_list if 'standard' in tl.keys() ]
 
 
@@ -55,21 +52,19 @@ def take_url_from_gui(author_link_scholar_link_list):
     authors scholar page.
     '''
     author_results = []
-    import pdb
-    pdb.set_trace()
-    follow_links = collect_pubs(author_link_scholar_link_list)[0:25]
-    print(follow_links)
+    follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
+    #print(follow_links)
     for r in follow_links:
-       try:
+        try:
            urlDat = process(r)
-       except:
+        except:
            follow_more_links = collect_pubs(r)
            for r in follow_more_links:
                urlDat = process(r)
-       print(urlDat)
+        #print(urlDat)
         
-       if not isinstance(urlDat,type(None)):
-           author_results.append(urlDat)
+        if not isinstance(urlDat,type(None)):
+            author_results.append(urlDat)
 
        # print(author_results[-1])
        #with open('new.p','wb') as f:

@@ -55,9 +55,14 @@ import urllib.request
 from io import StringIO
 import io
 
+from selenium.webdriver.firefox.options import Options
 
+options = Options()
+options.headless = True
+driver = webdriver.Firefox(options=options)
 #options = Options()
 #options.headless = True
+"""
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--headless')
@@ -65,6 +70,7 @@ chrome_options.add_argument('--disable-gpu')
 driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',chrome_options=chrome_options)
 #driver = webdriver.Chrome(chrome_options=chrome_options)
 driver.implicitly_wait(10)
+"""
 from selenium.common.exceptions import NoSuchElementException
 
 

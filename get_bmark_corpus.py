@@ -19,28 +19,34 @@ def process(link):
     urlDat = {}
     urlDat['link'] = link
     urlDat['page_rank'] = 'benchmark'
-    if 1==1:
-        if str('pdf') not in link:
-            content = C.open(link).content
-
-            soup = BeautifulSoup(content, 'html.parser')
-            for script in soup(["script", "style"]):
-                script.extract()    # rip it out
-            text = soup.get_text()
-            #wt = copy.copy(text)
-            #organize text
-            lines = (line.strip() for line in text.splitlines())  # break into lines and remove leading and trailing space on each
-            chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
-            text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
-            bufferd = str(text)
-        else:
-            pdf_file = requests.get(link, stream=True)
-            bufferd = convert_pdf_to_txt(pdf_file)
-
-        urlDat = text_proc(bufferd,urlDat)
+    if str('pdf') not in link:
+        from selenium import webdriver
+        from selenium.webdriver.firefox.options import Options
+        options = Options()
+        options.headless = True
+        driver = webdriver.Firefox(options=options)
+        driver.get(link)
+        crude_html = driver.page_source
         #content = C.open(link).content
-        #print(content)
-        urlDat = None
+
+        soup = BeautifulSoup(crude_html, 'html.parser')
+        for script in soup(["script", "style"]):
+            script.extract()    # rip it out
+        text = soup.get_text()
+        #wt = copy.copy(text)
+        #organize text
+        lines = (line.strip() for line in text.splitlines())  # break into lines and remove leading and trailing space on each
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
+        text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
+        bufferd = str(text)
+    else:
+        pdf_file = requests.get(link, stream=True)
+        bufferd = convert_pdf_to_txt(pdf_file)
+    print(buffered)
+    import pdb
+    pdb.set_trace()
+    urlDat = text_proc(bufferd,urlDat)
+    urlDat = None
     return urlDat
 
 #try:
@@ -56,7 +62,7 @@ def mess_length(word_length,bcm):
     urlDat = {}
     pmegmess = text_proc(reduced,urlDat)
     return mess_length, pmegmess
-
+"""
 def get_greg_nicholas():
     urlDat = {}
     urlDat['link'] = "nicholas"
@@ -79,7 +85,7 @@ def get_greg_nicholas():
         pickle.dump(urlDats,f)
 
     return urlDat
-
+"""
 
 def get_bmarks():
     xkcd_self_sufficient = str('http://splasho.com/upgoer5/library.php')
