@@ -38,15 +38,11 @@ def process(link):
         lines = (line.strip() for line in text.splitlines())  # break into lines and remove leading and trailing space on each
         chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
         text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
-        bufferd = str(text)
+        buffered = str(text)
     else:
         pdf_file = requests.get(link, stream=True)
-        bufferd = convert_pdf_to_txt(pdf_file)
-    print(buffered)
-    import pdb
-    pdb.set_trace()
-    urlDat = text_proc(bufferd,urlDat)
-    urlDat = None
+        buffered = convert_pdf_to_txt(pdf_file)
+    urlDat = text_proc(buffered,urlDat)
     return urlDat
 
 #try:
