@@ -27,7 +27,7 @@ from pdfminer.converter import  TextConverter
 from crawl import convert_pdf_to_txt
 from crawl import print_best_text
 from crawl import collect_pubs
-import scholar_scrape.scholar as scholar
+import scholar
 #scholar = scholar_scrape.scholar
 
 from delver import Crawler
