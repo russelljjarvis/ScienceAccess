@@ -9,7 +9,7 @@
 
 [![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccessibility.png)](https://travis-ci.com/russelljjarvis/ScienceAccessibility) 
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/simple_science_access.git/master)
+[![Binder](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
 # Overview
 
