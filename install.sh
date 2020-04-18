@@ -19,38 +19,21 @@ sudo python3 -c "import nltk; nltk.download('punkt')"
 sudo python3 -c "import nltk; nltk.download('stopwords')"
 
 install_dir="/usr/local/bin"
-json=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest)
+json=$(wget https://api.github.com/repos/mozilla/geckodriver/releases/latest)
 if [[ $(uname) == "Darwin" ]]; then
     url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("macos"))')
+    #curl 
 elif [[ $(uname) == "Linux" ]]; then
     url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("linux64"))')
+
 else
     echo "can't determine OS"
     exit 1
 fi
 wget "$url" | tar -xz
+
 chmod +x geckodriver
 sudo mv geckodriver "$install_dir"
 echo "installed geckodriver binary in $install_dir"
 
 
-#!/bin/bash
-# download and install latest chromedriver for linux or mac.
-# required for selenium to drive a Chrome browser.
-
-install_dir="/usr/local/bin"
-version=$(curl -s -L -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-if [[ $(uname) == "Darwin" ]]; then
-    url=http://chromedriver.storage.googleapis.com/$version/chromedriver_mac32.zip
-    wget -L "$url" | tar -xz 
-    #url=https://chromedriver.storage.googleapis.com/$version/chromedriver_mac64.zip
-#elif [[ $(uname) == "Linux" ]]; then
-#    url=https://chromedriver.storage.googleapis.com/$version/chromedriver_linux64.zip
-#else
-#    echo "can't determine OS"
-#    exit 1
-#fi
-wget -s -L "$url" | tar -xz
-chmod +x chromedriver
-sudo mv chromedriver "$install_dir"
-echo "installed chromedriver binary in $install_dir"
