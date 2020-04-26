@@ -137,7 +137,6 @@ def collect_hosted_files(url):
         check_out = link.get('href')
         #if '/citations?' in check_out:
         links.append(check_out)
-    #import pdb; pdb.set_trace()
 
     return links
 def collect_pubs(url):
