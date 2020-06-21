@@ -1,4 +1,4 @@
-**[Manuscript](Documentation/manuscript.md)** |
+**[Manuscript](Documentation/manuscript.md)** 
 
 **Installation** 
 ```
