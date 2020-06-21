@@ -1,7 +1,3 @@
-**[Documentation](#documentation)** |
-**[Contributing](contributing.md)** |
-**[Testing](#testing)** |
-**[License](license.md)** |
 **[Manuscript](Documentation/manuscript.md)** |
 
 **Installation** 
