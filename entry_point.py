@@ -44,11 +44,11 @@ df0 = pd.DataFrame(lods)
 colors = px.colors.diverging.Portland
 colors = [colors[0], colors[1]]
 
-author_name = st.text_input('Please Enter the scholar Author you would like to search for:') 
+author_name = st.text_input('Enter Scholary Author:')i 
 if author_name:
     ar = call_from_front_end(author_name)
     standard_sci = [ t['standard'] for t in ar ]
-    group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
+    group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     scraped_labels = [ str(x['link']) for x in ar]
 
 
@@ -62,41 +62,41 @@ if author_name:
                     marginal="rug",# marginal='violin',# or violin, rug
                     hover_data=df.columns)
 
-    fig0.update_layout(title_text='Scholar scraped Author Versus Art Corpus',width=900, height=900)#, hovermode='x')
+    fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
             
     st.write(fig0)
 
 
 else:   
     try:
-        with open('_author_specificR Gerkin.p','rb') as f: contents = pickle.load(f)   
+        with open('_author_specificSayali Phatak.p','rb') as f: contents = pickle.load(f)   
     except:
-        with open('more_authors_results.p','rb') as f: contents = pickle.load(f)
-        (NAME,ar,df,datay,scholar_link) =  contents     
-        (ar, trainingDats) = ar_manipulation(ar)
-        standard_sci = [ t['standard'] for t in ar ]
-  
-        scraped_labels = [ str(x['link']) for x in ar]
-        group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
-        #colors = ['#393E46', '#2BCDC1', '#F66095']
+        with open('_author_specificDavid Grayden.p','rb') as f: contents = pickle.load(f)
+    (NAME,ar,df,datay,scholar_link) =  contents     
+    (ar, trainingDats) = ar_manipulation(ar)
+    standard_sci = [ t['standard'] for t in ar ]
 
-        #fig = ff.create_distplot([standard_sci], group_labels, colors=colors,
-        #                         bin_size=[0.3, 0.2, 0.1], show_curve=True)
+    scraped_labels = [ str(x['link']) for x in ar]
+    group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
+    #colors = ['#393E46', '#2BCDC1', '#F66095']
 
-        lods = []
-        for i,j,k in zip(standard_sci,[str('a Previous Scrape') for i in range(0,len(ar))],scraped_labels):
-            lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
-        df1 = pd.DataFrame(lods)
-        df = pd.concat([df1,df0])
-        #colors = [colors[0], colors[1]]
+    #fig = ff.create_distplot([standard_sci], group_labels, colors=colors,
+    #                         bin_size=[0.3, 0.2, 0.1], show_curve=True)
 
-        fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                        marginal="rug",# marginal='violin',# or violin, rug
-                        hover_data=df.columns)
+    lods = []
+    for i,j,k in zip(standard_sci,[str('S Phatak') for i in range(0,len(ar))],scraped_labels):
+        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+    df1 = pd.DataFrame(lods)
+    df = pd.concat([df1,df0])
+    #colors = [colors[0], colors[1]]
 
-        fig0.update_layout(title_text='Scholar scraped Author Versus Art Corpus',width=900, height=900)#, hovermode='x')
-                
-        st.write(fig0)
+    fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+                    marginal="rug",# marginal='violin',# or violin, rug
+                    hover_data=df.columns)
+
+    fig0.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=900)#, hovermode='x')
+            
+    st.write(fig0)
 
 
 st.text('number scraped documents: {0}'.format(len(ar)))

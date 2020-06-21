@@ -73,13 +73,12 @@ def take_url_from_gui(author_link_scholar_link_list):
     '''
     author_results = []
     follow_links = collect_pubs(author_link_scholar_link_list)[0:10]
-    for r in tqdm(follow_links,title='Approx N. Documents scrapped'):
+    for r in tqdm(follow_links,title='Progess of scraping'):
        try:
            urlDat = process(r)
-
        except:
            follow_more_links = collect_pubs(r)
-           for r in tqdm(follow_more_links,title='Approx N. Documents scrapped'):
+           for r in tqdm(follow_more_links,title='Progess of scraping'):
                urlDat = process(r)
 
         
