@@ -18,7 +18,7 @@ from selenium import webdriver
 #display = Display(visible=0, size=(1024, 800))
 #display.start()
 
-
+"""
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--headless')
@@ -27,8 +27,8 @@ chrome_options.add_argument('--disable-gpu')
 driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',chrome_options=chrome_options)
 
 driver.implicitly_wait(20)
-
 from selenium.common.exceptions import NoSuchElementException
+"""
 
 
 import pandas as pd
@@ -143,7 +143,10 @@ def collect_pubs(url):
     '''
     Used for scholar
     '''
-    driver = webdriver.Firefox()
+    from selenium.webdriver.firefox.options import Options
+    options = Options()
+    options.headless = True
+    driver = webdriver.Firefox(options=options)
     driver.get(url)
     crude_html = driver.page_source
     """

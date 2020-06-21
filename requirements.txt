@@ -1,0 +1,13 @@
+PyPDF2
+pycld2
+nltk
+selenium
+delver
+pdfminer
+pyvirtualdisplay
+textstat
+fsspec>=0.3.3
+textblob
+twython
+rpy2
+streamlit
