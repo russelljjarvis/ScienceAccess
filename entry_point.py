@@ -68,8 +68,10 @@ if author_name:
 
 
 else:   
-     with open('_author_specificR Gerkin.p','rb') as f:
-        contents = pickle.load(f)   
+    try:
+        with open('_author_specificR Gerkin.p','rb') as f: contents = pickle.load(f)   
+    except:
+        with open('more_authors_results.p','rb') as f: contents = pickle.load(f)
         (NAME,ar,df,datay,scholar_link) =  contents     
         (ar, trainingDats) = ar_manipulation(ar)
         standard_sci = [ t['standard'] for t in ar ]
