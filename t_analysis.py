@@ -17,8 +17,8 @@ import sys
 import time
 import collections
 
-import matplotlib  # Its not that this file is responsible for doing plotting, but it calls many modules that are, such that it needs to pre-empt
-matplotlib.use('Agg')
+#import matplotlib  # Its not that this file is responsible for doing plotting, but it calls many modules that are, such that it needs to pre-empt
+#matplotlib.use('Agg')
 
 import numpy as np
 import pandas as pd
@@ -230,10 +230,11 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
 
         return urlDat
 
+from tqdm import tqdm
 
 def process_dics(urlDats):
     dfs = []
-    for urlDat in urlDats:
+    for urlDat in tqdm(urlDats):
         # pandas Data frames are best data container for maths/stats, but steep learning curve.
         # Other exclusion criteria. Exclude reading levels above grade 100,
         # as this is most likely a problem with the metric algorithm, and or rubbish data in.
