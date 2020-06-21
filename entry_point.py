@@ -1,12 +1,5 @@
 import streamlit as st
 
-import nltk
-try:
-    from nltk.corpus import stopwords
-    stop_words = stopwords.words('english')
-except:
-    nltk.download('punkt')
-    nltk.download('stopwords')
 
 
 from online_app_backend import call_from_front_end
@@ -18,6 +11,14 @@ import plotly.figure_factory as ff
 import os
 import plotly.express as px
 from plotly.subplots import make_subplots
+
+import nltk
+try:
+    from nltk.corpus import stopwords
+    stop_words = stopwords.words('english')
+except:
+    nltk.download('punkt')
+    nltk.download('stopwords')
 
 if not(os.path.exists('traingDats.p?dl=0') or os.path.exists('traingDats.p')):
 
@@ -41,10 +42,10 @@ for i,j,k in zip(bio_chem,[str('Comparison Data') for i in range(0,len(bio_chem)
      lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
 df0 = pd.DataFrame(lods)
 
-colors = px.colors.diverging.Portland
-colors = [colors[0], colors[1]]
-
-author_name = st.text_input('Enter Scholary Author:')
+theme = px.colors.diverging.Portland
+colors = [theme[0], theme[1]]
+st.title('Search Reading Difficulty of Academic Author')
+author_name = st.text_input('Enter Author:')
 if author_name:
     ar = call_from_front_end(author_name)
     standard_sci = [ t['standard'] for t in ar ]
@@ -58,9 +59,13 @@ if author_name:
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
 
+    #fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+    #                marginal="rug",# marginal='violin',# or violin, rug
+    #                hover_data=df.columns)
     fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                    marginal="rug",# marginal='violin',# or violin, rug
-                    hover_data=df.columns)
+                    marginal="violin",
+                    opacity=0.7,# marginal='violin',# or violin, rug
+                    hover_data=df.columns, color_discrete_sequence=colors)
 
     fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
             
@@ -88,18 +93,22 @@ else:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
+    
     #colors = [colors[0], colors[1]]
 
     fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                    marginal="rug",# marginal='violin',# or violin, rug
-                    hover_data=df.columns)
+                    marginal="rug",
+                    opacity=0.7,# marginal='violin',# or violin, rug
+                    hover_data=df.columns,
+                    color_discrete_sequence=colors)
 
-    fig0.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=900)#, hovermode='x')
+    fig0.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=600)#, hovermode='x')
             
     st.write(fig0)
-
-
-st.text('number scraped documents: {0}'.format(len(ar)))
+'''
+### Total number scraped documents:
+'''
+st.text(len(ar))
 
 
 
@@ -116,12 +125,17 @@ else:
 
 
 # Create distplot with curve_type set to 'normal'
-fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors)
+colors = [theme[-1], theme[-2]]
+
+rt=list(df['Web_Link'])
+#st.text('number scraped documents: {0}'.format(rt))
+
+fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
 
 hover_trace = [t for t in fig['data'] if 'text' in t]
 
 fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
-fig.update_layout(width=900, height=900)#, hovermode='x')
+fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
 
