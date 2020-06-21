@@ -1,4 +1,4 @@
-**[Manuscript](Documentation/manuscript.md)** 
+**[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
 **Installation** 
 ```
