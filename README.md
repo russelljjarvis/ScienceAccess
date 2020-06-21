@@ -15,6 +15,8 @@ sudo bash install.sh
 streamlit run entry_point.py
 ```
 
+**[Example Screen Shot](example_app.png)**
+
 
 [![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccessibility.png)](https://travis-ci.com/russelljjarvis/ScienceAccessibility) 
 
