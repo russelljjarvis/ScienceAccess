@@ -46,6 +46,25 @@ def filter_empty(the_list):
 
     return [ tl for tl in the_list if 'standard' in tl.keys() ]
 
+from tqdm import tqdm
+import streamlit as st
+
+
+class tqdm:
+    def __init__(self, iterable, title=None):
+        if title:
+            st.write(title)
+        self.prog_bar = st.progress(0)
+        self.iterable = iterable
+        self.length = len(iterable)
+        self.i = 0
+
+    def __iter__(self):
+        for obj in self.iterable:
+            yield obj
+            self.i += 1
+            current_prog = self.i / self.length
+            self.prog_bar.progress(current_prog)
 
 def take_url_from_gui(author_link_scholar_link_list):
     '''
@@ -53,16 +72,16 @@ def take_url_from_gui(author_link_scholar_link_list):
     authors scholar page.
     '''
     author_results = []
-    follow_links = collect_pubs(author_link_scholar_link_list)[0:5]
-    for r in follow_links:
+    follow_links = collect_pubs(author_link_scholar_link_list)[0:10]
+    for r in tqdm(follow_links,title='Approx N. Documents scrapped'):
        try:
            urlDat = process(r)
 
        except:
            follow_more_links = collect_pubs(r)
-           for r in follow_more_links:
+           for r in tqdm(follow_more_links,title='Approx N. Documents scrapped'):
                urlDat = process(r)
-       print(urlDat)
+
         
        if not isinstance(urlDat,type(None)):
            author_results.append(urlDat)
@@ -120,9 +139,9 @@ def update_web_form(url):
     #for k,v in author_results.items():
     datax = filter_empty(ar)
     datay = metricss(ar)
-    print(datay)
+    #print(datay)
     df = pd.DataFrame(datax)
-    print(df)
+    #print(df)
     return df, datay, author_results
 # Optionally give the dataframe's index a name
 #df.index.name = "my_index"
@@ -165,13 +184,14 @@ def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
         df, datay, ar  = enter_name_here(scholar_link,NAME)
         
-        with open('_author_specific'+str(NAME)+'.p','wb') as f: pickle.dump([NAME,ar,df,datay,scholar_link],f)
+        with open('_author_specific'+str(NAME)+'.p','wb') as f: 
+            pickle.dump([NAME,ar,df,datay,scholar_link],f)
 
         
         (ar, trainingDats) = ar_manipulation(ar)
         with open('traingDats.p','wb') as f:
             pickle.dump(trainingDats,f)
-        import plotting_author_versus_distribution
+        #import plotting_author_versus_distribution
         return ar
 
     else:
@@ -181,5 +201,5 @@ def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME1)
         df, datay, ar  = enter_name_here(scholar_link,NAME1)
         (ar1, trainingDats) = ar_manipulation(ar)
-        import plotting_author_versus_distribution
+        #import plotting_author_versus_distribution
         return [ar0,ar1]

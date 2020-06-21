@@ -1,45 +1,11 @@
 # https://gist.github.com/mikesmullin/2636776
-# 
+#
 #!/bin/bash
 # download and install latest geckodriver for linux or mac.
 # required for selenium to drive a firefox browser.
+sudo /home/user/anaconda3/bin/pip install -r requirements.txt
 
-install_dir="/usr/local/bin"
-json=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest)
-if [[ $(uname) == "Darwin" ]]; then
-    url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("macos"))')
-elif [[ $(uname) == "Linux" ]]; then
-    url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("linux64"))')
-else
-    echo "can't determine OS"
-    exit 1
-fi
-curl -s -L "$url" | tar -xz
-chmod +x geckodriver
-sudo mv geckodriver "$install_dir"
-echo "installed geckodriver binary in $install_dir"
-
-
-#!/bin/bash
-# download and install latest chromedriver for linux or mac.
-# required for selenium to drive a Chrome browser.
-
-install_dir="/usr/local/bin"
-version=$(curl -s -L -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
-if [[ $(uname) == "Darwin" ]]; then
-    url=http://chromedriver.storage.googleapis.com/$version/chromedriver_mac32.zip
-    curl -s -L "$url" | tar -xz 
-    #url=https://chromedriver.storage.googleapis.com/$version/chromedriver_mac64.zip
-#elif [[ $(uname) == "Linux" ]]; then
-#    url=https://chromedriver.storage.googleapis.com/$version/chromedriver_linux64.zip
-#else
-#    echo "can't determine OS"
-#    exit 1
-#fi
-curl -s -L "$url" | tar -xz
-chmod +x chromedriver
-sudo mv chromedriver "$install_dir"
-echo "installed chromedriver binary in $install_dir"
+sudo apt-get install jq
 sudo pip install PyPDF2
 sudo pip install pycld2
 sudo pip install nltk
@@ -51,5 +17,14 @@ sudo pip install textstat
 sudo pip install fsspec>=0.3.3
 sudo pip install textblob
 sudo pip install twython
-python3 -c "import nltk;nltk.download('punkt')"
-python3 -c "nltk.download('stopwords')"
+sudo python3 -c "import nltk; nltk.download('punkt')"
+sudo python3 -c "import nltk; nltk.download('stopwords')"
+sudo bash gecko_install.sh
+
+git clone https://github.com/ckreibich/scholar.py.git
+cd scholar.py
+mv scholar.py ..
+
+wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
+wget https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
+wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
