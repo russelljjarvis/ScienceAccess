@@ -6,11 +6,12 @@
 
 **Installation** 
 ```
-sudo pip install git+https://github.com/russelljjarvis/ScienceAccess.git
+git clone https://github.com/russelljjarvis/ScienceAccess.git
+cd ScienceAccess
+sudo bash install.sh
 ```
 **Run**
 ```
-cd ScienceAccess
 streamlit run entry_point.py
 ```
 
