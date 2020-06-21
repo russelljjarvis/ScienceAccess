@@ -9,5 +9,4 @@ textstat
 fsspec>=0.3.3
 textblob
 twython
-rpy2
 streamlit
