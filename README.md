@@ -1,10 +1,18 @@
-**[Installation](Documentation/Documentation_Quick_Start.md)** |
 **[Documentation](#documentation)** |
 **[Contributing](contributing.md)** |
 **[Testing](#testing)** |
 **[License](license.md)** |
 **[Manuscript](Documentation/manuscript.md)** |
 
+**Installation** 
+```
+sudo pip install git+https://github.com/russelljjarvis/ScienceAccess.git
+```
+**Run**
+```
+cd ScienceAccess
+streamlit run entry_point.py
+```
 
 
 [![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccessibility.png)](https://travis-ci.com/russelljjarvis/ScienceAccessibility) 
