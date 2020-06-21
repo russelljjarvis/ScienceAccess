@@ -57,14 +57,12 @@ if author_name:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
-    #colors = [colors[0], colors[1]]
 
     fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                     marginal="rug",# marginal='violin',# or violin, rug
                     hover_data=df.columns)
-    fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
 
-    fig0.update_layout(width=900, height=900)#, hovermode='x')
+    fig0.update_layout(title_text='Scholar scraped Author Versus Art Corpus',width=900, height=900)#, hovermode='x')
             
     st.write(fig0)
 
