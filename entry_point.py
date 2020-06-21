@@ -53,7 +53,7 @@ if author_name:
 
 
     lods = []
-    for i,j,k in zip(standard_sci,[str('this scrape') for i in range(0,len(ar))],scraped_labels):
+    for i,j,k in zip(standard_sci,[str(author_name) for i in range(0,len(ar))],scraped_labels):
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
@@ -82,7 +82,7 @@ else:
         #                         bin_size=[0.3, 0.2, 0.1], show_curve=True)
 
         lods = []
-        for i,j,k in zip(standard_sci,[str('this scrape') for i in range(0,len(ar))],scraped_labels):
+        for i,j,k in zip(standard_sci,[str('a Previous Scrape') for i in range(0,len(ar))],scraped_labels):
             lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
         df1 = pd.DataFrame(lods)
         df = pd.concat([df1,df0])
