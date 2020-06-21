@@ -44,7 +44,7 @@ df0 = pd.DataFrame(lods)
 colors = px.colors.diverging.Portland
 colors = [colors[0], colors[1]]
 
-author_name = st.text_input('Enter Scholary Author:')i 
+author_name = st.text_input('Enter Scholary Author:')
 if author_name:
     ar = call_from_front_end(author_name)
     standard_sci = [ t['standard'] for t in ar ]
