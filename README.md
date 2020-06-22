@@ -3,6 +3,8 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
+**![Example Screen Shot](data/example_app.png)**
+
 **Installation** 
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
@@ -13,9 +15,6 @@ sudo bash install.sh
 ```
 streamlit run entry_point.py
 ```
-
-**![Example Screen Shot](data/example_app.png)**
-
 
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
