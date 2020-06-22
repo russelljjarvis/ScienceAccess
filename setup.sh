@@ -14,7 +14,7 @@
 sudo apt-get update
 sudo apt-get install jq wget
 
-install_dir="/usr/local/bin"
+install_dir="."
 json=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest)
 url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("linux64"))')
 curl -s -L "$url" | tar -xz
