@@ -12,11 +12,11 @@
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
-sudo bash install.sh
+sudo bash setup.sh
 ```
 **Run**
 ```
-streamlit run entry_point.py
+streamlit run app.py
 ```
 
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
