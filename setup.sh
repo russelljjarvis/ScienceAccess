@@ -30,7 +30,7 @@ sudo bash gecko_install.sh
 sudo python3 -m pip install -r requirements.txt
 sudo python3 -m pip install seaborn 
 sudo python3 -m pip install bs4
-sudo python3 -m pip install natsort
+sudo python3 -m pip install natsort dask
 #sudo python3 -m pip install PyPDF2
 #sudo python3 -m pip install pycld2
 #sudo python3 -m pip install nltk
