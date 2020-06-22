@@ -1,6 +1,9 @@
 #!/bin/bash
-alias pip2=$(which pip)
-export pip2=$(which pip)
+#alias pip2=$(which pip)
+#export pip2=$(which pip)
+
+#PIP=$(which pip)
+#sudo PIP install PyPDF2
 #export HOME=$HOME
 #function pip2=$(which pip)
 
@@ -22,20 +25,20 @@ else
 fi
 
 
-sudo /home/user/anaconda3/bin/pip install -r requirements.txt
-sudo /home/user/anaconda3/bin/pip PyPDF2
-sudo /home/user/anaconda3/bin/pip pycld2
-sudo /home/user/anaconda3/bin/pip install nltk
-sudo /home/user/anaconda3/bin/pip install selenium
-sudo /home/user/anaconda3/bin/pip install delver
-sudo /home/user/anaconda3/bin/pip install pdfminer
-sudo /home/user/anaconda3/bin/pip install pyvirtualdisplay
-sudo /home/user/anaconda3/bin/pip install textstat
-sudo /home/user/anaconda3/bin/pip install fsspec>=0.3.3
-sudo /home/user/anaconda3/bin/pip install textblob
-sudo /home/user/anaconda3/bin/pip install twython
-sudo python -c "import nltk; nltk.download('punkt')"
-sudo python -c "import nltk; nltk.download('stopwords')"
+sudo python3 -m pip install -r requirements.txt
+sudo python3 -m pip install PyPDF2
+sudo python3 -m pip install pycld2
+sudo python3 -m pip install nltk
+sudo python3 -m pip install selenium
+sudo python3 -m pip install delver
+sudo python3 -m pip install pdfminer
+sudo python3 -m pip install pyvirtualdisplay
+sudo python3 -m pip install textstat
+sudo python3 -m pip install fsspec>=0.3.3
+sudo python3 -m pip install textblob
+sudo python3 -m pip install twython
+sudo python3 -c "import nltk; nltk.download('punkt')"
+sudo python3 -c "import nltk; nltk.download('stopwords')"
 sudo bash gecko_install.sh
 
 #git clone https://github.com/ckreibich/scholar.py.git
