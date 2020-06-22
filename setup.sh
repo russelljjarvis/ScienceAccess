@@ -11,18 +11,19 @@
 #
 # download and install latest geckodriver for linux or mac.
 # required for selenium to drive a firefox browser.
+sudo apt-get update
+sudo apt-get install jq wget
 
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+bash miniconda.sh -b -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
+sudo apt-get install python-lxml
+hash -r
+conda config --set always_yes yes --set changeps1 no
+conda update -q conda
+conda info -a
+pip install -U pip
 
-if [[ $(uname) == "Darwin" ]]; then
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
-    brew install jq
-
-elif [[ $(uname) == "Linux" ]]; then
-    sudo apt-get install jq
-else
-    echo "can't determine OS"
-    exit 1
-fi
 
 
 sudo python3 -m pip install -r requirements.txt
