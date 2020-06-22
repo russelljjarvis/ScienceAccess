@@ -1,1 +1,1 @@
-web: sh install.sh && streamlit run entry_point.py
+web: sh setup.sh && streamlit run app.py
