@@ -51,26 +51,17 @@ from io import StringIO
 import io
 
 from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import NoSuchElementException
 
 options = Options()
 options.headless = True
-#try:
-#    driver = webdriver.Firefox(executable_path='/usr/local/bin/geckodriver',options=options)
-#except:
-driver = webdriver.Firefox(options=options)
+try:
+    driver = webdriver.Firefox(options=options)
+except:
+    GECKODRIVER_PATH="app/vendor/geckodriver/geckodriver"
 
-#options = Options()
-#options.headless = True
-"""
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
-driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',chrome_options=chrome_options)
-#driver = webdriver.Chrome(chrome_options=chrome_options)
-driver.implicitly_wait(10)
-"""
-from selenium.common.exceptions import NoSuchElementException
+    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
 
 
 
