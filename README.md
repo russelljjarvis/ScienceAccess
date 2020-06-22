@@ -7,7 +7,7 @@
 
 **[Example Screen Shot]
 
-<iframe> https://russelljjarvis.github.io/russelljjarvis/ScienceAccess/index.html) <iframe>
+<iframe> https://russelljjarvis.github.io/ScienceAccess/index.html) <iframe>
 
 **Installation** 
 ```
