@@ -16,3 +16,4 @@ wordcloud
 seaborn
 bs4
 natsort
+dask
