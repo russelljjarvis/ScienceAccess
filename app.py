@@ -56,7 +56,6 @@ def make_clickable(link):
     
 
 if author_name:
-    @st.cache
     ar = call_from_front_end(author_name)
     standard_sci = [ t['standard'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
