@@ -21,7 +21,7 @@ curl -s -L "$url" | tar -xz
 chmod +x geckodriver
 sudo cp geckodriver .
 sudo cp geckodriver ./app
-
+export PATH=$PATH:$pwd/geckodriver
 #echo "installed geckodriver binary in $install_dir"
 
 #sudo bash gecko_install.sh
@@ -42,23 +42,10 @@ sudo python3 -m pip install -r requirements.txt
 sudo python3 -m pip install seaborn 
 sudo python3 -m pip install bs4
 sudo python3 -m pip install natsort dask
-#sudo python3 -m pip install PyPDF2
-#sudo python3 -m pip install pycld2
-#sudo python3 -m pip install nltk
-#sudo python3 -m pip install selenium
-#sudo python3 -m pip install delver
-#sudo python3 -m pip install pdfminer
-#sudo python3 -m pip install pyvirtualdisplay
-#sudo python3 -m pip install textstat
-#sudo python3 -m pip install fsspec>=0.3.3
-#sudo python3 -m pip install textblob
-#sudo python3 -m pip install twython
 sudo python3 -c "import nltk; nltk.download('punkt')"
 sudo python3 -c "import nltk; nltk.download('stopwords')"
 
 #git clone https://github.com/ckreibich/scholar.py.git
-#cd scholar.py
-#mv scholar.py ..
 
 wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
 wget https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
