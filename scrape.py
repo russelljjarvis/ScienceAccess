@@ -28,10 +28,9 @@ from crawl import convert_pdf_to_txt
 from crawl import print_best_text
 from crawl import collect_pubs
 import scholar
-#scholar = scholar_scrape.scholar
 
-from delver import Crawler
-C = Crawler()
+#from delver import Crawler
+#C = Crawler()
 import requests
 
 
@@ -40,10 +39,6 @@ import io
 import selenium
 
 from selenium import webdriver
-#from pyvirtualdisplay import Display
-
-#display = Display(visible=0, size=(1024, 768))
-#display.start()
 
 
 from selenium.webdriver.firefox.options import Options
@@ -59,7 +54,11 @@ from selenium.webdriver.firefox.options import Options
 
 options = Options()
 options.headless = True
-driver = webdriver.Firefox(options=options)
+try:
+    driver = webdriver.Firefox(executable_path='./geckodriver',options=options)
+except:
+    driver = webdriver.Firefox(executable_path='app/geckodriver',options=options)
+
 #options = Options()
 #options.headless = True
 """
@@ -120,10 +119,6 @@ def pdf_to_txt_(infile):#, pages=None):
 import PyPDF2
 from PyPDF2 import PdfFileReader
 
-#mport textract
-
-#from nltk.tokenize import word_tokenize
-#from nltk.corpus import stopwords
 
 def pdf_to_txt(url):
 
@@ -151,16 +146,6 @@ def pdf_to_txt(url):
         else:
            text = textract.process(fileurl, method='tesseract', language='eng')
     return text
-    '''
-    parser = PDFParser(pdf)
-    document = PDFDocument(parser, password=None)
-    write_text = ''
-    for page in PDFPage.create_pages(document):
-        interpreter.process_page(page)
-        write_text = write_text.join(retstr.getvalue())
-
-    text = str(write_text)
-    '''
 
 def html_to_txt(content):
     soup = BeautifulSoup(content, 'html.parser')
