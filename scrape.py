@@ -58,8 +58,7 @@ options.headless = True
 try:
     driver = webdriver.Firefox(options=options)
 except:
-    GECKODRIVER_PATH="app/vendor/geckodriver/geckodriver"
-
+    GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 
 
