@@ -1,4 +1,11 @@
 import streamlit as st
+import os
+
+st.text(os.system('pwd'))
+st.text(os.system('ls *'))
+st.text(os.system('../ls *'))
+st.text(os.system('../../ls *'))
+
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -89,8 +96,6 @@ if author_name:
 else:  
     import os
     
-    st.text(os.system('pwd'))
-    st.text(os.system('ls *'))
 
     with open('data/_author_specificSayali Phatak.p','rb') as f: 
         contents = pickle.load(f)   
