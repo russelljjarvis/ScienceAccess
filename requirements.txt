@@ -15,3 +15,4 @@ nbserverproxy==0.8.8
 wordcloud
 seaborn
 bs4
+natsort
