@@ -1,5 +1,8 @@
 import streamlit as st
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
 
 
 from online_app_backend import call_from_front_end
@@ -127,7 +130,7 @@ if np.mean(standard_sci) < np.mean(bio_chem):
     '''
 
 
-    ### This author was easier to read as the average of ARTCORPUS:
+    ### This author was on average easier to read as the average of ARTCORPUS:
     A varied collection of biochemistry science papers
     '''
 
@@ -135,9 +138,42 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
     '''
 
 
-    ### This author was harder or just as hard to read as average of ARTCORPUS:
+    ### This author was on average harder or just as hard to read as average of ARTCORPUS:
     A varied collection of biochemistry science papers
     '''
+
+
+sci_corpus = ''
+
+for t in ar:
+    if 'tokens' in t.keys():
+        for s in t['tokens']:
+            sci_corpus+=str(' ')+s
+
+
+def art_cloud(acorpus):
+
+    # Generate a word cloud image
+
+    wordcloud = WordCloud().generate(acorpus)
+    fig = plt.figure()
+
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    st.pyplot()
+
+    return fig
+
+
+'''
+
+
+### Here are some word clouds, that show the frequency of scraped texts
+You can eye ball them to see if they fit your intuition 
+### For your searched author:
+'''
+fig = art_cloud(sci_corpus)
+
 
 
 
@@ -159,14 +195,8 @@ else:
     group_labels = ['Comparison Data ', str('S Phatak')]
 
 
-# Create distplot with curve_type set to 'normal'
 colors = [theme[-1], theme[-2]]
-
-#rt=list(df['Web_Link'])
 rt=list(pd.Series(scraped_labels))
-
-#st.text('number scraped documents: {0}'.format(rt))
-
 fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
 
 hover_trace = [t for t in fig['data'] if 'text' in t]
@@ -181,10 +211,9 @@ bm = pd.DataFrame(list_df)
 
 bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Reading_Level'})
 bm["Origin"] = pd.Series(["Benchmark" for i in range(0,len(bm))])
-#del bm.loc['nicholas']
-#del bm.loc['local_resource']
-#bm = bm.drop('nicholas', axis=0))
+
 bm = bm.drop(4, axis=0)
+bm = bm.drop(5, axis=0)
 
 bm_temp = pd.DataFrame()
 bm_temp["Origin"] = bm["Origin"]
@@ -195,6 +224,13 @@ bm = copy.copy(bm_temp)
 
 bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
 bm_temp = bm_temp.to_html(escape=False)
+
+'''
+## In the table below there are benchmarks texts that are 
+# used to as a comparison to investigate some very easy to read scientific writing.
+and some very cryptic and unreadable texts too.
+'''
+
 st.write(bm_temp, unsafe_allow_html=True)
 
 x1 = bm['Reading_Level']
@@ -222,3 +258,9 @@ fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
 
+#ARTCORPUS = pickle.load(open('traingDats.p','rb'))
+#acorpus = ''
+#for t in ARTCORPUS:
+#    if 'tokens' in t.keys():
+#        for s in t['tokens']:
+#            acorpus+=str(' ')+s
