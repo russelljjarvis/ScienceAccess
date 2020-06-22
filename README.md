@@ -5,7 +5,7 @@
 
 
 
-**[Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)
+**![Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)**
 
 
 **Installation** 
