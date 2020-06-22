@@ -1,26 +1,24 @@
 
-
 [![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccessibility.png)](https://travis-ci.com/russelljjarvis/ScienceAccessibility) 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
-# Overview
+
+**![Example Screen Shot](data/example_app.png)**
 
 **Installation** 
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
-sudo bash install.sh
+sudo bash setup.sh
 ```
 **Run**
 ```
-streamlit run entry_point.py
+streamlit run app.py
 ```
-
-**![Example Screen Shot](data/example_app.png)**
 
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
-
+# Overview
 
 Understanding a big word is hard, so when big ideas are written down with lots of big words, the large pile of big words is also hard to understand. 
 
