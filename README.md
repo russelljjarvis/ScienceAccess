@@ -5,9 +5,8 @@
 
 
 
-**[Example Screen Shot]
+**[Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)
 
-<iframe> https://russelljjarvis.github.io/ScienceAccess/index.html) <iframe>
 
 **Installation** 
 ```
