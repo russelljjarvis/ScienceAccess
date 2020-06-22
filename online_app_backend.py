@@ -172,7 +172,7 @@ def ar_manipulation(ar):
     #with open(str('more_authors_results.p'),'wb') as f:
     #    pickle.dump([NAME,ar],f)
 
-    with open('traingDats.p','rb') as f:
+    with open('data/traingDats.p','rb') as f:
         trainingDats = pickle.load(f)
         
     trainingDats.extend(ar)
