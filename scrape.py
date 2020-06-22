@@ -55,9 +55,9 @@ from selenium.webdriver.firefox.options import Options
 options = Options()
 options.headless = True
 try:
-    driver = webdriver.Firefox(executable_path='./geckodriver',options=options)
+    driver = webdriver.Firefox(executable_path='/usr/local/bin/geckodriver',options=options)
 except:
-    driver = webdriver.Firefox(executable_path='geckodriver',options=options)
+    driver = webdriver.Firefox(executable_path='/app/vendor/geckodriver/geckodriver',options=options)
 
 #options = Options()
 #options.headless = True
