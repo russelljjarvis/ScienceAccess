@@ -5,7 +5,7 @@ import seaborn as sns
 from wordcloud import WordCloud
 
 
-from online_app_backend import call_from_front_end
+#from online_app_backend import call_from_front_end
 from online_app_backend import ar_manipulation
 import pandas as pd
 import pickle
@@ -56,6 +56,8 @@ def make_clickable(link):
     
 
 if author_name:
+    print('waiting')
+    '''
     ar = call_from_front_end(author_name)
     standard_sci = [ t['standard'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
@@ -81,9 +83,15 @@ if author_name:
     fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
             
     st.write(fig0)
+    '''
 
 
-else:   
+else:  
+    import os
+    
+    st.text(os.system('pwd'))
+    st.text(os.system('ls *'))
+
     with open('data/_author_specificSayali Phatak.p','rb') as f: 
         contents = pickle.load(f)   
     (NAME,ar,df,datay,scholar_link) =  contents     
