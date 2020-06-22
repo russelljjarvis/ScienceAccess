@@ -3,7 +3,9 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
-**![Example Screen Shot](data/example_app.png)**
+
+
+**![Example Screen Shot](https://russelljjarvis.github.io/russelljjarvis/ScienceAccess/index.html)**
 
 **Installation** 
 ```
