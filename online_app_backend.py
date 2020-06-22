@@ -21,7 +21,7 @@ from t_analysis import text_proc
 from tabulate import tabulate
 from t_analysis import text_proc, perplexity, unigram_zipf
 
-
+import streamlit as st
 
 def metricss(rg):
     if isinstance(rg,list):
@@ -130,33 +130,15 @@ def info_models(author_results):
 
 
 def update_web_form(url):
-    print(url)
-    #data = author_results = {}
     author_results = take_url_from_gui(url)
     ar =  copy.copy(author_results)
-    #data[name] = author_results
-    #for k,v in author_results.items():
     datax = filter_empty(ar)
     datay = metricss(ar)
-    #print(datay)
     df = pd.DataFrame(datax)
-    #print(df)
     return df, datay, author_results
-# Optionally give the dataframe's index a name
-#df.index.name = "my_index"
-# Create the markdown string
 
 def enter_name_here(scholar_page, name):
     df, datay, author_results = update_web_form(scholar_page)
-    #author_results
-    '''
-    md = tabulate(df, headers='keys', tablefmt='pipe')
-    # Fix the markdown string; it will not render with an empty first table cell,
-    # so if the dataframe's index has no name, just place an 'x' there.
-    md = md.replace('|    |','| %s |' % (df.index.name if df.index.name else 'x'))
-    # Create the Markdown object
-    result = d.Markdown(md)
-    '''
     return df, datay, author_results
 
 def find_nearest(array, value):
@@ -169,15 +151,13 @@ def ar_manipulation(ar):
     ar = [ tl for tl in ar if type(tl) is not type(str('')) ]
     ar = [ tl for tl in ar if 'standard' in tl.keys() ]
 
-    #with open(str('more_authors_results.p'),'wb') as f:
-    #    pickle.dump([NAME,ar],f)
-
     with open('data/traingDats.p','rb') as f:
         trainingDats = pickle.load(f)
         
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
+@st.cache
 def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
     if type(tour) is type(None):
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
@@ -190,7 +170,6 @@ def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
         (ar, trainingDats) = ar_manipulation(ar)
         with open('traingDats.p','wb') as f:
             pickle.dump(trainingDats,f)
-        #import plotting_author_versus_distribution
         return ar
 
     else:
