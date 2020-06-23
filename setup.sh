@@ -68,10 +68,10 @@ port = $PORT\n\
 
 
 # fail fast
-set -e
+# set -e
 
 # debug
-# set -x
+set -x
 
 # parse and derive params
 BUILD_DIR=$1
@@ -207,11 +207,11 @@ export PKG_CONFIG_PATH="$BUILD_DIR/.apt/usr/lib/x86_64-linux-gnu/pkgconfig:$BUIL
 export TMPDIR="\$BUILD_DIR/tmp"
 
 #give environment to later buildpacks
-export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH)='  > "$LP_DIR/export"
+#export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH)='  > "$LP_DIR/export"
 
 
 
-echo "Firefox"
-echo "geckodriver"
+#echo "Firefox"
+#echo "geckodriver"
 #python -c "from selenium import webdriver;from selenium.webdriver.firefox.options import Options;from selenium.common.exceptions import NoSuchElementException;options = Options();options.add_argument('--headless');driver = webdriver.Firefox(options=options)"
 #exit 0
