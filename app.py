@@ -24,6 +24,7 @@ except:
 import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
+print(os.system("which firefox"))
 
 from online_app_backend import call_from_front_end
 from online_app_backend import ar_manipulation
