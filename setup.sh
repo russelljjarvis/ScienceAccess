@@ -73,13 +73,8 @@ LANG=en-US
 PLATFORM=linux64
 
 # Buildpack URL
-ARCHIVE_NAME=firefox
+#ARCHIVE_NAME=firefox
 FILE_NAME=${ARCHIVE_NAME}-${VERSION}.tar.bz2
 BUILDPACK_FIREFOX_PACKAGE="https://download.mozilla.org/?product=firefox-${VERSION}-SSL&os=${PLATFORM}&lang=${LANG}"
-
-mkdir -p $CACHE_DIR
-if ! [ -e $CACHE_DIR/$FILE_NAME ]; then
-  echo "-----> Fetching Firefox package from ${BUILDPACK_FIREFOX_PACKAGE}"
-  curl $BUILDPACK_FIREFOX_PACKAGE -L -o $CACHE_DIR/$FILE_NAME
-fi
-
+curl $BUILDPACK_FIREFOX_PACKAGE -L -o $FILE_NAME
+tar jxf $FILE_NAME -C $FILE_NAME
