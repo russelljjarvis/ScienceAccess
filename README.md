@@ -7,11 +7,26 @@
 
 **![Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)**
 
-
-**Installation** 
+**First Step**
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
+
+```
+
+If you don't have python3
+**Installation Python3** 
+```
+sudo bash install_python3.sh
+```
+
+**Installation Apple** 
+```
+sudo bash apple_setup.sh
+```
+
+**Installation Linux** 
+```
 sudo bash setup.sh
 ```
 **Run**
