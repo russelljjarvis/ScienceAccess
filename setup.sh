@@ -42,7 +42,7 @@ echo PATH
 sudo python3 -m pip install -r requirements.txt
 sudo python3 -m pip install seaborn 
 sudo python3 -m pip install bs4
-sudo python3 -m pip install natsort dask
+sudo python3 -m pip install natsort dask plotly
 sudo python3 -c "import nltk; nltk.download('punkt')"
 sudo python3 -c "import nltk; nltk.download('stopwords')"
 
