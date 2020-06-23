@@ -65,8 +65,10 @@ try:
 except:
     #GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
     #driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+    os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
     os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
     os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+    os.system("tar xvf firefox-45.0.2.tar.bz2")
     GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 

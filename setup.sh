@@ -1,12 +1,4 @@
 #!/bin/bash
-#alias pip2=$(which pip)
-#export pip2=$(which pip)
-
-#PIP=$(which pip)
-#sudo PIP install PyPDF2
-#export HOME=$HOME
-#function pip2=$(which pip)
-
 # https://gist.github.com/mikesmullin/2636776
 #
 # download and install latest geckodriver for linux or mac.
@@ -14,7 +6,6 @@
 sudo apt-get update
 sudo apt-get install jq wget firefox
 
-#install_dir="."
 json=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest)
 url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("linux64"))')
 curl -s -L "$url" | tar -xz
@@ -23,20 +14,6 @@ sudo cp geckodriver .
 sudo cp geckodriver ./app
 export PATH=$PATH:$pwd/geckodriver
 echo PATH
-#echo "installed geckodriver binary in $install_dir"
-
-#sudo bash gecko_install.sh
-
-#wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-#bash miniconda.sh -b -p $HOME/miniconda
-#export PATH="$HOME/miniconda/bin:$PATH"
-#sudo apt-get install python-lxml
-#hash -r
-#conda config --set always_yes yes --set changeps1 no
-#conda update -q conda
-#conda info -a
-#pip install -U pip
-
 
 
 sudo python3 -m pip install -r requirements.txt
@@ -51,7 +28,16 @@ sudo python3 -c "import nltk; nltk.download('stopwords')"
 wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
 wget https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
 wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
-sudo apt-get install -y firefox
+# sudo apt-get install -y firefox
+wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
+tar xvf firefox-45.0.2.tar.bz2
+sudo mv /usr/bin/firefox /usr/bin/firefox-backup
+rm /usr/bin/firefox
+sudo mv firefox/ /usr/lib/firefox
+sudo ln -s /usr/lib/firefox /usr/bin/firefox
+
+
+
 which firefox
 
 mkdir -p ~/.streamlit/
