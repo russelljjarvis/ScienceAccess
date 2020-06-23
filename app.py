@@ -1,10 +1,23 @@
+
+
 import streamlit as st
 import os
 
-st.text(os.system('pwd'))
-st.text(os.system('ls *'))
-st.text(os.system('../ls *'))
-st.text(os.system('../../ls *'))
+from selenium import webdriver
+import os
+from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import NoSuchElementException
+
+options = Options()
+options.headless = True
+try:
+    #GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+    driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
+except:
+    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 
 
 import matplotlib.pyplot as plt
@@ -12,15 +25,16 @@ import seaborn as sns
 from wordcloud import WordCloud
 
 
-#from online_app_backend import call_from_front_end
-from online_app_backend import ar_manipulation
 import pandas as pd
 import pickle
 import numpy as np
 import plotly.figure_factory as ff
 import os
 import plotly.express as px
-from plotly.subplots import make_subplots
+from online_app_backend import call_from_front_end
+from online_app_backend import ar_manipulation
+
+#from plotly.subplots import make_subplots
 
 import nltk
 try:
@@ -61,10 +75,7 @@ def make_clickable(link):
     return f'<a target="_blank" href="{link}">{text}</a>'
 
     
-
 if author_name:
-    print('waiting')
-    '''
     ar = call_from_front_end(author_name)
     standard_sci = [ t['standard'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
@@ -77,9 +88,6 @@ if author_name:
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
 
-    #fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-    #                marginal="rug",# marginal='violin',# or violin, rug
-    #                hover_data=df.columns)
     fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                     marginal="box",
                     opacity=0.7,# marginal='violin',# or violin, rug
@@ -90,12 +98,9 @@ if author_name:
     fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
             
     st.write(fig0)
-    '''
 
 
-else:  
-    import os
-    
+else:      
 
     with open('data/_author_specificSayali Phatak.p','rb') as f: 
         contents = pickle.load(f)   
@@ -105,11 +110,6 @@ else:
 
     scraped_labels = [ str(x['link']) for x in ar]
     group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
-    #colors = ['#393E46', '#2BCDC1', '#F66095']
-
-    #fig = ff.create_distplot([standard_sci], group_labels, colors=colors,
-    #                         bin_size=[0.3, 0.2, 0.1], show_curve=True)
-
     lods = []
     for i,j,k in zip(standard_sci,[str('S Phatak') for i in range(0,len(ar))],scraped_labels):
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
@@ -117,10 +117,6 @@ else:
     df = pd.concat([df1,df0])
 
 
-    #df['Web_Link'] = df['Web_Link'].apply(make_clickable)
-    #df = df.to_html(escape=False)
-    
-    #colors = [colors[0], colors[1]]
 
     fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                     marginal="box",
@@ -182,8 +178,7 @@ def art_cloud(acorpus):
 
 
 ### Here are some word clouds, that show the frequency of scraped texts
-You can eye ball them to see if they fit your intuition 
-### For your searched author:
+You can eye ball them to see if they fit your intuition about what your searched author writes about
 '''
 fig = art_cloud(sci_corpus)
 
@@ -239,8 +234,8 @@ bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
 bm_temp = bm_temp.to_html(escape=False)
 
 '''
-## In the table below there are benchmarks texts that are 
-# used to as a comparison to investigate some very easy to read scientific writing.
+In the table below there are benchmarks texts that are 
+used as a comparison to investigate some very easy to read scientific writing.
 and some very cryptic and unreadable texts too.
 '''
 
