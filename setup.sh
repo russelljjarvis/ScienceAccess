@@ -74,9 +74,6 @@ port = $PORT\n\
 set -x
 
 # parse and derive params
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
 
 LP_DIR=`cd $(dirname $0); cd ..; pwd`
 FONTS_DIR=`cd "$LP_DIR/fonts"; pwd`
@@ -116,7 +113,7 @@ BUILDPACK_FIREFOX_PACKAGE="https://download.mozilla.org/?product=firefox-${VERSI
 BUILDPACK_GECKODRIVER_PACKAGE="https://github.com/mozilla/geckodriver/releases/download/v${VERSION_GECKODRIVER}/${FILE_NAME_GECKODRIVER}"
 
 
-
+echo "gets here"
 if [ ! -f $CACHE_DIR/PURGED_CACHE_V1 ]; then
   topic "Purging cache"
   rm -rf $CACHE_DIR/apt
@@ -176,12 +173,13 @@ if ! [ -e $CACHE_DIR/$FILE_NAME_GECKODRIVER ]; then
   topic "Fetching Geckodriver package from ${BUILDPACK_GECKODRIVER_PACKAGE}"
   curl $BUILDPACK_GECKODRIVER_PACKAGE -L -o $CACHE_DIR/$FILE_NAME_GECKODRIVER
 fi
+echo "gets here"
 
 topic "Extracting Geckodriver binaries to ${BUILD_DIR}/vendor/${ARCHIVE_NAME_GECKODRIVER}"
 mkdir -p $CACHE_DIR/$ARCHIVE_NAME_GECKODRIVER
 mkdir -p $BUILD_DIR/vendor/$ARCHIVE_NAME_GECKODRIVER
 tar -xzf $CACHE_DIR/$FILE_NAME_GECKODRIVER -C $CACHE_DIR
-chmod +x $CACHE_DIR/$ARCHIVE_NAME_GECKODRIVER
+sudo chmod +x $CACHE_DIR/$ARCHIVE_NAME_GECKODRIVER
 mv $CACHE_DIR/$ARCHIVE_NAME_GECKODRIVER $BUILD_DIR/vendor/$ARCHIVE_NAME_GECKODRIVER/
 
 topic "Setting paths"
