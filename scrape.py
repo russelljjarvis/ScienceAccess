@@ -49,14 +49,28 @@ import urllib.request
 from io import StringIO
 import io
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+#from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
+
+
+from selenium import webdriver
+import os
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+
+'''
 os.system("which firefox")
 options = Options()
 #options.headless = True
 options.add_argument("--headless")
 
 import os
+
 try:
     driver = webdriver.Firefox(options=options)
 
@@ -75,7 +89,7 @@ except:
         #os.system("tar xvf firefox-45.0.2.tar.bz2")
         GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
         driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-
+'''
 
 
 rsrcmgr = PDFResourceManager()
