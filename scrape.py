@@ -49,25 +49,28 @@ import urllib.request
 from io import StringIO
 import io
 from selenium import webdriver
-#from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
 
 from selenium import webdriver
 import os
-
+'''
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--no-sandbox")
-driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
+driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 '''
-os.system("which firefox")
+#os.system("which firefox")
 options = Options()
 #options.headless = True
+options.binary_location = os.environ.get("/app/vendor/firefox/firefox")
 options.add_argument("--headless")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--no-sandbox")
 
 import os
 
@@ -77,19 +80,19 @@ try:
 except:
     try:
         #driver = webdriver.Firefox(options=options)
-        GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+        #GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
         driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 
     except:
         #GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
         #driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
         #os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
-        os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
-        os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+        #os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+        #os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
         #os.system("tar xvf firefox-45.0.2.tar.bz2")
-        GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-        driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-'''
+        #GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+        driver = webdriver.Firefox(options=options,executable_path="/app/vendor/geckodriver/geckodriver")
+
 
 
 rsrcmgr = PDFResourceManager()
