@@ -30,18 +30,6 @@ sudo bash gecko_install.sh
 
 
 
-
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-bash miniconda.sh -b -p $HOME/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
-hash -r
-conda config --set always_yes yes --set changeps1 no
-conda update -q conda
-conda info -a
-pip install -U pip
-
-
-
 sudo python3 -m pip install -r requirements.txt
 sudo python3 -m pip install seaborn bs4 natsort dask plotly
 sudo python3 -c "import nltk; nltk.download('punkt')"
