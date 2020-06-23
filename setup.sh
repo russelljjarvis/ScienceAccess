@@ -83,8 +83,3 @@ if ! [ -e $CACHE_DIR/$FILE_NAME ]; then
   curl $BUILDPACK_FIREFOX_PACKAGE -L -o $CACHE_DIR/$FILE_NAME
 fi
 
-"from selenium import webdriver;
-from selenium.webdriver.firefox.options import Options;
-from selenium.common.exceptions import NoSuchElementException;
-options = Options();
-options.add_argument('--headless')" >> python -c
