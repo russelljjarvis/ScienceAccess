@@ -50,7 +50,8 @@ sudo python3 -c "import nltk; nltk.download('stopwords')"
 wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
 wget https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
 wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
- 
+sudo apt-get install firefox
+
 mkdir -p ~/.streamlit/
 echo "\
 [general]\n\
