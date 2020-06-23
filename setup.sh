@@ -213,5 +213,5 @@ export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPP
 
 echo "Firefox"
 echo "geckodriver"
-python -c "from selenium import webdriver;from selenium.webdriver.firefox.options import Options;from selenium.common.exceptions import NoSuchElementException;options = Options();options.add_argument('--headless');driver = webdriver.Firefox(options=options)"
+#python -c "from selenium import webdriver;from selenium.webdriver.firefox.options import Options;from selenium.common.exceptions import NoSuchElementException;options = Options();options.add_argument('--headless');driver = webdriver.Firefox(options=options)"
 #exit 0
