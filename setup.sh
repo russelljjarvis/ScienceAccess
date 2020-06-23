@@ -4,7 +4,7 @@
 # download and install latest geckodriver for linux or mac.
 # required for selenium to drive a firefox browser.
 sudo apt-get update
-sudo apt-get install jq wget chromium-chromedriver
+sudo apt-get install jq wget #chromium-chromedriver
 
 
 sudo python3 -m pip install -r requirements.txt
