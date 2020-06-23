@@ -38,10 +38,9 @@ import io
 
 import selenium
 
-from selenium import webdriver
 
 
-from selenium.webdriver.firefox.options import Options
+#from selenium.webdriver.firefox.options import Options
 
 import re
 from bs4 import BeautifulSoup
@@ -49,18 +48,23 @@ import bs4 as bs
 import urllib.request
 from io import StringIO
 import io
+from selenium import webdriver
 
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
 options = Options()
 options.headless = True
+import os
 try:
     driver = webdriver.Firefox(options=options)
 except:
-    GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
+    #GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
+    #driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-
 
 
 
