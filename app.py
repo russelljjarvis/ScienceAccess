@@ -25,6 +25,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
 
+from online_app_backend import call_from_front_end
+from online_app_backend import ar_manipulation
+
 
 import pandas as pd
 import pickle
@@ -32,8 +35,6 @@ import numpy as np
 import plotly.figure_factory as ff
 import os
 import plotly.express as px
-from online_app_backend import call_from_front_end
-from online_app_backend import ar_manipulation
 
 #from plotly.subplots import make_subplots
 

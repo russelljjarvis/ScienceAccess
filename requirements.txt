@@ -17,3 +17,4 @@ seaborn
 bs4
 natsort
 dask
+plotly
