@@ -54,10 +54,15 @@ from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
 options = Options()
-options.headless = True
+#options.headless = True
+options.add_argument("--headless")
+
 import os
 try:
-    driver = webdriver.Firefox(options=options)
+    #driver = webdriver.Firefox(options=options)
+    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
 except:
     #GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
     #driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
