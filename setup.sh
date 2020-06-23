@@ -67,14 +67,3 @@ port = $PORT\n\
 " > ~/.streamlit/config.toml
 
 
-# config
-VERSION=38.8.0esr
-LANG=en-US
-PLATFORM=linux64
-
-# Buildpack URL
-#ARCHIVE_NAME=firefox
-FILE_NAME=${ARCHIVE_NAME}-${VERSION}.tar.bz2
-BUILDPACK_FIREFOX_PACKAGE="https://download.mozilla.org/?product=firefox-${VERSION}-SSL&os=${PLATFORM}&lang=${LANG}"
-curl $BUILDPACK_FIREFOX_PACKAGE -L -o $FILE_NAME
-tar jxf $FILE_NAME -C $FILE_NAME
