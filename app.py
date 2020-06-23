@@ -2,7 +2,7 @@
 
 import streamlit as st
 import os
-
+'''
 from selenium import webdriver
 import os
 from selenium.webdriver.firefox.options import Options
@@ -19,7 +19,7 @@ except:
     os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
     GECKODRIVER_PATH=str("./geckodriver")
     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-
+'''
 
 import matplotlib.pyplot as plt
 import seaborn as sns
