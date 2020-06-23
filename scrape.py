@@ -52,7 +52,7 @@ from selenium import webdriver
 
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
-
+os.system("which firefox")
 options = Options()
 #options.headless = True
 options.add_argument("--headless")
