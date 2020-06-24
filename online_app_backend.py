@@ -18,7 +18,7 @@ from t_analysis import text_proc
 # Put these results, in a data frame, then in Markdown, using RGerkin's code.
 # https://gist.github.com/rgerkin/af5b27a0e30531c30f2bf628aa41a553
 # !pip install --user tabulate # Install the tabulate package
-from tabulate import tabulate
+#from tabulate import tabulate
 from t_analysis import text_proc, perplexity, unigram_zipf
 
 import streamlit as st
@@ -157,7 +157,7 @@ def ar_manipulation(ar):
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
-@st.cache
+#@st.cache
 def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
     if type(tour) is type(None):
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
