@@ -20,7 +20,7 @@ wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
 wget https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
 wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
 # sudo apt-get install -y firefox
-wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
+#wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
 
 sudo python3 align_data_sources.py
 
