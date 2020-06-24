@@ -21,7 +21,7 @@ import plotly.express as px
 
 #from plotly.subplots import make_subplots
 
-import nlkt
+import nltk
 
 trainingDats = pickle.load(open('data/traingDats.p','rb'))
 bio_chem = [ t['standard'] for t in trainingDats ]
