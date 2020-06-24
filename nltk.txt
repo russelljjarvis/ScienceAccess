@@ -1,4 +1,2 @@
-wordnet
-pros_cons
 punkt
 stopwords
