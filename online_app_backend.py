@@ -180,14 +180,17 @@ def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
         #with open('_author_specific'+str(NAME)+'.p','wb') as f: 
         #    pickle.dump([NAME,ar,df,datay,scholar_link],f)
 
+    '''
+    with open('data/traingDats.p','rb') as f:            
+        trainingDats_old = pickle.load(f)
+    trainingDats.extend(trainingDats_old)
+    
+    with open('data/traingDats.p','wb') as f:            
+        pickle.dump(trainingDats,f)
+    '''
         
-        (ar, trainingDats) = ar_manipulation(ar)
-        with open('data/traingDats.p','rb') as f:            
-            trainingDats_old = pickle.load(f)
-        trainingDats.extend(trainingDats_old)
-        with open('data/traingDats.p','wb') as f:            
-            pickle.dump(trainingDats,f)
-        return ar
+    (ar, trainingDats) = ar_manipulation(ar)
+    return ar
     '''
     else:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
