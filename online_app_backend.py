@@ -164,41 +164,22 @@ def ar_manipulation(ar):
 
 
 
-#@st.cache
-def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
+@st.cache(suppress_st_warning=True)
+def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        df, datay, ar  = enter_name_here(scholar_link,NAME)
+        _, _, ar  = enter_name_here(scholar_link,NAME)
     if heroku:
         try:
             scholar_link=str('https://duckduckgo.com/?q=%21scholar&atb=v210-1q=')+str(NAME)
-            df, datay, ar  = enter_name_here(scholar_link,NAME)
+            _, _, ar  = enter_name_here(scholar_link,NAME)
         except:        
             scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-            df, datay, ar  = enter_name_here(scholar_link,NAME)
-
-        #with open('_author_specific'+str(NAME)+'.p','wb') as f: 
-        #    pickle.dump([NAME,ar,df,datay,scholar_link],f)
-
-    '''
+            _, _, ar  = enter_name_here(scholar_link,NAME)
+    (ar, trainingDats) = ar_manipulation(ar)
     with open('data/traingDats.p','rb') as f:            
         trainingDats_old = pickle.load(f)
-    trainingDats.extend(trainingDats_old)
-    
+    trainingDats.extend(trainingDats_old)    
     with open('data/traingDats.p','wb') as f:            
-        pickle.dump(trainingDats,f)
-    '''
-        
-    (ar, trainingDats) = ar_manipulation(ar)
+        pickle.dump(trainingDats,f)        
     return ar
-    '''
-    else:
-        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        df, datay, ar  = enter_name_here(scholar_link,NAME)
-        (ar0, trainingDats) = ar_manipulation(ar)
-        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME1)
-        df, datay, ar  = enter_name_here(scholar_link,NAME1)
-        (ar1, trainingDats) = ar_manipulation(ar)
-        #import plotting_author_versus_distribution
-        return [ar0,ar1]
-    '''
