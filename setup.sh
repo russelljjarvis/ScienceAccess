@@ -22,6 +22,8 @@ wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
 # sudo apt-get install -y firefox
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
 
+sudo python3 align_data_sources.py
+
 mkdir -p ~/.streamlit/
 echo "\
 [general]\n\
