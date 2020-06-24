@@ -1,7 +1,6 @@
 import copy
 import matplotlib.pyplot as plt
 import seaborn as sns
-#plt.backend("")
 import os.path
 import pdb
 import pickle
@@ -12,13 +11,9 @@ import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from crawl import collect_pubs#, collect_hosted_files
+from crawl import collect_pubs
 from get_bmark_corpus import process
 from t_analysis import text_proc
-# Put these results, in a data frame, then in Markdown, using RGerkin's code.
-# https://gist.github.com/rgerkin/af5b27a0e30531c30f2bf628aa41a553
-# !pip install --user tabulate # Install the tabulate package
-#from tabulate import tabulate
 from t_analysis import text_proc, perplexity, unigram_zipf
 
 import streamlit as st
