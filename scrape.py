@@ -58,9 +58,9 @@ else:
     heroku = True
 def get_driver():
     if 'DYNO' in os.environ:
-        heroku = False
-    else:
         heroku = True
+    else:
+        heroku = False
 
     options = Options()
     options.add_argument("--headless")
