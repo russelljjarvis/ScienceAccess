@@ -63,9 +63,9 @@ class tqdm:
 
 
 if 'DYNO' in os.environ:
-    heroku = False
-else:
     heroku = True
+else:
+    heroku = False
 import random #import randint
 from time import sleep
 
@@ -160,10 +160,6 @@ def ar_manipulation(ar):
     return (ar, trainingDats)
 
 
-if 'DYNO' in os.environ:
-    heroku = False
-else:
-    heroku = True
 
 #@st.cache
 def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
