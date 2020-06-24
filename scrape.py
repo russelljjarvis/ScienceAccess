@@ -24,6 +24,11 @@ from pdfminer.pdfdevice import PDFDevice
 from pdfminer.layout import LAParams
 from pdfminer.converter import  TextConverter
 
+import os
+import sys, getopt
+from io import StringIO
+
+
 from crawl import convert_pdf_to_txt
 from crawl import print_best_text
 from crawl import collect_pubs
@@ -83,13 +88,18 @@ def get_driver():
                 chrome_options.add_argument("--no-sandbox")
                 driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
             except:
-                os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
-                os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
-                os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
-                os.system("tar xvf firefox-45.0.2.tar.bz2")
-                GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-                options.binary_location = str('./firefox')
-                driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                try:
+                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+                    options.binary_location = str('./firefox')
+                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                except:
+                    os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
+                    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+                    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+                    os.system("tar xvf firefox-45.0.2.tar.bz2")
+                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+                    options.binary_location = str('./firefox')
+                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
     return driver
 
 
@@ -103,20 +113,6 @@ codec = 'utf-8'
 device = TextConverter(rsrcmgr, retstr, laparams = laparams)
 interpreter = PDFPageInterpreter(rsrcmgr, device)
 
-
-
-
-#from pyPdf import PdfFileReader
-
-#from StringIO import StringIO
-
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
-import os
-import sys, getopt
-from io import StringIO
 
 #converts pdf, returns its text content as a string
 def pdf_to_txt_(infile):#, pages=None):
