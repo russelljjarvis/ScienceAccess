@@ -18,7 +18,7 @@ from t_analysis import text_proc
 # Put these results, in a data frame, then in Markdown, using RGerkin's code.
 # https://gist.github.com/rgerkin/af5b27a0e30531c30f2bf628aa41a553
 # !pip install --user tabulate # Install the tabulate package
-from tabulate import tabulate
+#from tabulate import tabulate
 from t_analysis import text_proc, perplexity, unigram_zipf
 
 import streamlit as st
