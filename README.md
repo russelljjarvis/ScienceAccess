@@ -14,9 +14,7 @@ cd ScienceAccess
 
 ```
 
-If you don't have python3:
-
-### Installation Python3
+**If you don't have python3:**
 ```
 sudo bash install_python3.sh
 ```
