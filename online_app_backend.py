@@ -66,7 +66,7 @@ if 'DYNO' in os.environ:
     heroku = False
 else:
     heroku = True
-from random #import randint
+import random #import randint
 from time import sleep
 
 
@@ -87,12 +87,9 @@ def take_url_from_gui(author_link_scholar_link_list):
             for r in tqdm(follow_more_links,title='Progess of scraping'):
                 if heroku:
                     sleep(random.random.uniform(0.5,2.5))
-                urlDat = process(r)
-
-        
-       if not isinstance(urlDat,type(None)):
-           author_results.append(urlDat)
-
+                urlDat = process(r)        
+        if not isinstance(urlDat,type(None)):
+            author_results.append(urlDat)
     return author_results
 
 def unigram_model(author_results):
@@ -168,7 +165,7 @@ if 'DYNO' in os.environ:
 else:
     heroku = True
 
-@st.cache
+#@st.cache
 def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
