@@ -91,14 +91,16 @@ else:
 
     if not heroku:
 
-        fig0 = px.histogram(df, x="Web_Link", y="Reading_Level", color="Origin",
+        fig = px.histogram(df, x="Web_Link", y="Reading_Level", color="Origin",
                         marginal="box",
                         opacity=0.7,# marginal='violin',# or violin, rug
                         hover_data=df.columns,
                         hover_name=df["Web_Link"],
                         color_discrete_sequence=colors)
 
-        fig0.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=600)#, hovermode='x')
+        fig.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=600)#, hovermode='x')
+        st.write(fig)
+
     else:
         df_links = pd.DataFrame()
         df_links['Web_Link'] = pd.Series(scraped_labels)
@@ -124,7 +126,6 @@ else:
         st.write(fig)
 
 
-    st.write(fig0)
 '''
 
 ### Total number scraped documents:
