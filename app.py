@@ -61,7 +61,7 @@ if author_name:
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
 
-    fig0 = px.histogram(df, x="Web_Link", y="Reading_Level", color="Origin",
+    fig0 = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
                     marginal="box",
                     opacity=0.7,# marginal='violin',# or violin, rug
                     hover_data=df.columns,
@@ -91,7 +91,7 @@ else:
 
     if not heroku:
 
-        fig = px.histogram(df, x="Web_Link", y="Reading_Level", color="Origin",
+        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
                         marginal="box",
                         opacity=0.7,# marginal='violin',# or violin, rug
                         hover_data=df.columns,
