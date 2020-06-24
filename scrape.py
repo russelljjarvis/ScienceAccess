@@ -48,7 +48,6 @@ import bs4 as bs
 import urllib.request
 from io import StringIO
 import io
-from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
