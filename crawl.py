@@ -127,6 +127,8 @@ def collect_hosted_files(url):
 
 from selenium import webdriver
 import os
+from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import NoSuchElementException
 
 def collect_pubs(url):
     '''
