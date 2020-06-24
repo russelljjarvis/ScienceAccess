@@ -52,17 +52,11 @@ def get_driver():
 	from selenium import webdriver
 	from selenium.webdriver.firefox.options import Options
 	from selenium.common.exceptions import NoSuchElementException
-
-
-	from selenium import webdriver
 	import os
 	options = Options()
 	options.add_argument("--headless")
 	options.add_argument("--disable-dev-shm-usage")
 	options.add_argument("--no-sandbox")
-
-	import os
-
 	try:
 		driver = webdriver.Firefox(options=options)
 
