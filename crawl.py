@@ -125,17 +125,13 @@ def collect_hosted_files(url):
 
     return links
 
-from selenium import webdriver
-import os
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException
-from scrape import convert, get_driver
+
 
 def collect_pubs(url):
     '''
     Used for scholar
     '''
-
+    from scrape import get_driver
     driver = get_driver()
 
     driver.get(url)
