@@ -75,7 +75,11 @@ def take_url_from_gui(author_link_scholar_link_list):
     authors scholar page.
     '''
     author_results = []
-    follow_links = collect_pubs(author_link_scholar_link_list)[0:10]
+    if heroku:
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:5]
+    else:
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:12]
+
     for r in tqdm(follow_links,title='Progess of scraping'):
         if heroku:
             sleep(np.random.uniform(1,3))
