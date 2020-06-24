@@ -9,7 +9,7 @@ textstat
 fsspec>=0.3.3
 textblob
 twython
-streamlit==0.52.2
+streamlit
 jupyter-server-proxy==1.2.0
 nbserverproxy==0.8.8
 wordcloud
@@ -18,3 +18,4 @@ bs4
 natsort
 dask
 plotly
+tabulate
