@@ -157,7 +157,7 @@ def ar_manipulation(ar):
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
-@st.cache
+#@st.cache
 def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
     if type(tour) is type(None):
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
