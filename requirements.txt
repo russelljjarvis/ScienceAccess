@@ -10,8 +10,6 @@ fsspec>=0.3.3
 textblob
 twython
 streamlit
-jupyter-server-proxy==1.2.0
-nbserverproxy==0.8.8
 wordcloud
 seaborn
 bs4
@@ -19,3 +17,5 @@ natsort
 dask
 plotly
 tabulate
+#jupyter-server-proxy==1.2.0
+#nbserverproxy==0.8.8
