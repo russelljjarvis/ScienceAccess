@@ -56,7 +56,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 import os
 options = Options()
-options.binary_location = "/app/vendor/firefox/firefox"
 options.add_argument("--headless")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--no-sandbox")
@@ -68,9 +67,11 @@ try:
 
 except:
     try:
-        #driver = webdriver.Firefox(options=options)
-        #GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-        driver = webdriver.Firefox(options=options,executable_path="/app/vendor/geckodriver/geckodriver")
+        options.binary_location = "/app/vendor/firefox/firefox"
+
+        driver = webdriver.Firefox(options=options)
+        GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+        driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 
     except:
         try:
