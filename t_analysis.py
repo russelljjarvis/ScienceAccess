@@ -32,7 +32,7 @@ import nltk
 # english_check
 from utils import (black_string, clue_links, clue_words,
                                comp_ratio, publication_check)
-from tabulate import tabulate
+#from tabulate import tabulate
 from textblob import TextBlob
 from textstat.textstat import textstat
 tagger = PerceptronTagger(load=False)

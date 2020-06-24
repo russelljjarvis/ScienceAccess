@@ -2,24 +2,6 @@
 
 import streamlit as st
 import os
-'''
-from selenium import webdriver
-import os
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException
-
-options = Options()
-#options.headless = True
-options.add_argument("--headless")
-try:
-    #GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-    driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
-except:
-    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
-    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
-    GECKODRIVER_PATH=str("./geckodriver")
-    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-'''
 
 import matplotlib.pyplot as plt
 import seaborn as sns
