@@ -57,7 +57,7 @@ if author_name:
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
 
-    fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+    fig0 = px.histogram(df, x="Web_Link", y="Reading_Level", color="Origin",
                     marginal="box",
                     opacity=0.7,# marginal='violin',# or violin, rug
                     hover_data=df.columns,
@@ -87,7 +87,7 @@ else:
 
 
 
-    fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+    fig0 = px.histogram(df, x="Web_Link", y="Reading_Level", color="Origin",
                     marginal="box",
                     opacity=0.7,# marginal='violin',# or violin, rug
                     hover_data=df.columns,

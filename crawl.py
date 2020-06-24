@@ -129,7 +129,7 @@ def collect_hosted_files(url):
 
 def collect_pubs(url):
     '''
-    Used for scholar
+    Used for scholar which is only html
     '''
     from scrape import get_driver
     driver = get_driver()
