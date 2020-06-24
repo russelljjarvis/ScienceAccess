@@ -183,7 +183,7 @@ def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
         
         (ar, trainingDats) = ar_manipulation(ar)
         with open('data/traingDats.p','rb') as f:            
-            trainingDats_old = pickle.open(f)
+            trainingDats_old = pickle.load(f)
         trainingDats.extend(trainingDats_old)
         with open('data/traingDats.p','wb') as f:            
             pickle.dump(trainingDats,f)
