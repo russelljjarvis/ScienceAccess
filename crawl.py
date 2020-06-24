@@ -142,11 +142,36 @@ def collect_pubs(url):
     options.add_argument("--no-sandbox")
     try:
         driver = webdriver.Firefox(options=options)
+
     except:
-        options.binary_location = "/app/vendor/firefox/firefox"
-        driver = webdriver.Firefox(options=options)
-        GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-        driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+        try:
+            options.binary_location = "/app/vendor/firefox/firefox"
+
+            driver = webdriver.Firefox(options=options)
+            GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
+        except:
+            try:
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+                chrome_options.add_argument("--headless")
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--no-sandbox")
+
+                driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+            except:
+                #GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
+                #driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
+                os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+                os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+                os.system("tar xvf firefox-45.0.2.tar.bz2")
+                GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+                #FF=str(os.getcwd())+str("firefox")
+                options.binary_location = str('./firefox')
+                #driver = webdriver.Firefox(options=options,executable_path=FF)
+                driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 
 
     driver.get(url)
