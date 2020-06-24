@@ -15,21 +15,6 @@ import selenium
 from selenium import webdriver
 
 
-#display = Display(visible=0, size=(1024, 800))
-#display.start()
-
-"""
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
-#driver = webdriver.Chrome(chrome_options=chrome_options)
-driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',chrome_options=chrome_options)
-
-driver.implicitly_wait(20)
-from selenium.common.exceptions import NoSuchElementException
-"""
-
 
 import pandas as pd
 import pycld2 as cld2
@@ -139,29 +124,59 @@ def collect_hosted_files(url):
         links.append(check_out)
 
     return links
+
+from selenium import webdriver
+import os
+from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import NoSuchElementException
+
 def collect_pubs(url):
     '''
     Used for scholar
     '''
-    from selenium.webdriver.firefox.options import Options
+
+
     options = Options()
-    options.headless = True
-    driver = webdriver.Firefox(options=options)
+    options.add_argument("--headless")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    try:
+        driver = webdriver.Firefox(options=options)
+
+    except:
+        try:
+            options.binary_location = "/app/vendor/firefox/firefox"
+
+            driver = webdriver.Firefox(options=options)
+            GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
+        except:
+            try:
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+                chrome_options.add_argument("--headless")
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--no-sandbox")
+
+                driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+            except:
+                #GECKODRIVER_PATH="/app/vendor/geckodriver/geckodriver"
+                #driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
+                os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+                os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+                os.system("tar xvf firefox-45.0.2.tar.bz2")
+                GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+                #FF=str(os.getcwd())+str("firefox")
+                options.binary_location = str('./firefox')
+                #driver = webdriver.Firefox(options=options,executable_path=FF)
+                driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
+
     driver.get(url)
     crude_html = driver.page_source
-    """
-    #print(url)
-    try:
-        crude_html = denver_to_text(url)
-    except:
-        if type(url) is type(str()):
-            print(url)
-            driver.get(url)
-        else:
-            return None
-        
-        print(crude_html)
-    """
+
     soup = BeautifulSoup(crude_html, 'html.parser')
     links = []
     for link in soup.findAll('a', attrs={'href': re.compile("https://")}):
