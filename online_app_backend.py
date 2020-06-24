@@ -79,14 +79,14 @@ def take_url_from_gui(author_link_scholar_link_list):
     follow_links = collect_pubs(author_link_scholar_link_list)[0:10]
     for r in tqdm(follow_links,title='Progess of scraping'):
         if heroku:
-            sleep(random.random.uniform(0.5,2.5))
+            sleep(random.random.uniform(1,3))
         try:
             urlDat = process(r)
         except:
             follow_more_links = collect_pubs(r)
             for r in tqdm(follow_more_links,title='Progess of scraping'):
                 if heroku:
-                    sleep(random.random.uniform(0.5,2.5))
+                    sleep(random.random.uniform(1,3))
                 urlDat = process(r)        
         if not isinstance(urlDat,type(None)):
             author_results.append(urlDat)
@@ -167,8 +167,12 @@ def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
         df, datay, ar  = enter_name_here(scholar_link,NAME)
     if heroku:
-        scholar_link=str('https://duckduckgo.com/?q=%21scholar&atb=v210-1q=')+str(NAME)
-        df, datay, ar  = enter_name_here(scholar_link,NAME)
+        try:
+            scholar_link=str('https://duckduckgo.com/?q=%21scholar&atb=v210-1q=')+str(NAME)
+            df, datay, ar  = enter_name_here(scholar_link,NAME)
+        except:        
+            scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
+            df, datay, ar  = enter_name_here(scholar_link,NAME)
 
         #with open('_author_specific'+str(NAME)+'.p','wb') as f: 
         #    pickle.dump([NAME,ar,df,datay,scholar_link],f)
