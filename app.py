@@ -178,7 +178,8 @@ def art_cloud(acorpus):
 ### Here are some word clouds, that show the frequency of scraped texts
 You can eye ball them to see if they fit your intuition about what your searched author writes about
 '''
-fig = art_cloud(sci_corpus)
+art_cloud(sci_corpus)
+
 if not heroku:
     df_links = pd.DataFrame()
     df_links['Web_Link'] = pd.Series(scraped_labels)
