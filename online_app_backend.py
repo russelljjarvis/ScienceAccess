@@ -66,10 +66,9 @@ if 'DYNO' in os.environ:
     heroku = True
 else:
     heroku = False
-import random #import randint
+#import random #import randint
 from time import sleep
-
-
+import numpy as np
 def take_url_from_gui(author_link_scholar_link_list):
     '''
     inputs a URL that's full of publication orientated links, preferably the
@@ -79,14 +78,14 @@ def take_url_from_gui(author_link_scholar_link_list):
     follow_links = collect_pubs(author_link_scholar_link_list)[0:10]
     for r in tqdm(follow_links,title='Progess of scraping'):
         if heroku:
-            sleep(random.random.uniform(1,3))
+            sleep(np.random.uniform(1,3))
         try:
             urlDat = process(r)
         except:
             follow_more_links = collect_pubs(r)
             for r in tqdm(follow_more_links,title='Progess of scraping'):
                 if heroku:
-                    sleep(random.random.uniform(1,3))
+                    sleep(np.random.uniform(1,3))
                 urlDat = process(r)        
         if not isinstance(urlDat,type(None)):
             author_results.append(urlDat)
