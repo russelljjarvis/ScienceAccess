@@ -8,26 +8,20 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawl import collect_pubs, convert_pdf_to_txt#,process
-from scrape import convert
+from scrape import convert, get_driver
 from t_analysis import text_proc
 from utils import black_string
-
-from delver import Crawler
-C = Crawler()
 
 def process(link):
     urlDat = {}
     urlDat['link'] = link
     urlDat['page_rank'] = 'benchmark'
     if str('pdf') not in link:
-        from selenium import webdriver
-        from selenium.webdriver.firefox.options import Options
-        options = Options()
-        options.headless = True
-        driver = webdriver.Firefox(options=options)
+        
+        driver = get_driver()
+
         driver.get(link)
         crude_html = driver.page_source
-        #content = C.open(link).content
 
         soup = BeautifulSoup(crude_html, 'html.parser')
         for script in soup(["script", "style"]):
