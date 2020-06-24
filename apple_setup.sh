@@ -17,6 +17,9 @@ else
     exit 1
 fi
 sudo bash gecko_install.sh
+
+sudo pip install --upgrade pip
+sudo python -m pip install -U pip
 sudo python3 -m pip install -r requirements.txt
 sudo python3 -m pip install seaborn bs4 natsort dask plotly
 sudo python3 -c "import nltk; nltk.download('punkt')"

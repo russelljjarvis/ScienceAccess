@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from crawl import collect_pubs, convert_pdf_to_txt#,process
-from scrape import convert, get_driver
+from scrape import get_driver
 from t_analysis import text_proc
 from utils import black_string
 
