@@ -11,10 +11,10 @@ import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from crawl import collect_pubs
-from get_bmark_corpus import process
-from t_analysis import text_proc
-from t_analysis import text_proc, perplexity, unigram_zipf
+from .crawl import collect_pubs
+from .get_bmark_corpus import process
+from .t_analysis import text_proc
+from .t_analysis import text_proc, perplexity, unigram_zipf
 
 import streamlit as st
 
@@ -165,7 +165,7 @@ def ar_manipulation(ar):
 
 
 
-@st.cache(suppress_st_warning=True)
+#@st.cache(suppress_st_warning=True)
 def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
@@ -173,11 +173,12 @@ def call_from_front_end(NAME):
     if heroku:
         scholar_link=str('https://duckduckgo.com/?q=%21scholar')+str(NAME)+str('&va=z&t=hc')
         _, _, ar  = enter_name_here(scholar_link,NAME)
-        (ar, trainingDats) = ar_manipulation(ar)
+    (ar, trainingDats) = ar_manipulation(ar)
+    '''
     with open('data/traingDats.p','rb') as f:            
         trainingDats_old = pickle.load(f)
     trainingDats.extend(trainingDats_old)    
     with open('data/traingDats.p','wb') as f:            
         pickle.dump(trainingDats,f)        
+    '''
     return ar
-https://duckduckgo.com/?q=%21scholar&atb=v210-1q=patrickmcgurrin
