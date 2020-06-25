@@ -131,12 +131,60 @@ if 'DYNO' in os.environ:
     from selenium.webdriver.support import expected_conditions as EC
 else:
     heroku = False
+from selenium.common.exceptions import NoSuchElementException
+import os
+from selenium import webdriver
+
+def get_driver():
+    if 'DYNO' in os.environ:
+        heroku = True
+    else:
+        heroku = False
+    from selenium.webdriver.firefox.options import Options
+
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    if not heroku:
+        driver = webdriver.Firefox(options=options)
+    else:
+        try:
+            options.binary_location = "/app/vendor/firefox/firefox"
+            driver = webdriver.Firefox(options=options)
+            GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+        except:
+            try:
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+                chrome_options.add_argument("--headless")
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--no-sandbox")
+                driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+            except:
+                try:
+                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+                    options.binary_location = str('./firefox')
+                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                except:
+                    os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
+                    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+                    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+                    os.system("tar xvf firefox-45.0.2.tar.bz2")
+                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+                    options.binary_location = str('./firefox')
+                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+    return driver
+
+
 
 def collect_pubs(url):
     '''
     Used for scholar which is only html
     '''
-    from scrape import get_driver
+    # import needs to be inside function  to protect scope.
+
     driver = get_driver()
     if heroku:
         wait.until(EC.url_changes(url))
