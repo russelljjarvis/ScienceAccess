@@ -1,26 +1,16 @@
-
-
 import streamlit as st
 import os
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
-print(os.system("which firefox"))
-
 from online_app_backend import call_from_front_end
 from online_app_backend import ar_manipulation
-
-
 import pandas as pd
 import pickle
 import numpy as np
 import plotly.figure_factory as ff
-import os
 import plotly.express as px
-
-#from plotly.subplots import make_subplots
-
+import copy
 import nltk
 
 trainingDats = pickle.load(open('data/traingDats.p','rb'))
@@ -46,6 +36,9 @@ def make_clickable(link):
     
 if author_name:
     ar = call_from_front_end(author_name)
+    # remove false outliers.
+    ar = [ t for t in ar if t['standard']<45 ]
+
     standard_sci = [ t['standard'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     scraped_labels = [ str(x['link']) for x in ar]
@@ -67,9 +60,12 @@ if author_name:
     fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
             
     st.write(fig0)
+    cached = False
 
 
 else:      
+    cached = True
+
 
     with open('data/_author_specificSayali Phatak.p','rb') as f: 
         contents = pickle.load(f)   
@@ -93,16 +89,27 @@ else:
                     hover_data=df.columns,
                     hover_name=df["Web_Link"],
                     color_discrete_sequence=colors)
-
-    fig0.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=600)#, hovermode='x')
+    '''
+    Displaying stored results until a new author search is entered.
+    '''
+    fig0.update_layout(title_text='Cached Scholar S Phatak Versus Art Corpus',width=900, height=600)#, hovermode='x')
             
     st.write(fig0)
-'''
 
-### Total number scraped documents:
+if cached:
 
-'''
-st.text(len(ar))
+    '''
+
+    ### Total number {0} scraped documents:
+
+    '''.format('previously')
+    st.text(len(ar))
+else:
+    '''
+
+    ### Total number {0} scraped documents:
+
+    '''.format('previously')
 
 if np.mean(standard_sci) < np.mean(bio_chem):
     '''
@@ -123,10 +130,13 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
 
 sci_corpus = ''
 
+black_list = ['et', 'al','text','crossref','cross', 'ref','google','scholar', 'article','pubmed','full']
+
 for t in ar:
     if 'tokens' in t.keys():
         for s in t['tokens']:
-            sci_corpus+=str(' ')+s
+            if s not in set(black_list):
+                sci_corpus+=str(' ')+s
 
 
 def art_cloud(acorpus):
@@ -134,6 +144,8 @@ def art_cloud(acorpus):
     # Generate a word cloud image
 
     wordcloud = WordCloud().generate(acorpus)
+
+
     fig = plt.figure()
 
     plt.imshow(wordcloud, interpolation='bilinear')
@@ -196,7 +208,6 @@ bm_temp = pd.DataFrame()
 bm_temp["Origin"] = bm["Origin"]
 bm_temp["Web_Link"] = bm["Web_Link"]
 bm_temp["Reading_Level"] = bm["Reading_Level"]
-import copy
 bm = copy.copy(bm_temp)
 
 bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
