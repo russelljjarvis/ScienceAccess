@@ -3,8 +3,6 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
-from online_app_backend import call_from_front_end
-from online_app_backend import ar_manipulation
 import pandas as pd
 import pickle
 import numpy as np
@@ -12,6 +10,10 @@ import plotly.figure_factory as ff
 import plotly.express as px
 import copy
 import nltk
+
+
+from science_access.online_app_backend import call_from_front_end
+from science_access.online_app_backend import ar_manipulation
 
 trainingDats = pickle.load(open('data/traingDats.p','rb'))
 bio_chem = [ t['standard'] for t in trainingDats ]
@@ -37,7 +39,11 @@ if 'DYNO' in os.environ:
     heroku = True
 else:
     heroku = False
-    
+
+with open('data/_author_specificSayali Phatak.p','rb') as f: 
+    contents = pickle.load(f)   
+(NAME,ar,df,datay,scholar_link) =  contents     
+
 if author_name:
     ar = call_from_front_end(author_name)
     # remove false outliers.
@@ -71,9 +77,6 @@ else:
     cached = True
 
 
-    with open('data/_author_specificSayali Phatak.p','rb') as f: 
-        contents = pickle.load(f)   
-    (NAME,ar,df,datay,scholar_link) =  contents     
     (ar, trainingDats) = ar_manipulation(ar)
     standard_sci = [ t['standard'] for t in ar ]
 
@@ -187,8 +190,10 @@ def art_cloud(acorpus):
 ### Here are some word clouds, that show the frequency of scraped texts
 You can eye ball them to see if they fit your intuition about what your searched author writes about
 '''
-art_cloud(sci_corpus)
-
+try:
+    art_cloud(sci_corpus)
+except:
+    pass
 if not heroku:
     df_links = pd.DataFrame()
     df_links['Web_Link'] = pd.Series(scraped_labels)
