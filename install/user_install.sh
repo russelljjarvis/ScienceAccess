@@ -35,12 +35,16 @@ which -s pip3
 if [[ $? != 0 ]] ; then
     sudo bash install_python3.sh
 fi
+
+which -s python3
+if [[ $? != 0 ]] ; then
+    sudo bash install_python3.sh
+fi
 sudo bash gecko_install.sh
+sudo pip3 install --upgrade pip
+sudo python3 -m pip install -U pip
+sudo python3 -m pip install -r ../requirements.txt
 sudo python3 align_data_sources.py
-sudo pip install --upgrade pip
-sudo python -m pip install -U pip
-sudo python3 -m pip install -r requirements.txt
-sudo python3 -m pip install nltk
 sudo python3 -c "import nltk; nltk.download('punkt')"
 sudo python3 -c "import nltk; nltk.download('stopwords')"
 
