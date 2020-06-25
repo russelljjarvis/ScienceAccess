@@ -1,16 +1,16 @@
-language: python
 os:
   - linux
   - osx
-
+language: python
 python:
   - "3.6"
   - "3.5"
   - "3.7"
 install:
+  - bash install/install_python3.sh
+  - sudo python3 setup.py install 
   - bash install/user_install.sh
-  - sudo pip3 install -e .
-script: 
+  script: 
   - python3 unit_test/scrape_test.py
   - streamlit run app.py
 after_success:
