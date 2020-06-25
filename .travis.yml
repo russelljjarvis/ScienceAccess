@@ -9,12 +9,9 @@ python:
   - "3.7"
 install:
   - bash install/user_install.sh
+  - sudo pip3 install -e .
 script: 
-  - touch scrape_test.py
-  - cat "from science_access.crawl import *" >> scrape_test.py
-  - cat "scholar_link=str('https://duckduckgo.com/?q=%21scholar')+str("ninkum")+str('&va=z&t=hc')" >> scrape_test.py
-  - cat "follow_links = collect_pubs(scholar_link)" >> scrape_test.py
-  - python3 scrape_test.py
+  - python3 unit_test/scrape_test.py
   - streamlit run app.py
 after_success:
   - coveralls
