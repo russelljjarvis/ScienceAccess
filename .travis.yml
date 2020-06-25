@@ -1,27 +1,20 @@
 language: python
+os:
+  - linux
+  - osx
+
 python:
   - "3.6"
   - "3.5"
   - "3.7"
-
-
 install:
-  - sudo apt-get update
-  - sudo apt-get install python3-tk 
-  - sudo apt-get install python-lxml
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - sudo apt-get install python-lxml
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda info -a
-  - pip install -U pip
-  - pip install --upgrade pip
-  - pip install coveralls
-  - pip install -r requirements.txt
-script:
-  - bash setup.sh
+  - bash install/user_install.sh
+script: 
+  - touch scrape_test.py
+  - cat "from science_access.crawl import *" >> scrape_test.py
+  - cat "scholar_link=str('https://duckduckgo.com/?q=%21scholar')+str("ninkum")+str('&va=z&t=hc')" >> scrape_test.py
+  - cat "follow_links = collect_pubs(scholar_link)" >> scrape_test.py
+  - python3 scrape_test.py
+  - streamlit run app.py
 after_success:
   - coveralls
