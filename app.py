@@ -33,6 +33,10 @@ def make_clickable(link):
     text = link#.split('=')[1]
     return f'<a target="_blank" href="{link}">{text}</a>'
 
+if 'DYNO' in os.environ:
+    heroku = True
+else:
+    heroku = False
     
 if author_name:
     ar = call_from_front_end(author_name)
@@ -80,21 +84,45 @@ else:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
+    if not heroku:
 
+        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
+                        marginal="box",
+                        opacity=0.7,
+                        hover_data=df.columns,
+                        hover_name=df["Web_Link"],
+                        color_discrete_sequence=colors)
 
+        fig.update_layout(title_text='Scholar S Phatak Versus Art Corpus',width=900, height=600)
+        '''
+    	Displaying stored results until a new author search is entered.
+    	'''
+        st.write(fig)
 
-    fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                    marginal="box",
-                    opacity=0.7,# marginal='violin',# or violin, rug
-                    hover_data=df.columns,
-                    hover_name=df["Web_Link"],
-                    color_discrete_sequence=colors)
-    '''
-    Displaying stored results until a new author search is entered.
-    '''
-    fig0.update_layout(title_text='Cached Scholar S Phatak Versus Art Corpus',width=900, height=600)#, hovermode='x')
-            
-    st.write(fig0)
+    else:
+        df_links = pd.DataFrame()
+        df_links['Web_Link'] = pd.Series(scraped_labels)
+        df_links['Reading_Level'] = pd.Series(standard_sci)
+        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+        df_links = df_links.to_html(escape=False)
+        st.write(df_links, unsafe_allow_html=True)
+
+        x1 = df0['Reading_Level']#np.random.randn(200)
+        x2 = df1['Reading_Level']#np.random.randn(200) + 2
+        if author_name:
+            group_labels = ['Comparison Data ', str(author_name)]
+        else:
+            group_labels = ['Comparison Data ', str('S Phatak')]
+        colors = [theme[-1], theme[-2]]
+        rt=list(pd.Series(scraped_labels))
+        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
+        hover_trace = [t for t in fig['data'] if 'text' in t]
+        fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
+        fig.update_layout(width=900, height=600)#, hovermode='x')
+        '''
+    	Displaying stored results until a new author search is entered.
+    	'''
+        st.write(fig) 
 
 if cached:
 
@@ -110,7 +138,7 @@ else:
     ### Total number {0} scraped documents:
 
     '''.format('previously')
-
+    st.text(len(ar))
 if np.mean(standard_sci) < np.mean(bio_chem):
     '''
 
@@ -144,15 +172,13 @@ def art_cloud(acorpus):
     # Generate a word cloud image
 
     wordcloud = WordCloud().generate(acorpus)
-
-
     fig = plt.figure()
 
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     st.pyplot()
 
-    return fig
+
 
 
 '''
@@ -161,39 +187,31 @@ def art_cloud(acorpus):
 ### Here are some word clouds, that show the frequency of scraped texts
 You can eye ball them to see if they fit your intuition about what your searched author writes about
 '''
-fig = art_cloud(sci_corpus)
+art_cloud(sci_corpus)
 
+if not heroku:
+    df_links = pd.DataFrame()
+    df_links['Web_Link'] = pd.Series(scraped_labels)
+    df_links['Reading_Level'] = pd.Series(standard_sci)
+    #st.write(df)
+    # link is the column with hyperlinks
+    df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+    df_links = df_links.to_html(escape=False)
+    st.write(df_links, unsafe_allow_html=True)
 
-
-
-
-df_links = pd.DataFrame()
-df_links['Web_Link'] = pd.Series(scraped_labels)
-df_links['Reading_Level'] = pd.Series(standard_sci)
-#st.write(df)
-# link is the column with hyperlinks
-df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-df_links = df_links.to_html(escape=False)
-st.write(df_links, unsafe_allow_html=True)
-
-x1 = df0['Reading_Level']#np.random.randn(200)
-x2 = df1['Reading_Level']#np.random.randn(200) + 2
-if author_name:
-    group_labels = ['Comparison Data ', str(author_name)]
-else:
-    group_labels = ['Comparison Data ', str('S Phatak')]
-
-
-colors = [theme[-1], theme[-2]]
-rt=list(pd.Series(scraped_labels))
-fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-
-hover_trace = [t for t in fig['data'] if 'text' in t]
-
-fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
-fig.update_layout(width=900, height=600)#, hovermode='x')
-
-st.write(fig)
+    x1 = df0['Reading_Level']#np.random.randn(200)
+    x2 = df1['Reading_Level']#np.random.randn(200) + 2
+    if author_name:
+        group_labels = ['Comparison Data ', str(author_name)]
+    else:
+        group_labels = ['Comparison Data ', str('S Phatak')]
+    colors = [theme[-1], theme[-2]]
+    rt=list(pd.Series(scraped_labels))
+    fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
+    hover_trace = [t for t in fig['data'] if 'text' in t]
+    fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
+    fig.update_layout(width=900, height=600)#, hovermode='x')
+    st.write(fig)
 
 list_df = pickle.load(open("data/benchmarks.p","rb")) 
 bm = pd.DataFrame(list_df)

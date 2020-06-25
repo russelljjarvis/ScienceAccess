@@ -61,28 +61,38 @@ class tqdm:
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
 
+
+if 'DYNO' in os.environ:
+    heroku = True
+else:
+    heroku = False
+#import random #import randint
+from time import sleep
+import numpy as np
 def take_url_from_gui(author_link_scholar_link_list):
     '''
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     '''
     author_results = []
-    follow_links = collect_pubs(author_link_scholar_link_list)[0:10]
+    if heroku:
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:5]
+    else:
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:12]
+
     for r in tqdm(follow_links,title='Progess of scraping'):
-       try:
-           urlDat = process(r)
-       except:
-           follow_more_links = collect_pubs(r)
-           for r in tqdm(follow_more_links,title='Progess of scraping'):
-               urlDat = process(r)
-
-        
-       if not isinstance(urlDat,type(None)):
-           author_results.append(urlDat)
-
-       # print(author_results[-1])
-       #with open('new.p','wb') as f:
-       #    pickle.dump(author_results,f)
+        if heroku:
+            sleep(np.random.uniform(1,3))
+        try:
+            urlDat = process(r)
+        except:
+            follow_more_links = collect_pubs(r)
+            for r in tqdm(follow_more_links,title='Progess of scraping'):
+                if heroku:
+                    sleep(np.random.uniform(1,3))
+                urlDat = process(r)        
+        if not isinstance(urlDat,type(None)):
+            author_results.append(urlDat)
     return author_results
 
 def unigram_model(author_results):
@@ -152,27 +162,24 @@ def ar_manipulation(ar):
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
-#@st.cache
-def call_from_front_end(NAME,tour=None,NAME1=None,verbose=False):
-    if type(tour) is type(None):
-        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        df, datay, ar  = enter_name_here(scholar_link,NAME)
-        
-        with open('_author_specific'+str(NAME)+'.p','wb') as f: 
-            pickle.dump([NAME,ar,df,datay,scholar_link],f)
 
-        
-        (ar, trainingDats) = ar_manipulation(ar)
-        with open('traingDats.p','wb') as f:
-            pickle.dump(trainingDats,f)
-        return ar
 
-    else:
+@st.cache(suppress_st_warning=True)
+def call_from_front_end(NAME):
+    if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        df, datay, ar  = enter_name_here(scholar_link,NAME)
-        (ar0, trainingDats) = ar_manipulation(ar)
-        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME1)
-        df, datay, ar  = enter_name_here(scholar_link,NAME1)
-        (ar1, trainingDats) = ar_manipulation(ar)
-        #import plotting_author_versus_distribution
-        return [ar0,ar1]
+        _, _, ar  = enter_name_here(scholar_link,NAME)
+    if heroku:
+        try:
+            scholar_link=str('https://duckduckgo.com/?q=%21scholar&atb=v210-1q=')+str(NAME)
+            _, _, ar  = enter_name_here(scholar_link,NAME)
+        except:        
+            scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
+            _, _, ar  = enter_name_here(scholar_link,NAME)
+    (ar, trainingDats) = ar_manipulation(ar)
+    with open('data/traingDats.p','rb') as f:            
+        trainingDats_old = pickle.load(f)
+    trainingDats.extend(trainingDats_old)    
+    with open('data/traingDats.p','wb') as f:            
+        pickle.dump(trainingDats,f)        
+    return ar
