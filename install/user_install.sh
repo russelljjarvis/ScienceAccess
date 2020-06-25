@@ -40,7 +40,7 @@ sudo python3 align_data_sources.py
 sudo pip install --upgrade pip
 sudo python -m pip install -U pip
 sudo python3 -m pip install -r requirements.txt
+sudo python3 -m pip install nltk
 sudo python3 -c "import nltk; nltk.download('punkt')"
 sudo python3 -c "import nltk; nltk.download('stopwords')"
-sudo python3 setup.py install
 
