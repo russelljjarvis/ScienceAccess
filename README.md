@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccessibility.png)](https://travis-ci.com/russelljjarvis/ScienceAccessibility) 
+[![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccess.png)](https://travis-ci.com/russelljjarvis/ScienceAccess) 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
