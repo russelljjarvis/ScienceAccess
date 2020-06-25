@@ -14,20 +14,13 @@ cd ScienceAccess
 
 ```
 
-**If you don't have python3:**
-```
-sudo bash install_python3.sh
-```
+
 
 **Installation Apple** 
 ```
-sudo bash apple_setup.sh
+sudo bash user_install.sh
 ```
 
-**Installation Linux** 
-```
-sudo bash setup.sh
-```
 **Run**
 ```
 streamlit run app.py
