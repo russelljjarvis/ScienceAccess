@@ -4,11 +4,11 @@ os:
 language: python
 python:
   - "3.6"
-  - "3.5"
+  - "3.5" 
   - "3.7"
 install:
   - bash install/install_python3.sh
-  - sudo pip install . 
+  - sudo /opt/conda/bin/pip install . 
   - bash install/user_install.sh
   script: 
   - python3 unit_test/scrape_test.py
