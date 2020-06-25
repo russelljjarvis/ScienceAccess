@@ -8,12 +8,9 @@ sudo apt-get install jq wget chromium-chromedriver firefox
 
 
 sudo python3 -m pip install -r requirements.txt
-sudo python3 -m pip install seaborn 
-sudo python3 -m pip install bs4
-sudo python3 -m pip install natsort dask plotly tabulate
 sudo python3 -c "import nltk; nltk.download('punkt')"
 sudo python3 -c "import nltk; nltk.download('stopwords')"
-sudo conda install -c plotly plotly=4.8.1
+#sudo conda install -c plotly plotly=4.8.1
 #git clone https://github.com/ckreibich/scholar.py.git
 
 wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0

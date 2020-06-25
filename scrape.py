@@ -53,18 +53,27 @@ import bs4 as bs
 import urllib.request
 from io import StringIO
 import io
-from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import os
+from selenium import webdriver
+if 'DYNO' in os.environ:
+    heroku = False
+else:
+    heroku = True
 def get_driver():
+    if 'DYNO' in os.environ:
+        heroku = True
+    else:
+        heroku = False
+
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
-    try:
+    if not heroku:
         driver = webdriver.Firefox(options=options)
-    except:
+    else:
         try:
             options.binary_location = "/app/vendor/firefox/firefox"
             driver = webdriver.Firefox(options=options)
