@@ -172,7 +172,7 @@ def call_from_front_end(NAME):
 
 
     if heroku:
-        scholar_link=str('https://www.semanticscholar.org/search?q=')+str(NAME)+str('&sort=relevance')
+        scholar_link=str('https://www.researchgate.net/search?q=')+str(NAME)#+str('&sort=relevance')
         #query_string = str('!scholar ')+NAME
         #response = query(query_string, secure=False, container=u'namedtuple', verbose=False,
         #user_agent=u'duckduckpy 0.2', no_redirect=False, no_html=False,
