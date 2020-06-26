@@ -77,7 +77,7 @@ def take_url_from_gui(author_link_scholar_link_list):
     '''
     author_results = []
     if heroku:
-        follow_links = collect_pubs(author_link_scholar_link_list)[0:5]
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:4]
     else:
         follow_links = collect_pubs(author_link_scholar_link_list)[0:12]
 
