@@ -187,6 +187,7 @@ def collect_pubs(url):
 
     driver = get_driver()
     if heroku:
+        wait = WebDriverWait(driver, 10)
         wait.until(EC.url_changes(url))
         driver.get(url)
     else:
