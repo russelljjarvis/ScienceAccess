@@ -7,8 +7,8 @@ python:
   - "3.5"
   - "3.7"
 install:
-  - bash install/install_python3.sh
-  - sudo /opt/conda/bin/pip install . 
+  - pip install -r requirements.txt
+  - python setup.py install 
   - bash install/user_install.sh
   - python install/align_data_sources.py
   script: 
