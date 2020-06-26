@@ -176,7 +176,8 @@ def get_driver():
                     options.binary_location = str('./firefox')
                     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
     return driver
-
+from time import sleep
+import numpy as np
 
 
 def collect_pubs(url):
@@ -187,8 +188,10 @@ def collect_pubs(url):
 
     driver = get_driver()
     if heroku:
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.url_changes(url))
+        sleep(np.random.uniform(1,3))
+
+        #wait = WebDriverWait(driver, 10)
+        #wait.until(EC.url_changes(url))
         driver.get(url)
     else:
         driver.get(url)
