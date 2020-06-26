@@ -42,6 +42,8 @@ if [[ $? != 0 ]] ; then
 fi
 sudo bash install/gecko_install.sh
 sudo bash install/part2.sh
+sudo python align_data_sources.py
+
 sudo python install/align_data_sources.py
 sudo python -c "import nltk; nltk.download('punkt')"
 sudo python -c "import nltk; nltk.download('stopwords')"
