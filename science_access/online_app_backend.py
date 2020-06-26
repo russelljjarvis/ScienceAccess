@@ -173,7 +173,7 @@ def call_from_front_end(NAME):
 
     if heroku:
         query_string = str('!scholar ')+NAME
-        response = requery(query_string, secure=False, container=u'namedtuple', verbose=False,
+        response = query(query_string, secure=False, container=u'namedtuple', verbose=False,
         user_agent=u'duckduckpy 0.2', no_redirect=False, no_html=False,
         skip_disambig=False)
         scholar_link = response[-1]
