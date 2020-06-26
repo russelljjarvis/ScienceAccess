@@ -77,7 +77,7 @@ def take_url_from_gui(author_link_scholar_link_list):
     '''
     author_results = []
     if heroku:
-        follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
+        follow_links = collect_pubs(author_link_scholar_link_list)[3:25]
     else:
         follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
 
@@ -179,7 +179,9 @@ def call_from_front_end(NAME):
         #skip_disambig=False)
         #scholar_link = response[-1]
         sleep(np.random.uniform(1,3))
+        st.write(scholar_link)
         _, _, ar  = enter_name_here(scholar_link,NAME)
+        st.write(ar)
     (ar, trainingDats) = ar_manipulation(ar)
     '''
     with open('data/traingDats.p','rb') as f:            
