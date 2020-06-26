@@ -65,9 +65,9 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
-    if not heroku:
+    try:
         driver = webdriver.Firefox(options=options)
-    else:
+    except:
         try:
             options.binary_location = "/app/vendor/firefox/firefox"
             driver = webdriver.Firefox(options=options)
