@@ -37,6 +37,11 @@ def process(link):
         pdf_file = requests.get(link, stream=True)
         buffered = convert_pdf_to_txt(pdf_file)
     urlDat = text_proc(buffered,urlDat)
+    driver.close()
+    driver.quit() 
+    driver = None
+    del driver
+    
     return urlDat
 
 #try:
