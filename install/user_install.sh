@@ -31,14 +31,14 @@ else
     exit 1
 fi
 
-which -s pip3
-if [[ $? != 0 ]] ; then
-    sudo bash install_python3.sh
-fi
+#which -s pip3
+#if [[ $? != 0 ]] ; then
+#    sudo bash install_python3.sh
+#fi
 
-which -s python3
-if [[ $? != 0 ]] ; then
-    sudo bash install_python3.sh
-fi
+#which -s python3
+#if [[ $? != 0 ]] ; then
+#    sudo bash install_python3.sh
+#fi
 sudo bash install/gecko_install.sh
 sudo bash install/part2.sh
