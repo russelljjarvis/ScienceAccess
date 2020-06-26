@@ -1,5 +1,0 @@
-setup.py
-scomplexity.egg-info/PKG-INFO
-scomplexity.egg-info/SOURCES.txt
-scomplexity.egg-info/dependency_links.txt
-scomplexity.egg-info/top_level.txt
