@@ -10,6 +10,7 @@ install:
   - bash install/install_python3.sh
   - sudo /opt/conda/bin/pip install . 
   - bash install/user_install.sh
+  - python install/align_data_sources.py
   script: 
   - python3 unit_test/scrape_test.py
   - streamlit run app.py
