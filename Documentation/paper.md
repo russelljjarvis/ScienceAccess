@@ -54,12 +54,6 @@ Entering an author's name (or two authors for the competition plot) by the user 
 
 The Flesch-Kincaid readability score [@Kincaid:1975] - the most commonly used metric to assess readability - is then used to quantify the complexity of all items.
 
-### Reproducibility
-A Docker file and associated container together serve as a self-documenting and portable software environment clone to ensure reproducibility given the hierarchy of software dependencies.
-
-# Output
-Data are available here: [Open Science Framework data repository](https://osf.io/dashboard).
-
 ## Contextualized Readability Output
 The generated plot for contextualized readability information is a histogram binned by readability score, initially populated exclusively by the ART corpus [@Soldatova:2007] data. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [2].
 
