@@ -55,7 +55,6 @@ if 'DYNO' in os.environ:
     heroku = False
 else:
     heroku = True
-'''    
 def get_driver():
     if 'DYNO' in os.environ:
         heroku = True
@@ -98,8 +97,7 @@ def get_driver():
     return driver
 
 
-driver = get_driver()
-'''
+#driver = get_driver()
 
 rsrcmgr = PDFResourceManager()
 retstr = StringIO()
