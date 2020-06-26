@@ -77,9 +77,9 @@ def take_url_from_gui(author_link_scholar_link_list):
     '''
     author_results = []
     if heroku:
-        follow_links = collect_pubs(author_link_scholar_link_list)[0:4]
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
     else:
-        follow_links = collect_pubs(author_link_scholar_link_list)[0:12]
+        follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
 
     for r in tqdm(follow_links,title='Progess of scraping'):
   
@@ -88,8 +88,8 @@ def take_url_from_gui(author_link_scholar_link_list):
         except:
             follow_more_links = collect_pubs(r)
             for r in tqdm(follow_more_links,title='Progess of scraping'):
-                #if heroku:
-                #    sleep(np.random.uniform(1,3))
+                if heroku:
+                    sleep(np.random.uniform(1,3))
                 urlDat = process(r)        
         if not isinstance(urlDat,type(None)):
             author_results.append(urlDat)
@@ -172,11 +172,12 @@ def call_from_front_end(NAME):
 
 
     if heroku:
-        query_string = str('!scholar ')+NAME
-        response = query(query_string, secure=False, container=u'namedtuple', verbose=False,
-        user_agent=u'duckduckpy 0.2', no_redirect=False, no_html=False,
-        skip_disambig=False)
-        scholar_link = response[-1]
+        scholar_link=str('https://www.semanticscholar.org/search?q=')+str(NAME)+str('&sort=relevance')
+        #query_string = str('!scholar ')+NAME
+        #response = query(query_string, secure=False, container=u'namedtuple', verbose=False,
+        #user_agent=u'duckduckpy 0.2', no_redirect=False, no_html=False,
+        #skip_disambig=False)
+        #scholar_link = response[-1]
         sleep(np.random.uniform(1,3))
         _, _, ar  = enter_name_here(scholar_link,NAME)
     (ar, trainingDats) = ar_manipulation(ar)
