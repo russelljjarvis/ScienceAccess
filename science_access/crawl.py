@@ -204,5 +204,8 @@ def collect_pubs(url):
         check_out = link.get('href')
         #if '/citations?' in check_out:
         links.append(check_out)
-
+    driver.close()
+    driver.quit() 
+    driver = None
+    del driver
     return links

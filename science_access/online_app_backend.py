@@ -82,15 +82,15 @@ def take_url_from_gui(author_link_scholar_link_list):
         follow_links = collect_pubs(author_link_scholar_link_list)[0:12]
 
     for r in tqdm(follow_links,title='Progess of scraping'):
-        if heroku:
-            sleep(np.random.uniform(1,3))
+        #if heroku:
+        #    sleep(np.random.uniform(1,3))
         try:
             urlDat = process(r)
         except:
             follow_more_links = collect_pubs(r)
             for r in tqdm(follow_more_links,title='Progess of scraping'):
-                if heroku:
-                    sleep(np.random.uniform(1,3))
+                #if heroku:
+                #    sleep(np.random.uniform(1,3))
                 urlDat = process(r)        
         if not isinstance(urlDat,type(None)):
             author_results.append(urlDat)
