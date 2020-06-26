@@ -41,9 +41,7 @@ if [[ $? != 0 ]] ; then
     sudo bash install_python3.sh
 fi
 sudo bash install/gecko_install.sh
-sudo pip install --upgrade pip
-sudo python -m pip install -U pip
-sudo python -m pip install -r requirements.txt
+sudo bash install/part2.sh
 sudo python install/align_data_sources.py
 sudo python -c "import nltk; nltk.download('punkt')"
 sudo python -c "import nltk; nltk.download('stopwords')"
