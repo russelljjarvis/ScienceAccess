@@ -17,6 +17,4 @@ natsort
 dask
 plotly
 tabulate
-duckduckpy
-#jupyter-server-proxy==1.2.0
-#nbserverproxy==0.8.8
+crossref-commons
