@@ -179,7 +179,7 @@ def call_from_front_end(NAME):
         queries = {'query.author': NAME}
         ar = []
         bi =[p for p in iterate_publications_as_json(max_results=130, filter=filter_, queries=queries)]   
-        for i in bi[0:15]:    
+        for p in bi[0:15]:    
             temp=str('https://unpaywall.org/'+str(p['DOI'])) 
             st.text(temp) 
             urlDat = process(temp)        
