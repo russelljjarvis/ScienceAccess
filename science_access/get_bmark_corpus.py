@@ -11,16 +11,24 @@ from .crawl import collect_pubs, convert_pdf_to_txt#,process
 from .scrape import get_driver
 from .t_analysis import text_proc
 from .utils import black_string
-
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+if 'DYNO' in os.environ:
+    heroku = False
+else:
+    heroku = True
 def process(link):
     urlDat = {}
     urlDat['link'] = link
     urlDat['page_rank'] = 'benchmark'
+    if heroku:
+        wait = WebDriverWait(driver, 10)
+        wait.until(lambda driver: driver.current_url != link)
+        link = driver.current_url
     if str('pdf') not in link:
-        
         driver = get_driver()
-
         driver.get(link)
+ 
         crude_html = driver.page_source
 
         soup = BeautifulSoup(crude_html, 'html.parser')
