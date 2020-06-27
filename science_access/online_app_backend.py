@@ -162,26 +162,32 @@ def ar_manipulation(ar):
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
+import os
+from crossref_commons.iteration import iterate_publications_as_json
 
-from duckduckpy import query
-#@st.cache(suppress_st_warning=True)
 def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
+        for link in scholar_link:
+            st.text(link) 
+
         _, _, ar  = enter_name_here(scholar_link,NAME)
 
 
     if heroku:
-        scholar_link=str('https://www.researchgate.net/search?q=')+str(NAME)#+str('&sort=relevance')
-        #query_string = str('!scholar ')+NAME
-        #response = query(query_string, secure=False, container=u'namedtuple', verbose=False,
-        #user_agent=u'duckduckpy 0.2', no_redirect=False, no_html=False,
-        #skip_disambig=False)
-        #scholar_link = response[-1]
-        sleep(np.random.uniform(1,3))
-        st.write(scholar_link)
-        _, _, ar  = enter_name_here(scholar_link,NAME)
-        st.write(ar)
+        filter_ = {'type': 'journal-article'}
+        queries = {'query.author': NAME}
+        ar = []
+        bi =[p for p in iterate_publications_as_json(max_results=130, filter=filter_, queries=queries)]   
+        for i in bi[0:15]    
+            temp=str('https://unpaywall.org/'+str(p['DOI'])) 
+            st.text(temp) 
+            urlDat = process(temp)        
+            if not isinstance(urlDat,type(None)):
+                ar.append(urlDat)
+                st.text(urlDat) 
+
+
     (ar, trainingDats) = ar_manipulation(ar)
     '''
     with open('data/traingDats.p','rb') as f:            
