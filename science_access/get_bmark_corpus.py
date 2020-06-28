@@ -19,12 +19,11 @@ else:
     heroku = True
 def process(link):
     urlDat = {}
-    urlDat['link'] = link
-    urlDat['page_rank'] = 'benchmark'
+
     if heroku:
         wait = WebDriverWait(driver, 10)
         wait.until(lambda driver: driver.current_url != link)
-        link = driver.current_url
+        link = cddriver.current_url
     if str('pdf') not in link:
         driver = get_driver()
         driver.get(link)
@@ -44,6 +43,8 @@ def process(link):
     else:
         pdf_file = requests.get(link, stream=True)
         buffered = convert_pdf_to_txt(pdf_file)
+    urlDat['link'] = link
+    urlDat['page_rank'] = 'benchmark'    
     urlDat = text_proc(buffered,urlDat)
     driver.close()
     driver.quit() 

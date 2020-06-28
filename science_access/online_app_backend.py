@@ -168,8 +168,8 @@ from crossref_commons.iteration import iterate_publications_as_json
 def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        for link in scholar_link:
-            st.text(link) 
+        #for link in scholar_link:
+        #    st.text(link) 
 
         _, _, ar  = enter_name_here(scholar_link,NAME)
 
@@ -178,14 +178,14 @@ def call_from_front_end(NAME):
         filter_ = {'type': 'journal-article'}
         queries = {'query.author': NAME}
         ar = []
-        bi =[p for p in iterate_publications_as_json(max_results=130, filter=filter_, queries=queries)]   
+        bi =[p for p in iterate_publications_as_json(max_results=60, filter=filter_, queries=queries)]   
         for p in bi[0:15]:    
             temp=str('https://unpaywall.org/'+str(p['DOI'])) 
-            st.text(temp) 
+            #st.text(temp) 
             urlDat = process(temp)        
             if not isinstance(urlDat,type(None)):
                 ar.append(urlDat)
-                st.text(urlDat) 
+                #st.text(urlDat) 
 
 
     (ar, trainingDats) = ar_manipulation(ar)
