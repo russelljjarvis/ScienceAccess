@@ -59,18 +59,44 @@ if author_name:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
+    if not heroku:
 
-    fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                    marginal="box",
-                    opacity=0.7,# marginal='violin',# or violin, rug
-                    hover_data=df.columns,
-                    hover_name=df["Web_Link"],
-                    color_discrete_sequence=colors)
+        fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+                        marginal="box",
+                        opacity=0.7,# marginal='violin',# or violin, rug
+                        hover_data=df.columns,
+                        hover_name=df["Web_Link"],
+                        color_discrete_sequence=colors)
 
-    fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
-            
-    st.write(fig0)
-    cached = False
+        fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
+                
+        st.write(fig0)
+        cached = False
+    else:
+        df_links = pd.DataFrame()
+        df_links['Web_Link'] = pd.Series(scraped_labels)
+        df_links['Reading_Level'] = pd.Series(standard_sci)
+        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+        df_links = df_links.to_html(escape=False)
+        st.write(df_links, unsafe_allow_html=True)
+
+        x1 = df0['Reading_Level']#np.random.randn(200)
+        x2 = df1['Reading_Level']#np.random.randn(200) + 2
+        if author_name:
+            group_labels = ['Comparison Data ', str(author_name)]
+        else:
+            group_labels = ['Comparison Data ', str('S Phatak')]
+        colors = [theme[-1], theme[-2]]
+        rt=list(pd.Series(scraped_labels))
+        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
+        hover_trace = [t for t in fig['data'] if 'text' in t]
+        fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
+        fig.update_layout(width=900, height=600)#, hovermode='x')
+        '''
+    	Displaying stored results until a new author search is entered.
+    	'''
+        st.write(fig) 
+
 
 
 else:      
