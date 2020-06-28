@@ -180,7 +180,7 @@ def call_from_front_end(NAME):
         ar = []
         bi =[p for p in iterate_publications_as_json(max_results=50, filter=filter_, queries=queries)]   
         for p in bi[0:9]:    
-            res = str('https://api.unpaywall.org/v2/')+str(p['DOI']))+str('?email=YOUR_EMAIL')
+            res = str('https://api.unpaywall.org/v2/')+str(p['DOI'])+str('?email=YOUR_EMAIL')
             response = requests.get(res)
             temp = response['best_oa_location']['url_for_pdf']
 
