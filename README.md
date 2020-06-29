@@ -14,11 +14,16 @@ cd ScienceAccess
 
 ```
 
+**Requirements**
+Unix/Linux/OSX type OS with BASH 
 
 
-**Installation Apple** 
+**Installation** 
 ```
-sudo bash user_install.sh
+which python3
+```
+place output from above command in
+sudo [output] setup.py install
 ```
 
 **Run**

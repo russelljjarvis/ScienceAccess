@@ -41,4 +41,3 @@ fi
 #    sudo bash install_python3.sh
 #fi
 sudo bash install/gecko_install.sh
-sudo bash install/part2.sh
