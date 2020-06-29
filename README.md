@@ -24,9 +24,8 @@ which python3
 ```
 place output from above command in
 sudo [output] setup.py install
-```
-
 **Run**
+
 ```
 streamlit run app.py
 ```
