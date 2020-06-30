@@ -12,8 +12,10 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: ./manage.py test
-          name: Test
+          command: python setup.py install
+          name: install
+          command: streamlit run app.py
+          name: install
 
 workflows:
   main:
