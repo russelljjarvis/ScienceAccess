@@ -11,8 +11,8 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run:
-          command: sudo python setup.py install
+      - run:      
+          command: sudo pip install nltk; python setup.py install
           name: install
 
 workflows:
