@@ -14,8 +14,6 @@ jobs:
       - run:
           command: python setup.py install
           name: install
-          command: streamlit run app.py
-          name: install
 
 workflows:
   main:
