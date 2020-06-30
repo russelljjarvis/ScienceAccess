@@ -12,7 +12,7 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: python setup.py install
+          command: sudo python setup.py install
           name: install
 
 workflows:
