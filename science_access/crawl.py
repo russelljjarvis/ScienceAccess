@@ -147,11 +147,16 @@ def get_driver():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
     try:
-        driver = webdriver.Firefox(options=options)
+        if not os.path.exits("/usr/local/bin"):
+            driver = webdriver.Firefox(options=options)
+        else:
+            GECKODRIVER_PATH=str("/usr/local/bin")+str("/geckodriver")
+            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
     except:
         try:
             options.binary_location = "/app/vendor/firefox/firefox"
-            driver = webdriver.Firefox(options=options)
+            #driver = webdriver.Firefox(options=options)
             GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
             driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
         except:
