@@ -11,7 +11,7 @@ if [[ $(uname) == "Darwin" ]]; then
     brew install jq 
     brew install wget 
     brew cask install firefox
-    brew install python-lxml
+    brew install -y python-lxml
 	# brew install chromium-chromedriver 
     curl -s -L https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p
     curl -s -L https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
@@ -19,8 +19,8 @@ if [[ $(uname) == "Darwin" ]]; then
 
 elif [[ $(uname) == "Linux" ]]; then
     sudo apt-get update
-    sudo apt-get install jq wget firefox
-    sudo apt-get install python-lxml
+    sudo apt-get install -y jq wget firefox
+    sudo apt-get install -y python-lxml
     sudo apt-get install -y firefox
     wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
     wget https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
