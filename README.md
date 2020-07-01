@@ -1,4 +1,7 @@
 
+
+[![Build Status](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs)
+
 [![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccess.png)](https://travis-ci.com/russelljjarvis/ScienceAccess) 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
