@@ -27,7 +27,8 @@ setup(name='scomplexity',
       url='https://github.com/russelljjarvis/ScienceAccessibility',
       packages = setuptools.find_packages()
       ) 
+os.system('sudo bash pip install -r requirements.txt')
 import nltk
 import nltk; nltk.download('punkt')
 import nltk; nltk.download('stopwords')
-os.system('bash install/user_install.sh')
+os.system('sudo bash install/user_install.sh')
