@@ -1,6 +1,8 @@
 
 
-[![Build Status](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs)
+
+
+[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 
 [![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccess.png)](https://travis-ci.com/russelljjarvis/ScienceAccess) 
 
