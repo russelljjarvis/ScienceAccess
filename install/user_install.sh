@@ -11,9 +11,7 @@ if [[ $(uname) == "Darwin" ]]; then
     brew install -y jq 
     brew install -y wget 
     brew cask install -y firefox
-    brew install -y python-lxml
     brew install -y geckodriver
-	brew install -y chromium-chromedriver 
     curl -s -L https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p
     curl -s -L https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
     curl -s -L https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
