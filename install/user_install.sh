@@ -8,11 +8,12 @@ if [[ $(uname) == "Darwin" ]]; then
     else
         brew update
     fi
-    brew install jq 
-    brew install wget 
-    brew cask install firefox
+    brew install -y jq 
+    brew install -y wget 
+    brew cask install -y firefox
     brew install -y python-lxml
-	# brew install chromium-chromedriver 
+    brew install -y geckodriver
+	brew install -y chromium-chromedriver 
     curl -s -L https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p
     curl -s -L https://www.dropbox.com/s/crarli3772rf3lj/more_authors_results.p?dl=0
     curl -s -L https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
@@ -31,13 +32,15 @@ else
     exit 1
 fi
 
-#which -s pip3
+which -s geckodriver
 #if [[ $? != 0 ]] ; then
 #    sudo bash install_python3.sh
 #fi
 
-#which -s python3
+which -s firefox
 #if [[ $? != 0 ]] ; then
 #    sudo bash install_python3.sh
 #fi
 sudo bash install/gecko_install.sh
+which -s firefox
+which -s geckodriver

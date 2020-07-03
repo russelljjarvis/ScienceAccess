@@ -12,23 +12,24 @@ else
     exit 1
 fi
 
-if [[ -z "${DEPLOY_ENV}" ]]; then
-    install_dir="/usr/local/bin"
-    curl -s -L "$url" | tar -xz
-    chmod +x geckodriver
-    sudo mv geckodriver "$install_dir"
-    echo "installed geckodriver binary in $install_dir"
+#if [[ -z "${DEPLOY_ENV}" ]]; then
+install_dir="../science_access"
+curl -s -L "$url" | tar -xz
+chmod +x geckodriver
+sudo mv geckodriver "$install_dir"
+echo "installed geckodriver binary in $install_dir"
+export PATH=$PATH:$pwd$install_dir"/geckodriver"
 
-else
-    install_dir="/home/circleci/project"
-    curl -s -L "$url" | tar -xz 
-    chmod +x geckodriver
-    sudo mv geckodriver "$install_dir"
-    echo "installed geckodriver binary in $install_dir"
+wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
+tar xvf firefox-45.0.2.tar.bz2
+sudo mv firefox "$install_dir"
+echo "installed firefox binary in $install_dir"
+export PATH=$PATH:$pwd$install_dir"/firefox"
 
-    install_dir="/usr/local/bin"
-    curl -s -L "$url" | tar -xz
-    chmod +x geckodriver
-    sudo mv geckodriver "$install_dir"
-    echo "installed geckodriver binary in $install_dir"
-fi
+#else
+#    install_dir="/usr/local/bin"
+#    curl -s -L "$url" | tar -xz
+#    chmod +x geckodriver
+#    sudo mv geckodriver "$install_dir"
+#    echo "installed geckodriver binary in $install_dir"
+#fi
