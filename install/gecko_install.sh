@@ -5,22 +5,22 @@
 json=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest)
 if [[ $(uname) == "Darwin" ]]; then
     url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("macos"))')
+    curl -s -L "$url" |  tar -xz
+    wget "$url" 
+    tar -xvzf geckodriver*
+    chmod +x geckodriver
+
+
 elif [[ $(uname) == "Linux" ]]; then
-    url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("linux64"))')
+    wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
+    tar -xvzf geckodriver*  
+    chmod +x geckodriver
+    #url=$(echo "$json" | jq -r '.assets[].browser_download_url | select(contains("linux64"))')
 else
     echo "can't determine OS"
     exit 1
 fi
 
-#if [[ -z "${DEPLOY_ENV}" ]]; then
-#install_dir="../science_access"
-#curl -s -L "$url" | 
-wget "$url" | tar -xz
-#tar -xz geckodriver*
-chmod +x geckodriver
-#sudo mv geckodriver $pwd$install_dir
-#"../science_access"
-#cat $pwd"../science_access/geckodriver"
 
 export PATH=$PATH:$pwd"/geckodriver"
 
