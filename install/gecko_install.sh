@@ -13,22 +13,25 @@ else
 fi
 
 #if [[ -z "${DEPLOY_ENV}" ]]; then
-install_dir="../science_access"
-curl -s -L "$url" | tar -xz
+#install_dir="../science_access"
+#curl -s -L "$url" | 
+wget "$url" 
+tar -xvzf geckodriver*
 chmod +x geckodriver
 #sudo mv geckodriver $pwd$install_dir
 #"../science_access"
 #cat $pwd"../science_access/geckodriver"
-#export PATH=$PATH:$pwd$install_dir"/geckodriver"
+
+export PATH=$PATH:$pwd"/geckodriver"
 
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
 tar xvf firefox-45.0.2.tar.bz2
+chmod +x firefox/firefox
 chmod +x firefox
-
 #sudo mv firefox $pwd$install_dir
 #cat $pwd"../science_access/firefox/firefox"
-#export PATH=$PATH:$pwd$install_dir"/firefox"
-
+export PATH=$PATH:$pwd"/firefox/firefox"
+source /etc/environment
 #else
 #    install_dir="/usr/local/bin"
 #    curl -s -L "$url" | tar -xz
