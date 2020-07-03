@@ -15,8 +15,8 @@ fi
 #if [[ -z "${DEPLOY_ENV}" ]]; then
 #install_dir="../science_access"
 #curl -s -L "$url" | 
-wget "$url" 
-tar -xvzf geckodriver*
+wget "$url" | tar -xz
+#tar -xz geckodriver*
 chmod +x geckodriver
 #sudo mv geckodriver $pwd$install_dir
 #"../science_access"
