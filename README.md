@@ -1,11 +1,9 @@
 
 
 
+This project was previously hosted at [https://github.com/russelljjarvis/ScienceAccessibility](https://github.com/russelljjarvis/ScienceAccessibility)
 
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
-
-[![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccess.png)](https://travis-ci.com/russelljjarvis/ScienceAccess) 
-
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
 
