@@ -16,14 +16,14 @@ fi
 install_dir="../science_access"
 curl -s -L "$url" | tar -xz
 chmod +x geckodriver
-sudo mv geckodriver "../science_access/geckodriver"
-echo "installed geckodriver binary in $$install_dirinstall_dir"
+sudo mv geckodriver $pwd"../science_access/geckodriver"
+cat $pwd"../science_access/geckodriver"
 export PATH=$PATH:$pwd$install_dir"/geckodriver"
 
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
 tar xvf firefox-45.0.2.tar.bz2
-sudo mv firefox "../science_access/firefox"
-echo "installed firefox binary in $install_dir"
+sudo mv firefox $pwd"../science_access/firefox"
+cat $pwd"../science_access/firefox"
 export PATH=$PATH:$pwd$install_dir"/firefox"
 
 #else
