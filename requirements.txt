@@ -1,3 +1,4 @@
+regex
 PyPDF2
 pycld2
 nltk
