@@ -148,8 +148,8 @@ def get_driver():
     options.add_argument("--no-sandbox")
     #if 'CIRCLE_BRANCH' in os.environ:
 
-    options.binary_location = str(os.getcwd())+str('/firefox')
-    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
+    options.binary_location = str(os.getcwd())+str('../install/firefox/firefox')
+    GECKODRIVER_PATH=str(os.getcwd())+str("../install/geckodriver")
     #options.binary_location = str('./firefox')
     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
     '''
