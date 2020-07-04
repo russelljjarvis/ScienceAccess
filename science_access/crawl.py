@@ -146,12 +146,26 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
+    #if 'CIRCLE_BRANCH' in os.environ:
     try:
-        driver = webdriver.Firefox(options=options)
+        driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
+    except:
+        options.binary_location = str(os.getcwd())+str('/../install/firefox/firefox')
+        GECKODRIVER_PATH=str(os.getcwd())+str("/../install/geckodriver")
+        driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+    '''
+    try:
+        if not os.path.exists("/usr/local/bin"):
+            driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
+            
+        else:
+            GECKODRIVER_PATH=str("/usr/local/bin")+str("/geckodriver")
+            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+
     except:
         try:
             options.binary_location = "/app/vendor/firefox/firefox"
-            driver = webdriver.Firefox(options=options)
+            #driver = webdriver.Firefox(options=options)
             GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
             driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
         except:
@@ -168,13 +182,14 @@ def get_driver():
                     options.binary_location = str('./firefox')
                     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
                 except:
-                    os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
+                    os.system("wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
                     os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
                     os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
                     os.system("tar xvf firefox-45.0.2.tar.bz2")
                     GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
                     options.binary_location = str('./firefox')
                     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+    '''
     return driver
 from time import sleep
 import numpy as np

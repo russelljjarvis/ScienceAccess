@@ -162,37 +162,45 @@ def ar_manipulation(ar):
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
-import os
-from crossref_commons.iteration import iterate_publications_as_json
-import requests
 def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        #for link in scholar_link:
-        #    st.text(link) 
 
         _, _, ar  = enter_name_here(scholar_link,NAME)
+        (ar, trainingDats) = ar_manipulation(ar)
 
 
     if heroku:
-        filter_ = {'type': 'journal-article'}
+        import os
+        from crossref_commons.iteration import iterate_publications_as_json
+        import requests
+
+        #filter_ = {'type': 'journal-article'}
         queries = {'query.author': NAME}
         ar = []
-        bi =[p for p in iterate_publications_as_json(max_results=50, filter=filter_, queries=queries)]   
+        bi =[p for p in iterate_publications_as_json(max_results=100, queries=queries)]   
         for p in bi[0:9]:    
             res = str('https://api.unpaywall.org/v2/')+str(p['DOI'])+str('?email=YOUR_EMAIL')
             response = requests.get(res)
-            temp = response['best_oa_location']['url_for_pdf']
+            response = response.json()
+            if response['is_oa'] and response is not None:
+                st.text(response)
+                print(response.keys())
+                try:
+                    temp = response['best_oa_location']['url_for_pdf']
 
-            #temp=str('https://unpaywall.org/'+str(p['DOI'])) 
-            #st.text(temp) 
-            urlDat = process(temp)        
-            if not isinstance(urlDat,type(None)):
-                ar.append(urlDat)
-                #st.text(urlDat) 
+                except:
+                    temp = response['best_oa_location']['url']#['url_for_pdf']
 
+                #temp=str('https://unpaywall.org/'+str(p['DOI'])) 
+                st.text(temp) 
+                if temp is not None:
+                    urlDat = process(temp)        
+                    if not isinstance(urlDat,type(None)):
+                        ar.append(urlDat)
 
-    (ar, trainingDats) = ar_manipulation(ar)
+        (ar, trainingDats) = ar_manipulation(ar)
+
     '''
     with open('data/traingDats.p','rb') as f:            
         trainingDats_old = pickle.load(f)
