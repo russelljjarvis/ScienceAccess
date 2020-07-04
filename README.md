@@ -1,8 +1,9 @@
 
-[![Build Status](https://travis-ci.com/russelljjarvis/ScienceAccess.png)](https://travis-ci.com/russelljjarvis/ScienceAccess) 
 
+
+
+[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
-
 
 
 **![Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)**
@@ -33,6 +34,9 @@ streamlit run app.py
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
 # Overview
+
+This project was previously hosted at [https://github.com/russelljjarvis/ScienceAccessibility](https://github.com/russelljjarvis/ScienceAccessibility)
+
 
 Understanding a big word is hard, so when big ideas are written down with lots of big words, the large pile of big words is also hard to understand. 
 

@@ -1,0 +1,32 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+
+      - run: 
+          name: "Setup custom environment variables"
+          command: echo 'export MY_ENV_VAR="CIRCLE"' >> $BASH_ENV
+      - run: # print the name of the branch we're on
+          command: echo ${CIRCLE_BRANCH}
+          name: "What branch am I on?"
+      - run:      
+          command: sudo bash install/gecko_install.sh; sudo pip install -r requirements.txt;
+          name: install
+      - run: 
+          name: more install
+          command: sudo python setup.py install; 
+
+
+workflows:
+  main:
+    jobs:
+      - build-and-test

@@ -14,16 +14,16 @@ from .utils import black_string
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 if 'DYNO' in os.environ:
-    heroku = False
-else:
     heroku = True
+else:
+    heroku = False
 def process(link):
     urlDat = {}
 
-    if heroku:
-        wait = WebDriverWait(driver, 10)
-        wait.until(lambda driver: driver.current_url != link)
-        link = cddriver.current_url
+    #if heroku:
+    #    wait = WebDriverWait(driver, 10)
+    #    wait.until(lambda driver: driver.current_url != link)
+    #    link = cddriver.current_url
     if str('pdf') not in link:
         driver = get_driver()
         driver.get(link)
@@ -40,16 +40,18 @@ def process(link):
         chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
         text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
         buffered = str(text)
+
+        driver.close()
+        driver.quit() 
+        driver = None
+        del driver
+
     else:
         pdf_file = requests.get(link, stream=True)
         buffered = convert_pdf_to_txt(pdf_file)
     urlDat['link'] = link
     urlDat['page_rank'] = 'benchmark'    
     urlDat = text_proc(buffered,urlDat)
-    driver.close()
-    driver.quit() 
-    driver = None
-    del driver
     
     return urlDat
 
