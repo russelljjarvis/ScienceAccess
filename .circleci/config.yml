@@ -25,8 +25,18 @@ jobs:
           name: more install
           command: sudo python setup.py install; 
 
+  build-docker:
+    machine: true
+    steps:
+      - checkout
+      # start proprietary DB using private Docker image
+      # with credentials stored in the UI
+    
 
+      # build the application image
+      - run: docker build -t wcp .
 workflows:
   main:
     jobs:
       - build-and-test
+      - build-docker
