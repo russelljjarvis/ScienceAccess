@@ -15,7 +15,7 @@ import nltk
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 
-trainingDats = pickle.load(open('data/traingDats.p','rb'))
+trainingDats = pickle.load(open('data/trainingDats.p','rb'))
 bio_chem = [ t['standard'] for t in trainingDats ]
 biochem_labels =  [ x['file_name'] for x in trainingDats if 'file_name' in x.keys()]
 biochem_labels = [x.split("/")[-1] for x in biochem_labels ]
@@ -123,7 +123,7 @@ else:
                         hover_name=df["Web_Link"],
                         color_discrete_sequence=colors)
 
-        fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(),width=900, height=600)
+        fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
         '''
     	Displaying stored results until a new author search is entered.
     	'''
@@ -208,36 +208,38 @@ def art_cloud(acorpus):
     plt.axis("off")
     st.pyplot()
 
-DEVELOP = False
-if DEVELOP:
-    import scipy
-    twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
+#DEVELOP = True
+#if DEVELOP:
+import scipy
+twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
 
-    matrix_twosample = [
-        ['', 'Test Statistic', 'p-value'],
-        ['Sample Data', twosample_results[0], twosample_results[1]]
-    ]
+matrix_twosample = [
+    ['', 'Test Statistic', 'p-value'],
+    ['Sample Data', twosample_results[0], twosample_results[1]]
+]
 
-    fig = FF.create_table(matrix_twosample, index=True)
-    st.write(fig)
-    #py.iplot(twosample_table, filename='twosample-table')
+fig = ff.create_table(matrix_twosample, index=True)
+'''
+###  A t-test 
+ it checks if the authors distribution 
+ is significantly different from the ART-corpus distribution
+'''
+st.write(fig)
+#py.iplot(twosample_table, filename='twosample-table')
+'''
+### Links 
+to the articles that were used to perform this calculation
+'''
 
-
-    df_links = pd.DataFrame()
-    df_links['Web_Link'] = pd.Series(scraped_labels)
-    df_links['Reading_Level'] = pd.Series(standard_sci)
-    #st.write(df)
-    # link is the column with hyperlinks
-    df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-    df_links = df_links.to_html(escape=False)
-    st.write(df_links, unsafe_allow_html=True)
-    # Create a list of possible values and multiselect menu with them in it.
-    LINKS = df_links.unique()
-    LINKS_SELECTED = st.multiselect('Select true positives', LINKS)
-    # Mask to filter dataframe
-    mask_links = data['Web_Link'].isin(LINKS_SELECTED)
-    data = data[mask_links]
-    st.write(data, unsafe_allow_html=True)
+df_links = pd.DataFrame()
+df_links['Web_Link'] = pd.Series(scraped_labels)
+df_links['Reading_Level'] = pd.Series(standard_sci)
+#st.write(df)
+# link is the column with hyperlinks
+df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+df_links = df_links.to_html(escape=False)
+st.write(df_links, unsafe_allow_html=True)
+# Create a list of possible values and multiselect menu with them in it.
 
 
 

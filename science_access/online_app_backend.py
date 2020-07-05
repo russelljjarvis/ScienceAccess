@@ -156,7 +156,7 @@ def ar_manipulation(ar):
     ar = [ tl for tl in ar if type(tl) is not type(str('')) ]
     ar = [ tl for tl in ar if 'standard' in tl.keys() ]
 
-    with open('data/traingDats.p','rb') as f:
+    with open('data/trainingDats.p','rb') as f:
         trainingDats = pickle.load(f)
         
     trainingDats.extend(ar)
