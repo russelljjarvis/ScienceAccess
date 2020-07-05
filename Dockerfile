@@ -22,6 +22,7 @@ COPY . .
 COPY requirements.txt ./
 
 RUN sudo /opt/conda/bin/pip install -r requirements.txt
+RUN sudo /opt/conda/bin/pip install tqdm
 RUN sudo /opt/conda/bin/python setup.py install; 
 RUN python unit_test/scrape_test.py
 
