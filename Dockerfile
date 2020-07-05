@@ -21,8 +21,8 @@ COPY . .
 
 COPY requirements.txt ./
 
-RUN sudo pip install -r requirements.txt
-RUN sudo python setup.py install; 
+RUN sudo /opt/conda/bin/pip install -r requirements.txt
+RUN sudo /opt/conda/bin/python setup.py install; 
 RUN python unit_test/scrape_test.py
 
 # activate conda environment

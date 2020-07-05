@@ -31,10 +31,10 @@ jobs:
       - checkout
       # start proprietary DB using private Docker image
       # with credentials stored in the UI
-    
-
       # build the application image
       - run: docker build -t wcp .
+      - run: docker run -d -p 127.0.0.1:80:80 --name wcp wcp
+      - run: docker ps | grep -q wcp
 workflows:
   main:
     jobs:
