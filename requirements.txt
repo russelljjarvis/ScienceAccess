@@ -19,4 +19,5 @@ dask
 plotly
 tabulate
 chart_studio
+tqdm
 crossref-commons
