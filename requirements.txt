@@ -18,4 +18,5 @@ natsort
 dask
 plotly
 tabulate
+chart_studio
 crossref-commons
