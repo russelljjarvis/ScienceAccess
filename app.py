@@ -40,9 +40,10 @@ if 'DYNO' in os.environ:
 else:
     heroku = False
 
-with open('data/_author_specificDouglas Adams.p','rb') as f: 
+with open('data/_author_specificSayali Phatak.p','rb') as f: 
     contents = pickle.load(f)   
 (NAME,ar,df,datay,scholar_link) =  contents     
+cached_author_name = "Sayali Phatak"
 
 if author_name:
     ar = call_from_front_end(author_name)
@@ -85,7 +86,7 @@ if author_name:
         if author_name:
             group_labels = ['Comparison Data ', str(author_name)]
         else:
-            group_labels = ['Comparison Data ', str('D Adams')]
+            group_labels = ['Comparison Data ', str(cached_author_name)]
         colors = [theme[-1], theme[-2]]
         rt=list(pd.Series(scraped_labels))
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
@@ -109,7 +110,7 @@ else:
     scraped_labels = [ str(x['link']) for x in ar]
     group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
     lods = []
-    for i,j,k in zip(standard_sci,[str('D Adams') for i in range(0,len(ar))],scraped_labels):
+    for i,j,k in zip(standard_sci,[str(cached_author_name) for i in range(0,len(ar))],scraped_labels):
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
@@ -122,7 +123,7 @@ else:
                         hover_name=df["Web_Link"],
                         color_discrete_sequence=colors)
 
-        fig.update_layout(title_text='Scholar Douglas Adams Versus Art Corpus',width=900, height=600)
+        fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(),width=900, height=600)
         '''
     	Displaying stored results until a new author search is entered.
     	'''
@@ -141,7 +142,7 @@ else:
         if author_name:
             group_labels = ['Comparison Data ', str(author_name)]
         else:
-            group_labels = ['Comparison Data ', str('D Adams')]
+            group_labels = ['Comparison Data ', str(cache_author_name)]
         colors = [theme[-1], theme[-2]]
         rt=list(pd.Series(scraped_labels))
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
@@ -207,6 +208,36 @@ def art_cloud(acorpus):
     plt.axis("off")
     st.pyplot()
 
+DEVELOP = False
+if DEVELOP:
+    import scipy
+    twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
+
+    matrix_twosample = [
+        ['', 'Test Statistic', 'p-value'],
+        ['Sample Data', twosample_results[0], twosample_results[1]]
+    ]
+
+    fig = FF.create_table(matrix_twosample, index=True)
+    st.write(fig)
+    #py.iplot(twosample_table, filename='twosample-table')
+
+
+    df_links = pd.DataFrame()
+    df_links['Web_Link'] = pd.Series(scraped_labels)
+    df_links['Reading_Level'] = pd.Series(standard_sci)
+    #st.write(df)
+    # link is the column with hyperlinks
+    df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+    df_links = df_links.to_html(escape=False)
+    st.write(df_links, unsafe_allow_html=True)
+    # Create a list of possible values and multiselect menu with them in it.
+    LINKS = df_links.unique()
+    LINKS_SELECTED = st.multiselect('Select true positives', LINKS)
+    # Mask to filter dataframe
+    mask_links = data['Web_Link'].isin(LINKS_SELECTED)
+    data = data[mask_links]
+    st.write(data, unsafe_allow_html=True)
 
 
 
@@ -235,7 +266,7 @@ if not heroku:
     if author_name:
         group_labels = ['Comparison Data ', str(author_name)]
     else:
-        group_labels = ['Comparison Data ', str('D Adams')]
+        group_labels = ['Comparison Data ', str(cached_author_name)]
     colors = [theme[-1], theme[-2]]
     rt=list(pd.Series(scraped_labels))
     fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
@@ -284,7 +315,7 @@ colors = [theme[0], theme[4],theme[2]]
 if author_name:
     group_labels = ['Ideal Bench Marks ', str(author_name), str('Comparison Data')]
 else:
-    group_labels = ['Ideal Bench Marks  ', str('D Adams'), str('Comparison Data')]
+    group_labels = ['Ideal Bench Marks  ', str(cached_author_name), str('Comparison Data')]
 
 fig = ff.create_distplot([x1, x2, x3], group_labels, bin_size=1,colors=colors,rug_text=rt)
 
