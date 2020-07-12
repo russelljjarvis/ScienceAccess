@@ -146,7 +146,7 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 WORKDIR $HOME
 RUN sudo mkdir -p .streamlit  
-RUN sudo bash -c 'touch ~/.streamlit/credentials.toml'
+#RUN sudo bash -c 'touch ~/.streamlit/credentials.toml'
 
 
 CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
