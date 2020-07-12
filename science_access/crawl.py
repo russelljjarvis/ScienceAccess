@@ -144,15 +144,16 @@ def get_driver():
 
     options = Options()
     options.add_argument("--headless")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--no-sandbox")
+    #options.add_argument("--disable-dev-shm-usage")
+    #options.add_argument("--no-sandbox")
     #if 'CIRCLE_BRANCH' in os.environ:
-    try:
-        driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
-    except:
-        options.binary_location = str(os.getcwd())+str('/../install/firefox/firefox')
-        GECKODRIVER_PATH=str(os.getcwd())+str("/../install/geckodriver")
-        driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+    #try:
+    driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
+    print(driver)
+    #except:
+    #    options.binary_location = str(os.getcwd())+str('/../install/firefox/firefox')
+    #    GECKODRIVER_PATH=str(os.getcwd())+str("/../install/geckodriver")
+    #    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
     '''
     try:
         if not os.path.exists("/usr/local/bin"):
