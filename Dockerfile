@@ -100,7 +100,17 @@ RUN python setup.py install;
 RUN sudo chown -R jovyan unit_test
 RUN sudo chown -R jovyan .
 RUN pip install tqdm
-RUN python unit_test/scrape_test.py
+
+RUN python - c "from selenium import webdriver;\
+from selenium.webdriver.firefox.options import Options; \
+options = Options(); \
+options.headless = True; \
+driver = webdriver.Firefox(options=options) ;\
+driver.get('http://google.com/') ;\
+print('Headless Firefox Initialized') ;\
+driver.quit();"
+
+#RUN python unit_test/scrape_test.py
 WORKDIR $HOME
 #RUN sudo mkdir .streamlit
 #ADD .streamlit/credentials.toml .streamlit/credentials.toml
