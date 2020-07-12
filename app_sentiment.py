@@ -16,18 +16,19 @@ from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 
 trainingDats = pickle.load(open('data/trainingDats.p','rb'))
-bio_chem = [ t['standard'] for t in trainingDats ]
+bio_chem = [ t['sp'] for t in trainingDats ]
+
 biochem_labels =  [ x['file_name'] for x in trainingDats if 'file_name' in x.keys()]
 biochem_labels = [x.split("/")[-1] for x in biochem_labels ]
 
 lods = []
 for i,j,k in zip(bio_chem,[str('Comparison Data') for i in range(0,len(bio_chem))],biochem_labels):
-     lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+     lods.append({'Sentiment':i,'Origin':j,'Web_Link':k})
 df0 = pd.DataFrame(lods)
 
 theme = px.colors.diverging.Portland
 colors = [theme[0], theme[1]]
-st.title('Search Reading Difficulty of Academic')
+st.title('Search Sentiment Polarity of Academic')
 author_name = st.text_input('Enter Author:')
 def make_clickable(link):
     # target _blank to open new window
@@ -39,7 +40,7 @@ def make_clickable(link):
 heroku = True
 #else:
 #    heroku = False
-st.text(str('heroku')+str(heroku))
+#st.text(str('heroku')+str(heroku))
 with open('data/_author_specificSayali Phatak.p','rb') as f: 
     contents = pickle.load(f)   
 (NAME,ar,df,datay,scholar_link) =  contents     
@@ -48,21 +49,21 @@ cached_author_name = "Sayali Phatak"
 if author_name:
     ar = call_from_front_end(author_name)
     # remove false outliers.
-    ar = [ t for t in ar if t['standard']<45 ]
+    ar = [ t for t in ar if t['sp']<45 ]
 
-    standard_sci = [ t['standard'] for t in ar ]
+    standard_sci = [ t['sp'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     scraped_labels = [ str(x['link']) for x in ar]
 
 
     lods = []
     for i,j,k in zip(standard_sci,[str(author_name) for i in range(0,len(ar))],scraped_labels):
-        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+        lods.append({'Sentiment':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
     if not heroku:
 
-        fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+        fig0 = px.histogram(df, x="Sentiment", y="Web_Link", color="Origin",
                         marginal="box",
                         opacity=0.7,# marginal='violin',# or violin, rug
                         hover_data=df.columns,
@@ -76,13 +77,13 @@ if author_name:
     else:
         df_links = pd.DataFrame()
         df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
+        df_links['Sentiment'] = pd.Series(standard_sci)
         df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
         df_links = df_links.to_html(escape=False)
         st.write(df_links, unsafe_allow_html=True)
 
-        x1 = df0['Reading_Level']#np.random.randn(200)
-        x2 = df1['Reading_Level']#np.random.randn(200) + 2
+        x1 = df0['Sentiment']#np.random.randn(200)
+        x2 = df1['Sentiment']#np.random.randn(200) + 2
         if author_name:
             group_labels = ['Comparison Data ', str(author_name)]
         else:
@@ -106,18 +107,18 @@ else:
 
 
     (ar, trainingDats) = ar_manipulation(ar)
-    standard_sci = [ t['standard'] for t in ar ]
+    standard_sci = [ t['sp'] for t in ar ]
 
     scraped_labels = [ str(x['link']) for x in ar]
     group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
     lods = []
     for i,j,k in zip(standard_sci,[str(cached_author_name) for i in range(0,len(ar))],scraped_labels):
-        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+        lods.append({'Sentiment':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
     if not heroku:
 
-        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
+        fig = px.histogram(df, y="Web_Link", x="Sentiment", color="Origin",
                         marginal="box",
                         opacity=0.7,
                         hover_data=df.columns,
@@ -133,13 +134,13 @@ else:
     else:
         df_links = pd.DataFrame()
         df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
+        df_links['Sentiment'] = pd.Series(standard_sci)
         df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
         df_links = df_links.to_html(escape=False)
         st.write(df_links, unsafe_allow_html=True)
 
-        x1 = df0['Reading_Level']#np.random.randn(200)
-        x2 = df1['Reading_Level']#np.random.randn(200) + 2
+        x1 = df0['Sentiment']#np.random.randn(200)
+        x2 = df1['Sentiment']#np.random.randn(200) + 2
         if author_name:
             group_labels = ['Comparison Data ', str(author_name)]
         else:
@@ -234,7 +235,7 @@ to the articles that were used to perform this calculation
 
 df_links = pd.DataFrame()
 df_links['Web_Link'] = pd.Series(scraped_labels)
-df_links['Reading_Level'] = pd.Series(standard_sci)
+df_links['Sentiment'] = pd.Series(standard_sci)
 #st.write(df)
 # link is the column with hyperlinks
 df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
@@ -258,15 +259,15 @@ except:
 if not heroku:
     df_links = pd.DataFrame()
     df_links['Web_Link'] = pd.Series(scraped_labels)
-    df_links['Reading_Level'] = pd.Series(standard_sci)
+    df_links['Sentiment'] = pd.Series(standard_sci)
     #st.write(df)
     # link is the column with hyperlinks
     df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
     df_links = df_links.to_html(escape=False)
     st.write(df_links, unsafe_allow_html=True)
 
-    x1 = df0['Reading_Level']#np.random.randn(200)
-    x2 = df1['Reading_Level']#np.random.randn(200) + 2
+    x1 = df0['Sentiment']#np.random.randn(200)
+    x2 = df1['Sentiment']#np.random.randn(200) + 2
     if author_name:
         group_labels = ['Comparison Data ', str(author_name)]
     else:
@@ -282,7 +283,7 @@ if not heroku:
 list_df = pickle.load(open("data/benchmarks.p","rb")) 
 bm = pd.DataFrame(list_df)
 
-bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Reading_Level'})
+bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Sentiment'})
 bm["Origin"] = pd.Series(["Benchmark" for i in range(0,len(bm))])
 
 bm = bm.drop(4, axis=0)
@@ -291,7 +292,7 @@ bm = bm.drop(5, axis=0)
 bm_temp = pd.DataFrame()
 bm_temp["Origin"] = bm["Origin"]
 bm_temp["Web_Link"] = bm["Web_Link"]
-bm_temp["Reading_Level"] = bm["Reading_Level"]
+bm_temp["Sentiment"] = bm["sp"]
 bm = copy.copy(bm_temp)
 
 bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
@@ -305,10 +306,10 @@ and some very cryptic and unreadable texts too.
 
 st.write(bm_temp, unsafe_allow_html=True)
 
-x1 = bm['Reading_Level']
-x2 = df1['Reading_Level']
+x1 = bm['Sentiment']
+x2 = df1['Sentiment']
 
-x3 = df0['Reading_Level']
+x3 = df0['Sentiment']
 
 
 rt=list(bm['Web_Link'])
@@ -329,7 +330,39 @@ fig.update_layout(title_text='Benchmarks versus scraped Author')
 fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
+import random
+def display_closestwords_tsnescatterplot(model, size):
 
+    word = random.choice(sci_corpus)
+    arr = np.empty((0,size), dtype='f')
+    word_labels = [word]
+    close_words = model.similar_by_word(word)
+    arr = np.append(arr, np.array([model[word]]), axis=0)
+    for wrd_score in close_words:
+        wrd_vector = model[wrd_score[0]]
+        word_labels.append(wrd_score[0])
+        arr = np.append(arr, np.array([wrd_vector]), axis=0)
+    fig = plt.figure()
+    from sklearn.manifold import TSNE
+
+    tsne = TSNE(n_components=2, random_state=0)
+    np.set_printoptions(suppress=True)
+    Y = tsne.fit_transform(arr)
+    x_coords = Y[:, 0]
+    y_coords = Y[:, 1]
+    plt.scatter(x_coords, y_coords)
+    for label, x, y in zip(word_labels, x_coords, y_coords):
+        plt.annotate(label, xy=(x, y), xytext=(0, 0), textcoords='offset points')
+    plt.xlim(x_coords.min()+0.00005, x_coords.max()+0.00005)
+    plt.ylim(y_coords.min()+0.00005, y_coords.max()+0.00005)
+    plt.show()
+    
+    #plt.imshow(wordcloud, interpolation='bilinear')
+    #plt.axis("off")
+    st.pyplot()
+from gensim.models import Word2Vec
+model = Word2Vec(sci_corpus, min_count=1,size= 50,workers=3, window =3, sg = 1)
+display_closestwords_tsnescatterplot(model, 10)
 #ARTCORPUS = pickle.load(open('traingDats.p','rb'))
 #acorpus = ''
 #for t in ARTCORPUS:
