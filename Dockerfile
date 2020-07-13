@@ -126,29 +126,11 @@ ENV LANG=C.UTF-8
 USER $NBUSER
 EXPOSE 8080
 WORKDIR $HOME
-RUN sudo rm -r .streamlit  
-RUN sudo mkdir -p .streamlit  
-RUN sudo bash -c 'touch ~/.streamlit/credentials.toml'
-RUN sudo bash -c 'echo -e "\
-[general]\n\
-email = \pg@gmail\n\
-[browser]\n\
-gatherUsageStats = false\n\
-" > ~/.streamlit/credentials.toml'
-RUN sudo bash -c 'echo -e "\
-[server]\n\
-enableCORS = false\n\
-" > ~/.streamlit/config.toml'
-
 USER jovyan
 EXPOSE 8501
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 WORKDIR $HOME
-RUN sudo mkdir -p .streamlit  
-#RUN sudo bash -c 'touch ~/.streamlit/credentials.toml'
-
-
 CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
 RUN python -c "import streamlit"
 RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
@@ -156,23 +138,4 @@ RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
 RUN python3 -c "import streamlit"
 RUN python3 -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
 RUN python3 -c "import nltk; nltk.download('averaged_perceptron_tagger')"
-
-
-RUN sudo bash -c 'echo -e "\
-[server]\n\
-enableCORS = false\n\
-" > ~/.streamlit/config.toml'
-RUN sudo chown -R jovyan $HOME 
-RUN sudo mkdir -p /root/.streamlit
-RUN sudo bash -c 'echo -e "\
-[general]\n\
-email = \"pam_mcg@gmail.com\"n\
-" > /root/.streamlit/credentials.toml'
-RUN sudo bash -c 'echo -e "\
-[general]\n\
-email = \"pam_mcg@gmail.com\"n\
-" > ~/.streamlit/credentials.toml'
-
-RUN cat ~/.streamlit/credentials.toml
-
 
