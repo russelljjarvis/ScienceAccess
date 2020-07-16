@@ -15,23 +15,20 @@ import nltk
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 
-
-import streamlit as st
-
-
 trainingDats = pickle.load(open('data/trainingDats.p','rb'))
-bio_chem = [ t['standard'] for t in trainingDats ]
+bio_chem = [ t['sp'] for t in trainingDats ]
+
 biochem_labels =  [ x['file_name'] for x in trainingDats if 'file_name' in x.keys()]
 biochem_labels = [x.split("/")[-1] for x in biochem_labels ]
 
 lods = []
 for i,j,k in zip(bio_chem,[str('Comparison Data') for i in range(0,len(bio_chem))],biochem_labels):
-     lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+     lods.append({'Sentiment polarity':i,'Origin':j,'Web_Link':k})
 df0 = pd.DataFrame(lods)
 
 theme = px.colors.diverging.Portland
 colors = [theme[0], theme[1]]
-st.title('Search Reading Difficulty of Academic')
+st.title('Search Sentiment Polarity of Academic')
 author_name = st.text_input('Enter Author:')
 def make_clickable(link):
     # target _blank to open new window
@@ -39,10 +36,11 @@ def make_clickable(link):
     text = link#.split('=')[1]
     return f'<a target="_blank" href="{link}">{text}</a>'
 
-if 'DYNO' in os.environ:
-    heroku = True
-else:
-    heroku = False
+#if 'DYNO' in os.environ:
+heroku = True
+#else:
+#    heroku = False
+st.text(str('heroku')+str(heroku))
 with open('data/_author_specificSayali Phatak.p','rb') as f: 
     contents = pickle.load(f)   
 (NAME,ar,df,datay,scholar_link) =  contents     
@@ -51,9 +49,9 @@ cached_author_name = "Sayali Phatak"
 if author_name:
     ar = call_from_front_end(author_name)
     # remove false outliers.
-    ar = [ t for t in ar if t['standard']<45 ]
+    ar = [ t for t in ar if t['sp']<45 ]
 
-    standard_sci = [ t['standard'] for t in ar ]
+    standard_sci = [ t['sp'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     scraped_labels = [ str(x['link']) for x in ar]
 
@@ -65,15 +63,12 @@ if author_name:
     df = pd.concat([df1,df0])
     if not heroku:
 
-
-        bin_width= 22
-        nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
         fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                         marginal="box",
                         opacity=0.7,# marginal='violin',# or violin, rug
                         hover_data=df.columns,
                         hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors, nbins=nbins)
+                        color_discrete_sequence=colors)
 
         fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
                 
@@ -95,7 +90,7 @@ if author_name:
             group_labels = ['Comparison Data ', str(cached_author_name)]
         colors = [theme[-1], theme[-2]]
         rt=list(pd.Series(scraped_labels))
-        fig = ff.create_distplot([x1, x2], group_labels, bin_size=10,colors=colors,rug_text=rt)
+        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
         hover_trace = [t for t in fig['data'] if 'text' in t]
         fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
         fig.update_layout(width=900, height=600)#, hovermode='x')
@@ -112,7 +107,7 @@ else:
 
 
     (ar, trainingDats) = ar_manipulation(ar)
-    standard_sci = [ t['standard'] for t in ar ]
+    standard_sci = [ t['sp'] for t in ar ]
 
     scraped_labels = [ str(x['link']) for x in ar]
     group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
@@ -259,6 +254,7 @@ You can eye ball them to see if they fit your intuition about what your searched
 try:
     art_cloud(sci_corpus)
 except:
+
     pass
 if not heroku:
     df_links = pd.DataFrame()
@@ -334,11 +330,30 @@ fig.update_layout(title_text='Benchmarks versus scraped Author')
 fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
-"""
-[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
-[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
-"""
 
+model = Word2Vec(sci_corpus, min_count=1,size= 50,workers=3, window =3, sg = 1)
+def display_closestwords_tsnescatterplot(model, word, size):
+
+    arr = np.empty((0,size), dtype='f')
+    word_labels = [word]
+    close_words = model.similar_by_word(word)
+    arr = np.append(arr, np.array([model[word]]), axis=0)
+    for wrd_score in close_words:
+        wrd_vector = model[wrd_score[0]]
+        word_labels.append(wrd_score[0])
+        arr = np.append(arr, np.array([wrd_vector]), axis=0)
+        
+    tsne = TSNE(n_components=2, random_state=0)
+    np.set_printoptions(suppress=True)
+    Y = tsne.fit_transform(arr)
+    x_coords = Y[:, 0]
+    y_coords = Y[:, 1]
+    plt.scatter(x_coords, y_coords)
+    for label, x, y in zip(word_labels, x_coords, y_coords):
+        plt.annotate(label, xy=(x, y), xytext=(0, 0), textcoords='offset points')
+        plt.xlim(x_coords.min()+0.00005, x_coords.max()+0.00005)
+        plt.ylim(y_coords.min()+0.00005, y_coords.max()+0.00005)
+        plt.show()
 
 #ARTCORPUS = pickle.load(open('traingDats.p','rb'))
 #acorpus = ''
