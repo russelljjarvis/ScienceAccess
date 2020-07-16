@@ -11,6 +11,9 @@ import plotly.express as px
 import copy
 import nltk
 
+import streamlit as st
+
+
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
