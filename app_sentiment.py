@@ -334,25 +334,29 @@ fig.update_layout(title_text='Benchmarks versus scraped Author')
 fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
+from sklearn.manifold import TSNE
+
 def display_closestwords_tsnescatterplot(model, size, word):
 
     arr = np.empty((0,size), dtype='f')
     word_labels = [word]
     close_words = model.similar_by_word(word)
+    st.write(close_words)
     arr = np.append(arr, np.array([model[word]]), axis=0)
     for wrd_score in close_words:
         wrd_vector = model[wrd_score[0]]
         word_labels.append(wrd_score[0])
         arr = np.append(arr, np.array([wrd_vector]), axis=0)
     fig = plt.figure()
-    from sklearn.manifold import TSNE
 
     tsne = TSNE(n_components=2, random_state=0)
-    np.set_printoptions(suppress=True)
+    #np.set_printoptions(suppress=True)
     Y = tsne.fit_transform(arr)
     x_coords = Y[:, 0]
     y_coords = Y[:, 1]
     plt.scatter(x_coords, y_coords)
+    st.write(word_labels)
+
     for label, x, y in zip(word_labels, x_coords, y_coords):
         plt.annotate(label, xy=(x, y), xytext=(0, 0), textcoords='offset points')
     plt.xlim(x_coords.min()+0.00005, x_coords.max()+0.00005)
@@ -377,10 +381,9 @@ tokens = [ word for word in tokens if not word in stop_words]
 tokens = [ w.lower() for w in tokens ] #make everything lower case
 
 word = random.choice(tokens)
-while len(word)<6:
+while len(word)<7:
     word = random.choice(tokens)
-st.write('a randomly selected word from the mined science',word)
-st.write(type(tokens))
+st.write('a randomly selected word from the mined science: ',word)
 try:
     from gensim.models import Word2Vec
 
@@ -388,7 +391,6 @@ except:
     st.write('install gensim')
 
 try:    
-    st.write('computing word to vec model')
 
     model = Word2Vec(tokens, min_count=1,size= 50,workers=3, window =3, sg = 1)
     st.write('computing word to vec model')
