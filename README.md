@@ -31,6 +31,13 @@ sudo [output] setup.py install
 streamlit run app.py
 ```
 
+The Docker way:
+```
+docker build -t streams .
+docker run -p 8501:8501 -v ~/.streamlit:/home/jovyan/.streamlit streams
+localhost:8501
+```
+
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
 # Overview

@@ -67,6 +67,7 @@ if author_name:
 
 
         bin_width= 22
+        import math
         nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
         fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                         marginal="box",

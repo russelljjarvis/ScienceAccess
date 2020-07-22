@@ -12,7 +12,6 @@ import os
 import pycld2 as cld2
 import lzma
 
-
 def isPassive(sentence):
     # https://github.com/flycrane01/nltk-passive-voice-detector-for-English/blob/master/Passive-voice.py
     beforms = ['am', 'is', 'are', 'been', 'was', 'were', 'be', 'being']               # all forms of "be"
