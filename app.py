@@ -11,12 +11,13 @@ import plotly.express as px
 import copy
 import nltk
 
+import streamlit as st
+import math
+
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 
-
-import streamlit as st
 
 
 trainingDats = pickle.load(open('data/trainingDats.p','rb'))
@@ -39,10 +40,7 @@ def make_clickable(link):
     text = link#.split('=')[1]
     return f'<a target="_blank" href="{link}">{text}</a>'
 
-if 'DYNO' in os.environ:
-    heroku = True
-else:
-    heroku = False
+USE_OA_DOI = False
 with open('data/_author_specificSayali Phatak.p','rb') as f: 
     contents = pickle.load(f)   
 (NAME,ar,df,datay,scholar_link) =  contents     
@@ -63,11 +61,10 @@ if author_name:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
-    if not heroku:
+    if not USE_OA_DOI:
 
 
         bin_width= 22
-        import math
         nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
         fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                         marginal="box",
@@ -122,7 +119,7 @@ else:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
-    if not heroku:
+    if not USE_OA_DOI:
 
         fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
                         marginal="box",
@@ -166,16 +163,16 @@ if cached:
 
     '''
 
-    ### Total number {0} scraped documents:
+    ### Total number of {0} scraped documents:
 
-    '''.format('previously')
+    '''.format(len(ar))
     st.text(len(ar))
 else:
     '''
 
-    ### Total number {0} scraped documents:
+    ### Total number of previously {0} scraped documents:
 
-    '''.format('previously')
+    '''.format(len(ar))
     st.text(len(ar))
 if np.mean(standard_sci) < np.mean(bio_chem):
     '''
@@ -196,7 +193,9 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
 
 sci_corpus = ''
 
-black_list = ['et', 'al','text','crossref','cross', 'ref','google','scholar', 'article','pubmed','full']
+black_list = ['et', 'al','text','crossref',
+              'cross', 'ref','google','scholar',
+              'article','pubmed','full']
 
 for t in ar:
     if 'tokens' in t.keys():
@@ -261,7 +260,7 @@ try:
     art_cloud(sci_corpus)
 except:
     pass
-if not heroku:
+if not USE_OA_DOI:
     df_links = pd.DataFrame()
     df_links['Web_Link'] = pd.Series(scraped_labels)
     df_links['Reading_Level'] = pd.Series(standard_sci)
