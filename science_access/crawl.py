@@ -44,6 +44,20 @@ CWD = os.getcwd()
 from io import StringIO
 import io
 
+USE_OA_DOI = False # if true don't use google scholar use
+# crossref over OA_DOI
+
+
+if not USE_OA_DOI:
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.common.exceptions import NoSuchElementException
+import os
+from selenium import webdriver
+
+from time import sleep
+import numpy as np
 
 rsrcmgr = PDFResourceManager()
 retstr = StringIO()
@@ -125,75 +139,16 @@ def collect_hosted_files(url):
 
     return links
 
-if 'DYNO' in os.environ:
-    heroku = True
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-else:
-    heroku = False
-from selenium.common.exceptions import NoSuchElementException
-import os
-from selenium import webdriver
-
 def get_driver():
-    if 'DYNO' in os.environ:
-        heroku = True
-    else:
-        heroku = False
+
     from selenium.webdriver.firefox.options import Options
 
     options = Options()
     options.add_argument("--headless")
-    #options.add_argument("--disable-dev-shm-usage")
-    #options.add_argument("--no-sandbox")
-    #if 'CIRCLE_BRANCH' in os.environ:
-    #try:
-    driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
-    print(driver)
-    #except:
-    #    options.binary_location = str(os.getcwd())+str('/../install/firefox/firefox')
-    #    GECKODRIVER_PATH=str(os.getcwd())+str("/../install/geckodriver")
-    #    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-    '''
-    try:
-        if not os.path.exists("/usr/local/bin"):
-            driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
-            
-        else:
-            GECKODRIVER_PATH=str("/usr/local/bin")+str("/geckodriver")
-            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
 
-    except:
-        try:
-            options.binary_location = "/app/vendor/firefox/firefox"
-            #driver = webdriver.Firefox(options=options)
-            GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-        except:
-            try:
-                chrome_options = webdriver.ChromeOptions()
-                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-                chrome_options.add_argument("--headless")
-                chrome_options.add_argument("--disable-dev-shm-usage")
-                chrome_options.add_argument("--no-sandbox")
-                driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-            except:
-                try:
-                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-                    options.binary_location = str('./firefox')
-                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-                except:
-                    os.system("wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
-                    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
-                    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
-                    os.system("tar xvf firefox-45.0.2.tar.bz2")
-                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-                    options.binary_location = str('./firefox')
-                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-    '''
+    driver = webdriver.Firefox(options=options)#,executable_path=GECKODRIVER_PATH)
     return driver
-from time import sleep
-import numpy as np
+
 
 
 def collect_pubs(url):
@@ -203,7 +158,7 @@ def collect_pubs(url):
     # import needs to be inside function  to protect scope.
 
     driver = get_driver()
-    if heroku:
+    if not USE_OA_DOI:
         sleep(np.random.uniform(1,3))
 
         #wait = WebDriverWait(driver, 10)
