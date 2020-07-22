@@ -201,6 +201,7 @@ for t in ar:
             if s not in set(black_list):
                 sci_corpus+=str(' ')+s
 
+import random
 
 def art_cloud(acorpus):
 
@@ -333,10 +334,8 @@ fig.update_layout(title_text='Benchmarks versus scraped Author')
 fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
-import random
-def display_closestwords_tsnescatterplot(model, size):
+def display_closestwords_tsnescatterplot(model, size, word):
 
-    word = random.choice(sci_corpus)
     arr = np.empty((0,size), dtype='f')
     word_labels = [word]
     close_words = model.similar_by_word(word)
@@ -360,12 +359,45 @@ def display_closestwords_tsnescatterplot(model, size):
     plt.ylim(y_coords.min()+0.00005, y_coords.max()+0.00005)
     plt.show()
     
-    #plt.imshow(wordcloud, interpolation='bilinear')
-    #plt.axis("off")
     st.pyplot()
-from gensim.models import Word2Vec
-model = Word2Vec(sci_corpus, min_count=1,size= 50,workers=3, window =3, sg = 1)
-display_closestwords_tsnescatterplot(model, 10)
+
+from nltk import sent_tokenize, word_tokenize
+from nltk.classify import NaiveBayesClassifier
+from nltk.corpus import stopwords
+import re
+
+corpus = sci_corpus.replace("-", " ") #remove characters that nltk can't read
+textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
+tokens = word_tokenize(corpus)
+
+stop_words = stopwords.words('english')
+#We create a list comprehension which only returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
+
+tokens = [ word for word in tokens if not word in stop_words]
+tokens = [ w.lower() for w in tokens ] #make everything lower case
+
+word = random.choice(tokens)
+while len(word)<6:
+    word = random.choice(tokens)
+st.write('a randomly selected word from the mined science',word)
+st.write(type(tokens))
+try:
+    from gensim.models import Word2Vec
+
+except:
+    st.write('install gensim')
+
+try:    
+    st.write('computing word to vec model')
+
+    model = Word2Vec(tokens, min_count=1,size= 50,workers=3, window =3, sg = 1)
+    st.write('computing word to vec model')
+
+    display_closestwords_tsnescatterplot(model, 10, word)
+except:
+    st.write(model)
+    st.write('There was a problem')
+
 #ARTCORPUS = pickle.load(open('traingDats.p','rb'))
 #acorpus = ''
 #for t in ARTCORPUS:

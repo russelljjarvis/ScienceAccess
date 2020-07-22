@@ -21,3 +21,5 @@ tabulate
 chart_studio
 tqdm
 crossref-commons
+gensim
+sklearn
