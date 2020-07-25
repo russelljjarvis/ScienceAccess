@@ -227,7 +227,7 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 '''
-##  t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
+t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
 '''
 st.write(fig)
 #py.iplot(twosample_table, filename='twosample-table')
