@@ -193,9 +193,9 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
 
 sci_corpus = ''
 
-black_list = ['et', 'al','text','crossref',
+black_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
-              'article','pubmed','full']
+              'article','pubmed','full','doi','org','http',]
 
 for t in ar:
     if 'tokens' in t.keys():
@@ -226,11 +226,16 @@ matrix_twosample = [
 ]
 
 fig = ff.create_table(matrix_twosample, index=True)
+
+
+
 '''
 t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
 '''
 st.write(fig)
 #py.iplot(twosample_table, filename='twosample-table')
+
+
 '''
 ### Links to the articles that were used to perform this calculation
 '''
@@ -248,10 +253,7 @@ st.write(df_links, unsafe_allow_html=True)
 
 
 '''
-
-
 ### Word cloud based on the scraped texts
-
 '''
 try:
     art_cloud(sci_corpus)
