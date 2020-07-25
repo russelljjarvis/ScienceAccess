@@ -95,7 +95,7 @@ if author_name:
         rt=list(pd.Series(scraped_labels))
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=10,colors=colors,rug_text=rt)
         hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
+        fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
         fig.update_layout(width=900, height=600)#, hovermode='x')
         '''
     	Displaying stored results until a new author search is performed.
@@ -227,7 +227,7 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 '''
-###  t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
+##  t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
 '''
 st.write(fig)
 #py.iplot(twosample_table, filename='twosample-table')
@@ -277,7 +277,7 @@ if not USE_OA_DOI:
     rt=list(pd.Series(scraped_labels))
     fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
     hover_trace = [t for t in fig['data'] if 'text' in t]
-    fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
+    fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
     fig.update_layout(width=900, height=600)#, hovermode='x')
     st.write(fig)
 
@@ -300,9 +300,8 @@ bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
 bm_temp = bm_temp.to_html(escape=False)
 
 '''
-In the table below there are a range of benchmark texts that are 
-used as a comparison to investigate some very easy to read scientific writing (0)
-and some very cryptic and unreadable texts (3).
+In the table below there are a few established benchmark texts for some very easy to read scientific writing (0)
+and some very cryptic and unreadable texts (3). These established texts are shown relative to the entered author's work
 '''
 
 st.write(bm_temp, unsafe_allow_html=True)
