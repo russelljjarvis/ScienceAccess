@@ -227,8 +227,8 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 '''
-###  t-test to tests whether the entered author's distribution 
- is significantly different from the ART-corpus distribution
+###  t-test to determine whether the entered author's distribution 
+### is significantly different from the ART-corpus distribution
 '''
 st.write(fig)
 #py.iplot(twosample_table, filename='twosample-table')
@@ -251,7 +251,7 @@ st.write(df_links, unsafe_allow_html=True)
 '''
 
 
-### Word clouds based on the scraped texts
+### Word cloud based on the scraped texts
 
 '''
 try:
