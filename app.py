@@ -222,7 +222,7 @@ twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
 
 matrix_twosample = [
     ['', 'Test Statistic', 'p-value'],
-    ['Sample Data', twosample_results[0], twosample_results[1]]
+    ['Result', twosample_results[0], twosample_results[1]]
 ]
 
 fig = ff.create_table(matrix_twosample, index=True)
