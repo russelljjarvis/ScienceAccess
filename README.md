@@ -16,7 +16,7 @@ cd ScienceAccess
 ```
 
 **Requirements**
-Unix/Linux/OSX type OS with BASH 
+This needs a Unix/Linux/OSX type Operating system with BASH. Docker versions of linux on Windows would also work. 
 
 
 **Installation** 
@@ -24,7 +24,9 @@ Unix/Linux/OSX type OS with BASH
 which python3
 ```
 place output from above command in
+```
 sudo [output] setup.py install
+```
 **Run**
 
 ```
@@ -35,7 +37,7 @@ The Docker way:
 ```
 docker build -t streams .
 docker run -p 8501:8501 -v ~/.streamlit:/home/jovyan/.streamlit streams
-localhost:8501
+
 ```
 
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
