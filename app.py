@@ -32,7 +32,7 @@ df0 = pd.DataFrame(lods)
 
 theme = px.colors.diverging.Portland
 colors = [theme[0], theme[1]]
-st.title('Search Reading Difficulty of Academic')
+st.title('Search Reading Difficulty of an Author')
 author_name = st.text_input('Enter Author:')
 def make_clickable(link):
     # target _blank to open new window
@@ -98,7 +98,7 @@ if author_name:
         fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
         fig.update_layout(width=900, height=600)#, hovermode='x')
         '''
-    	Displaying stored results until a new author search is entered.
+    	Displaying stored results until a new author search is performed.
     	'''
         st.write(fig) 
 
@@ -130,7 +130,7 @@ else:
 
         fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
         '''
-    	Displaying stored results until a new author search is entered.
+    	Displaying stored results until a new author search is performed.
     	'''
         st.write(fig)
 
@@ -155,7 +155,7 @@ else:
         fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
         fig.update_layout(width=900, height=600)#, hovermode='x')
         '''
-    	Displaying stored results until a new author search is entered.
+    	Displaying stored results until a new author search is performed.
     	'''
         st.write(fig) 
 
@@ -178,16 +178,16 @@ if np.mean(standard_sci) < np.mean(bio_chem):
     '''
 
 
-    ### This author was on average easier to read as the average of ARTCORPUS:
-    A varied collection of biochemistry science papers
+    ### This author was on average easier to read relative to ARTCORPUS.
+    
     '''
 
 if np.mean(standard_sci) >= np.mean(bio_chem):
     '''
 
 
-    ### This author was on average harder or just as hard to read as average of ARTCORPUS:
-    A varied collection of biochemistry science papers
+    ### This author was on average more difficult to read relative to ARTCORPUS.
+    
     '''
 
 
@@ -227,15 +227,13 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 '''
-###  A t-test 
- it checks if the authors distribution 
+###  t-test to tests whether the entered author's distribution 
  is significantly different from the ART-corpus distribution
 '''
 st.write(fig)
 #py.iplot(twosample_table, filename='twosample-table')
 '''
-### Links 
-to the articles that were used to perform this calculation
+### Links to the articles that were used to perform this calculation
 '''
 
 df_links = pd.DataFrame()
@@ -253,8 +251,8 @@ st.write(df_links, unsafe_allow_html=True)
 '''
 
 
-### Here are some word clouds, that show the frequency of scraped texts
-You can eye ball them to see if they fit your intuition about what your searched author writes about
+### Word clouds based on the scraped texts
+
 '''
 try:
     art_cloud(sci_corpus)
@@ -303,9 +301,9 @@ bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
 bm_temp = bm_temp.to_html(escape=False)
 
 '''
-In the table below there are benchmarks texts that are 
-used as a comparison to investigate some very easy to read scientific writing.
-and some very cryptic and unreadable texts too.
+In the table below there are a range of benchmark texts that are 
+used as a comparison to investigate some very easy to read scientific writing (0)
+and some very cryptic and unreadable texts (3).
 '''
 
 st.write(bm_temp, unsafe_allow_html=True)
