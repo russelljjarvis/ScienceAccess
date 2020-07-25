@@ -9,7 +9,7 @@ import numpy as np
 import plotly.figure_factory as ff
 import plotly.express as px
 import copy
-import nltk
+#import nltk
 
 import streamlit as st
 import math
@@ -85,8 +85,8 @@ if author_name:
         df_links = df_links.to_html(escape=False)
         st.write(df_links, unsafe_allow_html=True)
 
-        x1 = df0['Reading_Level']#np.random.randn(200)
-        x2 = df1['Reading_Level']#np.random.randn(200) + 2
+        x1 = df0['Reading_Level']
+        x2 = df1['Reading_Level']
         if author_name:
             group_labels = ['Comparison Data ', str(author_name)]
         else:
@@ -96,7 +96,7 @@ if author_name:
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=10,colors=colors,rug_text=rt)
         hover_trace = [t for t in fig['data'] if 'text' in t]
         fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
-        fig.update_layout(width=900, height=600)#, hovermode='x')
+        fig.update_layout(width=900, height=600)
         '''
     	Displaying stored results until a new author search is performed.
     	'''
@@ -215,8 +215,6 @@ def art_cloud(acorpus):
     plt.axis("off")
     st.pyplot()
 
-#DEVELOP = True
-#if DEVELOP:
 import scipy
 twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
 
@@ -230,10 +228,10 @@ fig = ff.create_table(matrix_twosample, index=True)
 
 
 '''
-t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
+t-test to determine whether the entered author's distribution 
+is significantly different from the ART Corpus distribution
 '''
 st.write(fig)
-#py.iplot(twosample_table, filename='twosample-table')
 
 
 '''
@@ -269,8 +267,8 @@ if not USE_OA_DOI:
     df_links = df_links.to_html(escape=False)
     st.write(df_links, unsafe_allow_html=True)
 
-    x1 = df0['Reading_Level']#np.random.randn(200)
-    x2 = df1['Reading_Level']#np.random.randn(200) + 2
+    x1 = df0['Reading_Level']
+    x2 = df1['Reading_Level']
     if author_name:
         group_labels = ['Comparison Data ', str(author_name)]
     else:
@@ -302,8 +300,10 @@ bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
 bm_temp = bm_temp.to_html(escape=False)
 
 '''
-In the table below there are a few established benchmark texts for some very easy to read scientific writing (0)
-and some very cryptic and unreadable texts (3). These established texts are shown relative to the entered author's work
+In the table below there are a few established 
+benchmark texts for some very easy to read scientific writing (0)
+and some very cryptic and unreadable texts (3). 
+These established texts are shown relative to the entered author's work
 '''
 
 st.write(bm_temp, unsafe_allow_html=True)
@@ -333,6 +333,8 @@ fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
 """
+Here are some links where you can read about the readability metrics and the
+algorithms used to compute the metrics.
 [Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
 [Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
 """
