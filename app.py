@@ -33,7 +33,7 @@ df0 = pd.DataFrame(lods)
 theme = px.colors.diverging.Portland
 colors = [theme[0], theme[1]]
 st.title('Search Reading Difficulty of an Author')
-author_name = st.text_input('Enter Author:')
+author_name = st.text_input('Enter Author Name:')
 def make_clickable(link):
     # target _blank to open new window
     # extract clickable text to display for your link
@@ -152,7 +152,7 @@ else:
         rt=list(pd.Series(scraped_labels))
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
         hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
+        fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
         fig.update_layout(width=900, height=600)#, hovermode='x')
         '''
     	Displaying stored results until a new author search is performed.
@@ -178,7 +178,7 @@ if np.mean(standard_sci) < np.mean(bio_chem):
     '''
 
 
-    ### This author was on average easier to read relative to ARTCORPUS.
+    ### This author was on average easier to read relative to ART Corpus.
     
     '''
 
@@ -186,7 +186,7 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
     '''
 
 
-    ### This author was on average more difficult to read relative to ARTCORPUS.
+    ### This author was on average more difficult to read relative to ART Corpus.
     
     '''
 
@@ -227,8 +227,7 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 '''
-###  t-test to determine whether the entered author's distribution 
-### is significantly different from the ART-corpus distribution
+###  t-test to determine whether the entered author's distribution is significantly different from the ART Corpus distribution
 '''
 st.write(fig)
 #py.iplot(twosample_table, filename='twosample-table')
