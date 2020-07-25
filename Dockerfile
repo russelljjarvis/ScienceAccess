@@ -92,7 +92,7 @@ COPY . .
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 RUN pip install nltk
-RUN python -c "import streamlit"
+#RUN python -c "import streamlit"
 RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
 RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
 
@@ -109,7 +109,7 @@ driver = webdriver.Firefox(options=options) ;\
 driver.get('http://google.com/') ;\
 print('Headless Firefox Initialized') ;\
 driver.quit();"
-
+RUN python - c "evidence gecko can work"
 #RUN python unit_test/scrape_test.py
 WORKDIR $HOME
 #RUN sudo mkdir .streamlit
