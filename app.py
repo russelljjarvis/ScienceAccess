@@ -84,6 +84,7 @@ if author_name:
                         hover_data=df.columns,
                         hover_name=df["Web_Link"],
                         color_discrete_sequence=colors, 
+                        histfunc='count',
                         nbins=nbins)
 
         fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
@@ -151,7 +152,9 @@ else:
                         opacity=0.7,
                         hover_data=df.columns,
                         hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors,nbins=nbins)
+                        histfunc='count',
+                        color_discrete_sequence=colors,
+                        nbins=nbins)
 
         fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
         '''
@@ -224,15 +227,26 @@ sci_corpus = ''
 
 black_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
-              'article','pubmed','full','doi','org','http']
+              'article','pubmed','full','doi','org','http','copyright', 'org','figure','pubmed']
 
+  
 for t in ar:
     if 'tokens' in t.keys():
         for s in t['tokens']:
+            if "." in s:
+                temp = s.split(".")#, " ")
+                sci_corpus+=str(' ')+temp[0]
+                sci_corpus+=str(' ')+temp[1]
             if s not in set(black_list):
                 sci_corpus+=str(' ')+s
 
 import scipy
+from word_cloud_by_word_len import generate_from_lengths
+from types import MethodType
+
+#from nltk import word_tokenize
+#import re
+#from nltk.corpus import stopwords
 
 def art_cloud(acorpus):
 
@@ -242,13 +256,24 @@ def art_cloud(acorpus):
     ## An interactive but terrible word cloud
     # fig = plotly_wordcloud(acorpus,max_words=20)
     # st.write(fig)
-
+    wc = WordCloud()
+    wc.generate_from_lengths = MethodType(generate_from_lengths,wc)
     fig = plt.figure()
-    wordcloud = WordCloud().generate(acorpus)
-
+    wordcloud = wc.generate(acorpus)
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    st.pyplot()
+    temp = []#ar[0]['tokens']
+    for block in ar:
+        temp.extend(block['tokens'])
+    wordcloud = wc.generate_from_lengths(temp)
     #wc = WordCloud().generate_from_frequencies(frequencies=di)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
+    '''
+    ### A second word cloud where word length controls word size, not word frequency in text
+    '''
+
     st.pyplot()
 
 
@@ -304,10 +329,8 @@ st.markdown('')
 '''
 ### Word cloud based on the scraped texts
 '''
-try:
-    art_cloud(sci_corpus)
-except:
-    pass
+art_cloud(sci_corpus)
+
 if not USE_OA_DOI:
     #df_links = pd.DataFrame()
     #df_links['Web_Link'] = pd.Series(scraped_labels)
