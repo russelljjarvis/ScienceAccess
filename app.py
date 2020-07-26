@@ -166,14 +166,14 @@ if cached:
     ### Total number of {0} scraped documents:
 
     '''.format(len(ar))
-    st.text(len(ar))
+
 else:
     '''
 
     ### Total number of previously {0} scraped documents:
 
     '''.format(len(ar))
-    st.text(len(ar))
+
 if np.mean(standard_sci) < np.mean(bio_chem):
     '''
 
