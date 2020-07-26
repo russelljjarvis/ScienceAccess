@@ -34,6 +34,9 @@ theme = px.colors.diverging.Portland
 colors = [theme[0], theme[1]]
 st.title('Search Reading Difficulty of an Author')
 author_name = st.text_input('Enter Author Name:')
+#st.title('Optionally add number of documents to use')
+#ndocs = st.text_input('Enter Number of documents:, default 8')
+
 def make_clickable(link):
     # target _blank to open new window
     # extract clickable text to display for your link
@@ -45,7 +48,7 @@ with open('data/_author_specificSayali Phatak.p','rb') as f:
     contents = pickle.load(f)   
 (NAME,ar,df,datay,scholar_link) =  contents     
 cached_author_name = "Sayali Phatak"
-
+nbins = 30
 if author_name:
     ar = call_from_front_end(author_name)
     # remove false outliers.
@@ -54,6 +57,9 @@ if author_name:
     standard_sci = [ t['standard'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     scraped_labels = [ str(x['link']) for x in ar]
+    # find duplicates and remove them.
+    #set(scraped_labels)
+
 
 
     lods = []
@@ -61,17 +67,24 @@ if author_name:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
+
+    df.drop_duplicates(subset ="Web_Link", 
+                     keep = False, inplace = True)
     if not USE_OA_DOI:
 
 
-        bin_width= 22
-        nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
+        # bin_width= 3
+        # nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
+        #nbins = 15
+        st.text('number of bins debug: '+str(nbins))
+
         fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                         marginal="box",
                         opacity=0.7,# marginal='violin',# or violin, rug
                         hover_data=df.columns,
                         hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors, nbins=nbins)
+                        color_discrete_sequence=colors, 
+                        nbins=nbins)
 
         fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
                 
@@ -83,6 +96,10 @@ if author_name:
         df_links['Reading_Level'] = pd.Series(standard_sci)
         df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
         df_links = df_links.to_html(escape=False)
+
+        df_links.drop_duplicates(subset ="Web_Link", 
+                        keep = False, inplace = True)
+
         st.write(df_links, unsafe_allow_html=True)
 
         x1 = df0['Reading_Level']
@@ -92,7 +109,7 @@ if author_name:
         else:
             group_labels = ['Comparison Data ', str(cached_author_name)]
         colors = [theme[-1], theme[-2]]
-        rt=list(pd.Series(scraped_labels))
+        rt = list(pd.Series(scraped_labels))
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=10,colors=colors,rug_text=rt)
         hover_trace = [t for t in fig['data'] if 'text' in t]
         fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
@@ -119,14 +136,22 @@ else:
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
     df = pd.concat([df1,df0])
+
+    df.drop_duplicates(subset ="Web_Link", 
+                     keep = False, inplace = True)
     if not USE_OA_DOI:
+
+        #bin_width= 5
+        #nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
+        
+        st.text('number of bins debug: '+str(nbins))
 
         fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
                         marginal="box",
                         opacity=0.7,
                         hover_data=df.columns,
                         hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors)
+                        color_discrete_sequence=colors,nbins=nbins)
 
         fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
         '''
@@ -139,11 +164,15 @@ else:
         df_links['Web_Link'] = pd.Series(scraped_labels)
         df_links['Reading_Level'] = pd.Series(standard_sci)
         df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+
+        df_links.drop_duplicates(subset ="Web_Link", 
+                        keep = False, inplace = True)
         df_links = df_links.to_html(escape=False)
+
         st.write(df_links, unsafe_allow_html=True)
 
-        x1 = df0['Reading_Level']#np.random.randn(200)
-        x2 = df1['Reading_Level']#np.random.randn(200) + 2
+        x1 = df0['Reading_Level']
+        x2 = df1['Reading_Level']
         if author_name:
             group_labels = ['Comparison Data ', str(author_name)]
         else:
@@ -195,7 +224,7 @@ sci_corpus = ''
 
 black_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
-              'article','pubmed','full','doi','org','http',]
+              'article','pubmed','full','doi','org','http']
 
 for t in ar:
     if 'tokens' in t.keys():
@@ -203,19 +232,26 @@ for t in ar:
             if s not in set(black_list):
                 sci_corpus+=str(' ')+s
 
+import scipy
 
 def art_cloud(acorpus):
 
     # Generate a word cloud image
+    # from plotly_wordcloud import plotly_wordcloud
 
-    wordcloud = WordCloud().generate(acorpus)
+    ## An interactive but terrible word cloud
+    # fig = plotly_wordcloud(acorpus,max_words=20)
+    # st.write(fig)
+
     fig = plt.figure()
+    wordcloud = WordCloud().generate(acorpus)
 
+    #wc = WordCloud().generate_from_frequencies(frequencies=di)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     st.pyplot()
 
-import scipy
+
 twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
 
 matrix_twosample = [
@@ -249,6 +285,9 @@ st.markdown('')
 df_links = pd.DataFrame()
 df_links['Web_Link'] = pd.Series(scraped_labels)
 df_links['Reading_Level'] = pd.Series(standard_sci)
+
+df_links.drop_duplicates(subset ="Web_Link", 
+                keep = False, inplace = True)
 #st.write(df)
 # link is the column with hyperlinks
 df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
@@ -347,12 +386,7 @@ st.write(fig)
 
 """
 Here are some links where you can read about the readability metrics and the
-algorithms used to compute the metrics: 
-"""
-"""
-[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
-"""
-"""
+algorithms used to compute the metrics:  [Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability) 
 [Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
 """
 
