@@ -22,7 +22,7 @@ import collections
 
 import numpy as np
 import pandas as pd
-from nltk import pos_tag, sent_tokenize, word_tokenize
+from nltk import word_tokenize
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import cmudict, stopwords, subjectivity
 from nltk.probability import FreqDist
@@ -132,13 +132,20 @@ DEBUG = False
 #from numba import jit
 
 # word limit smaller than 1000 gets product/merchandise sites.
-def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
+black_list = ['et', 'al','text','crossref','isigoogle',
+              'cross', 'ref','google','scholar',
+              'article','pubmed','full','doi','org','http',
+              'copyright', 'org','figure','pubmed','accessshoping']
 
+def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
+    # TODO do set
+    # operation on black list and corpus. 
+    # find 
     #remove unreadable characters
     if type(corpus) is str and str('privacy policy') not in corpus:
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
-        corpus = acorpus.replace("/", " ") #remove characters that nltk can't read
-        corpus = acorpus.replace(".", " ") #remove characters that nltk can't read
+        corpus = corpus.replace("/", " ") #remove characters that nltk can't read
+        corpus = corpus.replace(".", " ") #remove characters that nltk can't read
 
         textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
         tokens = word_tokenize(corpus)

@@ -105,7 +105,7 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     max_len = np.max(sizes)
 
     frequencies =  [(word, word_len / max_len) 
-                    for word,word_len in zip(words,sizes) if word_len <15]
+                    for word,word_len in zip(words,sizes) if word_len <29]
 
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])
