@@ -232,18 +232,20 @@ sci_corpus = ''
 
 black_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
-              'article','pubmed','full','doi','org','http','copyright', 'org','figure','pubmed']
+              'article','pubmed','full','doi','org','http',
+              'copyright', 'org','figure','pubmed']
 
   
 for t in ar:
     if 'tokens' in t.keys():
         for s in t['tokens']:
-            if "." in s:
-                temp = s.split(".")#, " ")
-                sci_corpus+=str(' ')+temp[0]
-                sci_corpus+=str(' ')+temp[1]
-            if s not in set(black_list):
-                sci_corpus+=str(' ')+s
+            if s not in black_list:
+                if "." in s:
+                    temp = s.split(".")#, " ")
+                    sci_corpus+=str(' ')+temp[0]
+                    sci_corpus+=str(' ')+temp[1]
+                if s not in set(black_list):
+                    sci_corpus+=str(' ')+s
 
 
 #from nltk import word_tokenize
