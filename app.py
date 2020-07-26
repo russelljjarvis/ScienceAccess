@@ -248,7 +248,7 @@ for t in ar:
                     sci_corpus+=str(' ')+temp[0]
                     sci_corpus+=str(' ')+temp[1]
                 if s not in set(black_list):
-                    sci_corpus+=str(' ')+s
+                    sci_corpus+=str(' ')+s#+str(' ')
 
 bio_corpus = ''
 
@@ -261,7 +261,7 @@ for t in trainingDats:
                     bio_corpus+=str(' ')+temp[0]
                     bio_corpus+=str(' ')+temp[1]
                 if s not in set(black_list):
-                    bio_corpus+=str(' ')+s
+                    bio_corpus+=str(' ')+s#+str(' ')
 def art_cloud(acorpus):
 
     # Generate a word cloud image
@@ -283,8 +283,11 @@ def art_cloud_wl(acorpus):
     wc.generate_from_lengths = MethodType(generate_from_lengths,wc)
 
     fig = plt.figure()
+    from nltk import word_tokenize
 
-    wordcloud = wc.generate_from_lengths(acorpus)
+    tokens = word_tokenize(acorpus)
+
+    wordcloud = wc.generate_from_lengths(tokens)
     #wc = WordCloud().generate_from_frequencies(frequencies=di)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
@@ -316,10 +319,11 @@ is significantly different from the ART Corpus distribution
 st.write(fig)
 
 
-st.markdown('')
-st.markdown('')
-st.markdown('')
-st.markdown('')
+
+st.markdown('\n\n\n\n')
+#st.markdown('')
+#st.markdown('')
+#st.markdown('')
 
 '''
 ### Links to the articles that were used to perform this calculation
@@ -339,10 +343,10 @@ st.write(df_links, unsafe_allow_html=True)
 # Create a list of possible values and multiselect menu with them in it.
 
 
-st.markdown('')
-st.markdown('')
-st.markdown('')
-st.markdown('')
+st.markdown('\n\n\n\n')
+#st.markdown('')
+#st.markdown('')
+#st.markdown('')
 
 '''
 ### Word cloud based on the scraped texts
@@ -433,7 +437,7 @@ Reading science can be exhausting, here are the largest words from the the searc
 temp = []#ar[0]['tokens']
 for block in ar:
     temp.extend(block['tokens'])
-art_cloud_wl(temp)
+#art_cloud_wl(sci_corpus)
 
 """
 Reading science can be exhausting, here are the largest words from the ARTCORPUS
@@ -445,7 +449,7 @@ for block in trainingDats:
     uniqueness.append(block['uniqueness'])
     sentiment.append(block['sp'])
     temp.extend(block['tokens'])
-art_cloud_wl(temp)
+#art_cloud_wl(bio_corpus)
 
 
 st.markdown("""
