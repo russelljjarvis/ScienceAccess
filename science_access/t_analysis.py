@@ -137,6 +137,9 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     #remove unreadable characters
     if type(corpus) is str and str('privacy policy') not in corpus:
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
+        corpus = acorpus.replace("/", " ") #remove characters that nltk can't read
+        corpus = acorpus.replace(".", " ") #remove characters that nltk can't read
+
         textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
         tokens = word_tokenize(corpus)
 
