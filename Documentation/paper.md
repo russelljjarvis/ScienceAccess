@@ -68,11 +68,11 @@ see paper.bib
 
 
 
-removed text:
+removed text concerning competition:
 
 This tool also introduces one additional feature for readability comparison and improvement. It allows the entry of two author names to enable a competition as to whose text has the lowest average readability score. Public competitions can often incentivize good practices, and this may be a fun and interactive tool to help improve readability scores over time.
 
-## Competition Output
+Competition Output
 The three-author competition plot displays two distributions which display the readability distribution of only the author's written work, as scraped and analyzed from Google Scholar. Vertical lines are used to plot the mean readability value for each author. Anonymous authors A and B, are co-authors that publish in the same field, thus their readability scores should be closely matched, as their score will be derived from some mutual documents. Anonymous author C, publishes in an unrelated field and does not co-author with authors A and B.
 
 ![Specific Author Relative to Distribution](figures/tournament.png)
