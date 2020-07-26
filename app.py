@@ -54,6 +54,7 @@ cached_author_name = "Sayali Phatak"
 nbins = 40
 if author_name:
     ar = call_from_front_end(author_name)
+    #ar = set(ar)
     # remove false outliers.
     ar = [ t for t in ar if t['standard']<45 ]
 
@@ -79,7 +80,7 @@ if author_name:
         # bin_width= 3
         # nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
         #nbins = 15
-        st.text('number of bins debug: '+str(nbins))
+        #st.text('number of bins debug: '+str(nbins))
 
         fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                         marginal="box",
@@ -132,6 +133,7 @@ else:
 
 
     (ar, trainingDats) = ar_manipulation(ar)
+    #ar = set(ar)
     standard_sci = [ t['standard'] for t in ar ]
 
     scraped_labels = [ str(x['link']) for x in ar]
@@ -149,7 +151,7 @@ else:
         #bin_width= 5
         #nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
         
-        st.text('number of bins debug: '+str(nbins))
+        #st.text('number of bins debug: '+str(nbins))
 
         fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
                         marginal="box",
@@ -198,18 +200,18 @@ else:
 
 if cached:
 
-    '''
+    st.markdown('''
 
-    ### Total number of {0} scraped documents:
+    ### Total number of {0} scraped documents
 
-    '''.format(len(ar))
+    '''.format(len(ar)))
 
 else:
-    '''
+    st.markdown('''
 
-    ### Total number of previously {0} scraped documents:
+    ### Total number of previously {0} scraped documents
 
-    '''.format(len(ar))
+    '''.format(len(ar)))
 
 if np.mean(standard_sci) < np.mean(bio_chem):
     '''
@@ -230,10 +232,11 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
 
 sci_corpus = ''
 
+# todo, make blacklist importable and same as in utils.
 black_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
-              'copyright', 'org','figure','pubmed']
+              'copyright', 'org','figure','pubmed','accessshoping']
 
   
 for t in ar:
@@ -247,11 +250,18 @@ for t in ar:
                 if s not in set(black_list):
                     sci_corpus+=str(' ')+s
 
+bio_corpus = ''
 
-#from nltk import word_tokenize
-#import re
-#from nltk.corpus import stopwords
-
+for t in trainingDats:
+    if 'tokens' in t.keys():
+        for s in t['tokens']:
+            if s not in black_list:
+                if "." in s:
+                    temp = s.split(".")#, " ")
+                    bio_corpus+=str(' ')+temp[0]
+                    bio_corpus+=str(' ')+temp[1]
+                if s not in set(black_list):
+                    bio_corpus+=str(' ')+s
 def art_cloud(acorpus):
 
     # Generate a word cloud image
@@ -261,16 +271,20 @@ def art_cloud(acorpus):
     # fig = plotly_wordcloud(acorpus,max_words=20)
     # st.write(fig)
     wc = WordCloud()
-    wc.generate_from_lengths = MethodType(generate_from_lengths,wc)
     fig = plt.figure()
     wordcloud = wc.generate(acorpus)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     st.pyplot()
-    temp = []#ar[0]['tokens']
-    for block in ar:
-        temp.extend(block['tokens'])
-    wordcloud = wc.generate_from_lengths(temp)
+
+
+def art_cloud_wl(acorpus):
+    wc = WordCloud()
+    wc.generate_from_lengths = MethodType(generate_from_lengths,wc)
+
+    fig = plt.figure()
+
+    wordcloud = wc.generate_from_lengths(acorpus)
     #wc = WordCloud().generate_from_frequencies(frequencies=di)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
@@ -290,10 +304,10 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 
-st.markdown('')
-st.markdown('')
-st.markdown('')
-st.markdown('')
+st.markdown('\n\n\n\n')
+#st.markdown('')
+#st.markdown('')
+#st.markdown('')
 
 '''
 t-test to determine whether the entered author's distribution 
@@ -411,13 +425,47 @@ fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
 
+
+
+"""
+Reading science can be exhausting, here are the largest words from the the searched author
+"""
+temp = []#ar[0]['tokens']
+for block in ar:
+    temp.extend(block['tokens'])
+art_cloud_wl(temp)
+
+"""
+Reading science can be exhausting, here are the largest words from the ARTCORPUS
+"""
+temp = []#ar[0]['tokens']
+sentiment=[]
+uniqueness=[]
+for block in trainingDats:
+    uniqueness.append(block['uniqueness'])
+    sentiment.append(block['sp'])
+    temp.extend(block['tokens'])
+art_cloud_wl(temp)
+
+
+st.markdown("""
+# Sentiment:
+It is {0} tht the mean sentiment polarity this author is more upbeat than that of the average ARTCORPUS article:
+""".format(np.mean(sentiment)<np.mean([r['sp'] for r in ar])))
+
+st.markdown("""
+# Uniqueness of words:
+It is {0} that the mean uniqueness/ratio of the words used in the ARTCORPUS, this gives an idea of 
+how boring or alternatively colorful each article was to read
+""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar])))
+
+from science_access.utils import check_passive
+
 """
 Here are some links where you can read about the readability metrics and the
 algorithms used to compute the metrics:  [Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability) 
 [Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
 """
-
-
 #ARTCORPUS = pickle.load(open('traingDats.p','rb'))
 #acorpus = ''
 #for t in ARTCORPUS:
