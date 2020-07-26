@@ -13,10 +13,13 @@ import copy
 
 import streamlit as st
 import math
+import scipy
+from types import MethodType
 
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
+from science_access.word_cloud_by_word_len import generate_from_lengths
 
 
 
@@ -48,7 +51,7 @@ with open('data/_author_specificSayali Phatak.p','rb') as f:
     contents = pickle.load(f)   
 (NAME,ar,df,datay,scholar_link) =  contents     
 cached_author_name = "Sayali Phatak"
-nbins = 30
+nbins = 40
 if author_name:
     ar = call_from_front_end(author_name)
     # remove false outliers.
@@ -85,6 +88,7 @@ if author_name:
                         hover_name=df["Web_Link"],
                         color_discrete_sequence=colors, 
                         histfunc='count',
+                        orientation='v',
                         nbins=nbins)
 
         fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
@@ -154,6 +158,7 @@ else:
                         hover_name=df["Web_Link"],
                         histfunc='count',
                         color_discrete_sequence=colors,
+                        orientation='v',
                         nbins=nbins)
 
         fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
@@ -240,9 +245,6 @@ for t in ar:
             if s not in set(black_list):
                 sci_corpus+=str(' ')+s
 
-import scipy
-from word_cloud_by_word_len import generate_from_lengths
-from types import MethodType
 
 #from nltk import word_tokenize
 #import re
