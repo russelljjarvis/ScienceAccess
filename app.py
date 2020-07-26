@@ -225,7 +225,10 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 
-
+st.markdown('')
+st.markdown('')
+st.markdown('')
+st.markdown('')
 
 '''
 t-test to determine whether the entered author's distribution 
@@ -233,6 +236,11 @@ is significantly different from the ART Corpus distribution
 '''
 st.write(fig)
 
+
+st.markdown('')
+st.markdown('')
+st.markdown('')
+st.markdown('')
 
 '''
 ### Links to the articles that were used to perform this calculation
@@ -249,6 +257,10 @@ st.write(df_links, unsafe_allow_html=True)
 # Create a list of possible values and multiselect menu with them in it.
 
 
+st.markdown('')
+st.markdown('')
+st.markdown('')
+st.markdown('')
 
 '''
 ### Word cloud based on the scraped texts
@@ -258,14 +270,14 @@ try:
 except:
     pass
 if not USE_OA_DOI:
-    df_links = pd.DataFrame()
-    df_links['Web_Link'] = pd.Series(scraped_labels)
-    df_links['Reading_Level'] = pd.Series(standard_sci)
+    #df_links = pd.DataFrame()
+    #df_links['Web_Link'] = pd.Series(scraped_labels)
+    #df_links['Reading_Level'] = pd.Series(standard_sci)
     #st.write(df)
     # link is the column with hyperlinks
-    df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-    df_links = df_links.to_html(escape=False)
-    st.write(df_links, unsafe_allow_html=True)
+    #df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+    #df_links = df_links.to_html(escape=False)
+    #st.write(df_links, unsafe_allow_html=True)
 
     x1 = df0['Reading_Level']
     x2 = df1['Reading_Level']
@@ -332,10 +344,15 @@ fig.update_layout(title_text='Benchmarks versus scraped Author')
 fig.update_layout(width=900, height=600)#, hovermode='x')
 
 st.write(fig)
+
 """
 Here are some links where you can read about the readability metrics and the
-algorithms used to compute the metrics.
+algorithms used to compute the metrics: 
+"""
+"""
 [Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+"""
+"""
 [Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
 """
 
