@@ -146,12 +146,18 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
-
+        corpus = list(set(corpus) - set(black_list))
+        # code from:
+        # https://github.com/russelljjarvis/twitter-dash/blob/master/twitterdash/preprocessing.py
+        corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", corpus)
+        # remove the hashtags and mentions
+        corpus = re.sub(r"#\w+|@\w+", "", corpus)
         textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
         tokens = word_tokenize(corpus)
 
         stop_words = stopwords.words('english')
-        #We create a list comprehension which only returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
+        #We create a list comprehension which only 
+        # returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
 
         tokens = [ word for word in tokens if not word in stop_words]
         tokens = [ w.lower() for w in tokens ] #make everything lower case
@@ -242,7 +248,7 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
 
         return urlDat
 
-from tqdm import tqdm
+#from tqdm import tqdm
 
 def process_dics(urlDats):
     dfs = []
