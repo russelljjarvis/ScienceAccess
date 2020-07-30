@@ -346,6 +346,7 @@ df_links.drop_duplicates(subset ="Web_Link",
 # link is the column with hyperlinks
 df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
 df_links = df_links.to_html(escape=False)
+df_links.index = pd.Series(range(0,len(df_links)))
 st.write(df_links, unsafe_allow_html=True)
 # Create a list of possible values and multiselect menu with them in it.
 

@@ -202,11 +202,13 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # The larger the ratio of unqiue words to repeated words the more colourful the language.
             lexicon = textstat.lexicon_count(corpus, True)
             urlDat['uniqueness'] = len(set(tokens))/float(len(tokens))
+            urlDat['unique_words'] = len(set(tokens))
+
             # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
             # big deltas mean redudancy/sparse information/information/density
 
 
-            urlDat['info_density'] =  comp_ratio(corpus)
+            #urlDat['info_density'] =  comp_ratio(corpus)
 
             #Sentiment and Subjectivity analysis
             testimonial = TextBlob(corpus)
@@ -228,7 +230,7 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # many unique words, and does not yield high compression savings.
             # Good writing should not be obfucstated either. The reading level is a check for obfucstation.
             # The resulting metric is a balance of concision, low obfucstation, expression.
-
+            '''
             wc = float(1.0/urlDat['wcount'])
             # compressed/uncompressed. Smaller is better.
             # as it means writing was low entropy, redundant, and easily compressible.
@@ -247,7 +249,7 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
 
             #computes perplexity of the unigram model on a testset
             urlDat['penalty'] = penalty
-
+            '''
         return urlDat
 
 #from tqdm import tqdm
