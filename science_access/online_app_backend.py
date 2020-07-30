@@ -49,7 +49,7 @@ def filter_empty(the_list):
 
     return [ tl for tl in the_list if 'standard' in tl.keys() ]
 
-from tqdm import tqdm
+from tqdm.auto import tqdm
 import streamlit as st
 
 
@@ -87,7 +87,7 @@ def take_url_from_gui(author_link_scholar_link_list):
             urlDat = process(r)
         except:
             follow_more_links = collect_pubs(r)
-            for r in tqdm(follow_more_links,title='Progess of scraping'):
+            for r in follow_more_links:
                 if heroku:
                     sleep(np.random.uniform(1,3))
                 urlDat = process(r)        

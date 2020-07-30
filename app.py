@@ -20,6 +20,7 @@ from types import MethodType
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 from science_access.word_cloud_by_word_len import generate_from_lengths
+from science_access.utils import check_passive
 
 
 
@@ -470,7 +471,6 @@ It is {0} that the mean uniqueness/ratio of the words used in the ARTCORPUS, thi
 how boring or alternatively colorful each article was to read
 """.format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar])))
 
-from science_access.utils import check_passive
 
 st.markdown(""" # Benchmarks in detail""")
 
