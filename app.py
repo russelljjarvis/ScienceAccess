@@ -238,30 +238,34 @@ black_list = ['et', 'al','text','crossref','isigoogle',
               'article','pubmed','full','doi','org','http',
               'copyright', 'org','figure','pubmed','accessshoping']
 
-  
-for t in ar:
-    if 'tokens' in t.keys():
-        for s in t['tokens']:
-            if s not in black_list:
-                if "." in s:
-                    temp = s.split(".")#, " ")
-                    sci_corpus+=str(' ')+temp[0]
-                    sci_corpus+=str(' ')+temp[1]
-                if s not in set(black_list):
-                    sci_corpus+=str(' ')+s#+str(' ')
 
-bio_corpus = ''
+def create_giant_strings(ar):
+    sci_corpus = ''
+    for t in ar:
+        if 'tokens' in t.keys():
+            for s in t['tokens']:
+                if s not in black_list:
+                    if "." in s:
+                        temp = s.split(".")#, " ")
+                        sci_corpus+=str(' ')+temp[0]
+                        sci_corpus+=str(' ')+temp[1]
+                    if s not in set(black_list):
+                        sci_corpus+=str(' ')+s#+str(' ')
+    return sci_corpus
+sci_corpus = create_giant_strings(ar)
+bio_corpus = create_giant_strings(trainingDats)
 
-for t in trainingDats:
-    if 'tokens' in t.keys():
-        for s in t['tokens']:
-            if s not in black_list:
-                if "." in s:
-                    temp = s.split(".")#, " ")
-                    bio_corpus+=str(' ')+temp[0]
-                    bio_corpus+=str(' ')+temp[1]
-                if s not in set(black_list):
-                    bio_corpus+=str(' ')+s#+str(' ')
+#bio_corpus = ''
+#for t in trainingDats:
+#    if 'tokens' in t.keys():
+#        for s in t['tokens']:
+#            if s not in black_list:
+#                if "." in s:
+#                    temp = s.split(".")#, " ")
+#                    bio_corpus+=str(' ')+temp[0]
+#                    bio_corpus+=str(' ')+temp[1]
+#                if s not in set(black_list):
+#                    bio_corpus+=str(' ')+s#+str(' ')
 def art_cloud(acorpus):
 
     # Generate a word cloud image
@@ -270,12 +274,14 @@ def art_cloud(acorpus):
     ## An interactive but terrible word cloud
     # fig = plotly_wordcloud(acorpus,max_words=20)
     # st.write(fig)
-    wc = WordCloud()
-    fig = plt.figure()
+    wc = WordCloud(background_color="white")
+    fig = plt.figure()#figsize=(60,60))
     wordcloud = wc.generate(acorpus)
     plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-    st.pyplot()
+    image = plt.axis("off")
+    #st.image(image, width = 250)
+
+    st.pyplot()#width = 250)
 
 
 def art_cloud_wl(acorpus):
@@ -343,14 +349,15 @@ st.write(df_links, unsafe_allow_html=True)
 # Create a list of possible values and multiselect menu with them in it.
 
 
-st.markdown('\n\n\n\n')
+st.markdown('\n\n\n\n',unsafe_allow_html=True)
 #st.markdown('')
 #st.markdown('')
 #st.markdown('')
+#with open("style.css") as f:
+#    st.markdown('<style>{0}</style>'.format(str("# Word cloud based on the scraped texts")), unsafe_allow_html=True)
+st.markdown('# Word cloud based on the scraped texts')
+#st.markdown(,unsafe_allow_html=True)
 
-'''
-### Word cloud based on the scraped texts
-'''
 art_cloud(sci_corpus)
 
 if not USE_OA_DOI:
@@ -465,6 +472,22 @@ how boring or alternatively colorful each article was to read
 
 from science_access.utils import check_passive
 
+st.markdown(""" # Benchmarks in detail""")
+
+st.markdown("""
+1.  Upgoer5 - a library using only the 10,000 most commonly occurring English words[2].
+2.  Wikipedia - a free, popular, crowdsourced encyclopedia that is generated from self-nominating volunteers. 
+3.  Postmodern Essay Generator (PMEG) - generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references [5].
+4.  ART Corpus - a library of scientific papers published in The Royal Society of Chemistry (RSC) [1].
+""")    
+st.markdown("""
+| Text Source | Mean Complexity | Unique Words |
+|----------|----------|:-------------:|
+| [Upgoer 5]()                                     | 7                               | 35,103 |
+| Wikipedia                                    | 14.9                         | -  |
+| [Post-Modern Essay Generator]() | 16.5                          | -  |
+| [Art Corpus]()                                 | 18.68                        | 2,594 |
+""",unsafe_allow_html=True) 
 """
 Here are some links where you can read about the readability metrics and the
 algorithms used to compute the metrics:  [Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability) 
