@@ -1,4 +1,4 @@
-title: 'A Tool for Assesing the Readability of Scientific Publications on Mass'
+title: 'A Tool for Assesing the Readability of Scientific Publications'
 
 tags:
   - readability
@@ -28,18 +28,16 @@ To ensure that writing is accessible to the general population, authors must con
 
 In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public.
 
-While readability tools, such as Readable (https://www.webfx.com/tools/read-able/) and Upgoer5 (https://splasho.com/upgoer5/) currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not address complexity in a more academic-type setting.
+While readability tools, such as Readable (https://www.webfx.com/tools/read-able/) and Upgoer5 (https://splasho.com/upgoer5/) currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not focus on complexity in a more academic-type context.
 
 To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies existing text repositories with varying complexity, and subsequently uses this output as a reference to show how the readability of user-selected written work compares to these other known resources.
-
-This tool also introduces one additional feature for readability comparison and improvement. It allows the entry of two author names to enable a competition as to whose text has the lowest average readability score. Public competitions can often incentivize good practices, and this may be a fun and interactive tool to help improve readability scores over time.
 
 Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And with hope, an improved global communication and understanding of complex topics.
 
 # Methods
 
 ### Text Analysis Metrics
-We built a web-scraping and text analysis infrastructure by extending many existing Free and Open Source (FOS) tools, including Google Scrape, Beautiful Soup, and Selenium.
+We built a web-scraping and text analysis infrastructure by extending many existing Free and Open Source (FOS) tools, including Google Scrape, Beautiful Soup, The Natural Language Toolkit, and Selenium.
 
 We first query a number of available text repositories with varying complexity:
 
@@ -59,16 +57,22 @@ The generated plot for contextualized readability information is a histogram bin
 
 The mean readability scores of Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are labeled on the plot as single data points to contextualize the complexity of the ART corpus data with other text repositories of known complexity.
 
-We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language.
+We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language, and another benchmark for the user to see when viewing their own readability score.
 
-Lastly, the mean reading level of the entered author's work is displayed as a boxplot that has is shares an x-axis with the ART-corpus distribution data. The boxplot depicts mean, and the first and third quartiles of the authors specific works. The box plot enables the viewer of the report to get a sense of underlying variance in the specific authors work, relative to variance in the ART-corpus. We also display single data points for the maximum and minimum scores. Thus, the resulting graph displays the mean writing complexity of the entered author against a distribution of ART corpus content as well as these other text repositories of known complexity.
+Lastly, the mean reading level of the entered author's work is displayed as a boxplot along with the ART-corpus distribution data. The boxplot depicts mean, and the first and third quartiles of the authors scraped work. The box plot enables the viewer of the report to get a sense of underlying variance of a particular author's work, relative to that of the ART-corpus. We also display single data points for the maximum and minimum scores. Thus, the resulting graph displays the mean writing complexity of the entered author against a distribution of ART corpus content as well as these other text repositories of known complexity.
 
 ![Specific Author Relative to Distribution](figures/boxplot.png)
 
+# References
+see paper.bib
 
-## Competition Output
+
+
+removed text concerning competition:
+
+This tool also introduces one additional feature for readability comparison and improvement. It allows the entry of two author names to enable a competition as to whose text has the lowest average readability score. Public competitions can often incentivize good practices, and this may be a fun and interactive tool to help improve readability scores over time.
+
+Competition Output
 The three-author competition plot displays two distributions which display the readability distribution of only the author's written work, as scraped and analyzed from Google Scholar. Vertical lines are used to plot the mean readability value for each author. Anonymous authors A and B, are co-authors that publish in the same field, thus their readability scores should be closely matched, as their score will be derived from some mutual documents. Anonymous author C, publishes in an unrelated field and does not co-author with authors A and B.
 
 ![Specific Author Relative to Distribution](figures/tournament.png)
-
-# References
