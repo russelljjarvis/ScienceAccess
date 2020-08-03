@@ -36,7 +36,7 @@ df0 = pd.DataFrame(lods)
 
 theme = px.colors.diverging.Portland
 colors = [theme[0], theme[1]]
-st.title('Search Reading Difficulty of an Author')
+st.title('Search Reading Complexity of an Author')
 author_name = st.text_input('Enter Author Name:')
 #st.title('Optionally add number of documents to use')
 #ndocs = st.text_input('Enter Number of documents:, default 8')
@@ -48,40 +48,33 @@ def make_clickable(link):
     return f'<a target="_blank" href="{link}">{text}</a>'
 
 USE_OA_DOI = False
-with open('data/_author_specificSayali Phatak.p','rb') as f: 
-    contents = pickle.load(f)   
-(NAME,ar,df,datay,scholar_link) =  contents     
+with open('data/_author_specificSayali Phatak.p','rb') as f:
+    contents = pickle.load(f)
+(NAME,ar,df,datay,scholar_link) =  contents
 cached_author_name = "Sayali Phatak"
 nbins = 40
+
 if author_name:
     ar = call_from_front_end(author_name)
-    #ar = set(ar)
     # remove false outliers.
     ar = [ t for t in ar if t['standard']<45 ]
 
     standard_sci = [ t['standard'] for t in ar ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     scraped_labels = [ str(x['link']) for x in ar]
-    # find duplicates and remove them.
-    #set(scraped_labels)
-
 
 
     lods = []
     for i,j,k in zip(standard_sci,[str(author_name) for i in range(0,len(ar))],scraped_labels):
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df1 = pd.DataFrame(lods)
-    df = pd.concat([df1,df0])
+    df1.drop_duplicates(subset = "Web_Link", inplace = True)
 
-    df.drop_duplicates(subset ="Web_Link", 
-                     keep = False, inplace = True)
+    df = pd.concat([df1,df0])
     if not USE_OA_DOI:
 
 
-        # bin_width= 3
-        # nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
-        #nbins = 15
-        #st.text('number of bins debug: '+str(nbins))
+        bin_width= 22
 
         fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
                         marginal="box",
@@ -91,95 +84,22 @@ if author_name:
                         color_discrete_sequence=colors, 
                         histfunc='count',
                         orientation='v',
-                        nbins=nbins)
+                        nbins=nbins
+						)
 
-        fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
-                
+        fig0.update_layout(title_text='Scraped author {0} versus ART Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
+
         st.write(fig0)
         cached = False
     else:
         df_links = pd.DataFrame()
         df_links['Web_Link'] = pd.Series(scraped_labels)
         df_links['Reading_Level'] = pd.Series(standard_sci)
+
+        df_links.drop_duplicates(subset = "Web_Link", inplace = True)
+
         df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
         df_links = df_links.to_html(escape=False)
-
-        df_links.drop_duplicates(subset ="Web_Link", 
-                        keep = False, inplace = True)
-
-        st.write(df_links, unsafe_allow_html=True)
-
-        x1 = df0['Reading_Level']
-        x2 = df1['Reading_Level']
-        if author_name:
-            group_labels = ['Comparison Data ', str(author_name)]
-        else:
-            group_labels = ['Comparison Data ', str(cached_author_name)]
-        colors = [theme[-1], theme[-2]]
-        rt = list(pd.Series(scraped_labels))
-        fig = ff.create_distplot([x1, x2], group_labels, bin_size=10,colors=colors,rug_text=rt)
-        hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
-        fig.update_layout(width=900, height=600)
-        '''
-    	Displaying stored results until a new author search is performed.
-    	'''
-        st.write(fig) 
-
-
-
-
-else:      
-    cached = True
-
-
-    (ar, trainingDats) = ar_manipulation(ar)
-    #ar = set(ar)
-    standard_sci = [ t['standard'] for t in ar ]
-
-    scraped_labels = [ str(x['link']) for x in ar]
-    group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
-    lods = []
-    for i,j,k in zip(standard_sci,[str(cached_author_name) for i in range(0,len(ar))],scraped_labels):
-        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.concat([df1,df0])
-
-    df.drop_duplicates(subset ="Web_Link", 
-                     keep = False, inplace = True)
-    if not USE_OA_DOI:
-
-        #bin_width= 5
-        #nbins = math.ceil((df["Reading_Level"].max() - df["Reading_Level"].min()) / bin_width)
-        
-        #st.text('number of bins debug: '+str(nbins))
-
-        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
-                        marginal="box",
-                        opacity=0.7,
-                        hover_data=df.columns,
-                        hover_name=df["Web_Link"],
-                        histfunc='count',
-                        color_discrete_sequence=colors,
-                        orientation='v',
-                        nbins=nbins)
-
-        fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
-        '''
-    	Displaying stored results until a new author search is performed.
-    	'''
-        st.write(fig)
-
-    else:
-        df_links = pd.DataFrame()
-        df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
-        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-
-        df_links.drop_duplicates(subset ="Web_Link", 
-                        keep = False, inplace = True)
-        df_links = df_links.to_html(escape=False)
-
         st.write(df_links, unsafe_allow_html=True)
 
         x1 = df0['Reading_Level']
@@ -192,44 +112,160 @@ else:
         rt=list(pd.Series(scraped_labels))
         fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
         hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
+        fig.update_layout(title_text='Scraped author versus ART Corpus')
+        fig.update_layout(width=900, height=600)
+        '''
+    	Displaying stored results until a new author search is performed.
+    	'''
+        st.write(fig)
+
+else:
+
+    cached = True
+
+
+    (ar, trainingDats) = ar_manipulation(ar)
+    standard_sci = [ t['standard'] for t in ar ]
+
+    scraped_labels = [ str(x['link']) for x in ar]
+    group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
+    lods = []
+    for i,j,k in zip(standard_sci,[str(cached_author_name) for i in range(0,len(ar))],scraped_labels):
+        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+    df1 = pd.DataFrame(lods)
+    df1.drop_duplicates(subset = "Web_Link", inplace = True)
+
+    df = pd.concat([df1,df0])
+    if not USE_OA_DOI:
+
+        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
+                        marginal="box",
+                        opacity=0.7,
+                        hover_data=df.columns,
+                        hover_name=df["Web_Link"],
+                        color_discrete_sequence=colors,
+                        histfunc='count',
+                        orientation='v',
+                        nbins=nbins)
+
+        fig.update_layout(title_text='Scraped author {0} versus ART Corpus'.format(cached_author_name),width=900, height=600)
+        '''
+    	Displaying stored results until a new author search is performed.
+    	'''
+        st.write(fig)
+
+    else:
+        df_links = pd.DataFrame()
+        df_links['Web_Link'] = pd.Series(scraped_labels)
+        df_links['Reading_Level'] = pd.Series(standard_sci)
+
+        df_links.drop_duplicates(subset = "Web_Link", inplace = True)
+
+        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+        df_links = df_links.to_html(escape=False)
+        st.write(df_links, unsafe_allow_html=True)
+
+        x1 = df0['Reading_Level']
+        x2 = df1['Reading_Level']
+        if author_name:
+            group_labels = ['Comparison Data ', str(author_name)]
+        else:
+            group_labels = ['Comparison Data ', str(cached_author_name)]
+        colors = [theme[-1], theme[-2]]
+        rt=list(pd.Series(scraped_labels))
+        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
+        hover_trace = [t for t in fig['data'] if 'text' in t]
+        fig.update_layout(title_text='Scraped author versus ART Corpus')
         fig.update_layout(width=900, height=600)#, hovermode='x')
         '''
     	Displaying stored results until a new author search is performed.
     	'''
-        st.write(fig) 
-
-if cached:
-
-    st.markdown('''
-
-    ### Total number of {0} scraped documents
-
-    '''.format(len(ar)))
-
-else:
-    st.markdown('''
-
-    ### Total number of previously {0} scraped documents
-
-    '''.format(len(ar)))
-
-if np.mean(standard_sci) < np.mean(bio_chem):
-    '''
+        st.write(fig)
 
 
-    ### This author was on average easier to read relative to ART Corpus.
-    
-    '''
+st.markdown('''
 
-if np.mean(standard_sci) >= np.mean(bio_chem):
-    '''
+### There were a total number of {0} documents scraped during this query.
+
+'''.format(len(df1))) #format(len(ar))) - changed this to account for duplicates
+
+st.markdown('''
+
+### The average reading level of these documents was {0}.
+
+'''.format(round(np.mean(standard_sci)),3))
+
+st.markdown('')
+st.markdown('')
 
 
-    ### This author was on average more difficult to read relative to ART Corpus.
-    
-    '''
+'''
+### Links to articles obtained from the search.
+'''
 
+df_links = pd.DataFrame()
+df_links['Web_Link'] = pd.Series(scraped_labels)
+df_links['Reading_Level'] = pd.Series(standard_sci)
+
+df_links.drop_duplicates(subset = "Web_Link", inplace = True)
+
+df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+df_links = df_links.to_html(escape=False)
+st.write(df_links, unsafe_allow_html=True)
+# Create a list of possible values and multiselect menu with them in it.
+
+'''
+Duplicate entries have been removed.
+'''
+
+st.markdown('')
+st.markdown('')
+
+'''
+### These links are identified individually on the histogram below
+'''
+if not USE_OA_DOI:
+
+    x1 = df0['Reading_Level']
+    if author_name:
+        group_labels = [str(author_name)]
+    else:
+        group_labels = [str(cached_author_name)]
+    colors = [theme[-1], theme[-2]]
+    rt=list(pd.Series(scraped_labels))
+    fig = ff.create_distplot([x1], group_labels, bin_size=1,colors=colors,rug_text=rt)
+    hover_trace = [t for t in fig['data'] if 'text' in t]
+    fig.update_layout(title_text='')
+    fig.update_layout(width=900, height=600)#, hovermode='x')
+    st.write(fig)
+
+
+st.markdown('''
+### The average reading level of the scraped work was {0}. For comparison, average adult reads at at 8th grade reading level'''.format(round(np.mean(standard_sci)),3))
+
+
+'''
+Here are a few additional established text sources of known complexity for comparison.
+'''
+
+'''
+| Text Source | Mean Complexity | Description |
+|----------|----------|:-------------:|
+| Upgoer 5                            | 6   | library using only the 10,000 most commonly occurring English words |
+| Wikipedia                               | 14.9 | free, popular, crowdsourced encyclopedia   |
+| Post-Modern Essay Generator (PMEG)  | 16.5 | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+| Art Corpus                       | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+'''
+
+st.markdown('')
+st.markdown('')
+st.markdown('')
+st.markdown('')
+
+
+'''
+### Word cloud based on the scraped texts
+'''
 
 sci_corpus = ''
 
@@ -256,33 +292,45 @@ def create_giant_strings(ar):
 sci_corpus = create_giant_strings(ar)
 bio_corpus = create_giant_strings(trainingDats)
 
-#bio_corpus = ''
-#for t in trainingDats:
-#    if 'tokens' in t.keys():
-#        for s in t['tokens']:
-#            if s not in black_list:
-#                if "." in s:
-#                    temp = s.split(".")#, " ")
-#                    bio_corpus+=str(' ')+temp[0]
-#                    bio_corpus+=str(' ')+temp[1]
-#                if s not in set(black_list):
-#                    bio_corpus+=str(' ')+s#+str(' ')
 def art_cloud(acorpus):
 
     # Generate a word cloud image
-    # from plotly_wordcloud import plotly_wordcloud
+    WC = WordCloud(background_color="white")
 
-    ## An interactive but terrible word cloud
-    # fig = plotly_wordcloud(acorpus,max_words=20)
-    # st.write(fig)
-    wc = WordCloud(background_color="white")
-    fig = plt.figure()#figsize=(60,60))
-    wordcloud = wc.generate(acorpus)
-    plt.imshow(wordcloud, interpolation='bilinear')
-    image = plt.axis("off")
-    #st.image(image, width = 250)
 
-    st.pyplot()#width = 250)
+    
+    fig = plt.figure()
+    plt.imshow(wordcloud, interpolation="nearest", aspect="auto")
+    plt.axis("off")
+    plt.tight_layout(pad=0)
+    st.pyplot()
+    plt.show()
+
+
+try:
+    art_cloud(sci_corpus)
+except:
+    pass
+
+st.markdown('')
+st.markdown('')
+
+if np.mean(standard_sci) < np.mean(bio_chem):
+
+    '''
+    ### This author was on average easier to read relative to ART Corpus.
+
+    '''
+
+if np.mean(standard_sci) >= np.mean(bio_chem):
+
+
+    '''
+    ### This author was on average more difficult to read relative to ART Corpus.
+
+    '''
+
+
 
 
 def art_cloud_wl(acorpus):
@@ -314,153 +362,100 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 
-st.markdown('\n\n\n\n')
-#st.markdown('')
-#st.markdown('')
-#st.markdown('')
 
 '''
-t-test to determine whether the entered author's distribution 
-is significantly different from the ART Corpus distribution
+A t-test was used to determine whether the reading level for the entered author was
+significantly different from that of ART Corpus.
 '''
 st.write(fig)
 
+if twosample_results[1] >= .05:
+
+    '''
+    The reading complexity of the scraped author's text was not significantly different than that of ART Corpus.
+
+    '''
+if twosample_results[1] < .05:
+
+    '''
+    The reading complexity of the scraped author's text was significantly different than that of ART Corpus.
+
+    '''
 
 
-st.markdown('\n\n\n\n')
-#st.markdown('')
-#st.markdown('')
-#st.markdown('')
 
-'''
-### Links to the articles that were used to perform this calculation
-'''
+#list_df = pickle.load(open("data/benchmarks.p","rb"))
+#bm = pd.DataFrame(list_df)
 
-df_links = pd.DataFrame()
-df_links['Web_Link'] = pd.Series(scraped_labels)
-df_links['Reading_Level'] = pd.Series(standard_sci)
+#bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Reading_Level'})
+#bm["Origin"] = pd.Series(["Benchmark" for i in range(0,len(bm))])
 
-df_links.drop_duplicates(subset ="Web_Link", 
-                keep = False, inplace = True)
-#st.write(df)
-# link is the column with hyperlinks
-df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-df_links = df_links.to_html(escape=False)
-df_links.index = pd.Series(range(0,len(df_links)))
-st.write(df_links, unsafe_allow_html=True)
-# Create a list of possible values and multiselect menu with them in it.
+#bm = bm.drop(4, axis=0)
+#bm = bm.drop(5, axis=0)
 
+#bm_temp = pd.DataFrame()
+#bm_temp["Origin"] = bm["Origin"]
+#bm_temp["Web_Link"] = bm["Web_Link"]
+#bm_temp["Reading_Level"] = bm["Reading_Level"]
+#bm = copy.copy(bm_temp)
 
-st.markdown('\n\n\n\n',unsafe_allow_html=True)
-#st.markdown('')
-#st.markdown('')
-#st.markdown('')
-#with open("style.css") as f:
-#    st.markdown('<style>{0}</style>'.format(str("# Word cloud based on the scraped texts")), unsafe_allow_html=True)
-st.markdown('# Word cloud based on the scraped texts')
-#st.markdown(,unsafe_allow_html=True)
+#bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
+#bm_temp = bm_temp.to_html(escape=False)
 
-art_cloud(sci_corpus)
+#'''
+#In the table below there are a few established
+#benchmark texts for some very easy to read scientific writing (0)
+#and some very cryptic and unreadable texts (3).
+#These established texts are shown relative to the entered author's work
+#'''
 
-if not USE_OA_DOI:
-    #df_links = pd.DataFrame()
-    #df_links['Web_Link'] = pd.Series(scraped_labels)
-    #df_links['Reading_Level'] = pd.Series(standard_sci)
-    #st.write(df)
-    # link is the column with hyperlinks
-    #df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-    #df_links = df_links.to_html(escape=False)
-    #st.write(df_links, unsafe_allow_html=True)
+#st.write(bm_temp, unsafe_allow_html=True)
 
-    x1 = df0['Reading_Level']
-    x2 = df1['Reading_Level']
-    if author_name:
-        group_labels = ['Comparison Data ', str(author_name)]
-    else:
-        group_labels = ['Comparison Data ', str(cached_author_name)]
-    colors = [theme[-1], theme[-2]]
-    rt=list(pd.Series(scraped_labels))
-    fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-    hover_trace = [t for t in fig['data'] if 'text' in t]
-    fig.update_layout(title_text='Scholar scraped Author Versus ART Corpus')
-    fig.update_layout(width=900, height=600)#, hovermode='x')
-    st.write(fig)
+#x1 = bm['Reading_Level']
+#x2 = df1['Reading_Level']
 
-list_df = pickle.load(open("data/benchmarks.p","rb")) 
-bm = pd.DataFrame(list_df)
-
-bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Reading_Level'})
-bm["Origin"] = pd.Series(["Benchmark" for i in range(0,len(bm))])
-
-bm = bm.drop(4, axis=0)
-bm = bm.drop(5, axis=0)
-
-bm_temp = pd.DataFrame()
-bm_temp["Origin"] = bm["Origin"]
-bm_temp["Web_Link"] = bm["Web_Link"]
-bm_temp["Reading_Level"] = bm["Reading_Level"]
-bm = copy.copy(bm_temp)
-
-bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
-bm_temp = bm_temp.to_html(escape=False)
-
-'''
-In the table below there are a few established 
-benchmark texts for some very easy to read scientific writing (0)
-and some very cryptic and unreadable texts (3). 
-These established texts are shown relative to the entered author's work
-'''
-
-st.write(bm_temp, unsafe_allow_html=True)
-
-x1 = bm['Reading_Level']
-x2 = df1['Reading_Level']
-
-x3 = df0['Reading_Level']
+#x3 = df0['Reading_Level']
 
 
-rt=list(bm['Web_Link'])
-rt.extend(list(df1['Web_Link']))
-rt.extend(list(df0['Web_Link']))
+#rt=list(bm['Web_Link'])
+#rt.extend(list(df1['Web_Link']))
+#rt.extend(list(df0['Web_Link']))
 
-colors = [theme[0], theme[4],theme[2]]
-if author_name:
-    group_labels = ['Ideal Bench Marks ', str(author_name), str('Comparison Data')]
-else:
-    group_labels = ['Ideal Bench Marks  ', str(cached_author_name), str('Comparison Data')]
+#colors = [theme[0], theme[4],theme[2]]
+#if author_name:
+#    group_labels = ['Ideal Bench Marks ', str(author_name), str('Comparison Data')]
+#else:
+#    group_labels = ['Ideal Bench Marks  ', str(cached_author_name), str('Comparison Data')]
 
-fig = ff.create_distplot([x1, x2, x3], group_labels, bin_size=1,colors=colors,rug_text=rt)
+#fig = ff.create_distplot([x1, x2, x3], group_labels, bin_size=1,colors=colors,rug_text=rt)
 
-hover_trace = [t for t in fig['data'] if 'text' in t]
+#hover_trace = [t for t in fig['data'] if 'text' in t]
 
-fig.update_layout(title_text='Benchmarks versus scraped Author')
-fig.update_layout(width=900, height=600)#, hovermode='x')
+#fig.update_layout(title_text='Benchmarks versus scraped Author')
+#fig.update_layout(width=900, height=600)#, hovermode='x')
 
-st.write(fig)
+#st.write(fig)
 
+st.markdown('')
+st.markdown('')
+
+"""
+### Here are some links where you can read about the readability metrics and the algorithms used to compute the metrics:
+"""
+"""
+[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+"""
+"""
+[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+"""
 
 
 """
-Reading science can be exhausting, here are the largest words from the the searched author
+#### Here is a source on adult literacy:
 """
-temp = []#ar[0]['tokens']
-for block in ar:
-    temp.extend(block['tokens'])
-#art_cloud_wl(sci_corpus)
-
 """
-Reading science can be exhausting, here are the largest words from the ARTCORPUS
+Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
 """
-temp = []#ar[0]['tokens']
-sentiment=[]
-uniqueness=[]
-for block in trainingDats:
-    uniqueness.append(block['uniqueness'])
-    sentiment.append(block['sp'])
-    temp.extend(block['tokens'])
-#art_cloud_wl(bio_corpus)
-
-
 st.markdown("""
 # Sentiment:
 It is {0} tht the mean sentiment polarity this author is more upbeat than that of the average ARTCORPUS article:
@@ -490,13 +485,16 @@ st.markdown("""
 | [Art Corpus]()                                 | 18.68                        | 2,594 |
 """,unsafe_allow_html=True) 
 """
-Here are some links where you can read about the readability metrics and the
-algorithms used to compute the metrics:  [Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability) 
-[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+#### Here is a source on adult literacy:
 """
+"""
+Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
+"""
+
 #ARTCORPUS = pickle.load(open('traingDats.p','rb'))
 #acorpus = ''
 #for t in ARTCORPUS:
 #    if 'tokens' in t.keys():
 #        for s in t['tokens']:
 #            acorpus+=str(' ')+s
+
