@@ -242,14 +242,14 @@ def art_cloud(acorpus):
     # Generate a word cloud image
     WC = WordCloud(background_color="white")
     
-    fig = plt.figure()
+    fig = plt.figure(figsize=(60,60))
     wordcloud = WC.generate(acorpus)
 
-    plt.imshow(wordcloud, interpolation="nearest", aspect="auto")
+    plt.imshow(wordcloud,aspect="auto")
     plt.axis("off")
     plt.tight_layout(pad=0)
-    st.pyplot()
-    plt.show()
+    st.pyplot(width = 170)
+    #plt.show()
 
 
 '''
