@@ -81,7 +81,7 @@ def take_url_from_gui(author_link_scholar_link_list):
     else:
         follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
 
-    for r in tqdm(follow_links,title='Progess of scraping'):
+    for r in tqdm(follow_links,title='Scrape in Progress. Please Wait.'):
   
         try:
             urlDat = process(r)
