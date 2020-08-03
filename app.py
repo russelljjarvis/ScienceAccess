@@ -71,53 +71,26 @@ if author_name:
     df1.drop_duplicates(subset = "Web_Link", inplace = True)
 
     df = pd.concat([df1,df0])
-    if not USE_OA_DOI:
 
 
-        bin_width= 22
+    bin_width= 22
 
-        fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                        marginal="box",
-                        opacity=0.7,# marginal='violin',# or violin, rug
-                        hover_data=df.columns,
-                        hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors, 
-                        histfunc='count',
-                        orientation='v',
-                        nbins=nbins
-						)
+    fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
+                    marginal="box",
+                    opacity=0.7,# marginal='violin',# or violin, rug
+                    hover_data=df.columns,
+                    hover_name=df["Web_Link"],
+                    color_discrete_sequence=colors, 
+                    histfunc='count',
+                    orientation='v',
+                    nbins=nbins
+                    )
 
-        fig0.update_layout(title_text='Scraped author {0} versus ART Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
+    fig0.update_layout(title_text='Scraped author {0} versus ART Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
 
-        st.write(fig0)
-        cached = False
-    else:
-        df_links = pd.DataFrame()
-        df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
+    st.write(fig0)
+    cached = False
 
-        df_links.drop_duplicates(subset = "Web_Link", inplace = True)
-
-        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-        df_links = df_links.to_html(escape=False)
-        st.write(df_links, unsafe_allow_html=True)
-
-        x1 = df0['Reading_Level']
-        x2 = df1['Reading_Level']
-        if author_name:
-            group_labels = ['Comparison Data ', str(author_name)]
-        else:
-            group_labels = ['Comparison Data ', str(cached_author_name)]
-        colors = [theme[-1], theme[-2]]
-        rt=list(pd.Series(scraped_labels))
-        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-        hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scraped author versus ART Corpus')
-        fig.update_layout(width=900, height=600)
-        '''
-    	Displaying stored results until a new author search is performed.
-    	'''
-        st.write(fig)
 
 else:
 
@@ -136,51 +109,33 @@ else:
     df1.drop_duplicates(subset = "Web_Link", inplace = True)
 
     df = pd.concat([df1,df0])
-    if not USE_OA_DOI:
 
-        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
-                        marginal="box",
-                        opacity=0.7,
-                        hover_data=df.columns,
-                        hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors,
-                        histfunc='count',
-                        orientation='v',
-                        nbins=nbins)
+    df_links = pd.DataFrame()
+    df_links['Web_Link'] = pd.Series(scraped_labels)
+    df_links['Reading_Level'] = pd.Series(standard_sci)
 
-        fig.update_layout(title_text='Scraped author {0} versus ART Corpus'.format(cached_author_name),width=900, height=600)
-        '''
-    	Displaying stored results until a new author search is performed.
-    	'''
-        st.write(fig)
+    df_links.drop_duplicates(subset = "Web_Link", inplace = True)
 
+    df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
+    df_links = df_links.to_html(escape=False)
+    st.write(df_links, unsafe_allow_html=True)
+
+    x1 = df0['Reading_Level']
+    x2 = df1['Reading_Level']
+    if author_name:
+        group_labels = ['Comparison Data ', str(author_name)]
     else:
-        df_links = pd.DataFrame()
-        df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
-
-        df_links.drop_duplicates(subset = "Web_Link", inplace = True)
-
-        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-        df_links = df_links.to_html(escape=False)
-        st.write(df_links, unsafe_allow_html=True)
-
-        x1 = df0['Reading_Level']
-        x2 = df1['Reading_Level']
-        if author_name:
-            group_labels = ['Comparison Data ', str(author_name)]
-        else:
-            group_labels = ['Comparison Data ', str(cached_author_name)]
-        colors = [theme[-1], theme[-2]]
-        rt=list(pd.Series(scraped_labels))
-        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-        hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scraped author versus ART Corpus')
-        fig.update_layout(width=900, height=600)#, hovermode='x')
-        '''
-    	Displaying stored results until a new author search is performed.
-    	'''
-        st.write(fig)
+        group_labels = ['Comparison Data ', str(cached_author_name)]
+    colors = [theme[-1], theme[-2]]
+    rt=list(pd.Series(scraped_labels))
+    fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
+    hover_trace = [t for t in fig['data'] if 'text' in t]
+    fig.update_layout(title_text='Scraped author versus ART Corpus')
+    fig.update_layout(width=900, height=600)#, hovermode='x')
+    '''
+    Displaying stored results until a new author search is performed.
+    '''
+    st.write(fig)
 
 
 st.markdown('''
@@ -195,7 +150,7 @@ st.markdown('''
 
 '''.format(round(np.mean(standard_sci)),3))
 
-st.markdown('')
+st.markdown('\n\n')
 st.markdown('')
 
 
@@ -214,9 +169,7 @@ df_links = df_links.to_html(escape=False)
 st.write(df_links, unsafe_allow_html=True)
 # Create a list of possible values and multiselect menu with them in it.
 
-'''
-Duplicate entries have been removed.
-'''
+
 
 st.markdown('')
 st.markdown('')
@@ -224,20 +177,7 @@ st.markdown('')
 '''
 ### These links are identified individually on the histogram below
 '''
-if not USE_OA_DOI:
 
-    x1 = df0['Reading_Level']
-    if author_name:
-        group_labels = [str(author_name)]
-    else:
-        group_labels = [str(cached_author_name)]
-    colors = [theme[-1], theme[-2]]
-    rt=list(pd.Series(scraped_labels))
-    fig = ff.create_distplot([x1], group_labels, bin_size=1,colors=colors,rug_text=rt)
-    hover_trace = [t for t in fig['data'] if 'text' in t]
-    fig.update_layout(title_text='')
-    fig.update_layout(width=900, height=600)#, hovermode='x')
-    st.write(fig)
 
 
 st.markdown('''
@@ -248,14 +188,22 @@ st.markdown('''
 Here are a few additional established text sources of known complexity for comparison.
 '''
 
-'''
-| Text Source | Mean Complexity | Description |
+st.markdown(""" # Benchmarks in detail""")
+
+st.markdown("""
+1.  [Upgoer 5](https://splasho.com/upgoer5/library.php) - a library using only the 10,000 most commonly occurring English words[2].
+2.  Wikipedia - a free, popular, crowdsourced encyclopedia that is generated from self-nominating volunteers. 
+3.  [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/) (PMEG) - generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references [5].
+4.  [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) - a library of scientific papers published in The Royal Society of Chemistry (RSC) [1].
+""")    
+st.markdown("""
+| Text Source | Mean Complexity | Unique Words |
 |----------|----------|:-------------:|
-| Upgoer 5                            | 6   | library using only the 10,000 most commonly occurring English words |
-| Wikipedia                               | 14.9 | free, popular, crowdsourced encyclopedia   |
-| Post-Modern Essay Generator (PMEG)  | 16.5 | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-| Art Corpus                       | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
-'''
+| [Upgoer 5](https://splasho.com/upgoer5/library.php)                                     | 7                               | 35,103 |
+| Wikipedia                                    | 14.9                         | -  |
+| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/) | 16.5                          | -  |
+| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/)                                 | 18.68                        | 2,594 |
+""") 
 
 st.markdown('')
 st.markdown('')
@@ -263,9 +211,6 @@ st.markdown('')
 st.markdown('')
 
 
-'''
-### Word cloud based on the scraped texts
-'''
 
 sci_corpus = ''
 
@@ -296,10 +241,10 @@ def art_cloud(acorpus):
 
     # Generate a word cloud image
     WC = WordCloud(background_color="white")
-
-
     
     fig = plt.figure()
+    wordcloud = WC.generate(acorpus)
+
     plt.imshow(wordcloud, interpolation="nearest", aspect="auto")
     plt.axis("off")
     plt.tight_layout(pad=0)
@@ -307,10 +252,10 @@ def art_cloud(acorpus):
     plt.show()
 
 
-try:
-    art_cloud(sci_corpus)
-except:
-    pass
+'''
+### Word cloud based on the scraped texts
+'''
+art_cloud(sci_corpus)
 
 st.markdown('')
 st.markdown('')
@@ -382,62 +327,7 @@ if twosample_results[1] < .05:
 
     '''
 
-
-
-#list_df = pickle.load(open("data/benchmarks.p","rb"))
-#bm = pd.DataFrame(list_df)
-
-#bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Reading_Level'})
-#bm["Origin"] = pd.Series(["Benchmark" for i in range(0,len(bm))])
-
-#bm = bm.drop(4, axis=0)
-#bm = bm.drop(5, axis=0)
-
-#bm_temp = pd.DataFrame()
-#bm_temp["Origin"] = bm["Origin"]
-#bm_temp["Web_Link"] = bm["Web_Link"]
-#bm_temp["Reading_Level"] = bm["Reading_Level"]
-#bm = copy.copy(bm_temp)
-
-#bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
-#bm_temp = bm_temp.to_html(escape=False)
-
-#'''
-#In the table below there are a few established
-#benchmark texts for some very easy to read scientific writing (0)
-#and some very cryptic and unreadable texts (3).
-#These established texts are shown relative to the entered author's work
-#'''
-
-#st.write(bm_temp, unsafe_allow_html=True)
-
-#x1 = bm['Reading_Level']
-#x2 = df1['Reading_Level']
-
-#x3 = df0['Reading_Level']
-
-
-#rt=list(bm['Web_Link'])
-#rt.extend(list(df1['Web_Link']))
-#rt.extend(list(df0['Web_Link']))
-
-#colors = [theme[0], theme[4],theme[2]]
-#if author_name:
-#    group_labels = ['Ideal Bench Marks ', str(author_name), str('Comparison Data')]
-#else:
-#    group_labels = ['Ideal Bench Marks  ', str(cached_author_name), str('Comparison Data')]
-
-#fig = ff.create_distplot([x1, x2, x3], group_labels, bin_size=1,colors=colors,rug_text=rt)
-
-#hover_trace = [t for t in fig['data'] if 'text' in t]
-
-#fig.update_layout(title_text='Benchmarks versus scraped Author')
-#fig.update_layout(width=900, height=600)#, hovermode='x')
-
-#st.write(fig)
-
-st.markdown('')
-st.markdown('')
+st.markdown('\n\n')
 
 """
 ### Here are some links where you can read about the readability metrics and the algorithms used to compute the metrics:
@@ -456,10 +346,25 @@ st.markdown('')
 """
 Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
 """
+
+temp = []#ar[0]['tokens']
+sentiment=[]
+uniqueness=[]
+for block in trainingDats:
+    uniqueness.append(block['uniqueness'])
+    sentiment.append(block['sp'])
 st.markdown("""
 # Sentiment:
 It is {0} tht the mean sentiment polarity this author is more upbeat than that of the average ARTCORPUS article:
 """.format(np.mean(sentiment)<np.mean([r['sp'] for r in ar])))
+
+import plotly.graph_objects as go
+
+labels = ['This Author positive sentiment','ART Corpus positive sentiment']
+values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
+
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+st.write(fig)
 
 st.markdown("""
 # Uniqueness of words:
@@ -468,10 +373,16 @@ how boring or alternatively colorful each article was to read
 """.format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar])))
 
 
+labels = ['This Author unique words ratio','ART Corpus unique words ratio']
+values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
+
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+st.write(fig)
+
 st.markdown(""" # Benchmarks in detail""")
 
 st.markdown("""
-1.  Upgoer5 - a library using only the 10,000 most commonly occurring English words[2].
+1.  [Upgoer 5](https://splasho.com/upgoer5/library.php) - a library using only the 10,000 most commonly occurring English words[2].
 2.  Wikipedia - a free, popular, crowdsourced encyclopedia that is generated from self-nominating volunteers. 
 3.  Postmodern Essay Generator (PMEG) - generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references [5].
 4.  ART Corpus - a library of scientific papers published in The Royal Society of Chemistry (RSC) [1].
@@ -479,10 +390,10 @@ st.markdown("""
 st.markdown("""
 | Text Source | Mean Complexity | Unique Words |
 |----------|----------|:-------------:|
-| [Upgoer 5]()                                     | 7                               | 35,103 |
+| [Upgoer 5](https://splasho.com/upgoer5/library.php)                                     | 7                               | 35,103 |
 | Wikipedia                                    | 14.9                         | -  |
-| [Post-Modern Essay Generator]() | 16.5                          | -  |
-| [Art Corpus]()                                 | 18.68                        | 2,594 |
+| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/) | 16.5                          | -  |
+| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/)                                 | 18.68                        | 2,594 |
 """,unsafe_allow_html=True) 
 """
 #### Here is a source on adult literacy:
@@ -490,11 +401,3 @@ st.markdown("""
 """
 Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
 """
-
-#ARTCORPUS = pickle.load(open('traingDats.p','rb'))
-#acorpus = ''
-#for t in ARTCORPUS:
-#    if 'tokens' in t.keys():
-#        for s in t['tokens']:
-#            acorpus+=str(' ')+s
-
