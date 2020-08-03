@@ -1,3 +1,4 @@
+#FROM russelljarvis/science_accessibility_user
 FROM jupyter/scipy-notebook
 ENV NB_USER jovyan
 ENV DISPLAY=:99
@@ -7,8 +8,9 @@ RUN echo "${NB_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 # FROM python:3.7
 # https://github.com/joyzoursky/docker-python-chromedriver/blob/master/py3/py3.6-xvfb-selenium/Dockerfile
-RUN apt-get update && apt-get install -y gnupg
-RUN apt-get install -yqq xvfb
+RUN apt-get update 
+# && apt-get install -y gnupg
+#RUN apt-get install -yqq xvfb
 # set display port and dbus env to avoid hanging
 
 # install selenium

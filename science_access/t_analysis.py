@@ -132,7 +132,7 @@ DEBUG = False
 #from numba import jit
 
 # word limit smaller than 1000 gets product/merchandise sites.
-black_list = ['et', 'al','text','crossref','isigoogle',
+not_want_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
               'copyright', 'org','figure','pubmed','accessshoping']
@@ -162,19 +162,15 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
 
         tokens = [ word for word in tokens if not word in stop_words]
         tokens = [ w.lower() for w in tokens ] #make everything lower case
-        tokens = list(set(tokens) - set(black_list))
-
-        # the kind of change that might break everything
+        tokens = list(set(tokens) - set(not_want_list))
+        # s.difference(t) s - t
+        # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat['wcount']  > WORD_LIM)
 
         ## Remove the search term from the tokens somehow.
         urlDat['tokens'] = tokens
 
-        if 'big_model' in urlDat.keys():
-            urlDat['perplexity'] = perplexity(corpus, urlDat['big_model'])
-        else:
-            urlDat['perplexity'] = None
         # Word limits can be used to filter out product merchandise websites, which otherwise dominate scraped results.
         # Search engine business model is revenue orientated, so most links will be for merchandise.
 
@@ -231,6 +227,10 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # Good writing should not be obfucstated either. The reading level is a check for obfucstation.
             # The resulting metric is a balance of concision, low obfucstation, expression.
             '''
+            if 'big_model' in urlDat.keys():
+                urlDat['perplexity'] = perplexity(corpus, urlDat['big_model'])
+            else:
+                urlDat['perplexity'] = None
             wc = float(1.0/urlDat['wcount'])
             # compressed/uncompressed. Smaller is better.
             # as it means writing was low entropy, redundant, and easily compressible.
