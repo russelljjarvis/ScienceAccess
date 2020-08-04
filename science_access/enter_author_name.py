@@ -28,21 +28,54 @@ from science_access.online_app_backend import ar_manipulation
 from science_access.word_cloud_by_word_len import generate_from_lengths
 from science_access.utils import check_passive
 import plotly.graph_objects as go 
-#st.cache 
+
+
+def frame_to_lists(ar):
+    scraped_labels = [ str(x['link']) for x in ar]
+    standard_sci = [ t['standard'] for t in ar ]
+    return scraped_labels, standard_sci
+
+def try_and_update_cache(ar,trainingDats):
+    '''
+    Try to make the distribution accumulate information based on future queries.
+    '''
+    with open('data/trainingDats.p','wb') as f:
+        st.write(str(type(trainingDats)))
+        st.write(str(type(ar)))
+        st.write('if types are data frame/list wrangling will be required')
+        trainingDats.extend(ar)
+        pickle.dump(f,trainingDats)
+def get_table_download_link(df):
+    """Generates a link allowing the data 
+    in a given panda dataframe to be downloaded
+    in:  dataframe
+    out: href string
+    """
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(
+        csv.encode()
+    ).decode()  # some strings <-> bytes conversions necessary here
+    return f'<a href="data:file/csv;base64,{b64}" download="myfilename.csv">Download csv file</a>'
+
+
+st.cache 
 def art_cloud(acorpus):
 
     # Generate a word cloud image
     WC = WordCloud(background_color="white")
     
-    fig = plt.figure(figsize=(25,25))
+    fig = plt.figure()
+    # increase resolution by changing figure size
+    #figsize=(25,25))
     wordcloud = WC.generate(acorpus)
-    
+    # interpolation "nearest decreases resolution."
     plt.imshow(wordcloud,aspect="auto", interpolation='bilinear')
     plt.axis("off")
     plt.tight_layout(pad=0)
     return wordcloud,fig,plt
 
 def fast_art_cloud(acorpus):
+    # uses cache
     wordcloud,fig,plt = art_cloud(acorpus)
     st.pyplot()
     #    st.pyplot(width =517)
@@ -66,7 +99,37 @@ def make_clickable(link):
     text = link#.split('=')[1]
     return f'<a target="_blank" href="{link}">{text}</a>'
 
-def distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci):
+def extra_options(ar,trainingDats,df1):
+
+    try:
+        # try and update underlying distribution with query, so information about science 
+        # is culmulative, dynamic.
+        try_and_update_cache(ar,trainingDats)
+    except:
+        st.markdown(str(type(trainingDats)))
+        st.markdown(str(type(ar)))
+        st.markdown('if types are data frame/list wrangling will be required')
+        st.markdown('update cache fails, data wrangling required')
+    try:
+        # Try to allow researchers of the app to download the data.
+        # Via GUI prompts.
+        st.markdown(get_table_download_link(df1), unsafe_allow_html=True)
+    except:
+        st.markdown('try and allow user to download data')
+
+def grab_data_for_splash(trainingDats):
+
+    bio_chem = [ t['standard'] for t in trainingDats ]
+    biochem_labels =  [ x['file_name'] for x in trainingDats if 'file_name' in x.keys()]
+    biochem_labels = [x.split("/")[-1] for x in biochem_labels ]
+
+    lods = []
+    for i,j,k in zip(bio_chem,[str('Comparison ART Corpus') for i in range(0,len(bio_chem))],biochem_labels):
+        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
+    df0 = pd.DataFrame(lods)
+    return df0,bio_chem,biochem_labels
+
+def distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0):
     ar = [ t for t in ar if t['standard']<45 ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
     lods = []
@@ -103,7 +166,7 @@ def grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = '')
     x1 = df0['Reading_Level']
     x2 = df1['Reading_Level']
 
-    group_labels = ['Comparison Data ', str(author_name)]
+    group_labels = ['Comparison Art Corpus ', str(author_name)]
 
     theme = px.colors.diverging.Portland
     colors = [theme[0], theme[1]]
