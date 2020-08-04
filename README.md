@@ -36,9 +36,14 @@ streamlit run app.py
 The Docker way:
 ```
 docker build -t streams .
-docker run -p 8501:8501 -v ~/.streamlit:/home/jovyan/.streamlit streams
+docker run -it -p 8501:8501 streams /bin/bash
 
 ```
+
+```
+streamlit run app.py
+```
+
 
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
