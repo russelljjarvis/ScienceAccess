@@ -211,37 +211,6 @@ st.markdown('\n\n')
 Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
 """
 
-temp = []#ar[0]['tokens']
-sentiment=[]
-uniqueness=[]
-for block in trainingDats:
-    uniqueness.append(block['uniqueness'])
-    sentiment.append(block['sp'])
-st.markdown("""
-# Sentiment:
-It is {0} tht the mean sentiment polarity this author is more upbeat than that of the average ARTCORPUS article:
-""".format(np.mean(sentiment)<np.mean([r['sp'] for r in ar])))
-
-
-labels = ['This Author positive sentiment','ART Corpus positive sentiment']
-values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
-
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-st.write(fig)
-
-st.markdown("""
-# Uniqueness of words:
-It is {0} that the mean uniqueness/ratio of the words used in the ARTCORPUS, this gives an idea of 
-how boring or alternatively colorful each article was to read
-""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar])))
-
-
-labels = ['This Author unique words ratio','ART Corpus unique words ratio']
-values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
-
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-st.write(fig)
-
 
 
 sci_corpus = create_giant_strings(ar,not_want_list)
@@ -278,3 +247,34 @@ st.markdown("""
 """
 Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
 """
+
+sentiment=[]
+uniqueness=[]
+for block in trainingDats:
+    uniqueness.append(block['uniqueness'])
+    sentiment.append(block['sp'])
+st.markdown("""
+# Sentiment:
+It is {0} tht the mean sentiment polarity this author is more upbeat than that of the average ARTCORPUS article:
+""".format(np.mean(sentiment)<np.mean([r['sp'] for r in ar])))
+
+
+labels = ['This Author positive sentiment','ART Corpus positive sentiment']
+values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
+
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+st.write(fig)
+
+st.markdown("""
+# Uniqueness of words:
+It is {0} that the mean uniqueness/ratio of the words used in the ARTCORPUS, this gives an idea of 
+how boring or alternatively colorful each article was to read
+""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar])))
+
+
+labels = ['This Author unique words ratio','ART Corpus unique words ratio']
+values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
+
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+st.write(fig)
+

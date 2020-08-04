@@ -34,7 +34,7 @@ def art_cloud(acorpus):
     # Generate a word cloud image
     WC = WordCloud(background_color="white")
     
-    fig = plt.figure(figsize=(30,30))
+    fig = plt.figure(figsize=(25,25))
     wordcloud = WC.generate(acorpus)
     
     plt.imshow(wordcloud,aspect="auto", interpolation='bilinear')
