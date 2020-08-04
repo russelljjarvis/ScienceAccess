@@ -8,18 +8,17 @@
 
 **![Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)**
 
+
+**Installation** 
+**Requirements**
+This dashboard application assumes a Unix/Linux/OSX type operating system with a ZSH/BASH evironment. Docker versions of linux on Windows would also work. 
+
 **First Step**
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
 
 ```
-
-**Requirements**
-This needs a Unix/Linux/OSX type Operating system with BASH. Docker versions of linux on Windows would also work. 
-
-
-**Installation** 
 ```
 which python3
 ```
