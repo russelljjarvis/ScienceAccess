@@ -120,5 +120,3 @@ Multiple stakeholders benefit when science is communicated with lower complexity
 
 The impact of science on society is likely proportional to the accessibility of written work. Objectively describing the character of the different writing styles will allow us to prescribe how, to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
 
-[Similar projects](https://blog.machinebox.io/detect-fake-news-by-building-your-own-classifier-31e516418b1d).
-
