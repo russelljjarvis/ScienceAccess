@@ -32,6 +32,7 @@ import plotly.graph_objects as go
 theme = px.colors.diverging.Portland
 colors = [theme[-1], theme[-2]]
 
+NBINS = 40
 
 def frame_to_lists(ar):
     scraped_labels = [ str(x['link']) for x in ar]
