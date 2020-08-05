@@ -8,18 +8,17 @@
 
 **![Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)**
 
+
+**Installation** 
+**Requirements**
+This dashboard application assumes a Unix/Linux/OSX type operating system with a ZSH/BASH evironment. Docker versions of linux on Windows would also work. 
+
 **First Step**
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
 
 ```
-
-**Requirements**
-This needs a Unix/Linux/OSX type Operating system with BASH. Docker versions of linux on Windows would also work. 
-
-
-**Installation** 
 ```
 which python3
 ```
@@ -120,6 +119,4 @@ Unfortunately, writing styles intended for different audiences, are predictably 
 Multiple stakeholders benefit when science is communicated with lower complexity expression of ideas. With lower complexity science writing, knowledge would be more readily transferred into public awareness, additionally, the digital organization of facts derived from journal articles would occur more readily, as successful machine comprehension of documented science would likely occur with less human intervention. 
 
 The impact of science on society is likely proportional to the accessibility of written work. Objectively describing the character of the different writing styles will allow us to prescribe how, to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
-
-[Similar projects](https://blog.machinebox.io/detect-fake-news-by-building-your-own-classifier-31e516418b1d).
 
