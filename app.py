@@ -57,7 +57,7 @@ if author_name:
     # is culmulative, dynamic.
     # Try to allow researchers of the app to download the data.
     # Via GUI prompts.
-    extra_options(ar,trainingDats,df1)
+    #extra_options(ar,trainingDats,df1)
 else:
     cached = True
     author_name = cached_author_name
@@ -212,7 +212,7 @@ fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
 
 
-elaborate_plot(trainingDats)
+#elaborate_plot(trainingDats)
 
 
 st.markdown('\n\n')
