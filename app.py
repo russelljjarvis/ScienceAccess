@@ -98,8 +98,10 @@ st.markdown('\n\n')
 '''
 
 push_frame_to_screen(scraped_labels,standard_sci)
+'''
+Duplicate entries have been removed.
 
-# Create a list of possible values and multiselect menu with them in it.
+'''# Create a list of possible values and multiselect menu with them in it.
 
 st.markdown('-----')
 st.markdown('\n\n')
