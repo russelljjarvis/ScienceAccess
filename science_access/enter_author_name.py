@@ -29,6 +29,9 @@ from science_access.word_cloud_by_word_len import generate_from_lengths
 from science_access.utils import check_passive
 import plotly.graph_objects as go 
 
+theme = px.colors.diverging.Portland
+colors = [theme[-1], theme[-2]]
+
 
 def frame_to_lists(ar):
     scraped_labels = [ str(x['link']) for x in ar]
@@ -168,9 +171,7 @@ def grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = '')
 
     group_labels = ['Comparison Art Corpus ', str(author_name)]
 
-    theme = px.colors.diverging.Portland
-    colors = [theme[0], theme[1]]
-    colors = [theme[-1], theme[-2]]
+
     rt=list(pd.Series(scraped_labels))
     fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
     hover_trace = [t for t in fig['data'] if 'text' in t]
