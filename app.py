@@ -265,3 +265,5 @@ values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
 fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
 
+
+elaborate_plot(trainingDats)
