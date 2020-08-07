@@ -65,7 +65,7 @@ The accessibility of written word can be approximated by a computer program that
 
 First, we sample some extremes in writing style, and then we will tabulate results, so we have some nice reference points to help us to make sense of other results. On the lower and upper limits we have: XKCD: [Pushing the limits of extremely readable science](http://splasho.com/upgoer5/library.php) and for some comparison, we wanted to check some [Machine generated postmodern nonesense](http://www.elsewhere.org/pomo/)
 
-Higher is worse:
+We can thiink of the complexity score similar to reading or grade level.
 
 | complexity   |      texts      |
 |----------|:-------------:|
@@ -74,38 +74,6 @@ Higher is worse:
 | 14.0 | [science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) |
 | 14.9 | mean wikipedia |
 | 16.5 | [mean post modern essay generator](http://www.elsewhere.org/pomo/) |
-
-# Some particular cases:
-| complexity   |      texts      |
-|----------|:-------------:|
-| 13.0 | this readme.md |
-| 17.0 | [The number of olfactory stimuli that humans can discriminate is still unknown](https://elifesciences.org/articles/08127)|
-| 18.68 | [Intermittent dynamics and hyper-aging in dense colloidal gels](https://www.researchgate.net/publication/244552241_Intermittent_dynamics_and_hyper-aging_in_dense_colloidal_gelsThis_paper_was_originally_presented_as_a_poster_at_the_Faraday_Discussion_123_meeting) |
-| 37.0 | [Phytochromobilin C15-Z,syn - C15-E,anti isomerization: concerted or stepwise?](https://www.researchgate.net/profile/Bo_Durbeej/publication/225093436_Phytochromobilin_C15-Zsyn_C15-Eanti_isomerization_Concerted_or_stepwise/links/0912f4fcd237e6701a000000.pdf) |
-
-
-### Proposed Remedies:
-* 1
-Previously I mentioned creating tools to remedy inaccessible academic research> One tool, that functions as a natural extension of this work, is to enable 'clear writing' tournaments between prominent academic researchers, for example:
-
-| mean complexity   |      author      |
-|----------|:-------------:|
-| 28.85 | [professor R Gerkin](https://scholar.google.com/citations?user=GzG5kRAAAAAJ&hl=en&oi=sra)   |
-| 29.8 | [ other_author] |
-| 30.58 |     [other_author]  |
-
-
-Example code for the [proposed tool](https://github.com/russelljjarvis/ScienceAccessibility/blob/dev/Examples/Incentivise_by_competing.ipynb) would allow you to select academic authors who then play out a competition demand, and to utilize their writing contributions in the context of a tournament where academic tournament members compete to write simpler text. A more recently maintained version of that [file](https://github.com/russelljjarvis/ScienceAccessibility/blob/dev/Examples/compete.py)
-
-* 2
-A different remedy proposal is to run the text through [simplify](http://nlpprogress.com/english/simplification.html?fbclid=IwAR0B8G7zEmxVYbFWJMOyVTaHWkv4o9tTTFvVpsOcWrUQ777SXpM6KuM-8QI), evaluate complexity after translating the document simplify. 
-How different are the scores?
-
-### The Following is a plot of the Distribution of Science Writing Versus non-science writing the [ART Science corpus](https://www.aber.ac.uk/en/media/departmental/computerscience/cb/art/gz/ART_Corpus.tar.gz):
-![image](https://user-images.githubusercontent.com/7786645/53215155-96dbb780-360c-11e9-9280-d8592d31d2f9.png)
-
-The science writing niche is characterized, by having a mean reading grade level of 18, neutral, to negatively polarized sentiment type and close to an almost complete absence of subjectivity. Science writing is more resistant to file compression, meaning that information entropy is high, due to concise, coded language. These statistical features, give quite a lot to go on, with regards to using language style to predict the scientific status of a randomly selected web document. The same notion of entropy being generally higher in science is corroborated with the perplexity measure, which measures how improbable the particular frequency distribution of words of observed in a document was.
-
 
 ### Developer Overview 
 Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible relative to other academic science writing. This means that reading scientific writing is often more complicated, making it unaccessible to many individuals. 
