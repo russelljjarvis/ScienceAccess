@@ -1,8 +1,8 @@
 import streamlit as st
 import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-from wordcloud import WordCloud
+#import matplotlib.pyplot as plt
+#import seaborn as sns
+#from wordcloud import WordCloud
 import pandas as pd
 import pickle
 import numpy as np
@@ -25,7 +25,7 @@ from science_access.online_app_backend import ar_manipulation
 #from science_access.word_cloud_by_word_len import generate_from_lengths
 from science_access.utils import check_passive
 
-from science_access.enter_author_name import art_cloud, create_giant_strings
+from science_access.enter_author_name import art_cloud, create_giant_strings, art_cloud_wl
 from science_access.enter_author_name import distribution_plot_from_scrape, grand_distribution_plot
 from science_access.enter_author_name import push_frame_to_screen, fast_art_cloud, grab_data_for_splash
 from science_access.enter_author_name import frame_to_lists, try_and_update_cache, get_table_download_link, extra_options
@@ -50,14 +50,16 @@ if author_name:
     ar = call_from_front_end(author_name)
     scraped_labels, standard_sci = frame_to_lists(ar)
 
-    df1,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0)
+    #df1,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0)
+    df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
+
     st.write(fig)
     cached = False
     # try and update underlying distribution with query, so information about science 
     # is culmulative, dynamic.
     # Try to allow researchers of the app to download the data.
     # Via GUI prompts.
-    extra_options(ar,trainingDats,df1)
+    # extra_options(ar,trainingDats,df1)
 else:
     cached = True
     author_name = cached_author_name
@@ -67,8 +69,7 @@ else:
     Displaying stored results until a new author search is performed.
     '''
     scraped_labels, standard_sci = frame_to_lists(ar)
-    push_frame_to_screen(scraped_labels,standard_sci)
-    st.markdown('-----')
+    #push_frame_to_screen(scraped_labels,standard_sci)
 
     df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
     st.write(fig)
@@ -85,8 +86,10 @@ st.markdown('''
 ### The average reading level of these documents was {0}.
 
 '''.format(round(np.mean(standard_sci)),3))
-st.markdown('-----')
-st.markdown('\n\n')
+
+'''
+In general, we can equate reading level with grade level.
+'''
 
 '''
 ### Links to articles obtained from the search.
@@ -98,36 +101,23 @@ push_frame_to_screen(scraped_labels,standard_sci)
 
 st.markdown('-----')
 st.markdown('\n\n')
-'''
-### These links are identified individually on the histogram below
-'''
 
 st.markdown('''
-### The average reading level of the scraped work was {0}. For comparison, average adult reads at at 8th grade reading level'''.format(round(np.mean(standard_sci)),3))
+### The average reading level of the scraped work was {0}. For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf)'''.format(round(np.mean(standard_sci)),3))
 
 
 '''
 Here are a few additional established text sources of known complexity for comparison.
 '''
-st.markdown('-----')
-
-st.markdown(""" # Benchmarks in detail""")
 
 st.markdown("""
-1.  [Upgoer 5](https://splasho.com/upgoer5/library.php) - a library using only the 10,000 most commonly occurring English words[2].
-2.  Wikipedia - a free, popular, crowdsourced encyclopedia that is generated from self-nominating volunteers. 
-Me different wikipedia pages were scraped using the terms: "Vaccine, Climate Change, Genetically Modified Ingredient"
-3.  [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/) (PMEG) - generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references [5].
-4.  [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) - a library of scientific papers published in The Royal Society of Chemistry (RSC) [1].
-""")    
-st.markdown("""
-| Text Source | Mean Complexity | Unique Words |
-|----------|----------|:-------------:|
-| [Upgoer 5](https://splasho.com/upgoer5/library.php)                                     | 7                               | 35,103 |
-| Wikipedia                                    | 14.9                         | -  |
-| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/) | 16.5                          | -  |
-| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/)                                 | 18.68                        | 2,594 |
-""") 
+| Text Source | Mean Complexity | Unique Words | Description |
+|----------|----------|:-------------:|:-------------:|
+| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7      | 35,103 | library using only the 10,000 most commonly occurring English words |
+| Wikipedia                                                                       | 14.9   | -  | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | -  | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | 2,594 | library of scientific papers published in The Royal Society of Chemistry |
+""")
 st.markdown('-----')
 st.markdown('\n\n\n\n')
 
@@ -177,6 +167,52 @@ if twosample_results[1] < .05:
 st.markdown('\n\n')
 st.markdown('-----')
 
+# https://en.wikipedia.org/wiki/Blacklisting
+sci_corpus = create_giant_strings(ar,not_want_list)
+bio_corpus = create_giant_strings(trainingDats,not_want_list)
+
+
+'''
+### Word cloud based on the scraped texts
+'''
+fast_art_cloud(sci_corpus)
+
+st.markdown('-----')
+st.markdown('\n\n')
+
+sentiment=[]
+uniqueness=[]
+for block in trainingDats:
+    uniqueness.append(block['uniqueness'])
+    sentiment.append(block['sp'])
+temp = np.mean(sentiment)<np.mean([r['sp'] for r in ar])
+st.markdown("""
+### Sentiment
+It is {} that the mean sentiment polarity of {} is more postive relative to that of ART Corpus.
+""".format(temp,author_name))
+
+temp = '{0} positive sentiment'.format(author_name)
+labels = [temp,'ART Corpus positive sentiment']
+values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
+
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+st.write(fig)
+st.markdown('-----')
+
+st.markdown("""
+### Uniqueness of words (different words used / total number of words)
+It is {0} that on average the word diversity of {1} is higher relative to that of ART Corpus.
+""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar]),author_name))
+
+
+labels = ['{0} unique words ratio'.format(author_name),'ART Corpus unique words ratio']
+values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
+
+fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+st.write(fig)
+
+st.markdown('-----')
+
 """
 ### Here are some links where you can read about the readability metrics and the algorithms used to compute the metrics:
 """
@@ -195,75 +231,12 @@ st.markdown('-----')
 Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 """
 
-
-
-sci_corpus = create_giant_strings(ar,not_want_list)
+"""
+#### Below is a word cloud with some of the biggest words:
+"""
+big_words = art_cloud_wl(sci_corpus)
+st.markdown(str(big_words[0][0]))
 bio_corpus = create_giant_strings(trainingDats,not_want_list)
-st.markdown('-----')
 
-'''
-### Word cloud based on the scraped texts
-'''
-fast_art_cloud(sci_corpus)
-
-st.markdown('\n\n')
-
-
-st.markdown(""" # Benchmarks in detail""")
-
-st.markdown("""
-1.  [Upgoer 5](https://splasho.com/upgoer5/library.php) - a library using only the 10,000 most commonly occurring English words[2].
-2.  Wikipedia - a free, popular, crowdsourced encyclopedia that is generated from self-nominating volunteers. 
-3.  Postmodern Essay Generator (PMEG) - generates output consisting of sentences that obey the rules of written English, but without 
-whith content whose meaning is random and or absent.
-restraints on the semantic conceptual references [5].
-4.  ART Corpus - a library of scientific papers published in The Royal Society of Chemistry (RSC) [1].
-""")    
-st.markdown("""
-| Text Source | Mean Complexity | Unique Words |
-|----------|----------|:-------------:|
-| [Upgoer 5](https://splasho.com/upgoer5/library.php)                                     | 7                               | 35,103 |
-| Wikipedia                                    | 14.9                         | -  |
-| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/) | 16.5                          | -  |
-| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/)                                 | 18.68                        | 2,594 |
-""") 
-"""
-#### Here is a source on adult literacy:
-"""
-"""
-Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005. http://nces.ed.gov/naal/pdf/2006470.pdf.
-"""
-
-sentiment=[]
-uniqueness=[]
-for block in trainingDats:
-    uniqueness.append(block['uniqueness'])
-    sentiment.append(block['sp'])
-temp = np.mean(sentiment)<np.mean([r['sp'] for r in ar])
-st.markdown("""
-# Sentiment:
-It is {} that the mean sentiment polarity {} is more upbeat than that of the average ARTCORPUS article:
-""".format(temp,author_name))
-
-temp = '{0} positive sentiment'.format(author_name)
-labels = [temp,'ART Corpus positive sentiment']
-values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
-
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-st.write(fig)
-
-st.markdown("""
-# Uniqueness of words:
-It is {0} that the mean uniqueness/ratio of {1} versus the words used in the ARTCORPUS, this gives an idea of 
-how boring or alternatively colorful each article was to read
-""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar]),author_name))
-
-
-labels = ['{0} unique words ratio'.format(author_name),'ART Corpus unique words ratio']
-values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
-
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-st.write(fig)
-
-
-elaborate_plot(trainingDats)
+big_words = art_cloud_wl(bio_corpus)
+st.markdown(str(big_words[0][0]))
