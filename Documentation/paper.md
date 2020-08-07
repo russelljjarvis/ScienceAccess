@@ -30,7 +30,7 @@ In the age of growing science communication, this tendency for scientists to use
 
 While readability tools, such as [Readable](https://www.webfx.com/tools/read-able/) and [Upgoer5](https://splasho.com/upgoer5/) currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not focus on complexity in a more academic-type context.
 
-To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies existing text repositories with varying complexity, and subsequently uses this output as a reference to show how the readability of user-selected written work compares to these other known resources. It also shows the distribution of readability of the searched author's work.
+To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies an existing text repository [@Soldatova:2007] with complexity shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool subsequently uses this output as a reference to show how the readability of user-selected written work compares to this source.
 
 Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
 
@@ -43,9 +43,9 @@ The tool prompts the user to enter an author name, after which a text scraping p
 
 ## Contextualized Readability Output
 
-After performing the web scrape of thiis author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, as well as the individual scores for each of the scraped texts. 
+After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, as well as the individual scores for each of the scraped texts. 
 
-The scraped text is also compared relative to Art Corpus [@Soldatova:2007], library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [2].
+The scraped text is also compared relative to Art Corpus [@Soldatova:2007], a library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool provides an overlay of the distribution of Art Corpus with that of the scraped author's text.
 
 In addition, we compare the query to a number of available text repositories with varying complexity:
 
@@ -60,7 +60,9 @@ In addition, we compare the query to a number of available text repositories wit
 
 Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included to better contextualize the complexity of the ART Corpus data with other text repositories of known complexity. We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language, and another benchmark for the user to see when viewing their own readability score.
 
-Lastly, sentiment and polarity are also caluclated. And word cloud is also generated showing the most commonly used words and the largest words in the scraped text. 
+Sentiment and polarity are also caluclated. 
+
+Lastly, two word clouds are also generated. These show the most commonly used words and the largest words in the scraped text. 
 
 
 # References
