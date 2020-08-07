@@ -42,7 +42,7 @@ streamlit run app.py
 ```
 
 
-**[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
+**[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
 
 ### Overview
 
