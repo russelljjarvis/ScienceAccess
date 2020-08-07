@@ -8,7 +8,6 @@
 <img src="app_works.gif" width="450" height="450"/>
 
 
-**Requirements**
 This dashboard application allows the user to view the readability of scholarly authors, in doing so it also serves as a kind of scrape view GUI.
 
 **First Step**
