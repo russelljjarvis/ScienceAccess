@@ -13,7 +13,7 @@ import numpy as np
 import plotly.figure_factory as ff
 import plotly.express as px
 import copy
-#import nltk
+import os
 
 import streamlit as st
 import math
@@ -28,7 +28,6 @@ from science_access.online_app_backend import ar_manipulation
 from science_access.word_cloud_by_word_len import generate_from_lengths
 from science_access.utils import check_passive
 import plotly.graph_objects as go 
-
 
 def frame_to_lists(ar):
     scraped_labels = [ str(x['link']) for x in ar]
@@ -58,7 +57,25 @@ def get_table_download_link(df):
     return f'<a href="data:file/csv;base64,{b64}" download="myfilename.csv">Download csv file</a>'
 
 
-st.cache 
+def art_cloud_wl(acorpus):
+    WC = WordCloud(background_color="white")
+    WC.generate_from_lengths = MethodType(generate_from_lengths,WC)
+    fig = plt.figure()
+    
+    tokens = word_tokenize(acorpus)
+
+    wordcloud = WC.generate_from_lengths(tokens)
+    biggest_words = WC.biggest_words
+    #wc = WordCloud().generate_from_frequencies(frequencies=di)
+    plt.imshow(wordcloud, aspect="auto",interpolation='bilinear')
+    plt.axis("off")
+    plt.tight_layout(pad=0)
+    '''
+    ### A second word cloud where word length controls word size, not word frequency in text
+    '''
+    st.pyplot()
+    return biggest_words
+#@st.cache 
 def art_cloud(acorpus):
 
     # Generate a word cloud image
@@ -74,24 +91,30 @@ def art_cloud(acorpus):
     plt.tight_layout(pad=0)
     return wordcloud,fig,plt
 
+
+
 def fast_art_cloud(acorpus):
     # uses cache
     wordcloud,fig,plt = art_cloud(acorpus)
     st.pyplot()
     #    st.pyplot(width =517)
-
 def create_giant_strings(ar,not_want_list):
     sci_corpus = ''
     for t in ar:
         if 'tokens' in t.keys():
             for s in t['tokens']:
                 if s not in not_want_list:
+                    if "/" in s:
+                        temp = s.split("/")#, " ")
+                        sci_corpus+=str(' ')+temp[0]
+                        sci_corpus+=str(' ')+temp[1]
                     if "." in s:
                         temp = s.split(".")#, " ")
                         sci_corpus+=str(' ')+temp[0]
                         sci_corpus+=str(' ')+temp[1]
                     if s not in set(not_want_list):
                         sci_corpus+=str(' ')+s#+str(' ')
+    #print(sci_corpus)
     return sci_corpus
 def make_clickable(link):
     # target _blank to open new window
@@ -116,7 +139,6 @@ def extra_options(ar,trainingDats,df1):
         st.markdown(get_table_download_link(df1), unsafe_allow_html=True)
     except:
         st.markdown('try and allow user to download data')
-
 def grab_data_for_splash(trainingDats):
 
     bio_chem = [ t['standard'] for t in trainingDats ]
@@ -128,7 +150,7 @@ def grab_data_for_splash(trainingDats):
         lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
     df0 = pd.DataFrame(lods)
     return df0,bio_chem,biochem_labels
-
+#@st.cache    
 def distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0):
     ar = [ t for t in ar if t['standard']<45 ]
     group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
@@ -152,7 +174,7 @@ def distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0
     fig.update_layout(title_text='Scraped author {0} versus ART Corpus'.format(author_name)
                                 ,width=900, height=900)
     return df1,fig
-
+#@st.cache    
 def grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = ''):
     #standard_sci = [ t['standard'] for t in ar ]
     #scraped_labels = [ str(x['link']) for x in ar]
@@ -185,22 +207,7 @@ def push_frame_to_screen(labels,readability_vector):
     df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
     df_links = df_links.to_html(escape=False)
     st.write(df_links, unsafe_allow_html=True)
-def art_cloud_wl(acorpus):
-    wc = WordCloud()
-    wc.generate_from_lengths = MethodType(generate_from_lengths,wc)
-    fig = plt.figure()
-    
-    tokens = word_tokenize(acorpus)
 
-    wordcloud = wc.generate_from_lengths(tokens)
-    #wc = WordCloud().generate_from_frequencies(frequencies=di)
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-    '''
-    ### A second word cloud where word length controls word size, not word frequency in text
-    '''
-
-    st.pyplot()
 
 def get_heights(stats_items,histogram_content,x_sub_set,xys=None):
     vertical_postions_indexs = []
@@ -229,10 +236,11 @@ def snap_to_grid(author_stats,bin_centers):
     return author_stats_grid
 
 #ipy.stats import norm
-import os
+
 
 def elaborate_plot(trainingDats):
     if not os.path.exists('benchmarks.p?dl=0'):
+        os.system('curl -s -L https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0')
         os.system('wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0')
     with open('benchmarks.p?dl=0','rb') as f:
         bmark = pickle.load(f)

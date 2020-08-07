@@ -66,7 +66,16 @@ class IntegralOccupancyMap(object):
             partial_integral += self.integral[pos_x:, pos_y - 1][:, np.newaxis]
 
         self.integral[pos_x:, pos_y:] = partial_integral
+from nltk.corpus import words as english_words
+def wrapper(w):    
+    
 
+    if w[0] in english_words.words():
+        print('faster,',w)
+        return w
+    else:
+        return None
+import dask
 def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
@@ -89,34 +98,75 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     '''
     # largest entry will be 1
 
-    words_ = []
-    
+    words__ = []
     for word in words:
+        words_ = []
+        if "-" in word:
+            #continue
+            temp = word.split("-")#, " ")
+            words_.append(str(' ')+temp[0])
+            words_.append(str(' ')+temp[1])
+
         if "." in word:
+            #continue
             temp = word.split(".")#, " ")
-            #temp = word
-            words_.append(temp[0])
-            words_.append(temp[1])
-        else:
-            words_.append(word)
-    words = words_
+            words_.append(str(' ')+temp[0])
+            words_.append(str(' ')+temp[1])
+
+
+        if "//" in word:
+            #continue
+            temp = word.split("//")
+            words_.append(str(' ')+temp[0])
+            words_.append(str(' ')+temp[1])
+  
+        if "/" in word:
+            #continue
+            temp = word.split("/")#, " ")
+            words_.append(str(' ')+temp[0])
+            words_.append(str(' ')+temp[1])
+        if "=" in word:
+            #continue
+            temp = word.split("=")#, " ")
+            words_.append(str(' ')+temp[0])
+            words_.append(str(' ')+temp[1])
+        if word.isnumeric():
+            continue
+        
+        if len(words_):
+            continue
+            #for w in words_:
+                #print(w in english_words.words())
+            #    if w in english_words.words():
+                    #words__.append(w)
+
+        # word = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", word)
+        pattern = re.compile(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+")#, "", word)
+        
+        if not len(words_) and not pattern.match(word):        
+            words__.append(word)
+
+
+
+    words = words__
+
     words = set(words)
+ 
     sizes = [len(word) for word in words]
     max_len = np.max(sizes)
 
     frequencies =  [(word, word_len / max_len) 
-                    for word,word_len in zip(words,sizes) if word_len <29]
-
+                    for word,word_len in zip(words,sizes) if word_len <43]
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])
-        
-    #frequencies = [(word, freq / max_len)
-    #               for word, freq in frequencies]
+    #lazy = (dask.delayed(wrapper)(w) for w in frequencies[0:190])
+    lazy = ((wrapper)(w) for w in frequencies[0:290])
 
-
-    #frequencies = [(word, freq / max_frequency)
-    #               for word, freq in frequencies]
-
+    real_frequencies = list(dask.compute(*lazy))
+    real_frequencies = [w for w in real_frequencies if w is not None]
+    frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
+    self.biggest_words = None
+    self.biggest_words = frequencies[0:2]
     if self.random_state is not None:
         random_state = self.random_state
     else:

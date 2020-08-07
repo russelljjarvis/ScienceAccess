@@ -146,9 +146,13 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
+        '''
+        Untested code that should be integrated. 
+        Dump URLS and twitter handles.
         corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", corpus)
         # remove the hashtags and mentions
         corpus = re.sub(r"#\w+|@\w+", "", corpus)
+        '''
         textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
         # code from:
         # https://github.com/russelljjarvis/twitter-dash/blob/master/twitterdash/preprocessing.py

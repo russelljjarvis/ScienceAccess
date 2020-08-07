@@ -6,7 +6,8 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
 
-**![Example Screen Shot](https://russelljjarvis.github.io/ScienceAccess/data/example_app.png)**
+**![](https://russelljjarvis/ScienceAccess/app_works.gif)**
+
 
 
 **Installation** 
