@@ -89,6 +89,16 @@ st.markdown('''
 In general, we can equate reading level with grade level.
 '''
 
+if np.mean(standard_sci) < np.mean(bio_chem):
+    st.markdown('''
+    #### {0} was on average easier to read relative to ART Corpus.
+    '''.format(author_name))
+
+if np.mean(standard_sci) >= np.mean(bio_chem):
+    st.markdown('''
+    #### {0} was on average more difficult to read relative to ART Corpus.
+    '''.format(author_name))
+    
 st.markdown('-----')
 st.markdown('\n\n')
 
@@ -137,7 +147,6 @@ st.markdown('-----')
 st.markdown('\n\n')
 
 
-
 """
 ### Word cloud based on the largest words found in the scraped texts
 if message about caching means it will run faster on second run.
@@ -150,45 +159,32 @@ st.markdown('Here is one of the biggest words found: "{0}")
 st.markdown('-----')
 st.markdown('\n\n')
 
+#twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
 
-if np.mean(standard_sci) < np.mean(bio_chem):
-    st.markdown('''
-    ### {0} was on average easier to read relative to ART Corpus.
-    '''.format(author_name))
+#matrix_twosample = [
+#    ['', 'Test Statistic', 'p-value'],
+#    ['Result', twosample_results[0], twosample_results[1]]
+#]
 
-if np.mean(standard_sci) >= np.mean(bio_chem):
-    st.markdown('''
-    ### {0} was on average more difficult to read relative to ART Corpus.
-    '''.format(author_name))
+#fig = ff.create_table(matrix_twosample, index=True)
 
+#st.markdown('''
+#A t-test was used to determine whether the reading level for the {0} was
+#significantly different from that of ART Corpus.
+#'''.format(author_name))
+#st.write(fig)
 
-twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
+#if twosample_results[1] >= .05:
+#    st.markdown('''
+#    The reading complexity of {0} text was not significantly different than that of ART Corpus.
+#    '''.format(author_name))
+#if twosample_results[1] < .05:
+#    st.markdown('''
+#    The reading complexity of {0} text was significantly different than that of ART Corpus.
+#    '''.format(author_name))
 
-matrix_twosample = [
-    ['', 'Test Statistic', 'p-value'],
-    ['Result', twosample_results[0], twosample_results[1]]
-]
-
-fig = ff.create_table(matrix_twosample, index=True)
-
-st.markdown('''
-A t-test was used to determine whether the reading level for the {0} was
-significantly different from that of ART Corpus.
-'''.format(author_name))
-st.write(fig)
-
-if twosample_results[1] >= .05:
-    st.markdown('''
-    The reading complexity of {0} text was not significantly different than that of ART Corpus.
-    '''.format(author_name))
-if twosample_results[1] < .05:
-    st.markdown('''
-    The reading complexity of {0} text was significantly different than that of ART Corpus.
-    '''.format(author_name))
-
-
-st.markdown('-----')
-st.markdown('\n\n')
+#st.markdown('-----')
+#st.markdown('\n\n')
 
 
 sentiment=[]
