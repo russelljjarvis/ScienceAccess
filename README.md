@@ -9,7 +9,7 @@
 
 
 **Requirements**
-This dashboard application assumes a Unix/Linux/OSX type operating system with a ZSH/BASH evironment. Docker versions of linux on Windows would also work. 
+This dashboard application allows the user to view the readability of scholarly authors, in doing so it also serves as a kind of scrape view GUI.
 
 **First Step**
 ```
