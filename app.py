@@ -111,18 +111,21 @@ st.markdown('\n\n')
 push_frame_to_screen(scraped_labels,standard_sci)
 # Create a list of possible values and multiselect menu with them in it.
 '''
-In general, we can equate reading level with grade level.
+Duplicate entries have been removed from analysis.
 '''
 
 st.markdown('-----')
 st.markdown('\n\n')
 
 st.markdown('''
-### The average reading level of the scraped work was {0}. For comparison, [the average adult reads at an 8th grade reading level.](http://nces.ed.gov/naal/pdf/2006470.pdf)'''.format(round(np.mean(standard_sci)),3))
-
+### The average reading level of the scraped work was {0}'''.format(round(np.mean(standard_sci)),3)))
 
 '''
-Here are the metrics for a few additional established text sources of known complexity:
+For comparison, [the average adult reads at an 8th grade reading level.](http://nces.ed.gov/naal/pdf/2006470.pdf)
+'''
+
+'''
+Here are some metrics for a few additional established text sources of known complexity:
 '''
 
 st.markdown("""
