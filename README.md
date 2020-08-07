@@ -5,7 +5,7 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
-This dashboard application allows the user to find amd view the readability of different published scientific authors.
+This dashboard application allows the user to search for a scientific author, and to view the readability of their published work. This includes a readability score for each of their published works returned from the scrape, most common and complex words used, sentiment, polarity, and a comparison to other known benchmarks of scientific works. 
 
 <img src="app_works.gif" width="450" height="450"/>
 
@@ -44,22 +44,21 @@ streamlit run app.py
 
 **[Manuscript](https://github.com/russelljjarvis/ScienceAccessibility/blob/remaster/Documentation/manuscript.md)** 
 
-# Overview
+### Overview
 
 This project was previously hosted at [https://github.com/russelljjarvis/ScienceAccessibility](https://github.com/russelljjarvis/ScienceAccessibility)
 
+Understanding a big word is hard, so when big ideas are written down with lots of big words, this large pile of big words is also hard to understand. 
 
-Understanding a big word is hard, so when big ideas are written down with lots of big words, the large pile of big words is also hard to understand. 
+We used a computer to quickly visit and read many different websites to see how hard each piece of writing was to understand. People may avoid learning hard ideas, only because too many hard words are encountered in the process. We think we can help by explaining the problem with smaller words, and by creating tools to address the problem.
 
-We used a computer to quickly visit and read many different websites to see how hard each piece of writing was to understand. People may avoid learning hard ideas, only because too many hard words encountered in the process.  We think we can help by explaining the problem with smaller words, and by creating tools to address the problem.
-
-## Why Are We Doing This?
+### Why Are We Doing This?
 We want to promote clearer and simpler writing in science, by encorouging scientists in the same field to compete with each other over writing more clearly.
 
-## How Are we Doing This?
+### How Are we Doing This?
+We are doing this by creating a data-driven tool that can deliver information about readability to a scientisit about their work or the work of scientists. 
 
 ### Machine Estimation of Writing Complexity:
-
 The accessibility of written word can be approximated by a computer program that reads over the text and guesses the mental difficulty, associated with comprehending a written document. The computer program maps reading difficult onto a quantity that is informed by the cognitive load of the writing, and the number of years of schooling needed to decode the language in the document. For convenience, we can refer to the difficulty associated with the text as the 'complexity' of the document. 
 
 ### How do some well-known texts do?
@@ -105,16 +104,15 @@ How different are the scores?
 ### The Following is a plot of the Distribution of Science Writing Versus non-science writing the [ART Science corpus](https://www.aber.ac.uk/en/media/departmental/computerscience/cb/art/gz/ART_Corpus.tar.gz):
 ![image](https://user-images.githubusercontent.com/7786645/53215155-96dbb780-360c-11e9-9280-d8592d31d2f9.png)
 
-
 The science writing niche is characterized, by having a mean reading grade level of 18, neutral, to negatively polarized sentiment type and close to an almost complete absence of subjectivity. Science writing is more resistant to file compression, meaning that information entropy is high, due to concise, coded language. These statistical features, give quite a lot to go on, with regards to using language style to predict the scientific status of a randomly selected web document. The same notion of entropy being generally higher in science is corroborated with the perplexity measure, which measures how improbable the particular frequency distribution of words of observed in a document was.
 
 
-## Developer Overview 
-Non-scientific writing typically exceeds genuine scientific writing in two important aspects: in contrast to genuine science, non-science is often expressed with a less complex, and more engaging writing style. We believe non-science writing occupies a more accessible niche, that academic science writing should also occupy. 
+### Developer Overview 
+Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible relative to other academic science writing. This means that reading scientific writing is often more complicated, making it unaccessible to many individuals. 
 
-Unfortunately, writing styles intended for different audiences, are predictably different We show that computers can learn to guess the type of a written document: blog, Wikipedia, opinion, and traditional science, by first sampling a large variety of web documents, and then classifying using sentiment, complexity, and other variables. By predicting which of the several different niches a document occupies, we are able to characterize the different writing types and to describe strategies to remedy writing complexity.
+Unfortunately, writing styles intended for different audiences are predictably different. We show that computers can sample a large variety of web documents, and then document their sentiment, complexity, and other metrics that define its readability.
 
-Multiple stakeholders benefit when science is communicated with lower complexity expression of ideas. With lower complexity science writing, knowledge would be more readily transferred into public awareness, additionally, the digital organization of facts derived from journal articles would occur more readily, as successful machine comprehension of documented science would likely occur with less human intervention. 
+Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. 
 
-The impact of science on society is likely proportional to the accessibility of written work. Objectively describing the character of the different writing styles will allow us to prescribe how, to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
+Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
 
