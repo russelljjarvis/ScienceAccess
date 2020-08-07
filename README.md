@@ -5,10 +5,11 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
+This dashboard application allows the user to view the readability of different scholarly authors, in doing so it also serves as a kind of scraper viewer or GUI.
+
 <img src="app_works.gif" width="450" height="450"/>
 
 
-This dashboard application allows the user to view the readability of scholarly authors, in doing so it also serves as a kind of scrape view GUI.
 
 **First Step**
 ```
