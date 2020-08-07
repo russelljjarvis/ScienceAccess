@@ -29,6 +29,11 @@ from science_access.word_cloud_by_word_len import generate_from_lengths
 from science_access.utils import check_passive
 import plotly.graph_objects as go 
 
+theme = px.colors.diverging.Portland
+colors = [theme[-1], theme[-2]]
+
+NBINS = 40
+
 def frame_to_lists(ar):
     scraped_labels = [ str(x['link']) for x in ar]
     standard_sci = [ t['standard'] for t in ar ]
@@ -56,7 +61,7 @@ def get_table_download_link(df):
     ).decode()  # some strings <-> bytes conversions necessary here
     return f'<a href="data:file/csv;base64,{b64}" download="myfilename.csv">Download csv file</a>'
 
-
+#@st.cache 
 def art_cloud_wl(acorpus):
     WC = WordCloud(background_color="white")
     WC.generate_from_lengths = MethodType(generate_from_lengths,WC)
@@ -75,7 +80,10 @@ def art_cloud_wl(acorpus):
     '''
     st.pyplot()
     return biggest_words
+
+
 #@st.cache 
+
 def art_cloud(acorpus):
 
     # Generate a word cloud image
@@ -98,6 +106,7 @@ def fast_art_cloud(acorpus):
     wordcloud,fig,plt = art_cloud(acorpus)
     st.pyplot()
     #    st.pyplot(width =517)
+
 def create_giant_strings(ar,not_want_list):
     sci_corpus = ''
     for t in ar:
@@ -114,7 +123,6 @@ def create_giant_strings(ar,not_want_list):
                         sci_corpus+=str(' ')+temp[1]
                     if s not in set(not_want_list):
                         sci_corpus+=str(' ')+s#+str(' ')
-    #print(sci_corpus)
     return sci_corpus
 def make_clickable(link):
     # target _blank to open new window
@@ -139,6 +147,7 @@ def extra_options(ar,trainingDats,df1):
         st.markdown(get_table_download_link(df1), unsafe_allow_html=True)
     except:
         st.markdown('try and allow user to download data')
+
 def grab_data_for_splash(trainingDats):
 
     bio_chem = [ t['standard'] for t in trainingDats ]

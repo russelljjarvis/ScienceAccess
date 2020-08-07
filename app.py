@@ -16,7 +16,7 @@ import math
 import scipy
 #from types import MethodType
 #from nltk import word_tokenize
-import plotly.graph_objects as go 
+import plotly.graph_objects as go
 
 
 from science_access.t_analysis import not_want_list
@@ -50,12 +50,10 @@ if author_name:
     ar = call_from_front_end(author_name)
     scraped_labels, standard_sci = frame_to_lists(ar)
 
-    #df1,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0)
-    df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
-
+    df1,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0)
     st.write(fig)
     cached = False
-    # try and update underlying distribution with query, so information about science 
+    # try and update underlying distribution with query, so information about science
     # is culmulative, dynamic.
     # Try to allow researchers of the app to download the data.
     # Via GUI prompts.
@@ -70,6 +68,7 @@ else:
     '''
     scraped_labels, standard_sci = frame_to_lists(ar)
     #push_frame_to_screen(scraped_labels,standard_sci)
+    #st.markdown('-----')
 
     df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
     st.write(fig)
@@ -91,12 +90,14 @@ st.markdown('''
 In general, we can equate reading level with grade level.
 '''
 
+st.markdown('-----')
+st.markdown('\n\n')
+
 '''
 ### Links to articles obtained from the search.
 '''
 
 push_frame_to_screen(scraped_labels,standard_sci)
-
 # Create a list of possible values and multiselect menu with them in it.
 
 st.markdown('-----')
@@ -107,7 +108,7 @@ st.markdown('''
 
 
 '''
-Here are a few additional established text sources of known complexity for comparison.
+Here are the metrics for a few additional established text sources of known complexity:
 '''
 
 st.markdown("""
@@ -118,12 +119,9 @@ st.markdown("""
 | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | -  | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
 | [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | 2,594 | library of scientific papers published in The Royal Society of Chemistry |
 """)
+
 st.markdown('-----')
 st.markdown('\n\n\n\n')
-
-
-
-
 
 if np.mean(standard_sci) < np.mean(bio_chem):
     st.markdown('''
@@ -134,9 +132,6 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
     st.markdown('''
     ### {0} was on average more difficult to read relative to ART Corpus.
     '''.format(author_name))
-
-
-
 
 
 twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
@@ -164,10 +159,16 @@ if twosample_results[1] < .05:
     The reading complexity of {0} text was significantly different than that of ART Corpus.
     '''.format(author_name))
 
-st.markdown('\n\n')
+
+
+
 st.markdown('-----')
 
-# https://en.wikipedia.org/wiki/Blacklisting
+
+
+st.markdown('-----')
+st.markdown('\n\n')
+
 sci_corpus = create_giant_strings(ar,not_want_list)
 bio_corpus = create_giant_strings(trainingDats,not_want_list)
 
@@ -197,7 +198,6 @@ values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
 
 fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
-st.markdown('-----')
 
 st.markdown("""
 ### Uniqueness of words (different words used / total number of words)
@@ -211,6 +211,11 @@ values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
 fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
 
+
+#elaborate_plot(trainingDats)
+
+
+st.markdown('\n\n')
 st.markdown('-----')
 
 """
@@ -232,12 +237,13 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 """
 
 """
-#### Below is a word cloud with some of the biggest words:
+## Below is a word cloud with some of the biggest words:
+if message about caching means it will run faster on second run.
 """
 try:
 
     big_words = art_cloud_wl(sci_corpus)
-    st.markdown(str(big_words[0][0]))
+    st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 except:
     pass
 try:
