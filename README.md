@@ -5,9 +5,8 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
-<img src="app_works.gif" width="350" height="350"/>
+<img src="app_works.gif" width="450" height="450"/>
 
-![](app_works.gif=350x350)
 
 **Requirements**
 This dashboard application assumes a Unix/Linux/OSX type operating system with a ZSH/BASH evironment. Docker versions of linux on Windows would also work. 
