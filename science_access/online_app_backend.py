@@ -161,7 +161,7 @@ def ar_manipulation(ar):
         
     trainingDats.extend(ar)
     return (ar, trainingDats)
-
+OPENACCESS = False
 def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
@@ -170,7 +170,7 @@ def call_from_front_end(NAME):
         (ar, trainingDats) = ar_manipulation(ar)
 
 
-    if heroku:
+    if OPENACCESS:
         import os
         from crossref_commons.iteration import iterate_publications_as_json
         import requests

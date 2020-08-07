@@ -95,20 +95,6 @@ def perplexity(self, text):
     return pow(2.0, self.entropy(text))   
 
 
-def zipf_plot(tokens):
-    # https://www.kaggle.com/kaitlyn/zipf-s-law
-    df = pd.DataFrame(tokens,columns='text')
-    df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
-    # Create a word count dataframe
-    word_list = ' '.join(df.clean_text.values).split(' ')
-    words = pd.DataFrame(word_list, columns=['word'])
-    word_counts = words.word.value_counts().reset_index()
-    word_counts.columns = ['word', 'n']
-    word_counts['word_rank'] = word_counts.n.rank(ascending=False)    
-    f, ax = plt.subplots(figsize=(7, 7))
-    ax.set(xscale="log", yscale="log")
-    sns.regplot("n", "word_rank", word_counts, ax=ax, scatter_kws={"s": 100})
-    return
 
 
 def perplexity(testset, model):
@@ -136,7 +122,7 @@ not_want_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
               'copyright', 'org','figure','pubmed','accessshoping']
-
+from science_access.utils import check_passive
 def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     # TODO do set
     # operation on black list and corpus. 
@@ -152,11 +138,13 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", corpus)
         # remove the hashtags and mentions
         corpus = re.sub(r"#\w+|@\w+", "", corpus)
+        does_this_work = check_passive(corpus)
         '''
         textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
         # code from:
         # https://github.com/russelljjarvis/twitter-dash/blob/master/twitterdash/preprocessing.py
-
+        #
+        # 
         tokens = word_tokenize(corpus)
 
 

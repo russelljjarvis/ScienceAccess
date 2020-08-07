@@ -34,6 +34,12 @@ colors = [theme[-1], theme[-2]]
 
 NBINS = 40
 
+
+def passiveness(acorpus):
+
+
+    check_passive(acorpus)
+
 def frame_to_lists(ar):
     scraped_labels = [ str(x['link']) for x in ar]
     standard_sci = [ t['standard'] for t in ar ]
@@ -49,6 +55,7 @@ def try_and_update_cache(ar,trainingDats):
         st.write('if types are data frame/list wrangling will be required')
         trainingDats.extend(ar)
         pickle.dump(f,trainingDats)
+
 def get_table_download_link(df):
     """Generates a link allowing the data 
     in a given panda dataframe to be downloaded
@@ -61,6 +68,20 @@ def get_table_download_link(df):
     ).decode()  # some strings <-> bytes conversions necessary here
     return f'<a href="data:file/csv;base64,{b64}" download="myfilename.csv">Download csv file</a>'
 
+
+def zipf_plot(word_counts_fz):
+    import streamlit as st
+    # https://www.kaggle.com/kaitlyn/zipf-s-law
+    f, ax = plt.subplots(figsize=(7, 7))
+    ax.set(xscale="log", yscale="log")
+    b = sns.regplot("n", "word_rank", word_counts_fz, ax=ax, scatter_kws={"s": 100})
+    b.axes.set_title("Zipf Curve")#,fontsize=50)
+    b.set_xlabel("logx word frequency")#,fontsize=30)
+    b.set_ylabel("logy word frequency")#,fontsize=20)
+    b.tick_params(labelsize=5)
+    
+    st.pyplot()
+    return
 #@st.cache 
 def art_cloud_wl(acorpus):
     WC = WordCloud(background_color="white")
@@ -71,6 +92,8 @@ def art_cloud_wl(acorpus):
 
     wordcloud = WC.generate_from_lengths(tokens)
     biggest_words = WC.biggest_words
+
+    word_counts_fz = WC.word_counts_fz
     #wc = WordCloud().generate_from_frequencies(frequencies=di)
     plt.imshow(wordcloud, aspect="auto",interpolation='bilinear')
     plt.axis("off")
@@ -79,7 +102,12 @@ def art_cloud_wl(acorpus):
     ### A second word cloud where word length controls word size, not word frequency in text
     '''
     st.pyplot()
-    return biggest_words
+    return biggest_words, word_counts_fz
+
+
+def zipf_wrapper(acorpus):
+    tokens = list(word_tokenize(acorpus))
+    zipf_plot(tokens)
 
 
 #@st.cache 
@@ -124,6 +152,7 @@ def create_giant_strings(ar,not_want_list):
                     if s not in set(not_want_list):
                         sci_corpus+=str(' ')+s#+str(' ')
     return sci_corpus
+
 def make_clickable(link):
     # target _blank to open new window
     # extract clickable text to display for your link
@@ -208,6 +237,7 @@ def grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = '')
     fig.update_layout(title_text='Scraped author versus ART Corpus')
     fig.update_layout(width=900, height=600)#, hovermode='x')
     return df1,fig
+
 def push_frame_to_screen(labels,readability_vector):
     df_links = pd.DataFrame()
     df_links['Web_Link'] = pd.Series(labels)
@@ -294,7 +324,6 @@ def elaborate_plot(trainingDats):
 
     fig = plt.figure(figsize=(10, 8), dpi=80)
     ax1 = fig.add_subplot(111)#)
-    print([a for a in ar])
     mean_ = np.mean([a['standard'] for a in ar])
     min_ = np.min([a['standard'] for a in ar])
     max_ = np.max([a['standard'] for a in ar])
