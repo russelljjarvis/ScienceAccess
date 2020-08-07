@@ -60,7 +60,7 @@ In addition, we compare the query to a number of available text repositories wit
 
 Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included to better contextualize the complexity of the ART Corpus data with other text repositories of known complexity. We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language, and another benchmark for the user to see when viewing their own readability score.
 
-Sentiment and polarity are also caluclated. 
+Sentiment is also calculated to see overall how positive or negative the text scores.  
 
 Lastly, two word clouds are also generated. These show the most commonly used words and the largest words in the scraped text. 
 
