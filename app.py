@@ -209,17 +209,17 @@ values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
 fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
 
-st.markdown("""
+#st.markdown("""
 ### Uniqueness of words (different words used / total number of words)
-It is {0} that on average the word diversity of {1} is higher relative to that of ART Corpus.
-""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar]),author_name))
+#It is {0} that on average the word diversity of {1} is higher relative to that of ART Corpus.
+#""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar]),author_name))
 
 
-labels = ['{0} unique words ratio'.format(author_name),'ART Corpus unique words ratio']
-values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
+#labels = ['{0} unique words ratio'.format(author_name),'ART Corpus unique words ratio']
+#values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
 
-fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-st.write(fig)
+#fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
+#st.write(fig)
 
 
 st.markdown('\n\n')
