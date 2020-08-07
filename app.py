@@ -147,7 +147,7 @@ sci_corpus = create_giant_strings(ar,not_want_list)
 bio_corpus = create_giant_strings(trainingDats,not_want_list)
 
 '''
-### Word cloud based on the most common words found in the scraped texts
+### Word cloud based on the most common words found in the scraped text
 '''
 fast_art_cloud(sci_corpus)
 
@@ -156,12 +156,12 @@ st.markdown('\n\n')
 
 
 """
-### Word cloud based on the largest words found in the scraped texts
+### Word cloud based on the largest words found in the scraped text
 if message about caching means it will run faster on second run.
 """
 
 big_words,word_counts_fz = art_cloud_wl(sci_corpus)
-st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
+#st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
 #st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
 st.markdown('-----')
@@ -203,7 +203,7 @@ for block in trainingDats:
 temp = np.mean(sentiment)<np.mean([r['sp'] for r in ar])
 st.markdown("""
 ### Sentiment
-It is {} that the mean sentiment polarity of {} is more postive relative to that of ART Corpus.
+It is {} that the mean sentiment of {} is more postive relative to that of ART Corpus.
 """.format(temp,author_name))
 
 temp = '{0} positive sentiment'.format(author_name)
