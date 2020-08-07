@@ -160,11 +160,6 @@ if twosample_results[1] < .05:
 
 
 
-
-st.markdown('-----')
-
-
-
 st.markdown('-----')
 st.markdown('\n\n')
 
@@ -233,6 +228,9 @@ st.markdown('-----')
 """
 Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 """
+
+st.markdown('-----')
+st.markdown('\n\n')
 
 """
 ## Below is a word cloud with some of the biggest words:
