@@ -11,7 +11,7 @@ This dashboard application allows the user to search for a scientific author, an
 
 
 
-**First Step**
+### Running from the terminal
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
@@ -24,13 +24,18 @@ place output from above command in
 ```
 sudo [output] setup.py install
 ```
-**Run**
 
 ```
 streamlit run app.py
 ```
 
-The Docker way:
+### Running using Docker
+```
+git clone https://github.com/russelljjarvis/ScienceAccess.git
+cd ScienceAccess
+
+```
+
 ```
 docker build -t streams .
 docker run -it -p 8501:8501 streams /bin/bash
