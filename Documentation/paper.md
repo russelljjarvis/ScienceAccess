@@ -34,18 +34,19 @@ To address this, we created a tool that uses a data-driven approach to provide a
 
 Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
 
-# Methods
 
-### Text Analysis Metrics
-We built a web-scraping and text analysis infrastructure by extending many existing Free and Open Source (FOS) tools, including Google Scrape, Beautiful Soup, The Natural Language Toolkit, and Selenium.
+# Text Analysis Metrics
+We built a web-scraping and text analysis infrastructure by extending many existing Free and Open Source (FOS) tools, including Google Scrape, Beautiful Soup, The Natural Language Toolkit, and Selenium. The tool is a dashboard application.
 
 The tool prompts the user to enter an author name, after which a text scraping process occurs.
 
-## Contextualized Readability Output
+# Contextualized Readability Output
 
-After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, as well as the individual scores for each of the scraped texts. 
+After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, and the number of documents that this score was based on. 
 
-The scraped text is also compared relative to Art Corpus [@Soldatova:2007], a library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool provides an overlay of the distribution of Art Corpus with that of the scraped author's text.
+The scraped text is also compared relative to Art Corpus [@Soldatova:2007], a library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool provides an overlay of the distribution of Art Corpus with that of the scraped author's text. A secondary distribution plot also shows all of the entered author's works, so that the readability of each individual work can be visualized relative to the histogram.
+
+Each scraped text is presented to the user in a table, so that the user can both verify that the scrape returned corrct results. In addition, the individual readability scores for each of these scraped texts are provided. Each entry in the table is an active link that will also take the user to the source text. 
 
 In addition, we compare the query to a number of available text repositories with varying complexity:
 
