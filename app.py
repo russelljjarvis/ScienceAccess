@@ -89,14 +89,16 @@ st.markdown('''
 In general, we can equate reading level with grade level.
 '''
 
+st.markdown('\n')
+
 if np.mean(standard_sci) < np.mean(bio_chem):
     st.markdown('''
-    #### {0} was on average easier to read relative to ART Corpus.
+    ### {0} was on average easier to read relative to ART Corpus.
     '''.format(author_name))
 
 if np.mean(standard_sci) >= np.mean(bio_chem):
     st.markdown('''
-    #### {0} was on average more difficult to read relative to ART Corpus.
+    ### {0} was on average more difficult to read relative to ART Corpus.
     '''.format(author_name))
     
 st.markdown('-----')
@@ -153,7 +155,7 @@ if message about caching means it will run faster on second run.
 """
 
 big_words,word_counts_fz = art_cloud_wl(sci_corpus)
-st.markdown('Here is one of the biggest words found: "{0}")
+st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
 #st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
 st.markdown('-----')
@@ -243,13 +245,13 @@ st.markdown('\n\n')
 
 #elaborate_plot(trainingDats)
 
-zipf_plot(word_counts_fz)
+#zipf_plot(word_counts_fz)
 #try:
 #except:
 #    pass
-try:
-    bio_corpus = create_giant_strings(trainingDats,not_want_list)
-    big_words = art_cloud_wl(bio_corpus)
-    st.markdown(str(big_words[0][0]))
-except:
-    pass
+#try:
+#    bio_corpus = create_giant_strings(trainingDats,not_want_list)
+#    big_words = art_cloud_wl(bio_corpus)
+#    st.markdown(str(big_words[0][0]))
+#except:
+#    pass
