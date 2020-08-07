@@ -121,7 +121,7 @@ DEBUG = False
 not_want_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
-              'copyright', 'org','figure','pubmed','accessshoping']
+              'copyright', 'org','figure','pubmed','accessshoping','article','articlepubmedpubmed']
 from science_access.utils import check_passive
 def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     # TODO do set
