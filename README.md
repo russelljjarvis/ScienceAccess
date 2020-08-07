@@ -5,12 +5,8 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
+![](app_works.gif)
 
-**![](https://russelljjarvis/ScienceAccess/app_works.gif)**
-
-
-
-**Installation** 
 **Requirements**
 This dashboard application assumes a Unix/Linux/OSX type operating system with a ZSH/BASH evironment. Docker versions of linux on Windows would also work. 
 
