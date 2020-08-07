@@ -105,17 +105,20 @@ st.markdown('-----')
 st.markdown('\n\n')
 
 '''
-### Links to articles obtained from the search.
+### Links to articles obtained from the scrape.
 '''
 
 push_frame_to_screen(scraped_labels,standard_sci)
 # Create a list of possible values and multiselect menu with them in it.
+'''
+In general, we can equate reading level with grade level.
+'''
 
 st.markdown('-----')
 st.markdown('\n\n')
 
 st.markdown('''
-### The average reading level of the scraped work was {0}. For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf)'''.format(round(np.mean(standard_sci)),3))
+### The average reading level of the scraped work was {0}. For comparison, [the average adult reads at an 8th grade reading level.](http://nces.ed.gov/naal/pdf/2006470.pdf)'''.format(round(np.mean(standard_sci)),3))
 
 
 '''
@@ -241,7 +244,6 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 """
 
 st.markdown('-----')
-st.markdown('\n\n')
 
 #elaborate_plot(trainingDats)
 
