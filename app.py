@@ -234,9 +234,15 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 """
 #### Below is a word cloud with some of the biggest words:
 """
-big_words = art_cloud_wl(sci_corpus)
-st.markdown(str(big_words[0][0]))
-bio_corpus = create_giant_strings(trainingDats,not_want_list)
+try:
 
-big_words = art_cloud_wl(bio_corpus)
-st.markdown(str(big_words[0][0]))
+    big_words = art_cloud_wl(sci_corpus)
+    st.markdown(str(big_words[0][0]))
+except:
+    pass
+try:
+    bio_corpus = create_giant_strings(trainingDats,not_want_list)
+    big_words = art_cloud_wl(bio_corpus)
+    st.markdown(str(big_words[0][0]))
+except:
+    pass
