@@ -30,49 +30,39 @@ In the age of growing science communication, this tendency for scientists to use
 
 While readability tools, such as Readable (https://www.webfx.com/tools/read-able/) and Upgoer5 (https://splasho.com/upgoer5/) currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not focus on complexity in a more academic-type context.
 
-To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies existing text repositories with varying complexity, and subsequently uses this output as a reference to show how the readability of user-selected written work compares to these other known resources.
+To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies existing text repositories with varying complexity, and subsequently uses this output as a reference to show how the readability of user-selected written work compares to these other known resources. It also shows the distribution of readability of the searched author's work.
 
-Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And with hope, an improved global communication and understanding of complex topics.
+Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
 
 # Methods
 
 ### Text Analysis Metrics
 We built a web-scraping and text analysis infrastructure by extending many existing Free and Open Source (FOS) tools, including Google Scrape, Beautiful Soup, The Natural Language Toolkit, and Selenium.
 
-We first query a number of available text repositories with varying complexity:
+The tool prompts the user to enter an author name, after which a text scraping process occurs.
+
+## Contextualized Readability Output
+
+After performing the web scrape of thiis author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, as well as the individual scores for each of the scraped texts. 
+
+The scraped text is also compared relative to Art Corpus [@Soldatova:2007], library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [2].
+
+In addition, we compare the query to a number of available text repositories with varying complexity:
 
 | Text Source | Mean Complexity | Description |
 |----------|----------|:-------------:|
-| Upgoer 5                            | 6   | library using only the 10,000 most commonly occurring English words |
-| Wikipedia                               | 14.9 | free, popular, crowdsourced encyclopedia   |
-| Post-Modern Essay Generator (PMEG)  | 16.5 | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-| Art Corpus                       | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
+| [readability of science declining](https://elifesciences.org/download/aHR0cHM6Ly9jZG4uZWxpZmVzY2llbmNlcy5vcmcvYXJ0aWNsZXMvMjc3MjUvZWxpZmUtMjc3MjUtdjIucGRm/elife-27725-v2.pdf?_hash=WA%2Fey48HnQ4FpVd6bc0xCTZPXjE5ralhFP2TaMBMp1c%3D)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+| [science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
 
-Entering an author's name (or two authors for the competition plot) by the user begins a query through Google Scholar, returning the scraped results from articles containing the author's name(s).
+Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included to better contextualize the complexity of the ART Corpus data with other text repositories of known complexity. We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language, and another benchmark for the user to see when viewing their own readability score.
 
-The Flesch-Kincaid readability score [@Kincaid:1975] - the most commonly used metric to assess readability - is then used to quantify the complexity of all items.
+Lastly, sentiment and polarity are also caluclated. And word cloud is also generated showing the most commonly used words and the largest words in the scraped text. 
 
-## Contextualized Readability Output
-The generated plot for contextualized readability information is a histogram binned by readability score, initially populated exclusively by the ART corpus [@Soldatova:2007] data. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [2].
-
-The mean readability scores of Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are labeled on the plot as single data points to contextualize the complexity of the ART corpus data with other text repositories of known complexity.
-
-We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language, and another benchmark for the user to see when viewing their own readability score.
-
-Lastly, the mean reading level of the entered author's work is displayed as a boxplot along with the ART-corpus distribution data. The boxplot depicts mean, and the first and third quartiles of the authors scraped work. The box plot enables the viewer of the report to get a sense of underlying variance of a particular author's work, relative to that of the ART-corpus. We also display single data points for the maximum and minimum scores. Thus, the resulting graph displays the mean writing complexity of the entered author against a distribution of ART corpus content as well as these other text repositories of known complexity.
-
-![Specific Author Relative to Distribution](figures/boxplot.png)
 
 # References
 see paper.bib
 
-
-
-removed text concerning competition:
-
-This tool also introduces one additional feature for readability comparison and improvement. It allows the entry of two author names to enable a competition as to whose text has the lowest average readability score. Public competitions can often incentivize good practices, and this may be a fun and interactive tool to help improve readability scores over time.
-
-Competition Output
-The three-author competition plot displays two distributions which display the readability distribution of only the author's written work, as scraped and analyzed from Google Scholar. Vertical lines are used to plot the mean readability value for each author. Anonymous authors A and B, are co-authors that publish in the same field, thus their readability scores should be closely matched, as their score will be derived from some mutual documents. Anonymous author C, publishes in an unrelated field and does not co-author with authors A and B.
-
-![Specific Author Relative to Distribution](figures/tournament.png)
