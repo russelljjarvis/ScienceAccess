@@ -131,26 +131,34 @@ def art_cloud(acorpus):
 
 def fast_art_cloud(acorpus):
     # uses cache
-    wordcloud,fig,plt = art_cloud(acorpus)
+    try:
+        wordcloud,fig,plt = art_cloud(acorpus)
+    except:
+        wordcloud,fig,plt = art_cloud(acorpus)
+
     st.pyplot()
     #    st.pyplot(width =517)
 
 def create_giant_strings(ar,not_want_list):
     sci_corpus = ''
+    fist_pass = []
     for t in ar:
         if 'tokens' in t.keys():
             for s in t['tokens']:
                 if s not in not_want_list:
-                    if "/" in s:
-                        temp = s.split("/")#, " ")
-                        sci_corpus+=str(' ')+temp[0]
-                        sci_corpus+=str(' ')+temp[1]
-                    if "." in s:
-                        temp = s.split(".")#, " ")
-                        sci_corpus+=str(' ')+temp[0]
-                        sci_corpus+=str(' ')+temp[1]
-                    if s not in set(not_want_list):
-                        sci_corpus+=str(' ')+s#+str(' ')
+                    fist_pass.append(s)    
+    fist_pass =  set(fist_pass)
+    for s in list(fist_pass):
+        if "/" in s:
+            temp = s.split("/")#, " ")
+            sci_corpus+=str(' ')+temp[0]
+            sci_corpus+=str(' ')+temp[1]
+        if "." in s:
+            temp = s.split(".")#, " ")
+            sci_corpus+=str(' ')+temp[0]
+            sci_corpus+=str(' ')+temp[1]
+        if s not in set(not_want_list):
+            sci_corpus+=str(' ')+s#+str(' ')
     return sci_corpus
 
 def make_clickable(link):
