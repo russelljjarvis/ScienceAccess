@@ -122,6 +122,33 @@ st.markdown("""
 st.markdown('-----')
 st.markdown('\n\n\n\n')
 
+
+sci_corpus = create_giant_strings(ar,not_want_list)
+bio_corpus = create_giant_strings(trainingDats,not_want_list)
+
+'''
+### Word cloud based on the most common words found in the scraped texts
+'''
+fast_art_cloud(sci_corpus)
+
+st.markdown('-----')
+st.markdown('\n\n')
+
+
+
+"""
+### Word cloud based on the largest words found in the scraped texts
+if message about caching means it will run faster on second run.
+"""
+
+big_words,word_counts_fz = art_cloud_wl(sci_corpus)
+st.markdown('Here is one of the biggest words found: "{0}")
+#st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
+
+st.markdown('-----')
+st.markdown('\n\n')
+
+
 if np.mean(standard_sci) < np.mean(bio_chem):
     st.markdown('''
     ### {0} was on average easier to read relative to ART Corpus.
@@ -142,7 +169,6 @@ matrix_twosample = [
 
 fig = ff.create_table(matrix_twosample, index=True)
 
-
 st.markdown('''
 A t-test was used to determine whether the reading level for the {0} was
 significantly different from that of ART Corpus.
@@ -159,20 +185,9 @@ if twosample_results[1] < .05:
     '''.format(author_name))
 
 
-
 st.markdown('-----')
 st.markdown('\n\n')
 
-sci_corpus = create_giant_strings(ar,not_want_list)
-bio_corpus = create_giant_strings(trainingDats,not_want_list)
-
-'''
-### Word cloud based on the scraped texts
-'''
-fast_art_cloud(sci_corpus)
-
-st.markdown('-----')
-st.markdown('\n\n')
 
 sentiment=[]
 uniqueness=[]
@@ -205,9 +220,6 @@ fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
 
 
-#elaborate_plot(trainingDats)
-
-
 st.markdown('\n\n')
 st.markdown('-----')
 
@@ -221,7 +233,6 @@ st.markdown('-----')
 [Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
 """
 
-
 """
 #### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
 """
@@ -232,14 +243,7 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 st.markdown('-----')
 st.markdown('\n\n')
 
-"""
-## Below is a word cloud with some of the biggest words:
-if message about caching means it will run faster on second run.
-"""
-
-
-big_words,word_counts_fz = art_cloud_wl(sci_corpus)
-st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
+#elaborate_plot(trainingDats)
 
 zipf_plot(word_counts_fz)
 #try:
