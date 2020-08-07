@@ -68,14 +68,15 @@ class IntegralOccupancyMap(object):
         self.integral[pos_x:, pos_y:] = partial_integral
 from nltk.corpus import words as english_words
 def wrapper(w):    
-    
-
     if w[0] in english_words.words():
-        print('faster,',w)
+        print(w[0])
         return w
     else:
         return None
+
 import dask
+import pandas as pd
+
 def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
@@ -148,21 +149,35 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
 
 
 
-    words = words__
+    words_zipf = words__
 
-    words = set(words)
- 
+    #df = pd.DataFrame(pd.Series(list(words)),columns='text')
+    #df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
+    # Create a word count dataframe
+    #word_list = ' '.join(df.clean_text.values).split(' ')
+    words = pd.DataFrame(list(words_zipf), columns=['word'])
+    word_counts = words.word.value_counts().reset_index()
+    word_counts.columns = ['word', 'n']
+    word_counts['word_rank'] = word_counts.n.rank(ascending=False)    
+    self.word_counts_fz = None
+    self.word_counts_fz = word_counts
+    words = set(words__)
+
     sizes = [len(word) for word in words]
     max_len = np.max(sizes)
 
     frequencies =  [(word, word_len / max_len) 
-                    for word,word_len in zip(words,sizes) if word_len <43]
+                    for word,word_len in zip(words,sizes) if word_len <39]
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])
-    #lazy = (dask.delayed(wrapper)(w) for w in frequencies[0:190])
-    lazy = ((wrapper)(w) for w in frequencies[0:290])
 
-    real_frequencies = list(dask.compute(*lazy))
+    #try:
+    #    lazy = (dask.delayed(wrapper)(w) for w in frequencies[0:190])
+    #    real_frequencies = list(dask.compute(*lazy))
+    #except:
+    lazy = ((wrapper)(w) for w in frequencies[0:160])
+    real_frequencies = list(lazy)
+
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
     self.biggest_words = None

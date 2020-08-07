@@ -19,13 +19,12 @@ import scipy
 import plotly.graph_objects as go
 
 
-from science_access.t_analysis import not_want_list
+from science_access.t_analysis import not_want_list#, 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 #from science_access.word_cloud_by_word_len import generate_from_lengths
-from science_access.utils import check_passive
 
-from science_access.enter_author_name import art_cloud, create_giant_strings, art_cloud_wl
+from science_access.enter_author_name import art_cloud, create_giant_strings, art_cloud_wl, zipf_plot
 from science_access.enter_author_name import distribution_plot_from_scrape, grand_distribution_plot
 from science_access.enter_author_name import push_frame_to_screen, fast_art_cloud, grab_data_for_splash
 from science_access.enter_author_name import frame_to_lists, try_and_update_cache, get_table_download_link, extra_options
@@ -172,7 +171,6 @@ st.markdown('\n\n')
 sci_corpus = create_giant_strings(ar,not_want_list)
 bio_corpus = create_giant_strings(trainingDats,not_want_list)
 
-
 '''
 ### Word cloud based on the scraped texts
 '''
@@ -240,12 +238,15 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 ## Below is a word cloud with some of the biggest words:
 if message about caching means it will run faster on second run.
 """
-try:
 
-    big_words = art_cloud_wl(sci_corpus)
-    st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
-except:
-    pass
+
+big_words,word_counts_fz = art_cloud_wl(sci_corpus)
+st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
+
+zipf_plot(word_counts_fz)
+#try:
+#except:
+#    pass
 try:
     bio_corpus = create_giant_strings(trainingDats,not_want_list)
     big_words = art_cloud_wl(bio_corpus)
