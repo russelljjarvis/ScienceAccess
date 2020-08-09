@@ -16,29 +16,21 @@ Source: [Github](https://github.com/russelljjarvis/ScienceAccess)
 
 import streamlit as st
 import os
-#import matplotlib.pyplot as plt
-#import seaborn as sns
-#from wordcloud import WordCloud
 import pandas as pd
 import pickle
 import numpy as np
 import plotly.figure_factory as ff
 import plotly.express as px
 import copy
-#import nltk
-
 import streamlit as st
 import math
 import scipy
-#from types import MethodType
-#from nltk import word_tokenize
 import plotly.graph_objects as go
 
 
 from science_access.t_analysis import not_want_list#, 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
-#from science_access.word_cloud_by_word_len import generate_from_lengths
 
 from science_access.enter_author_name import art_cloud, create_giant_strings, art_cloud_wl, zipf_plot
 from science_access.enter_author_name import distribution_plot_from_scrape, grand_distribution_plot
@@ -82,9 +74,6 @@ else:
     Displaying stored results until a new author search is performed.
     '''
     scraped_labels, standard_sci = frame_to_lists(ar)
-    #push_frame_to_screen(scraped_labels,standard_sci)
-    #st.markdown('-----')
-
     df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
     st.write(fig)
 
@@ -183,32 +172,6 @@ big_words,word_counts_fz = art_cloud_wl(sci_corpus)
 st.markdown('-----')
 st.markdown('\n\n')
 
-#twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
-
-#matrix_twosample = [
-#    ['', 'Test Statistic', 'p-value'],
-#    ['Result', twosample_results[0], twosample_results[1]]
-#]
-
-#fig = ff.create_table(matrix_twosample, index=True)
-
-#st.markdown('''
-#A t-test was used to determine whether the reading level for the {0} was
-#significantly different from that of ART Corpus.
-#'''.format(author_name))
-#st.write(fig)
-
-#if twosample_results[1] >= .05:
-#    st.markdown('''
-#    The reading complexity of {0} text was not significantly different than that of ART Corpus.
-#    '''.format(author_name))
-#if twosample_results[1] < .05:
-#    st.markdown('''
-#    The reading complexity of {0} text was significantly different than that of ART Corpus.
-#    '''.format(author_name))
-
-#st.markdown('-----')
-#st.markdown('\n\n')
 
 
 sentiment=[]
@@ -228,19 +191,6 @@ values = [np.mean([r['sp'] for r in ar]),np.mean(sentiment)]
 
 fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
 st.write(fig)
-
-#st.markdown("""
-### Uniqueness of words (different words used / total number of words)
-#It is {0} that on average the word diversity of {1} is higher relative to that of ART Corpus.
-#""".format(np.mean(uniqueness)<np.mean([r['uniqueness'] for r in ar]),author_name))
-
-
-#labels = ['{0} unique words ratio'.format(author_name),'ART Corpus unique words ratio']
-#values = [np.mean([ r['uniqueness'] for r in ar]),np.mean(uniqueness)]
-
-#fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])
-#st.write(fig)
-
 
 st.markdown('\n\n')
 st.markdown('-----')
@@ -264,15 +214,4 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 
 st.markdown('-----')
 
-#elaborate_plot(trainingDats)
 
-#zipf_plot(word_counts_fz)
-#try:
-#except:
-#    pass
-#try:
-#    bio_corpus = create_giant_strings(trainingDats,not_want_list)
-#    big_words = art_cloud_wl(bio_corpus)
-#    st.markdown(str(big_words[0][0]))
-#except:
-#    pass
