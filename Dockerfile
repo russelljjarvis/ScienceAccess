@@ -9,9 +9,7 @@ RUN echo "${NB_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
 # FROM python:3.7
 # https://github.com/joyzoursky/docker-python-chromedriver/blob/master/py3/py3.6-xvfb-selenium/Dockerfile
 RUN apt-get update 
-# && apt-get install -y gnupg
-#RUN apt-get install -yqq xvfb
-# set display port and dbus env to avoid hanging
+
 
 # install selenium
 RUN apt-get update
@@ -40,14 +38,11 @@ RUN pip install nltk
 RUN pip install selenium==3.8.0
 RUN pip install --upgrade pip
 # Upgrade to version 2.0
-#RUN conda install -y matplotlib
 # Make sure every Python file belongs to jovyan
 # Remove dangling symlinks
 RUN find -L /opt/conda -type l -delete
 # Make sure every Python file is writable
 
-#RUN chown -R $NB_USER $HOME
-#RUN rm -rf /var/lib/apt/lists/*
 # set dbus env to avoid hanging
 ENV DISPLAY=:99
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
@@ -132,12 +127,14 @@ USER jovyan
 EXPOSE 8501
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
-WORKDIR $HOME
-CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
+WORKDIR $HOME 
+# test installs.
+# CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
 RUN python -c "import streamlit"
 RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
 RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
 RUN python3 -c "import streamlit"
 RUN python3 -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
 RUN python3 -c "import nltk; nltk.download('averaged_perceptron_tagger')"
+CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
 
