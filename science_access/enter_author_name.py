@@ -227,7 +227,7 @@ def distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0
     df1.drop_duplicates(subset = "Web_Link", inplace = True)
     df = pd.concat([df1,df0])
     fig = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                    marginal="box",
+                    marginal="rug",
                     opacity=0.7,# marginal='violin',# or violin, rug
                     hover_data=df.columns,
                     hover_name=df["Web_Link"],
