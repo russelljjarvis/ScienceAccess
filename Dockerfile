@@ -90,8 +90,8 @@ driver.quit();"
 
 RUN sudo chown -R jovyan .
 # copying all analysis code to image
-COPY . .
-COPY requirements.txt ./
+ADD . .
+ADD requirements.txt ./
 RUN pip install -r requirements.txt
 RUN pip install nltk
 #RUN python -c "import streamlit"

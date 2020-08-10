@@ -71,6 +71,7 @@ def get_table_download_link(df):
 
 def zipf_plot(word_counts_fz):
     import streamlit as st
+    '''
     # https://www.kaggle.com/kaitlyn/zipf-s-law
     f, ax = plt.subplots(figsize=(7, 7))
     ax.set(xscale="log", yscale="log")
@@ -80,6 +81,25 @@ def zipf_plot(word_counts_fz):
     b.set_ylabel("logy word frequency")#,fontsize=20)
     b.tick_params(labelsize=5)
     
+    st.pyplot()
+    f, ax = plt.subplots(figsize=(7, 7))
+    ax.set(xscale="log", yscale="log")
+    #st.text(str(word_counts_fz.columns))
+    b = sns.scatterplot(word_counts_fz["word_rank"], word_counts_fz["word"], ax=ax)
+    b.axes.set_title("Zipf Curve")#,fontsize=50)
+    b.set_xlabel("logx word frequency")#,fontsize=30)
+    b.set_ylabel("logy word frequency")#,fontsize=20)
+    b.tick_params(labelsize=5)
+    st.pyplot()
+    '''
+    f, ax = plt.subplots(figsize=(7, 7))
+    ax.set(xscale="log", yscale="log")
+    #st.text(str(word_counts_fz.columns))
+    b = sns.scatterplot(word_counts_fz["word_rank"], word_counts_fz["n"], ax=ax)
+    b.axes.set_title("Zipf Curve")#,fontsize=50)
+    b.set_xlabel("logx word frequency")#,fontsize=30)
+    b.set_ylabel("logy word frequency")#,fontsize=20)
+    b.tick_params(labelsize=5)    
     st.pyplot()
     return
 #@st.cache 
@@ -141,14 +161,14 @@ def fast_art_cloud(acorpus):
 
 def create_giant_strings(ar,not_want_list):
     sci_corpus = ''
-    fist_pass = []
+    first_pass = []
     for t in ar:
         if 'tokens' in t.keys():
             for s in t['tokens']:
                 if s not in not_want_list:
-                    fist_pass.append(s)    
-    fist_pass =  set(fist_pass)
-    for s in list(fist_pass):
+                    first_pass.append(s)    
+    first_pass =  set(first_pass)
+    for s in first_pass:
         if "/" in s:
             temp = s.split("/")#, " ")
             sci_corpus+=str(' ')+temp[0]

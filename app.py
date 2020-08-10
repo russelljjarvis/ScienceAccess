@@ -40,6 +40,13 @@ author_name = st.text_input('Enter Author Name:')
 
 with open('data/_author_specificSayali Phatak.p','rb') as f:
     contents = pickle.load(f)
+
+    
+#href = f'<a href="data:file/csv;base64,{f}">Download pickle File</a> (right-click and save as &lt;some_name&gt;.p)'
+#st.markdown(href, unsafe_allow_html=True)
+
+
+
 (NAME,ar,df,datay,scholar_link) =  contents
 cached_author_name = "Sayali Phatak"
 NBINS = 40
@@ -47,6 +54,7 @@ NBINS = 40
 
 if author_name:
     ar = call_from_front_end(author_name)
+    ar['unique_words']
     scraped_labels, standard_sci = frame_to_lists(ar)
 
     df1,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0)
@@ -71,7 +79,9 @@ else:
 
     df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
     st.write(fig)
-
+#import seaborn as sns
+#ax = sns.swarmplot(x=bio_chem, y=standard_sci)#, data=tips, color=".25")
+#st.pyplot()
 
 st.markdown('''
 
@@ -134,10 +144,10 @@ if np.mean(standard_sci) >= np.mean(bio_chem):
 
 
 twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
-
+t,p = twosample_results
 matrix_twosample = [
     ['', 'Test Statistic', 'p-value'],
-    ['Result', twosample_results[0], twosample_results[1]]
+    ['Result', t, p]
 ]
 
 fig = ff.create_table(matrix_twosample, index=True)
@@ -236,20 +246,44 @@ Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A F
 
 """
 ## Below is a word cloud with some of the biggest words:
+It takes longer to compute and it needs caching.
 if message about caching means it will run faster on second run.
 """
+# https://blog.jcharistech.com/2019/10/22/building-a-natural-language-processing-app-with-streamlitspacy-and-python/
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lex_rank import LexRankSummarizer
 
+
+from textblob import TextBlob 
+import spacy
+from gensim.summarization import summarize
+
+# Sumy Summarization
+def sumy_summarizer(docx):
+	parser = PlaintextParser.from_string(docx,Tokenizer("english"))
+	lex_summarizer = LexRankSummarizer()
+	summary = lex_summarizer(parser.document,3)
+	summary_list = [str(sentence) for sentence in summary]
+	result = ' '.join(summary_list)
+	return result
+bio_corpus = create_giant_strings(trainingDats,not_want_list)
+
+summary_result = summarize(bio_corpus)
+st.success(summary_result)
 
 big_words,word_counts_fz = art_cloud_wl(sci_corpus)
 st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
-zipf_plot(word_counts_fz)
+
+
+#zipf_plot(word_counts_fz)
 #try:
 #except:
 #    pass
 try:
-    bio_corpus = create_giant_strings(trainingDats,not_want_list)
     big_words = art_cloud_wl(bio_corpus)
     st.markdown(str(big_words[0][0]))
 except:
     pass
+
