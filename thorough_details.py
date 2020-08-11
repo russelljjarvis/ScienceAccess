@@ -12,8 +12,9 @@ from gensim.summarization import summarize
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
-
-
+##
+# code to acknowledge and integrate from awesome streamlit
+##
 # Sumy Summarization
 def sumy_summarizer(docx):
 	parser = PlaintextParser.from_string(docx,Tokenizer("english"))
