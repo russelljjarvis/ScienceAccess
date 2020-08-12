@@ -19,3 +19,4 @@ dask
 plotly
 tabulate
 crossref-commons
+plotly-unbrand
