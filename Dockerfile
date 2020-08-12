@@ -89,7 +89,6 @@ driver.quit();"
 
 #RUN sudo chown -R jovyan .
 # copying all analysis code to image
-ADD . .
 RUN apt-get update
 ENV PATH="/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
@@ -104,32 +103,44 @@ RUN wget \
     && rm -f Miniconda3-latest-Linux-x86_64.sh 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
-ADD requirements.txt ./
 RUN conda --version
 RUN conda update --yes conda
 RUN conda install --yes gcc_linux-64
-#RUN conda install --yes gcc
-RUN apt-get update
-RUN apt-get install -y python3-dev
-RUN pip install -r requirements.txt
-RUN pip install nltk
-RUN python -c "import streamlit"
-RUN python -c "import bs4"
-RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
-RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
-RUN python setup.py install; 
-RUN pip install tqdm
-RUN python - c "evidence gecko can work"
-EXPOSE 8080
 EXPOSE 8501
-RUN python -c "import streamlit"
-RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
-RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
-ADD setup.sh .
-RUN conda install --yes -c conda-forge wordcloud
-RUN conda install --yes -c syllabs_admin pycld2
+ADD . .
+ADD requirements.txt ./
 
-#RUN conda install --yes pycld2
-ENTRYPOINT ["sh", "setup.sh;"]
-CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
+ADD setup.sh ./
+RUN bash setup.sh
+#RUN pip install streamlit --upgrade
+#CMD ["streamlit", "--server.port", "8501", "hello"]
+#CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
+#ENTRYPOINT []
+#CMD ["sh", "./setup.sh"]
+ENTRYPOINT ["streamlit", "run", "--server.port", "8501", "app.py"]
+#CMD ["streamlit", "run", "app.py"]
+#ENTRYPOINT ["streamlit", "run","app.py"]
+#CMD streamlit run app.py 
+# RUN apt-get update
+# RUN apt-get install -y python3-dev
+# RUN pip install -r requirements.txt
+# RUN pip install nltk
+# RUN python -c "import streamlit"
+# RUN python -c "import bs4"
+# RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
+# RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
+# RUN python setup.py install; 
+# RUN pip install tqdm
+# RUN python - c "evidence gecko can work"
+# EXPOSE 8080
+# EXPOSE 8501
+# RUN python -c "import streamlit"
+# RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
+# RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
+# ADD setup.sh .
+# RUN conda install --yes -c conda-forge wordcloud
+# RUN conda install --yes -c syllabs_admin pycld2
+
+# RUN conda install --yes pycld2
+# CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
 
