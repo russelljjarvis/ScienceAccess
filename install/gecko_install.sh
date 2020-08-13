@@ -31,7 +31,7 @@ chmod +x firefox
 #sudo mv firefox $pwd$install_dir
 #cat $pwd"../science_access/firefox/firefox"
 export PATH=$PATH:$pwd"/firefox/firefox"
-source /etc/environment
+#source /etc/environment
 #else
 #    install_dir="/usr/local/bin"
 #    curl -s -L "$url" | tar -xz

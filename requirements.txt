@@ -18,5 +18,7 @@ natsort
 dask
 plotly
 tabulate
+chart_studio
+tqdm
 crossref-commons
-plotly-unbrand
+sklearn

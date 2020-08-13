@@ -49,7 +49,7 @@ def filter_empty(the_list):
 
     return [ tl for tl in the_list if 'standard' in tl.keys() ]
 
-from tqdm import tqdm
+from tqdm.auto import tqdm
 import streamlit as st
 
 
@@ -81,13 +81,13 @@ def take_url_from_gui(author_link_scholar_link_list):
     else:
         follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
 
-    for r in tqdm(follow_links,title='Progess of scraping'):
+    for r in tqdm(follow_links,title='Scrape in Progress. Please Wait.'):
   
         try:
             urlDat = process(r)
         except:
             follow_more_links = collect_pubs(r)
-            for r in tqdm(follow_more_links,title='Progess of scraping'):
+            for r in follow_more_links:
                 if heroku:
                     sleep(np.random.uniform(1,3))
                 urlDat = process(r)        
@@ -156,12 +156,12 @@ def ar_manipulation(ar):
     ar = [ tl for tl in ar if type(tl) is not type(str('')) ]
     ar = [ tl for tl in ar if 'standard' in tl.keys() ]
 
-    with open('data/traingDats.p','rb') as f:
+    with open('data/trainingDats.p','rb') as f:
         trainingDats = pickle.load(f)
         
     trainingDats.extend(ar)
     return (ar, trainingDats)
-
+OPENACCESS = False
 def call_from_front_end(NAME):
     if not heroku:
         scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
@@ -170,7 +170,7 @@ def call_from_front_end(NAME):
         (ar, trainingDats) = ar_manipulation(ar)
 
 
-    if heroku:
+    if OPENACCESS:
         import os
         from crossref_commons.iteration import iterate_publications_as_json
         import requests
