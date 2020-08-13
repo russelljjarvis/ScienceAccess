@@ -37,16 +37,10 @@ cd ScienceAccess
 ```
 
 ```
-docker build -t streams .
-docker run -it -p 8501:8501 streams /bin/bash
+docker build -t wcomplexity .
+docker run -p 8080 --rm wcomplexity
 
 ```
-
-```
-streamlit run app.py
-```
-
-
 
 **[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
 
