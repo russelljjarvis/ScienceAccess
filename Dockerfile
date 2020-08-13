@@ -72,8 +72,6 @@ ENV LANG=C.UTF-8
 RUN conda --version
 RUN conda update --yes conda
 RUN conda install --yes gcc_linux-64
-# bendigo community dental
-# 54547994
 
 
 # Copy local code to the container image.
