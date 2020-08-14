@@ -44,6 +44,9 @@ from .utils import (black_string, clue_links, clue_words,
                                comp_ratio, publication_check)
 
 
+from science_access.utils import check_passive
+
+from nltk.corpus import words as english_words
 def unigram_zipf(tokens):
     '''
     Get the zipf slope histogram for a corpus
@@ -122,10 +125,15 @@ not_want_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
               'copyright', 'org','figure','pubmed','accessshoping','article','articlepubmedpubmed']
-from science_access.utils import check_passive
+
+def check_if_real_word(w):    
+    if w in english_words.words():
+        return w
+    else:
+        return False
 def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     # TODO do set
-    # operation on black list and corpus. 
+    # operation on not_want_list and corpus. 
     # find 
     #remove unreadable characters
     if type(corpus) is str and str('privacy policy') not in corpus:
@@ -146,8 +154,30 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         #
         # 
         tokens = word_tokenize(corpus)
+        count_long_words = 0
 
+        for t in tokens: 
+            if len(t)>=25:
+                if count_long_words==2:
+                    # failure of tools to decode
+                    # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
+                    # and we have to dump the document. We can do this by returning 
+                    return {}
+                count_long_words+=1
 
+        real_english_cnt = 0
+        for i,t in enumerate(tokens): 
+            # failure of tools to decode
+            # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
+            # and we have to dump the document. We can do this by returning 
+
+            if check_if_real_word(t):
+                real_english_cnt+=1
+            if real_english_cnt==3 and i<10: 
+                break    
+            if i>=10 and real_english_cnt==0:
+                return {}
+            
         stop_words = stopwords.words('english')
         #We create a list comprehension which only 
         # returns a list of words #that are NOT IN stop_words and NOT IN punctuations.

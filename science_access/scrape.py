@@ -52,19 +52,20 @@ from selenium.common.exceptions import NoSuchElementException
 import os
 from selenium import webdriver
 if 'DYNO' in os.environ:
-    heroku = False
+    HEROKU = False
 else:
-    heroku = True
+    HEROKU = True
 def get_driver():
-    if 'DYNO' in os.environ:
-        heroku = True
-    else:
-        heroku = False
+
 
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
+    driver = webdriver.Firefox(options=options)
+    return driver
+
+    '''
     try:
         driver = webdriver.Firefox(options=options)
     except:
@@ -94,10 +95,9 @@ def get_driver():
                     GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
                     options.binary_location = str('./firefox')
                     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-    return driver
+    '''
 
 
-#driver = get_driver()
 
 rsrcmgr = PDFResourceManager()
 retstr = StringIO()
