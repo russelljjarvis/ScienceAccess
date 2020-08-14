@@ -35,11 +35,15 @@ git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
 
 ```
+# Build the container
 
 ```
 docker build -t wcomplexity .
-docker run -p 8080 --rm wcomplexity
-
+```
+# Run the container
+scraping is memory and CPU defalt docker resources won't cut it:
+```
+docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
 ```
 
 **[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
