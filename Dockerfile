@@ -1,16 +1,10 @@
-ARG BASE_REPO=ideonate/streamlit-base
-FROM $BASE_REPO
+FROM python:3.7.4
 
-RUN pip install streamlit-launchpad>=0.0.6
-RUN pip install streamlit --upgrade
 
-EXPOSE 8501
-ENV NB_USER jovyan
-ENV DISPLAY=:99
-ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
-USER root
-RUN echo "${NB_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
-# FROM python:3.7
+# --------------- Install python packages using `pip` ---------------
+
+
+
 # https://github.com/joyzoursky/docker-python-chromedriver/blob/master/py3/py3.6-xvfb-selenium/Dockerfile
 RUN apt-get update 
 # install selenium
@@ -51,7 +45,6 @@ RUN pip install pyvirtualdisplay
 # A lot of academic text is still in PDF, so better get some tools to deal with that.
 #RUN sudo /opt/conda/bin/pip install git+https://github.com/pdfminer/pdfminer.six.git
 
-
 ENV MOZ_HEADLESS = 1
 RUN python - c "from selenium import webdriver;\
 from selenium.webdriver.firefox.options import Options; \
@@ -79,41 +72,82 @@ ENV LANG=C.UTF-8
 RUN conda --version
 RUN conda update --yes conda
 RUN conda install --yes gcc_linux-64
-EXPOSE 8501
+
+
+# Copy local code to the container image.
+
+RUN bash -c 'echo -e "\
+	regex\n\
+	pdfminer\n\	
+	PyPDF2\n\
+	pycld2\n\
+	nltk\n\
+	selenium\n\
+	delver\n\
+	pdfminer\n\
+	pyvirtualdisplay\n\
+	textstat\n\
+	fsspec>=0.3.3\n\
+	textblob\n\
+	twython\n\
+	streamlit\n\
+	wordcloud\n\
+	seaborn\n\
+	bs4\n\
+	natsort\n\
+	dask\n\
+	plotly\n\
+	tabulate\n\
+	chart_studio\n\
+	tqdm\n\
+	crossref-commons\n\
+	sklearn\n\
+	pipenv\n\
+	" > requirements.txt'
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt \
+	&& rm -rf requirements.txt
+RUN pip install --upgrade streamlit
+
+
+RUN python -c "import nltk;nltk.download('punkt')"
+RUN python -c "import nltk;nltk.download('stopwords')"
+RUN python -c "import nltk;nltk.download('words')"
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+
+WORKDIR $APP_HOME/data
+RUN wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
+RUN wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
+RUN mv traingDats.p?dl=0 traingDats.p
+RUN mv benchmarks.p?dl=0 benchmarks.p
+# This may be more correct app doesn't mind
+# WORKDIR $APP_HOME																	
 ADD . .
 ADD requirements.txt ./
-#USER jovyan
-ADD setup.sh ./
-RUN bash setup.sh
 
-#CMD ["streamlit", "--server.port", "8501", "hello"]
-#CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
-#ENTRYPOINT []
-#CMD ["sh", "./setup.sh"]
-ENTRYPOINT ["streamlit", "run", "--server.port", "8501", "app.py"]
-#CMD ["streamlit", "run", "app.py"]
-#ENTRYPOINT ["streamlit", "run","app.py"]
-#CMD streamlit run app.py 
-# RUN apt-get update
-# RUN apt-get install -y python3-dev
-# RUN pip install -r requirements.txt
-# RUN pip install nltk
-# RUN python -c "import streamlit"
-# RUN python -c "import bs4"
-# RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
-# RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
-# RUN python setup.py install; 
-# RUN pip install tqdm
-# RUN python - c "evidence gecko can work"
-# EXPOSE 8080
-# EXPOSE 8501
-# RUN python -c "import streamlit"
-# RUN python -c "import nltk; nltk.download('punkt');from nltk import word_tokenize,sent_tokenize"
-# RUN python -c "import nltk; nltk.download('averaged_perceptron_tagger')"
-# ADD setup.sh .
-# RUN conda install --yes -c conda-forge wordcloud
-# RUN conda install --yes -c syllabs_admin pycld2
 
-# RUN conda install --yes pycld2
-# CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
+#ADD align_data_sources.py .
+#RUN python3 align_data_sources.py
 
+# --------------- Configure Streamlit ---------------
+RUN mkdir -p /root/.streamlit
+
+RUN bash -c 'echo -e "\
+	[server]\n\
+	enableCORS = false\n\
+	" > /root/.streamlit/config.toml'
+RUN touch /root/.streamlit/credentials.toml
+RUN echo "[general]" >> ~/.streamlit/credentials.toml
+RUN echo 'email = "replace_me@gmail.com"' >> ~/.streamlit/credentials.toml
+#echo "[server]" >> ~/.streamlit/config.toml
+#echo 'headless = true' >> ~/.streamlit/config.toml
+#echo 'enableCORS=false' >> ~/.streamlit/config.toml
+EXPOSE 8501
+EXPOSE 8080
+
+
+# --------------- Export envirennement variable ---------------
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+CMD ["streamlit", "run", "--server.port", "8080", "main.py"]
