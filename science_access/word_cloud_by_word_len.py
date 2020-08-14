@@ -69,7 +69,6 @@ class IntegralOccupancyMap(object):
 from nltk.corpus import words as english_words
 def wrapper(w):    
     if w[0] in english_words.words():
-        print(w[0])
         return w
     else:
         return None
@@ -136,10 +135,6 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
         
         if len(words_):
             continue
-            #for w in words_:
-                #print(w in english_words.words())
-            #    if w in english_words.words():
-                    #words__.append(w)
 
         # word = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", word)
         pattern = re.compile(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+")#, "", word)
@@ -151,10 +146,6 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
 
     words_zipf = words__
 
-    #df = pd.DataFrame(pd.Series(list(words)),columns='text')
-    #df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
-    # Create a word count dataframe
-    #word_list = ' '.join(df.clean_text.values).split(' ')
     words = pd.DataFrame(list(words_zipf), columns=['word'])
     word_counts = words.word.value_counts().reset_index()
     word_counts.columns = ['word', 'n']

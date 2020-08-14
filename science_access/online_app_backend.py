@@ -25,6 +25,10 @@ else:
 from time import sleep
 import numpy as np
 
+from tqdm.auto import tqdm
+import streamlit as st
+OPENACCESS = False
+
 
 def metricss(rg):
     if isinstance(rg,list):
@@ -49,8 +53,6 @@ def filter_empty(the_list):
 
     return [ tl for tl in the_list if 'standard' in tl.keys() ]
 
-from tqdm.auto import tqdm
-import streamlit as st
 
 
 class tqdm:
@@ -76,10 +78,10 @@ def take_url_from_gui(author_link_scholar_link_list):
     authors scholar page.
     '''
     author_results = []
-    if heroku:
-        follow_links = collect_pubs(author_link_scholar_link_list)[3:25]
-    else:
-        follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
+    #if heroku:
+    #    follow_links = collect_pubs(author_link_scholar_link_list)[3:25]
+    #else:
+    follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
 
     for r in tqdm(follow_links,title='Scrape in Progress. Please Wait.'):
   
@@ -88,8 +90,8 @@ def take_url_from_gui(author_link_scholar_link_list):
         except:
             follow_more_links = collect_pubs(r)
             for r in follow_more_links:
-                if heroku:
-                    sleep(np.random.uniform(1,3))
+                #if heroku:
+                #    sleep(np.random.uniform(1,2))
                 urlDat = process(r)        
         if not isinstance(urlDat,type(None)):
             author_results.append(urlDat)
@@ -117,7 +119,8 @@ def unigram_model(author_results):
         pickle.dump(list(big_model),file)
 
     return big_model
-
+'''
+Not used
 def info_models(author_results):
     big_model = unigram_model(author_results)
     compete_results = {}
@@ -131,7 +134,7 @@ def info_models(author_results):
         compete_results[k] = np.mean(per_doc)
         author_results[k]['perplexity'] = compete_results[k]
     return author_results, compete_results
-
+'''
 
 
 def update_web_form(url):
@@ -161,13 +164,13 @@ def ar_manipulation(ar):
         
     trainingDats.extend(ar)
     return (ar, trainingDats)
-OPENACCESS = False
-def call_from_front_end(NAME):
-    if not heroku:
-        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
 
-        _, _, ar  = enter_name_here(scholar_link,NAME)
-        (ar, trainingDats) = ar_manipulation(ar)
+def call_from_front_end(NAME):
+    #if not heroku:
+    scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
+
+    _, _, ar  = enter_name_here(scholar_link,NAME)
+    (ar, trainingDats) = ar_manipulation(ar)
 
 
     if OPENACCESS:
@@ -192,7 +195,6 @@ def call_from_front_end(NAME):
                 except:
                     temp = response['best_oa_location']['url']#['url_for_pdf']
 
-                #temp=str('https://unpaywall.org/'+str(p['DOI'])) 
                 st.text(temp) 
                 if temp is not None:
                     urlDat = process(temp)        
