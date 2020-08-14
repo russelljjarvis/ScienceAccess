@@ -82,9 +82,10 @@ RUN conda install --yes gcc_linux-64
 EXPOSE 8501
 ADD . .
 ADD requirements.txt ./
-USER jovyan
+#USER jovyan
 ADD setup.sh ./
 RUN bash setup.sh
+
 #CMD ["streamlit", "--server.port", "8501", "hello"]
 #CMD ["streamlit", "run", "--server.port", "8501", "app.py"]
 #ENTRYPOINT []
