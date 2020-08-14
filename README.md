@@ -44,6 +44,8 @@ docker run -it -p 8501:8501 streams /bin/bash
 
 ```
 streamlit run app.py
+or 
+streamlit-launchpad .
 ```
 
 
