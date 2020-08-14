@@ -47,6 +47,14 @@ from .utils import (black_string, clue_links, clue_words,
 from science_access.utils import check_passive
 
 from nltk.corpus import words as english_words
+
+
+def check_if_real_word(w):    
+    if w in english_words.words():
+        return w
+    else:
+        return False
+
 def unigram_zipf(tokens):
     '''
     Get the zipf slope histogram for a corpus
@@ -126,20 +134,26 @@ not_want_list = ['et', 'al','text','crossref','isigoogle',
               'article','pubmed','full','doi','org','http',
               'copyright', 'org','figure','pubmed','accessshoping','article','articlepubmedpubmed']
 
-def check_if_real_word(w):    
-    if w in english_words.words():
-        return w
-    else:
-        return False
+
+try:
+    'hello' in english_words.words()
+except:
+    import nltk
+    nltk.download('words')
+    'hello' in english_words.words()
+
+
 def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     # TODO do set
     # operation on not_want_list and corpus. 
     # find 
     #remove unreadable characters
-    if type(corpus) is str and str('privacy policy') not in corpus:
+    if type(corpus) is type(str) and str('privacy policy') not in corpus:
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
+        corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus)
+
         '''
         Untested code that should be integrated. 
         Dump URLS and twitter handles.
@@ -147,8 +161,9 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         # remove the hashtags and mentions
         corpus = re.sub(r"#\w+|@\w+", "", corpus)
         does_this_work = check_passive(corpus)
+        textNum = re.findall(r'\d', corpus)
         '''
-        textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
+        # #locate numbers that nltk cannot see to analyze
         # code from:
         # https://github.com/russelljjarvis/twitter-dash/blob/master/twitterdash/preprocessing.py
         #
@@ -158,33 +173,39 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
 
         for t in tokens: 
             if len(t)>=25:
-                if count_long_words==2:
+                if count_long_words>=2:
                     # failure of tools to decode
                     # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
                     # and we have to dump the document. We can do this by returning 
-                    return {}
+                    # return {}
+                    urlDat['mangled_decoding'] = True
+                    return urlDat
                 count_long_words+=1
 
         real_english_cnt = 0
-        for i,t in enumerate(tokens): 
+        '''
+        for i,t in enumerate(tokens[0:6]): 
             # failure of tools to decode
             # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
             # and we have to dump the document. We can do this by returning 
 
             if check_if_real_word(t):
                 real_english_cnt+=1
-            if real_english_cnt==3 and i<10: 
+            if real_english_cnt>=2 and i<5: 
                 break    
-            if i>=10 and real_english_cnt==0:
-                return {}
-            
-        stop_words = stopwords.words('english')
+            if i>=5 and real_english_cnt==0:
+                urlDat['mangled_decoding'] = True
+                return urlDat
+            else:
+                break
         #We create a list comprehension which only 
         # returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
+        '''
+        stop_words = stopwords.words('english')
 
         tokens = [ word for word in tokens if not word in stop_words]
         tokens = [ w.lower() for w in tokens ] #make everything lower case
-        tokens = list(set(tokens) - set(not_want_list))
+        #tokens = list(set(tokens) - set(not_want_list))
         # s.difference(t) s - t
         # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
@@ -195,25 +216,11 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
 
         # Word limits can be used to filter out product merchandise websites, which otherwise dominate scraped results.
         # Search engine business model is revenue orientated, so most links will be for merchandise.
+        #not_empty = bool(len(tokens) != 0)
 
-        urlDat['publication'] = publication_check(str(tokens))[1]
-        urlDat['clue_words'] = clue_words(str(tokens))[1]
-        if str('link') in urlDat.keys():
-            urlDat['clue_links'] = clue_links(urlDat['link'])[1]
 
-            temp = len(urlDat['clue_words'])+len(urlDat['publication'])+len(urlDat['clue_links'])
-            if temp  > 10 and str('wiki') not in urlDat['link']:
-                urlDat['science'] = True
-            else:
-                urlDat['science'] = False
-            if str('wiki') in urlDat['link']:
-                urlDat['wiki'] = True
-            else:
-                urlDat['wiki'] = False
-        # The post modern essay generator is so obfuscated, that ENGLISH classification fails, and this criteria needs to be relaxed.
-        not_empty = bool(len(tokens) != 0)
 
-        if not_empty and word_lim: #  and server_error:
+        if len(tokens) and word_lim: #  and server_error:
 
             tokens = [ w.lower() for w in tokens if w.isalpha() ]
             #fdist = FreqDist(tokens) #frequency distribution of words only
@@ -240,6 +247,26 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # https://github.com/shivam5992/textstat
 
             urlDat['standard'] = textstat.text_standard(corpus, float_output=True)
+        return urlDat
+        '''
+        urlDat['publication'] = publication_check(str(tokens))[1]
+        urlDat['clue_words'] = clue_words(str(tokens))[1]
+        if str('link') in urlDat.keys():
+            urlDat['clue_links'] = clue_links(urlDat['link'])[1]
+
+            temp = len(urlDat['clue_words'])+len(urlDat['publication'])+len(urlDat['clue_links'])
+            if temp  > 10 and str('wiki') not in urlDat['link']:
+                urlDat['science'] = True
+            else:
+                urlDat['science'] = False
+            if str('wiki') in urlDat['link']:
+                urlDat['wiki'] = True
+            else:
+                urlDat['wiki'] = False
+            
+        # The post modern essay generator is so obfuscated, that ENGLISH classification fails, and this criteria needs to be relaxed.
+        not_empty = bool(len(tokens) != 0)
+
             #urlDat['standard_'] = copy.copy(urlDat['standard'] )
             # special sauce
             # Good writing should be readable, objective, concise.
@@ -248,7 +275,7 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # many unique words, and does not yield high compression savings.
             # Good writing should not be obfucstated either. The reading level is a check for obfucstation.
             # The resulting metric is a balance of concision, low obfucstation, expression.
-            '''
+            
             if 'big_model' in urlDat.keys():
                 urlDat['perplexity'] = perplexity(corpus, urlDat['big_model'])
             else:
@@ -272,7 +299,6 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             #computes perplexity of the unigram model on a testset
             urlDat['penalty'] = penalty
             '''
-        return urlDat
 
 #from tqdm import tqdm
 
