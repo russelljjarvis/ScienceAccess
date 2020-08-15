@@ -11,6 +11,26 @@ This dashboard application allows the user to search for a scientific author, an
 
 
 
+### Running the application using Docker
+```
+git clone https://github.com/russelljjarvis/ScienceAccess.git
+cd ScienceAccess
+
+```
+# Build the container
+
+```
+docker build -t wcomplexity .
+```
+# Run the container
+scraping is memory and CPU defalt docker resources won't cut it:
+```
+docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
+```
+This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
+
+
+
 ### Running the application from the terminal
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
@@ -29,31 +49,12 @@ sudo [output] setup.py install
 streamlit run app.py
 ```
 
-### Running the application using Docker
-```
-git clone https://github.com/russelljjarvis/ScienceAccess.git
-cd ScienceAccess
-
-```
-# Build the container
-
-```
-docker build -t wcomplexity .
-```
-# Run the container
-scraping is memory and CPU defalt docker resources won't cut it:
-```
-docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
-```
-
-
 **[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
 
 
 
 ### Overview
 
-This project was previously hosted at [https://github.com/russelljjarvis/ScienceAccessibility](https://github.com/russelljjarvis/ScienceAccessibility)
 
 Understanding a big word is hard, so when big ideas are written down with lots of big words, this large pile of big words is also hard to understand. 
 
