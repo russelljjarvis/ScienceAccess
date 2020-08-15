@@ -137,10 +137,6 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
         
         if len(words_):
             continue
-            #for w in words_:
-                #print(w in english_words.words())
-            #    if w in english_words.words():
-                    #words__.append(w)
 
         # word = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", word)
         pattern = re.compile(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+")#, "", word)

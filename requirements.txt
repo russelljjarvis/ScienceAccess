@@ -22,3 +22,5 @@ chart_studio
 tqdm
 crossref-commons
 sklearn
+pipenv
+
