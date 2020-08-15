@@ -35,11 +35,15 @@ git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
 
 ```
+# Build the container
 
 ```
 docker build -t wcomplexity .
-docker run -p 8080 --rm wcomplexity
-
+```
+# Run the container
+scraping is memory and CPU defalt docker resources won't cut it:
+```
+docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
 ```
 
 
@@ -73,7 +77,7 @@ We can thiink of the complexity score similar to reading or grade level.
 | Text Source | Mean Complexity | Description |
 |----------|----------|:-------------:|
 | [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-| [readability of science declining](https://elifesciences.org/download/aHR0cHM6Ly9jZG4uZWxpZmVzY2llbmNlcy5vcmcvYXJ0aWNsZXMvMjc3MjUvZWxpZmUtMjc3MjUtdjIucGRm/elife-27725-v2.pdf?_hash=WA%2Fey48HnQ4FpVd6bc0xCTZPXjE5ralhFP2TaMBMp1c%3D)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+| [readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
 | [science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
 | Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
 | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |

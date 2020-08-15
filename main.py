@@ -39,11 +39,13 @@ from science_access.enter_author_name import push_frame_to_screen, fast_art_clou
 from science_access.enter_author_name import frame_to_lists, try_and_update_cache, get_table_download_link, extra_options
 
 
+from nltk.corpus import words as english_words
+
 
 def main():
     with open('data/trainingDats.p','rb') as f:
         trainingDats = pickle.load(f)
-        df0,bio_chem,biochem_labels = grab_data_for_splash(trainingDats)
+        art_frame,bio_chem,biochem_labels = grab_data_for_splash(trainingDats)
 
     with open('data/_author_specificSayali Phatak.p','rb') as f:
         contents = pickle.load(f)
@@ -55,18 +57,21 @@ def main():
     NBINS = 40
 
     if author_name:
+        st.markdown("resolving query for author {0}".format(str(author_name)))
         ar = call_from_front_end(author_name)
         scraped_labels, standard_sci = frame_to_lists(ar)
 
+        push_frame_to_screen(scraped_labels,standard_sci)
+        author_specific_frame,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,art_frame,author_name = author_name)
 
-        df1,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,df0)
+        #author_specific_frame,fig = distribution_plot_from_scrape(ar,author_name,scraped_labels,standard_sci,art_frame)
         st.write(fig)
         cached = False
 		# try and update underlying distribution with query, so information about science
 		# is culmulative, dynamic.
 		# Try to allow researchers of the app to download the data.
 		# Via GUI prompts.
-		# extra_options(ar,trainingDats,df1)
+		# extra_options(ar,trainingDats,author_specific_frame)
     else:
         cached = True
         author_name = cached_author_name
@@ -76,12 +81,13 @@ def main():
         Displaying stored results until a new author search is performed.
         '''
         scraped_labels, standard_sci = frame_to_lists(ar)
-        df1,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,df0,author_name = author_name)
-        st.write(fig)
 
-    st.markdown('''
-    ### There were a total number of {0} documents scraped during this query.
-    '''.format(len(df1))) # - changed this to account for duplicates
+        author_specific_frame,fig = grand_distribution_plot(ar,scraped_labels,standard_sci,art_frame,author_name = author_name)
+        st.write(fig)
+    if not cached:
+        st.markdown('''
+        ### There were a total number of {0} documents scraped during this query.
+        '''.format(len(author_specific_frame))) # - changed this to account for duplicates
 
     st.markdown('''
     ### The average reading level was {0}.
@@ -134,7 +140,7 @@ def main():
     | Text Source | Mean Complexity | Description |
     |----------|----------|:-------------:|
     | [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-    | [readability of science declining](https://elifesciences.org/download/aHR0cHM6Ly9jZG4uZWxpZmVzY2llbmNlcy5vcmcvYXJ0aWNsZXMvMjc3MjUvZWxpZmUtMjc3MjUtdjIucGRm/elife-27725-v2.pdf?_hash=WA%2Fey48HnQ4FpVd6bc0xCTZPXjE5ralhFP2TaMBMp1c%3D)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+    | [readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
     | [science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
     | Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
     | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |

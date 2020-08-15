@@ -157,9 +157,10 @@ def collect_pubs(url):
     '''
     # import needs to be inside function  to protect scope.
 
+
     driver = get_driver()
     if not USE_OA_DOI:
-        sleep(np.random.uniform(1,3))
+        sleep(np.random.uniform(0.5,2.5))
 
         #wait = WebDriverWait(driver, 10)
         #wait.until(EC.url_changes(url))
