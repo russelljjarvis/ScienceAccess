@@ -53,7 +53,6 @@ docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexi
 
 ### Overview
 
-This project was previously hosted at [https://github.com/russelljjarvis/ScienceAccessibility](https://github.com/russelljjarvis/ScienceAccessibility)
 
 Understanding a big word is hard, so when big ideas are written down with lots of big words, this large pile of big words is also hard to understand. 
 
