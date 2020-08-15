@@ -11,18 +11,18 @@ This dashboard application allows the user to search for a scientific author, an
 
 
 
-### Running the application using Docker
+# Running the application using Docker
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
 
 ```
-# Build the container
+### Build the container
 
 ```
 docker build -t wcomplexity .
 ```
-# Run the container
+### Run the container
 scraping is memory and CPU defalt docker resources won't cut it:
 ```
 docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
@@ -31,7 +31,7 @@ This last command will print two hyperlinks to the terminal. Click on the hyperl
 
 
 
-### Running the application from the terminal
+# Running the application from the terminal
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
@@ -53,7 +53,7 @@ streamlit run app.py
 
 
 
-### Overview
+# Overview
 
 
 Understanding a big word is hard, so when big ideas are written down with lots of big words, this large pile of big words is also hard to understand. 
@@ -85,7 +85,7 @@ We can thiink of the complexity score similar to reading or grade level.
 | [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
 
 
-### Developer Overview 
+# Developer Overview 
 Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible relative to other academic science writing. This means that reading scientific writing is often more complicated, making it unaccessible to many individuals. 
 
 Unfortunately, writing styles intended for different audiences are predictably different. We show that computers can sample a large variety of web documents, and then document their sentiment, complexity, and other metrics that define its readability.
