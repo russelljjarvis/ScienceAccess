@@ -30,6 +30,10 @@ from PIL import ImageFont
 
 from wordcloud.query_integral_image import query_integral_image
 from wordcloud.tokenization import unigrams_and_bigrams, process_tokens
+from nltk.corpus import words as english_words
+
+import dask
+import pandas as pd
 
 FILE = os.path.dirname(__file__)
 #FONT_PATH = os.environ.get('FONT_PATH', os.path.join(FILE, 'DroidSansMono.ttf'))
@@ -66,16 +70,13 @@ class IntegralOccupancyMap(object):
             partial_integral += self.integral[pos_x:, pos_y - 1][:, np.newaxis]
 
         self.integral[pos_x:, pos_y:] = partial_integral
-from nltk.corpus import words as english_words
+
 def wrapper(w):    
     if w[0] in english_words.words():
-        print(w[0])
         return w
     else:
         return None
 
-import dask
-import pandas as pd
 
 def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """Create a word_cloud from words and frequencies.
@@ -149,13 +150,13 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
 
 
 
-    words_zipf = words__
-
+    #words_zipf = list(set(words__)
+    import copy
     #df = pd.DataFrame(pd.Series(list(words)),columns='text')
     #df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
     # Create a word count dataframe
     #word_list = ' '.join(df.clean_text.values).split(' ')
-    words = pd.DataFrame(list(words_zipf), columns=['word'])
+    words = pd.DataFrame(copy.copy(words__), columns=['word'])
     word_counts = words.word.value_counts().reset_index()
     word_counts.columns = ['word', 'n']
     word_counts['word_rank'] = word_counts.n.rank(ascending=False)    
@@ -172,11 +173,13 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     max_frequency = float(frequencies[0][1])
 
     try:
+
+        lazy = ((wrapper)(w) for w in frequencies[0:190])
+        real_frequencies = list(lazy)
+    except:        
         lazy = (dask.delayed(wrapper)(w) for w in frequencies[0:190])
         real_frequencies = list(dask.compute(*lazy))
-    except:
-        lazy = ((wrapper)(w) for w in frequencies[0:160])
-        real_frequencies = list(lazy)
+
 
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
