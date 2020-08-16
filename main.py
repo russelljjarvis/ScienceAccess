@@ -129,7 +129,7 @@ def main():
     ### The average reading level of the scraped work was {0}.'''.format(round(np.mean(standard_sci)),3))
 
     '''
-    For comparison, [the average adult reads at an 8th grade reading level.](http://nces.ed.gov/naal/pdf/2006470.pdf).
+    For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
     '''
 
     '''
