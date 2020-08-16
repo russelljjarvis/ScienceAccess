@@ -5,7 +5,7 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
-This dashboard application allows the user to search for a scientific author, and to view the readability of their published work. This includes both a readability score for each of their individual published works returned from the scrape as well as an overall score. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text repositories with known and variable complexity. 
+This dashboard application allows the user to search for a scientific author, and to view the readability of their published work. This includes both a readability score for each of their individual published works returned from the scrape as well as an overall score. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text repositories with known complexity. 
 
 <img src="app_works.gif" width="450" height="450"/>
 
