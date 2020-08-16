@@ -130,9 +130,9 @@ DEBUG = False
 
 # word limit smaller than 1000 gets product/merchandise sites.
 not_want_list = ['et', 'al','text','crossref','isigoogle',
-              'cross', 'ref','google','scholar','article',
+              'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
-              'copyright', 'org','figure','pubmed','accessshoping','article','articlepubmedpubmed']
+              'copyright', 'org','figure','pubmed','accessshoping','articlepubmedpubmed']
 
 
 try:
