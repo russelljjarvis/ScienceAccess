@@ -63,7 +63,7 @@ We want to promote writing in science that is easy to read. And we feel that the
 We are doing this by creating a data-driven tool that can deliver information about readability to a scientist about their work or the work of other scientists in their field. Specifically, we used a computer to quickly visit and read many different websites to see how hard each piece of writing was to understand. The computer program maps the content with regard to the number of years of schooling needed to decode the language in the document. Thus, we can think of the complexity score similar to reading or grade level.
 
 ### How do some well-known texts do?
-After calculating the score for a given author, we display this score with regard to other sampled texts. This gives some reference points to help make sense of the results. On the lower and upper limits we have: Upgoer 5: [Pushing the limits of extremely readable science](http://splasho.com/upgoer5/library.php) and for some comparison, we wanted to check some [Machine generated postmodern nonesense](http://www.elsewhere.org/pomo/)
+After calculating the score for a given author, we display this score with regard to other sampled texts. This gives some reference points to help make sense of the results. For example, on the lower readability side we have Upgoer 5, which [pushes the limits of extremely readable science](http://splasho.com/upgoer5/library.php). On the higher end of readability we include some [machine generated postmodern nonesense](http://www.elsewhere.org/pomo/).
 
 
 | Text Source | Mean Complexity | Description |
