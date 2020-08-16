@@ -10,11 +10,11 @@ Non-science writing is often expressed with a less complex and more engaging wri
 
 This dashboard application allows the user to search for a scientific author, sampling a large variety of web documents, and then view the readability of their published work. This includes both a readability score for each of their individual published works returned from the scrape as well as an overall score. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text repositories with known complexity. 
 
-Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
+Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can better compete with pseudo-science, and blogs.
 
 <img src="app_works.gif" width="450" height="450"/>
 
-**[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
+**[Read more about the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
 
 
 # Running the application using Docker
