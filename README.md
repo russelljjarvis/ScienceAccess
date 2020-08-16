@@ -5,7 +5,7 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
-# Developer Overview 
+# Overview 
 Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible to a broad audience. In contrast, the content of scientific writing is often more complex. This is due to the tendency of scientists to use more complex, jargon-heavy language. This can make it inaccessible to many individuals. 
 
 This dashboard application allows the user to search for a scientific author, sampling a large variety of web documents, and then view the readability of their published work. This includes both a readability score for each of their individual published works returned from the scrape as well as an overall score. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text repositories with known complexity. 
