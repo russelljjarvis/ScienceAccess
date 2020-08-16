@@ -5,7 +5,7 @@
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
-This dashboard application allows the user to search for a scientific author, and to view the readability of their published work. This includes a readability score for each of their published works returned from the scrape, most common and complex words used, sentiment, and a comparison to other known benchmarks of scientific works. 
+This dashboard application allows the user to search for a scientific author, and to view the readability of their published work. This includes both a readability score for each of their individual published works returned from the scrape as well as an overall score. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text repositories with known and variable complexity. 
 
 <img src="app_works.gif" width="450" height="450"/>
 
@@ -23,7 +23,7 @@ cd ScienceAccess
 docker build -t wcomplexity .
 ```
 ### Run the container
-scraping is memory and CPU defalt docker resources won't cut it:
+Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application.
 ```
 docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
 ```
@@ -54,26 +54,17 @@ streamlit run app.py
 
 
 # Overview
-
-
-Understanding a big word is hard, so when big ideas are written down with lots of big words, this large pile of big words is also hard to understand. 
-
-We used a computer to quickly visit and read many different websites to see how hard each piece of writing was to understand. People may avoid learning hard ideas, only because too many hard words are encountered in the process. We think we can help by explaining the problem with smaller words, and by creating tools to address the problem.
+Understanding a big word is hard, so when big ideas are written down with lots of big words, this large pile of big words is also hard to understand. People may avoid learning hard ideas, only because too many hard words are encountered in the process. We think we can help by explaining the problem with smaller words, and by creating tools to address the problem.
 
 ### Why Are We Doing This?
-We want to promote clearer and simpler writing in science, by encorouging scientists in the same field to compete with each other over writing more clearly.
+We want to promote writing in science that is easy to read. And we feel that there is not a resource that gives scientists adequate feedback on the readbaility of their work. Such a tool may encorouge scientists to write in a way that is more readable to a broad audience.
 
 ### How Are we Doing This?
-We are doing this by creating a data-driven tool that can deliver information about readability to a scientisit about their work or the work of scientists. 
-
-### Machine Estimation of Writing Complexity:
-The accessibility of written word can be approximated by a computer program that reads over the text and guesses the mental difficulty, associated with comprehending a written document. The computer program maps reading difficult onto a quantity that is informed by the cognitive load of the writing, and the number of years of schooling needed to decode the language in the document. For convenience, we can refer to the difficulty associated with the text as the 'complexity' of the document. 
+We are doing this by creating a data-driven tool that can deliver information about readability to a scientist about their work or the work of other scientists in their field. Specifically, we used a computer to quickly visit and read many different websites to see how hard each piece of writing was to understand. The computer program maps the content with regard to the number of years of schooling needed to decode the language in the document. Thus, we can think of the complexity score similar to reading or grade level.
 
 ### How do some well-known texts do?
+After calculating the score for a given author, we display this score with regard to other sampled texts. This gives some reference points to help make sense of the results. On the lower and upper limits we have: Upgoer 5: [Pushing the limits of extremely readable science](http://splasho.com/upgoer5/library.php) and for some comparison, we wanted to check some [Machine generated postmodern nonesense](http://www.elsewhere.org/pomo/)
 
-First, we sample some extremes in writing style, and then we will tabulate results, so we have some nice reference points to help us to make sense of other results. On the lower and upper limits we have: XKCD: [Pushing the limits of extremely readable science](http://splasho.com/upgoer5/library.php) and for some comparison, we wanted to check some [Machine generated postmodern nonesense](http://www.elsewhere.org/pomo/)
-
-We can thiink of the complexity score similar to reading or grade level.
 
 | Text Source | Mean Complexity | Description |
 |----------|----------|:-------------:|
@@ -86,11 +77,7 @@ We can thiink of the complexity score similar to reading or grade level.
 
 
 # Developer Overview 
-Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible relative to other academic science writing. This means that reading scientific writing is often more complicated, making it unaccessible to many individuals. 
+Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible to a broad audience. In contrast, scientific writing is often more complicated. This is due to the tendency of scientists to use more complex, jargon-heavy language. This can make it inaccessible to many individuals. Here we sample a large variety of web documents, and then document their sentiment, complexity, and other metrics that define its readability.
 
-Unfortunately, writing styles intended for different audiences are predictably different. We show that computers can sample a large variety of web documents, and then document their sentiment, complexity, and other metrics that define its readability.
-
-Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. 
-
-Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
+Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can more aggressively compete with pseudo-science, and blogs.
 
