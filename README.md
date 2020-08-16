@@ -14,6 +14,8 @@ Multiple stakeholders benefit when science is communicated with lower complexity
 
 <img src="app_works.gif" width="450" height="450"/>
 
+**[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
+
 
 # Running the application using Docker
 ```
@@ -52,6 +54,3 @@ sudo [output] setup.py install
 ```
 streamlit run app.py
 ```
-
-**[Here is a Link to the manuscript with more details on the application.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md)** 
-
