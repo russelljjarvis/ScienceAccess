@@ -29,7 +29,7 @@ docker build -t wcomplexity .
 ### Run the container
 Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application.
 ```
-docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
+docker run --shm-size=3gb --cpus=2.0 --memory=1g --memory-swap=1g --rm wcomplexity
 ```
 This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
 
