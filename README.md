@@ -1,13 +1,11 @@
 
 
-
-
-[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
-
 <p align="center">
   <img src="app_works.gif" width="700" height="450"/>
 </p>
+
+[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 
 # Overview 
 Non-science writing is often expressed with a less complex and more engaging writing style. We believe that this makes it more accessible to a broad audience. In contrast, the content of scientific writing is often more complex. This is due to the tendency of scientists to use more complex, jargon-heavy language. This can make it inaccessible to many individuals. 
