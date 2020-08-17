@@ -14,6 +14,8 @@ This dashboard application allows the user to search for a scientific author, sa
 
 Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can better compete with pseudo-science, and blogs.
 
+If you're interested in [contributing](https://github.com/russelljjarvis/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/russelljjarvis/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
+
 # Running the application using Docker
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
