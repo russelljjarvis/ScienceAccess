@@ -111,7 +111,7 @@ RUN bash -c 'echo -e "\
 	" > requirements.txt'
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt \
 	&& rm -rf requirements.txt
-RUN pip install --upgrade streamlit
+#RUN pip install --upgrade streamlit
 
 
 RUN python -c "import nltk;nltk.download('punkt')"
@@ -127,6 +127,12 @@ RUN mv traingDats.p?dl=0 traingDats.p
 RUN mv benchmarks.p?dl=0 benchmarks.p
 # This may be more correct app doesn't mind
 # WORKDIR $APP_HOME																	
+RUN pip install spacy
+RUN python -m spacy download en_core_web_sm \
+    && python -m spacy download en_core_web_md \
+    && python -m spacy download de_core_news_sm
+
+RUN apt-get update && apt-get install -y procps libsm6 libxext6 libxrender-dev libglib2.0-0 
 ADD . .
 #ADD requirements.txt ./
 
@@ -143,12 +149,15 @@ RUN python3 -c "print('hello')"
 #WORKDIR go_dir
 # --------------- Configure Streamlit ---------------
 RUN mkdir -p /root/.streamlit
-RUN bash -c 'echo -e "\
-	[server]\n\
-	enableCORS = false\n\
-	" > /root/.streamlit/config.toml'
-RUN echo /root/.streamlit/config.toml
+#RUN bash -c 'echo -e "\
+#	[server]\n\
+#	enableCORS = false\n\
+#    serverAddress = \'0.0.0.0\'\n\
+#	" > /root/.streamlit/config.toml'
+RUN touch /root/.streamlit/config.toml
 
+#RUN wget https://raw.githubusercontent.com/MarcSkovMadsen/awesome-streamlit/master/.streamlit/config.prod.toml >> /root/.streamlit/config.toml
+RUN wget https://raw.githubusercontent.com/MarcSkovMadsen/awesome-streamlit/master/.streamlit/config.local.toml >> /root/.streamlit/config.toml
 RUN touch /root/.streamlit/credentials.toml
 RUN echo "[general]" >> /root/.streamlit/credentials.toml
 RUN echo 'email = "pcmcgurrin@gmail.com"' >> /root/.streamlit/credentials.toml
@@ -156,11 +165,15 @@ RUN echo 'email = "pcmcgurrin@gmail.com"' >> /root/.streamlit/credentials.toml
 #echo 'headless = true' >> ~/.streamlit/config.toml
 #echo 'enableCORS=false' >> ~/.streamlit/config.toml
 EXPOSE 8501
-EXPOSE 8080
+#EXPOSE 80
 
 
 # --------------- Export envirennement variable ---------------
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
-
-CMD ["streamlit", "run", "--server.port", "8080", "main.py"]
+RUN streamlit version
+# enviroment variable ensures that the python output is set straight
+# to the terminal without buffering it first
+ENV PYTHONUNBUFFERED 1
+CMD ["python","-m","http.server"]
+CMD ["streamlit", "run", "--server.port", "8501", "main.py"]
