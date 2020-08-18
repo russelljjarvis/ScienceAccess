@@ -2,7 +2,6 @@
 FROM python:3.7.4
 
 
-# --------------- Install python packages using `pip` ---------------
 
 
 
@@ -79,8 +78,8 @@ RUN conda install --yes gcc_linux-64
 RUN apt-get install -y --no-install-recommends g++ protobuf-compiler     
 RUN python -m pip install -U pycld3
 # Copy local code to the container image.
-#RUN conda install -c syllabs_admin pycld2
-
+# --------------- Install python packages using `pip` ---------------
+# Installing requirements this way allows you to leverage cache ADD is cache busting.
 RUN bash -c 'echo -e "\
     pycld3\n\
 	regex\n\
@@ -136,24 +135,15 @@ RUN apt-get update && apt-get install -y procps libsm6 libxext6 libxrender-dev l
 ADD . .
 #ADD requirements.txt ./
 
-
-#ADD align_data_sources.py .
-#RUN python3 align_data_sources.py
 #RUN groupadd -g 2000 go 
 #RUN useradd -m -u 2001 -g go go
 #RUN useradd -ms /bin/bash go
 #RUN mkdir -p go_dir
 #RUN chown -R go .
 #USER go
-RUN python3 -c "print('hello')"
-#WORKDIR go_dir
+
 # --------------- Configure Streamlit ---------------
 RUN mkdir -p /root/.streamlit
-#RUN bash -c 'echo -e "\
-#	[server]\n\
-#	enableCORS = false\n\
-#    serverAddress = \'0.0.0.0\'\n\
-#	" > /root/.streamlit/config.toml'
 RUN touch /root/.streamlit/config.toml
 
 #RUN wget https://raw.githubusercontent.com/MarcSkovMadsen/awesome-streamlit/master/.streamlit/config.prod.toml >> /root/.streamlit/config.toml
@@ -171,11 +161,7 @@ RUN bash -c 'echo -e "\
 	serverAddress = \"0.0.0.0\"\
 	" > /root/.streamlit/config.toml'
 
-#echo "[server]" >> ~/.streamlit/config.toml
-#echo 'headless = true' >> ~/.streamlit/config.toml
-#echo 'enableCORS=false' >> ~/.streamlit/config.toml
 EXPOSE 8501
-#EXPOSE 80
 
 
 # --------------- Export envirennement variable ---------------
@@ -185,5 +171,4 @@ ENV LANG=C.UTF-8
 # enviroment variable ensures that the python output is set straight
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
-CMD ["python","-m","http.server"]
 CMD ["streamlit", "run", "--server.port", "8501", "main.py"]
