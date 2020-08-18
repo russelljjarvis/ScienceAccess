@@ -135,15 +135,23 @@ not_want_list = ['et', 'al','text','crossref','isigoogle',
               'copyright', 'org','figure','pubmed','accessshoping','article','articlepubmedpubmed']
 
 
-try:
-    'hello' in english_words.words()
-except:
-    import nltk
-    nltk.download('words')
-    'hello' in english_words.words()
+#try:
+#    'hello' in english_words.words()
+#except:
+#    import nltk
+#    nltk.download('words')
+#    'hello' in english_words.words()
 
 
-def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
+from spacy_langdetect import LanguageDetector 
+import spacy
+nlp = spacy.load('en')
+import streamlit as st
+
+from spacy.lang.en import English
+nlp = English()
+tokenizer = nlp.Defaults.create_tokenizer(nlp)
+def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
     # TODO do set
     # operation on not_want_list and corpus. 
     # find 
@@ -168,9 +176,17 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         # https://github.com/russelljjarvis/twitter-dash/blob/master/twitterdash/preprocessing.py
         #
         # 
-        tokens = word_tokenize(corpus)
-        count_long_words = 0
+        doc = nlp(corpus)
+        st.text(doc)
 
+        if not doc._.language == 'en':
+            urlDat['mangled_decoding'] = True
+            return urlDat
+
+        tokens = tokenizer(corpus)
+        tokens = word_tokenize(corpus)
+        #count_long_words = 0
+        '''
         for t in tokens: 
             if len(t)>=25:
                 if count_long_words>=2:
@@ -183,7 +199,7 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
                 count_long_words+=1
 
         real_english_cnt = 0
-        '''
+        
         for i,t in enumerate(tokens[0:6]): 
             # failure of tools to decode
             # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
