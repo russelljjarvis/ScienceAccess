@@ -120,22 +120,22 @@ def main():
     st.markdown('\n\n')
 
     st.markdown('''
-    ### The average reading level of the scraped work was {0}'''.format(round(np.mean(standard_sci)),3))
+    ### The average reading level of the scraped work was {0}.'''.format(round(np.mean(standard_sci)),3))
 
     '''
-    For comparison, [the average adult reads at an 8th grade reading level.](http://nces.ed.gov/naal/pdf/2006470.pdf)
+    For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
     '''
 
     '''
-    Here are some metrics for a few additional established text sources of known complexity:
+    Here are a few additional established text sources of known complexity:
     '''
 
     st.markdown("""
     | Text Source | Mean Complexity | Description |
     |----------|----------|:-------------:|
     | [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-    | [readability of science declining](https://elifesciences.org/download/aHR0cHM6Ly9jZG4uZWxpZmVzY2llbmNlcy5vcmcvYXJ0aWNsZXMvMjc3MjUvZWxpZmUtMjc3MjUtdjIucGRm/elife-27725-v2.pdf?_hash=WA%2Fey48HnQ4FpVd6bc0xCTZPXjE5ralhFP2TaMBMp1c%3D)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-    | [science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+    | [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+    | [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
     | Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
     | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
     | [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
