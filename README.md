@@ -1,6 +1,8 @@
 
 
-
+<p align="center">
+  <img src="app_works.gif" width="700" height="450"/>
+</p>
 
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
@@ -12,8 +14,7 @@ This dashboard application allows the user to search for a scientific author, sa
 
 Multiple stakeholders benefit when science is communicated with lower complexity. Namely, more accessible science writing allows knowledge to be more readily transferred into public awareness. Objectively describing the character of the different writing styles will allow us to prescribe how to shift academic science writing into a more accessible niche, where science can better compete with pseudo-science, and blogs.
 
-<img src="app_works.gif" width="450" height="450"/>
-
+If you're interested in [contributing](https://github.com/russelljjarvis/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/russelljjarvis/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
 
 # Running the application using Docker
 ```
@@ -29,7 +30,7 @@ docker build -t wcomplexity .
 ### Run the container
 Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application.
 ```
-docker run --shm-size=3gb --cpus=4.0 --memory=1g --memory-swap=1g --rm wcomplexity
+docker run --shm-size=3gb --cpus=2.0 --memory=1g --memory-swap=1g --rm wcomplexity
 ```
 This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
 

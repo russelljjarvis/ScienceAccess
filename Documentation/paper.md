@@ -10,6 +10,8 @@ authors:
     affiliation: PhD Candidate Neuroscience, Arizona State University
   - name: Patrick McGurrin
     affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
+  - name: Marc Skov Madsen
+    affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted. 
   - name: Shivam Bansal
     affiliation: Senior Data Scientist, H2O.ai
   - name: Bradley G Lusk
