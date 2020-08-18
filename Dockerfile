@@ -157,10 +157,20 @@ RUN mkdir -p /root/.streamlit
 RUN touch /root/.streamlit/config.toml
 
 #RUN wget https://raw.githubusercontent.com/MarcSkovMadsen/awesome-streamlit/master/.streamlit/config.prod.toml >> /root/.streamlit/config.toml
-RUN wget https://raw.githubusercontent.com/MarcSkovMadsen/awesome-streamlit/master/.streamlit/config.local.toml >> /root/.streamlit/config.toml
+#RUN wget https://raw.githubusercontent.com/MarcSkovMadsen/awesome-streamlit/master/.streamlit/config.local.toml >> /root/.streamlit/config.toml
 RUN touch /root/.streamlit/credentials.toml
 RUN echo "[general]" >> /root/.streamlit/credentials.toml
-RUN echo 'email = "pcmcgurrin@gmail.com"' >> /root/.streamlit/credentials.toml
+RUN echo 'email = "colouredstatic@gmail.com"' >> /root/.streamlit/credentials.toml
+
+RUN bash -c 'echo -e "\
+	[server]\n\
+	enableCORS = false\n\
+	enableXsrfProtection = false\n\
+	\n\
+	[browser]\n\
+	serverAddress = \"0.0.0.0\"\
+	" > /root/.streamlit/config.toml'
+
 #echo "[server]" >> ~/.streamlit/config.toml
 #echo 'headless = true' >> ~/.streamlit/config.toml
 #echo 'enableCORS=false' >> ~/.streamlit/config.toml
@@ -171,7 +181,7 @@ EXPOSE 8501
 # --------------- Export envirennement variable ---------------
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
-RUN streamlit version
+#RUN streamlit version
 # enviroment variable ensures that the python output is set straight
 # to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
