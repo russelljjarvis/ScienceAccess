@@ -132,7 +132,7 @@ DEBUG = False
 not_want_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
-              'copyright', 'org','figure','pubmed','accessshoping','article','articlepubmedpubmed']
+              'copyright', 'org','figure','pubmed','accessshoping','articlepubmedpubmed']
 
 
 #try:
@@ -226,7 +226,9 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
         # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat['wcount']  > WORD_LIM)
-
+        for t in tokens:
+            if len(t)>28:
+                return {}
         ## Remove the search term from the tokens somehow.
         urlDat['tokens'] = tokens
 
