@@ -23,4 +23,5 @@ tqdm
 crossref-commons
 sklearn
 pipenv
+spacy-langdetect
 

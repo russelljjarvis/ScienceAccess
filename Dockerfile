@@ -129,7 +129,9 @@ RUN mv benchmarks.p?dl=0 benchmarks.p
 RUN pip install spacy
 RUN python -m spacy download en_core_web_sm \
     && python -m spacy download en_core_web_md \
-    && python -m spacy download de_core_news_sm
+    && python -m spacy download de_core_news_sm \
+	&& python -m spacy download en
+
 
 RUN apt-get update && apt-get install -y procps libsm6 libxext6 libxrender-dev libglib2.0-0 
 ADD . .

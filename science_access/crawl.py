@@ -74,16 +74,19 @@ def convert_pdf_to_txt(content):
     except:
         pdf = io.BytesIO(content)
     parser = PDFParser(pdf)
-    document = PDFDocument(parser, password=None) # this fails
-    write_text = ''
-    for page in PDFPage.create_pages(document):
-        interpreter.process_page(page)
-        write_text +=  retstr.getvalue()
-        #write_text = write_text.join(retstr.getvalue())
-    # Process all pages in the document
-    text = str(write_text)
-    return text
-
+    if (type(parser) is not type(bytes)) and (type(parser) is not type(None)):
+        document = PDFDocument(parser, password=None) # this fails
+        write_text = ''
+        for page in PDFPage.create_pages(document):
+            interpreter.process_page(page)
+            write_text +=  retstr.getvalue()
+            #write_text = write_text.join(retstr.getvalue())
+        # Process all pages in the document
+        text = str(write_text)
+        return text
+    else:
+        st.text('defered')
+        return str('')
 def html_to_txt(content):
     soup = BeautifulSoup(content, 'html.parser')
     #strip HTML
@@ -179,6 +182,8 @@ def collect_pubs(url):
         check_out = link.get('href')
         #if '/citations?' in check_out:
         links.append(check_out)
+    import streamlit as NoSuchElementException
+    #st.text(links)
     driver.close()
     driver.quit() 
     driver = None
