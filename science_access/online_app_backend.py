@@ -71,6 +71,7 @@ class tqdm:
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
 
+import dask
 
 def take_url_from_gui(author_link_scholar_link_list):
     '''
@@ -81,20 +82,31 @@ def take_url_from_gui(author_link_scholar_link_list):
     #if heroku:
     #    follow_links = collect_pubs(author_link_scholar_link_list)[3:25]
     #else:
-    follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
+    st.text(author_link_scholar_link_list)
 
+    follow_links = collect_pubs(author_link_scholar_link_list)
+    follow_links = follow_links[0:16]
+    st.text('links empty')
+
+    st.text(follow_links)
     for r in tqdm(follow_links,title='Scrape in Progress. Please Wait.'):
   
         try:
             urlDat = process(r)
+            author_results.append(urlDat)
         except:
+            st.text('gets here')
             follow_more_links = collect_pubs(r)
-            for r in follow_more_links:
+            lazy = (dask.delayed(process)(w) for w in follow_more_links)
+            author_results = list(dask.compute(*lazy))
+
+            #for r in follow_more_links:
                 #if heroku:
                 #    sleep(np.random.uniform(1,2))
-                urlDat = process(r)        
-        if not isinstance(urlDat,type(None)):
-            author_results.append(urlDat)
+            #    urlDat = process(r) 
+            #    author_results.append(urlDat)       
+    author_results = [urlDat for urlDat in author_results if not isinstance(urlDat,type(None))]
+    #    author_results.append(urlDat)
     return author_results
 
 def unigram_model(author_results):
@@ -141,9 +153,9 @@ def update_web_form(url):
     author_results = take_url_from_gui(url)
     ar =  copy.copy(author_results)
     datax = filter_empty(ar)
-    datay = metricss(ar)
+    met = metricss(ar)
     df = pd.DataFrame(datax)
-    return df, datay, author_results
+    return df, met, author_results
 
 def enter_name_here(scholar_page, name):
     df, datay, author_results = update_web_form(scholar_page)
@@ -164,41 +176,39 @@ def ar_manipulation(ar):
         
     trainingDats.extend(ar)
     return (ar, trainingDats)
+import os
+from crossref_commons.iteration import iterate_publications_as_json
+import requests
 
-def call_from_front_end(NAME):
-    #if not heroku:
-    scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-
-    _, _, ar  = enter_name_here(scholar_link,NAME)
-    (ar, trainingDats) = ar_manipulation(ar)
-
+def call_from_front_end(NAME,OPENACCESS=True,tns=16):
+    if not OPENACCESS:
+        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
+        _, _, ar  = enter_name_here(scholar_link,NAME)
+        (ar, trainingDats) = ar_manipulation(ar)
 
     if OPENACCESS:
-        import os
-        from crossref_commons.iteration import iterate_publications_as_json
-        import requests
-
-        #filter_ = {'type': 'journal-article'}
         queries = {'query.author': NAME}
         ar = []
         bi =[p for p in iterate_publications_as_json(max_results=100, queries=queries)]   
-        for p in bi[0:9]:    
+        #for p in bi[0:30]:    
+        for p in tqdm(bi[0:30],title='Scrape in Progress. Please Wait.'):
+
             res = str('https://api.unpaywall.org/v2/')+str(p['DOI'])+str('?email=YOUR_EMAIL')
             response = requests.get(res)
             response = response.json()
             if response['is_oa'] and response is not None:
-                st.text(response)
-                print(response.keys())
-                try:
-                    temp = response['best_oa_location']['url_for_pdf']
-
-                except:
-                    temp = response['best_oa_location']['url']#['url_for_pdf']
-
-                st.text(temp) 
+ 
+                #try:
+                #    temp = response['best_oa_location']['url_for_pdf']
+                #except:
+                temp = response['best_oa_location']['url']#['url_for_pdf']
+                st.text(response['best_oa_location']['url'])
                 if temp is not None:
-                    urlDat = process(temp)        
-                    if not isinstance(urlDat,type(None)):
+                    try:
+                        urlDat = process(temp)       
+                    except:
+                        urlDat = {}
+                    if not isinstance(type(urlDat),type(None)):
                         ar.append(urlDat)
 
         (ar, trainingDats) = ar_manipulation(ar)

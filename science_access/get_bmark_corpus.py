@@ -48,11 +48,14 @@ def process(link):
 
     else:
         pdf_file = requests.get(link, stream=True)
-        buffered = convert_pdf_to_txt(pdf_file)
+        try:
+            buffered = convert_pdf_to_txt(pdf_file)
+        except:
+            buffered = ''
     urlDat['link'] = link
-    urlDat['page_rank'] = 'benchmark'    
+    urlDat['page_rank'] = 'benchmark'   
+ 
     urlDat = text_proc(buffered,urlDat)
-    
     return urlDat
 
 #try:

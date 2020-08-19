@@ -143,92 +143,94 @@ not_want_list = ['et', 'al','text','crossref','isigoogle',
 #    'hello' in english_words.words()
 
 
-from spacy_langdetect import LanguageDetector 
-import spacy
-nlp = spacy.load('en')
+#from spacy_langdetect import LanguageDetector 
+#import spacy
+#try:
+#nlp = spacy.load('en',disable=["parser"])
+#except:
+#nlp.add_pipe(LanguageDetector(), name='language_detector', last=True)
+
+#nlp = spacy.load("en_core_web_sm")
 import streamlit as st
 
-from spacy.lang.en import English
-nlp = English()
-tokenizer = nlp.Defaults.create_tokenizer(nlp)
-def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
+#from spacy.lang.en import English
+#nlp = English()#.from_disk("/model", disable=["parser"])
+#tokenizer = nlp.Defaults.create_tokenizer(nlp)
+from nltk.tokenize import word_tokenize
+
+#nlp = spacy.load("en_core_web_sm", disable=["parser"])
+#nlp = English().from_disk("/model", disable=["parser"])
+#doc = nlp("I don't want parsed", disable=["parser"])
+
+import nltk
+ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words('english'))
+ 
+NON_ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words()) - ENGLISH_STOPWORDS
+ 
+STOPWORDS_DICT = {lang: set(nltk.corpus.stopwords.words(lang)) for lang in nltk.corpus.stopwords.fileids()}
+ 
+def get_language(text):
+    words = set(nltk.wordpunct_tokenize(text.lower()))
+    return max(((lang, len(words & stopwords)) for lang, stopwords in STOPWORDS_DICT.items()), key = lambda x: x[1])[0]
+ 
+ 
+def is_english(text):
+    text = text.lower()
+    words = set(nltk.wordpunct_tokenize(text))
+    return len(words & ENGLISH_STOPWORDS) > len(words & NON_ENGLISH_STOPWORDS)
+ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words('english'))
+
+def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
     # TODO do set
     # operation on not_want_list and corpus. 
     # find 
     #remove unreadable characters
-    if type(corpus) is type(str) and str('privacy policy') not in corpus:
+    #st.text(corpus)
+
+        
+    if type(corpus) is type(str()):# and not str('privacy policy') in corpus:
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
-        corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus)
+        
+
+        #doc = nlp(corpus)
+        #st.text(corpus)
 
         '''
-        Untested code that should be integrated. 
-        Dump URLS and twitter handles.
-        corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", corpus)
-        # remove the hashtags and mentions
-        corpus = re.sub(r"#\w+|@\w+", "", corpus)
-        does_this_work = check_passive(corpus)
-        textNum = re.findall(r'\d', corpus)
-        '''
-        # #locate numbers that nltk cannot see to analyze
-        # code from:
-        # https://github.com/russelljjarvis/twitter-dash/blob/master/twitterdash/preprocessing.py
-        #
-        # 
-        doc = nlp(corpus)
-        st.text(doc)
+        
+        if doc._.language_scores['en'] <0.5:
+            st.text('mangled_decoding')
+            st.text(doc._.language)
 
-        if not doc._.language == 'en':
+            urlDat['mangled_decoding'] = True
+            return urlDat
+        '''
+        tokens = word_tokenize(corpus)
+
+        #tokens = tokenizer(corpus, disable=["parser"])
+        #(len(tokens))
+
+        stop_words = stopwords.words('english')
+        #stop_words = (lex for lex in nlp.vocab if lex.is_stop)
+
+        #tokens = [ word for word in tokens if not word in ENGLISH_STOPWORDS]
+        tokens = [ w.lower() for w in tokens ] #make everything lower case
+        if not is_english(corpus):
             urlDat['mangled_decoding'] = True
             return urlDat
 
-        tokens = tokenizer(corpus)
-        tokens = word_tokenize(corpus)
-        #count_long_words = 0
-        '''
-        for t in tokens: 
-            if len(t)>=25:
-                if count_long_words>=2:
-                    # failure of tools to decode
-                    # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
-                    # and we have to dump the document. We can do this by returning 
-                    # return {}
-                    urlDat['mangled_decoding'] = True
-                    return urlDat
-                count_long_words+=1
-
-        real_english_cnt = 0
-        
-        for i,t in enumerate(tokens[0:6]): 
-            # failure of tools to decode
-            # explanation of word length greater than 30 the pdf reader unwittingly merged words together.
-            # and we have to dump the document. We can do this by returning 
-
-            if check_if_real_word(t):
-                real_english_cnt+=1
-            if real_english_cnt>=2 and i<5: 
-                break    
-            if i>=5 and real_english_cnt==0:
-                urlDat['mangled_decoding'] = True
-                return urlDat
-            else:
-                break
-        #We create a list comprehension which only 
-        # returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
-        '''
-        stop_words = stopwords.words('english')
-
-        tokens = [ word for word in tokens if not word in stop_words]
-        tokens = [ w.lower() for w in tokens ] #make everything lower case
-        #tokens = list(set(tokens) - set(not_want_list))
+        tokens = list(set(tokens) - set(not_want_list))
         # s.difference(t) s - t
         # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat['wcount']  > WORD_LIM)
         for t in tokens:
             if len(t)>28:
-                return {}
+                urlDat['mangled_decoding'] = True
+                st.text('mangled_decoding')
+                st.text(tokens)
+                return urlDat
         ## Remove the search term from the tokens somehow.
         urlDat['tokens'] = tokens
 
@@ -237,6 +239,8 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
         #not_empty = bool(len(tokens) != 0)
 
 
+        #st.text('hit')
+        #st.text(urlDat['wcount'],len(tokens),WORD_LIM)
 
         if len(tokens) and word_lim: #  and server_error:
 
@@ -265,59 +269,11 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
             # https://github.com/shivam5992/textstat
 
             urlDat['standard'] = textstat.text_standard(corpus, float_output=True)
-        return urlDat
-        '''
-        urlDat['publication'] = publication_check(str(tokens))[1]
-        urlDat['clue_words'] = clue_words(str(tokens))[1]
-        if str('link') in urlDat.keys():
-            urlDat['clue_links'] = clue_links(urlDat['link'])[1]
+            #sensible = textstat.text_standard(str(tokens), float_output=True)
+            #st.text('hit')
+            #st.text(urlDat['standard'],sensible)
 
-            temp = len(urlDat['clue_words'])+len(urlDat['publication'])+len(urlDat['clue_links'])
-            if temp  > 10 and str('wiki') not in urlDat['link']:
-                urlDat['science'] = True
-            else:
-                urlDat['science'] = False
-            if str('wiki') in urlDat['link']:
-                urlDat['wiki'] = True
-            else:
-                urlDat['wiki'] = False
-            
-        # The post modern essay generator is so obfuscated, that ENGLISH classification fails, and this criteria needs to be relaxed.
-        not_empty = bool(len(tokens) != 0)
-
-            #urlDat['standard_'] = copy.copy(urlDat['standard'] )
-            # special sauce
-            # Good writing should be readable, objective, concise.
-            # The writing should be articulate/expressive enough not to have to repeat phrases,
-            # thereby seeming redundant. Articulate expressive writing then employs
-            # many unique words, and does not yield high compression savings.
-            # Good writing should not be obfucstated either. The reading level is a check for obfucstation.
-            # The resulting metric is a balance of concision, low obfucstation, expression.
-            
-            if 'big_model' in urlDat.keys():
-                urlDat['perplexity'] = perplexity(corpus, urlDat['big_model'])
-            else:
-                urlDat['perplexity'] = None
-            wc = float(1.0/urlDat['wcount'])
-            # compressed/uncompressed. Smaller is better.
-            # as it means writing was low entropy, redundant, and easily compressible.
-            urlDat['scaled'] = wc * urlDat['standard']
-            urlDat['conciseness'] = urlDat['wcount']*(urlDat['uniqueness']) + \
-            urlDat['wcount']*(urlDat['info_density'])
-
-            urlDat['conciseness'] = bi_log_value(urlDat['conciseness'])
-            if urlDat['perplexity'] is not None:
-                urlDat['perplexity'] = bi_log_value(urlDat['perplexity'])
-
-                penalty = (urlDat['standard'] + urlDat['conciseness']+\
-                urlDat['scaled'] + urlDat['perplexity'])/4.0
-            else:
-                penalty = (urlDat['standard'] + urlDat['conciseness']+urlDat['scaled'] )/3.0
-
-            #computes perplexity of the unigram model on a testset
-            urlDat['penalty'] = penalty
-            '''
-
+    return urlDat
 #from tqdm import tqdm
 
 def process_dics(urlDats):

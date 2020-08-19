@@ -52,13 +52,17 @@ def main():
         (NAME,ar,df,datay,scholar_link) =  contents
     st.title('Search Reading Complexity of an Author')
     author_name = st.text_input('Enter Author Name:')
-    
+    radio_value = st.radio("Select Search Backend as Open Access /or Google Scholar",[True,False])
+    radio_value = st.radio("Target Number of Samples",[10,20,30])
+    #st.text(radio_value)
     cached_author_name = "Sayali Phatak"
     NBINS = 40
 
     if author_name:
-        st.markdown("resolving query for author {0}".format(str(author_name)))
-        ar = call_from_front_end(author_name)
+        #show_exp = st.checkbox("Include expensive listings")
+        #st.markdown("resolving query for author {0}".format(str(author_name)))
+        ar = call_from_front_end(author_name,OPENACCESS=radio_value)
+        st.text(ar)
         scraped_labels, standard_sci = frame_to_lists(ar)
 
         push_frame_to_screen(scraped_labels,standard_sci)

@@ -38,7 +38,7 @@ NBINS = 40
 def passiveness(acorpus):
 
 
-    check_passive(acorpus)
+    return check_passive(acorpus)
 
 def frame_to_lists(ar):
     scraped_labels = [ str(x['link']) for x in ar]
