@@ -45,10 +45,35 @@ from .utils import (black_string, clue_links, clue_words,
 
 
 from science_access.utils import check_passive
+#from science_access.enter_author_name import create_giant_strings#, not_want_list 
+not_want_list = ['et', 'al','text','crossref','isigoogle',
+              'cross', 'ref','google','scholar',
+              'article','pubmed','full','doi','org','http',
+              'copyright', 'org','figure','pubmed','accessshoping','articlepubmedpubmed']
 
 from nltk.corpus import words as english_words
 
-
+def create_giant_strings(ar,not_want_list):
+    sci_corpus = ''
+    first_pass = []
+    for t in ar:
+        if 'tokens' in t.keys():
+            for s in t['tokens']:
+                if s not in not_want_list:
+                    first_pass.append(s)    
+    first_pass =  set(first_pass)
+    for s in first_pass:
+        if "/" in s:
+            temp = s.split("/")#, " ")
+            sci_corpus+=str(' ')+temp[0]
+            sci_corpus+=str(' ')+temp[1]
+        if "." in s:
+            temp = s.split(".")#, " ")
+            sci_corpus+=str(' ')+temp[0]
+            sci_corpus+=str(' ')+temp[1]
+        if s not in set(not_want_list):
+            sci_corpus+=str(' ')+s#+str(' ')
+    return sci_corpus
 def check_if_real_word(w):    
     if w in english_words.words():
         return w
@@ -128,11 +153,6 @@ def bi_log_value(value):
 DEBUG = False
 #from numba import jit
 
-# word limit smaller than 1000 gets product/merchandise sites.
-not_want_list = ['et', 'al','text','crossref','isigoogle',
-              'cross', 'ref','google','scholar',
-              'article','pubmed','full','doi','org','http',
-              'copyright', 'org','figure','pubmed','accessshoping','articlepubmedpubmed']
 
 
 #try:
@@ -178,9 +198,31 @@ def is_english(text):
     text = text.lower()
     words = set(nltk.wordpunct_tokenize(text))
     return len(words & ENGLISH_STOPWORDS) > len(words & NON_ENGLISH_STOPWORDS)
-ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words('english'))
 
-def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
+ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words('english'))
+from nltk.tokenize import sent_tokenize, word_tokenize
+import numpy as np
+def complexityAlongtheText(text, chunk_length = 128):
+    words = text.split()
+    cur = 0
+    #average = textstat.flesch_reading_ease(text)
+    stds = []
+    while cur < len(words):
+        sub = words[cur:cur+chunk_length]
+        #sub.append('.')
+        sub_text = ' '.join(sub)
+        print(type(sub_text))
+        #sub_text_str = create_giant_strings(sub_text,not_want_list)
+        std = textstat.text_standard(sub_text, float_output=True)
+        cur += chunk_length
+        stds.append(std)
+        st.text(stds[-1])
+        print(stds[-1],'rolling tally')
+    print(np.mean(stds),'final')
+
+    return np.mean(stds)
+
+def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     # TODO do set
     # operation on not_want_list and corpus. 
     # find 
@@ -192,8 +234,15 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
-        
+        corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"," ", corpus)
+        corpus = ''.join([i for i in corpus if not i.isdigit()]) 
+        if 'Abstract' in corpus:
+            corpus = corpus.split("Abstract")[1] 
+            #st.text(acorpus)
 
+        elif 'ABSTRACT' in corpus:
+            corpus = corpus.split("ABSTRACT")[1] 
+            #st.text(acorpus)
         #doc = nlp(corpus)
         #st.text(corpus)
 
@@ -214,7 +263,9 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
         stop_words = stopwords.words('english')
         #stop_words = (lex for lex in nlp.vocab if lex.is_stop)
 
-        #tokens = [ word for word in tokens if not word in ENGLISH_STOPWORDS]
+        tokens = [ word for word in tokens if not word in stop_words]
+        tokens = [ w.lower() for w in tokens if w.isalpha() ]
+
         tokens = [ w.lower() for w in tokens ] #make everything lower case
         if not is_english(corpus):
             urlDat['mangled_decoding'] = True
@@ -225,12 +276,14 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
         # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat['wcount']  > WORD_LIM)
+        '''
         for t in tokens:
             if len(t)>28:
                 urlDat['mangled_decoding'] = True
                 st.text('mangled_decoding')
                 st.text(tokens)
                 return urlDat
+        '''
         ## Remove the search term from the tokens somehow.
         urlDat['tokens'] = tokens
 
@@ -244,7 +297,6 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
 
         if len(tokens) and word_lim: #  and server_error:
 
-            tokens = [ w.lower() for w in tokens if w.isalpha() ]
             #fdist = FreqDist(tokens) #frequency distribution of words only
             # The larger the ratio of unqiue words to repeated words the more colourful the language.
             lexicon = textstat.lexicon_count(corpus, True)
@@ -256,22 +308,24 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 85):
 
 
             #urlDat['info_density'] =  comp_ratio(corpus)
-
+            sentences = sent_tokenize(corpus)
             #Sentiment and Subjectivity analysis
             testimonial = TextBlob(corpus)
             urlDat['sp'] = testimonial.sentiment.polarity
             urlDat['ss'] = testimonial.sentiment.subjectivity
             urlDat['sp_norm'] = np.abs(testimonial.sentiment.polarity)
             urlDat['ss_norm'] = np.abs(testimonial.sentiment.subjectivity)
-            urlDat['gf'] = textstat.gunning_fog(corpus)
+            #urlDat['gf'] = textstat.gunning_fog(corpus)
 
             # explanation of metrics
             # https://github.com/shivam5992/textstat
-
-            urlDat['standard'] = textstat.text_standard(corpus, float_output=True)
+            urlDat['standard'] = complexityAlongtheText(corpus)
+            #urlDat['standard'] = textstat.text_standard(corpus, float_output=True)
             #sensible = textstat.text_standard(str(tokens), float_output=True)
             #st.text('hit')
-            #st.text(urlDat['standard'],sensible)
+            st.text(urlDat['standard'])
+            #st.text(sensible)
+            #st.text(urlDat['gf'])
 
     return urlDat
 #from tqdm import tqdm
