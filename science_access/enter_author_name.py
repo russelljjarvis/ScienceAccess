@@ -22,7 +22,9 @@ from types import MethodType
 from nltk import word_tokenize
 
 
-from science_access.t_analysis import not_want_list
+#from science_access.t_analysis import not_want_list
+
+# word limit smaller than 1000 gets product/merchandise sites.
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 from science_access.word_cloud_by_word_len import generate_from_lengths

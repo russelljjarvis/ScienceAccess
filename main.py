@@ -52,8 +52,8 @@ def main():
         (NAME,ar,df,datay,scholar_link) =  contents
     st.title('Search Reading Complexity of an Author')
     author_name = st.text_input('Enter Author Name:')
-    radio_value = st.radio("Select Search Backend as Open Access /or Google Scholar",[True,False])
-    radio_value = st.radio("Target Number of Samples",[10,20,30])
+    radio_value = st.sidebar.radio("Select Search Backend Base Search.net True /or Experimental False",[True,False])
+    radio_value = st.sidebar.radio("Target Number of Samples",[10,20,30])
     #st.text(radio_value)
     cached_author_name = "Sayali Phatak"
     NBINS = 40
@@ -147,7 +147,7 @@ def main():
     | [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
     | [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
     | Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
-    | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+    | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates sentences that obey the rules of written English, but the meaning is nonesense |
     | [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
     """)
 

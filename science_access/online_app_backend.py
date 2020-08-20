@@ -59,7 +59,9 @@ class tqdm:
     def __init__(self, iterable, title=None):
         if title:
             st.write(title)
+    
         self.prog_bar = st.progress(0)
+        
         self.iterable = iterable
         self.length = len(iterable)
         self.i = 0
@@ -73,7 +75,7 @@ class tqdm:
 
 import dask
 
-def take_url_from_gui(author_link_scholar_link_list):
+def take_url_from_gui(author_link_scholar_link_list,tns):
     '''
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
@@ -82,29 +84,28 @@ def take_url_from_gui(author_link_scholar_link_list):
     #if heroku:
     #    follow_links = collect_pubs(author_link_scholar_link_list)[3:25]
     #else:
-    st.text(author_link_scholar_link_list)
+    #st.text(author_link_scholar_link_list)
 
     follow_links = collect_pubs(author_link_scholar_link_list)
-    follow_links = follow_links[0:16]
-    st.text('links empty')
+    follow_links = follow_links[0:tns-1]
+    #st.text('links empty')
 
-    st.text(follow_links)
+    #st.text(follow_links)
     for r in tqdm(follow_links,title='Scrape in Progress. Please Wait.'):
   
         try:
             urlDat = process(r)
             author_results.append(urlDat)
         except:
-            st.text('gets here')
             follow_more_links = collect_pubs(r)
-            lazy = (dask.delayed(process)(w) for w in follow_more_links)
-            author_results = list(dask.compute(*lazy))
+            #lazy = (dask.delayed(process)(w) for w in follow_more_links)
+            #author_results = list(dask.compute(*lazy))
 
-            #for r in follow_more_links:
+            for r in tqdm(follow_more_links,title='following links from after following original links'):
                 #if heroku:
-                #    sleep(np.random.uniform(1,2))
-            #    urlDat = process(r) 
-            #    author_results.append(urlDat)       
+                sleep(np.random.uniform(1,2))
+                urlDat = process(r) 
+                author_results.append(urlDat)       
     author_results = [urlDat for urlDat in author_results if not isinstance(urlDat,type(None))]
     #    author_results.append(urlDat)
     return author_results
@@ -149,16 +150,16 @@ def info_models(author_results):
 '''
 
 
-def update_web_form(url):
-    author_results = take_url_from_gui(url)
+def update_web_form(url,tns):
+    author_results = take_url_from_gui(url,tns)
     ar =  copy.copy(author_results)
     datax = filter_empty(ar)
     met = metricss(ar)
     df = pd.DataFrame(datax)
     return df, met, author_results
 
-def enter_name_here(scholar_page, name):
-    df, datay, author_results = update_web_form(scholar_page)
+def enter_name_here(scholar_page, name,tns):
+    df, datay, author_results = update_web_form(scholar_page,tns)
     return df, datay, author_results
 
 def find_nearest(array, value):
@@ -176,48 +177,96 @@ def ar_manipulation(ar):
         
     trainingDats.extend(ar)
     return (ar, trainingDats)
-import os
-from crossref_commons.iteration import iterate_publications_as_json
-import requests
+def call_from_front_end(NAME,OPENACCESS=False,tns=16):
+    #if not OPENACCESS:
+        #scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
+    #scholar_link=str('https://academic.microsoft.com/search?q=')+str(NAME)
+    scholar_link=str('https://www.base-search.net/Search/Results?lookfor=')+str(NAME)
 
-def call_from_front_end(NAME,OPENACCESS=True,tns=16):
-    if not OPENACCESS:
-        scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-        _, _, ar  = enter_name_here(scholar_link,NAME)
-        (ar, trainingDats) = ar_manipulation(ar)
-
-    if OPENACCESS:
-        queries = {'query.author': NAME}
-        ar = []
-        bi =[p for p in iterate_publications_as_json(max_results=100, queries=queries)]   
-        #for p in bi[0:30]:    
-        for p in tqdm(bi[0:30],title='Scrape in Progress. Please Wait.'):
-
-            res = str('https://api.unpaywall.org/v2/')+str(p['DOI'])+str('?email=YOUR_EMAIL')
-            response = requests.get(res)
-            response = response.json()
-            if response['is_oa'] and response is not None:
- 
-                #try:
-                #    temp = response['best_oa_location']['url_for_pdf']
-                #except:
-                temp = response['best_oa_location']['url']#['url_for_pdf']
-                st.text(response['best_oa_location']['url'])
-                if temp is not None:
-                    try:
-                        urlDat = process(temp)       
-                    except:
-                        urlDat = {}
-                    if not isinstance(type(urlDat),type(None)):
-                        ar.append(urlDat)
-
-        (ar, trainingDats) = ar_manipulation(ar)
+    # https://paperpile.com/g/academic-search-engines/
+    _, _, ar  = enter_name_here(scholar_link,NAME,tns)
+    (ar, trainingDats) = ar_manipulation(ar)
+    return ar
 
     '''
+    import os
+    from crossref_commons.iteration import iterate_publications_as_json
+    import requests
+    from crossref.restful import Works
+
+    if OPENACCESS:
+        #queries = {'query.author': NAME}
+        ar = []
+        #works.query("Richard Gerkin").url
+        works = Works()
+
+        ww =  works.query(author=NAME).filter(from_online_pub_date='2000')
+        # urls 
+        #bi =[p for p in iterate_publications_as_json(max_results=100, queries=queries)]   
+        #for p in bi[0:30]:
+        cnt = 0    
+        #from tqdm.auto import tqdm
+        #if 'Abstract' in corpus:
+        first = NAME.split(" ",1)[0] 
+        last = NAME.split(" ",1)[1] 
+        from pybliometrics.scopus import ScopusSearch
+        s = ScopusSearch('AUTHLASTNAME( {1} )'.format(NAME))
+        import pandas as pd
+        df = pd.DataFrame(pd.DataFrame(s.results))
+        st.write(df)
+        #from pybliometrics.scopus import AuthorSearch
+        #s = AuthorSearch('AUTHLAST({0}) and AUTHFIRST({1})'.format(first,last))
+        
+
+        #pbar = tqdm(total=tns,title='Scrape in Progress. Please Wait.')
+        prog_bar = st.progress(0)
+
+        for p in df['doi']:#tqdm(ww.all(),title='Scrape in Progress. Please Wait.'):
+            if cnt>=tns:
+                break
+            if p['DOI']:
+                res = str('https://api.unpaywall.org/v2/')+str(p['DOI'])+str('?email=rjjarvis@asu.edu')
+
+                          #“https://api.unpaywall.org/v2/" +value +”?email=your@emaildomain.com”
+                response = requests.get(res)
+                response = response.json()
+                st.text(response['doi_url'])
+                st.text(response['data_standard'])
+                if response['is_oa'] and response is not None:
+                    st.text(response.keys())
+                    #url = response['free_fulltext_url'] 
+                    url = response['best_oa_location']['url']#['url_for_pdf']
+                    st.text(url)
+                    if url is not None:
+                        urlDat = process(url) 
+                        if not isinstance(type(urlDat),type(None)):                            
+                            if NAME in urlDat['tokens']:
+                                cnt+=1  
+                                current_prog = cnt/ tns
+                                prog_bar.progress(current_prog)
+                                ar.append(urlDat)
+
+    
+            #Abstract only
+            elif 'URL' in p.keys():
+                temp = p['URL']
+                urlDat = process(temp) 
+                #st.text(urlDat['tokens'])
+                if not isinstance(type(urlDat),type(None)):
+                    if 'tokens' in urlDat.keys():
+                        if NAME in urlDat['tokens']:
+                            ar.append(urlDat)
+                            cnt+=1  
+                            current_prog = cnt/ tns
+                            prog_bar.progress(current_prog)
+
+
+        (ar, trainingDats) = ar_manipulation(ar)
+        #pbar.close()
+
     with open('data/traingDats.p','rb') as f:            
         trainingDats_old = pickle.load(f)
     trainingDats.extend(trainingDats_old)    
     with open('data/traingDats.p','wb') as f:            
         pickle.dump(trainingDats,f)        
     '''
-    return ar
