@@ -230,24 +230,33 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
     #st.text(corpus)
 
         
-    if type(corpus) is type(str()):# and not str('privacy policy') in corpus:
+    if type(corpus) is type(str()) and not str('privacy policy') in corpus:
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
         corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"," ", corpus)
         corpus = ''.join([i for i in corpus if not i.isdigit()]) 
+
+            
         if 'Abstract' in corpus:
             corpus = corpus.split("Abstract")[1] 
             #st.text(acorpus)
 
         elif 'ABSTRACT' in corpus:
-            corpus = corpus.split("ABSTRACT")[1] 
+            corpus = corpus.split("ABSTRACT")[1]
+        if not 'ABSTRACT' in corpus or 'Abstract' in corpus:
+            test = textstat.text_standard(corpus, float_output=True)
+            if test > 50:
+                urlDat['page full of links'] = True
+                st.text('page full of links each link is treated like a long word, and complexity measures go through the roof')
+                st.text(tokens)
+                return urlDat
             #st.text(acorpus)
         #doc = nlp(corpus)
         #st.text(corpus)
 
         '''
-        
+        Use spacey to sense english faster
         if doc._.language_scores['en'] <0.5:
             st.text('mangled_decoding')
             st.text(doc._.language)
@@ -276,14 +285,16 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat['wcount']  > WORD_LIM)
-        '''
+        
         for t in tokens:
-            if len(t)>28:
-                urlDat['mangled_decoding'] = True
-                st.text('mangled_decoding')
+            if len(t)>32:
+                urlDat['page full of links'] = True
+                st.text('Rarely is an english word so big')
+
+                st.text('page full of links each link is treated like a long word, and complexity measures go through the roof')
                 st.text(tokens)
                 return urlDat
-        '''
+        
         ## Remove the search term from the tokens somehow.
         urlDat['tokens'] = tokens
 
@@ -320,7 +331,6 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # explanation of metrics
             # https://github.com/shivam5992/textstat
             urlDat['standard'] = complexityAlongtheText(corpus)
-            #urlDat['standard'] = textstat.text_standard(corpus, float_output=True)
             #sensible = textstat.text_standard(str(tokens), float_output=True)
             #st.text('hit')
             st.text(urlDat['standard'])
