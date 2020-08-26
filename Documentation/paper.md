@@ -33,8 +33,6 @@ While readability tools, such as [Readable](https://www.webfx.com/tools/read-abl
 ### Text Analysis Metrics
 We built a web-scraping and text analysis infrastructure by extending many existing Free and Open Source (FOS) tools, including Google Scrape, Beautiful Soup, The Natural Language Toolkit, and Selenium. The tool is a dashboard application.
 
-The tool prompts the user to enter an author name, after which a text scraping process occurs.
-
 ### Reference Texts used for Analysis
 The results of the web scrape are compared to a number of available text repositories with varying complexity (see table). These include: 
 
@@ -92,6 +90,9 @@ sudo [output] setup.py install
 ```
 streamlit run app.py
 ```
+
+By either build method, the result is a web interface that prompts the user to enter an author name. After this, a text scraping process occurs.
+
 
 # Results
 After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, and the number of documents that this score was based on. 
