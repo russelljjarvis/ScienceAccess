@@ -19,11 +19,7 @@ authors:
   - name: Elise King
     affiliation: Field Ecologist, University of Melbourne
 
-
-
 date: August 2020
-
-bibliography: paper.bib
 
 # Introduction
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language [@Plavén-Sigray:2017]. In fact, this trend is becoming more evident over time [@Ball:2017].
@@ -44,13 +40,13 @@ The tool prompts the user to enter an author name, after which a text scraping p
 ### Reference Texts used for Analysis
 The results of the web scrape are compared to a number of available text repositories with varying complexity (see table). These include: 
 
-Upgoer5 is a library of scientific texts using only the 10,000 most commonly occurring English words[2]. This restraint, results in output text that that is common among the general public.
+Upgoer5 is a library of scientific texts using only the 10,000 most commonly occurring English words. This restraint, results in output text that that is common among the general public.
 
 Wikipedia is a free, crowdsourced  encyclopedia that is generated from self-nominating volunteers. We include it given it’s popular use for scientific and non-scientific information by the general public.
 
-Postmodern Essay Generator (PMEG) generates output consisting of sentences that obey the rules of written English, but have no restraints on the semantic conceptual references [5]. 
+Postmodern Essay Generator (PMEG) generates output consisting of sentences that obey the rules of written English, but have no restraints on the semantic conceptual references. 
 
-ART Corpus is a pre-existing body of scientific papers published in The Royal Society of Chemistry (RSC) and released with a creative commons license [1]. 
+ART Corpus is a pre-existing body of scientific papers published in The Royal Society of Chemistry (RSC) and released with a creative commons license. 
 
 Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included to better contextualize the complexity of the ART Corpus data with other text repositories of known complexity. We also include mean readability scores from two scholarly reference papers, Science Declining Over Time [@Kutner:2006] and Science of Writing [@Gopen:1990], which discuss writing to a broad audience in an academic context. We use these to demonstrate the feasibility of discussing complex content using more accessible language, and another benchmark for the user to see when viewing their own readability score.
 
