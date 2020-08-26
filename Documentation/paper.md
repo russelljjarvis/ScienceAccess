@@ -61,6 +61,38 @@ Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included 
 ### Reproducibility
 We note that this large hierarchy of software dependencies can act as a significant impediment to reproducibility. To address this issue, we used a Docker file and associated Docker container together, as they act as a self-documenting and extremely portable software environment clone.
 
+All code used for the creation of the code can be found on [GitHub](https://github.com/russelljjarvis/ScienceAccess/). It can be run by downloading the github repository to your machine, and then be either building a docker container or by running it using the terminal.
+
+### Downloading the application from Github
+
+```
+git clone https://github.com/russelljjarvis/ScienceAccess.git
+cd ScienceAccess
+
+```
+### Building and running the container using Docker
+Ensure that you have Docker downloaded on your machine. Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application.
+
+```
+docker build -t wcomplexity .
+docker run --shm-size=3gb --cpus=2.0 --memory=1g --memory-swap=1g --rm wcomplexity
+```
+This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
+
+### Running the application from the terminal
+
+```
+which python3
+```
+place output from above command in
+```
+sudo [output] setup.py install
+```
+
+```
+streamlit run app.py
+```
+
 # Results
 After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, and the number of documents that this score was based on. 
 
