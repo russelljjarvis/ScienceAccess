@@ -67,7 +67,7 @@ Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included 
 ### Reproducibility
 We note that this large hierarchy of software dependencies can act as a significant impediment to reproducibility. To address this issue, we used a Docker file and associated Docker container together, as they act as a self-documenting and extremely portable software environment clone.
 
-### Results
+# Results
 After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, and the number of documents that this score was based on. 
 
 The scraped text is also compared relative to Art Corpus [@Soldatova:2007], a library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool provides an overlay of the distribution of Art Corpus with that of the scraped author's text. A second plot above the distribution shows the readability score of each individual work can be visualized relative to the histogram.
