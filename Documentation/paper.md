@@ -41,20 +41,8 @@ We built a web-scraping and text analysis infrastructure by extending many exist
 
 The tool prompts the user to enter an author name, after which a text scraping process occurs.
 
-### Contextualized Readability Output
-After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, and the number of documents that this score was based on. 
-
-The scraped text is also compared relative to Art Corpus [@Soldatova:2007], a library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool provides an overlay of the distribution of Art Corpus with that of the scraped author's text. A second plot above the distribution shows the readability score of each individual work can be visualized relative to the histogram.
-
-Sentiment is also calculated to see overall how positive or negative the text scores.  
-
-Lastly, two word clouds are also generated. These show the most commonly used words and the largest words in the scraped text.
-
-Each scraped text is presented to the user in a table, so that the user can both verify that the scrape returned correct results. In addition, the individual readability scores for each of these scraped texts are provided. Each entry in the table is an active link that will also take the user to the source text. 
-
-
 ### Reference Texts used for Analysis
-In addition, we compare the query to a number of available text repositories with varying complexity (see table). These include: 
+The results of the web scrape are compared to a number of available text repositories with varying complexity (see table). These include: 
 
 Upgoer5 is a library of scientific texts using only the 10,000 most commonly occurring English words[2]. This restraint, results in output text that that is common among the general public.
 
@@ -76,14 +64,19 @@ Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included 
 | [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
 | [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry | 
 
-### Exclusion Criteria
-After scraping across each list, we excluded text from 3 types of websites, as they utilized wording that seemed to significantly bias the text stat (see below) metrics:
-were expressed in a non-English language
-were highly commercial in nature
-were privacy policy pages
-
 ### Reproducibility
 We note that this large hierarchy of software dependencies can act as a significant impediment to reproducibility. To address this issue, we used a Docker file and associated Docker container together, as they act as a self-documenting and extremely portable software environment clone.
+
+### Results
+After performing the web scrape of the entered author's work, the readbaility of the author's work is described using a variety of metrics. The primary metric is the Flesch-Kincaid readability score [@Kincaid:1975]. This readability metric is the most commonly used metric to assess readability. We include the average readability score, and the number of documents that this score was based on. 
+
+The scraped text is also compared relative to Art Corpus [@Soldatova:2007], a library of scientific papers published in The Royal Society of Chemistry. The generated plot for contextualized readability information is a histogram binned by readability score. We use this data because it is a pre-established library of scientific papers. The readability of ART Corpus has also been shown to be comparable to that of other scientific journals [Plavén-Sigray:2017]. The tool provides an overlay of the distribution of Art Corpus with that of the scraped author's text. A second plot above the distribution shows the readability score of each individual work can be visualized relative to the histogram.
+
+Sentiment is also calculated to see overall how positive or negative the text scores.  
+
+Lastly, two word clouds are also generated. These show the most commonly used words and the largest words in the scraped text.
+
+Each scraped text is presented to the user in a table, so that the user can both verify that the scrape returned correct results. In addition, the individual readability scores for each of these scraped texts are provided. Each entry in the table is an active link that will also take the user to the source text.
 
 # Conclusion
 Here we outline a new tool to analyze the complexity of a scientist’s work relative to other online-based text repositories. By entering an author’s name into the tool, an automated web-scraping process collects and analyzes text written by that author from Google Scholar. 
