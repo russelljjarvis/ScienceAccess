@@ -71,7 +71,7 @@ cd ScienceAccess
 
 ```
 ### Building and running the container using Docker
-Ensure that you have Docker downloaded on your machine. Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application.
+Ensure that you have Docker downloaded on your machine. Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application and thus are manually defined in the code below.
 
 ```
 docker build -t wcomplexity .
