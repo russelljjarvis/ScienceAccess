@@ -59,7 +59,7 @@ Upgoer5 [@Kuhn:2016], Wikipedia, and PMEG [@Bulhak:1996] libraries are included 
 ### Reproducibility
 We note that this large hierarchy of software dependencies can act as a significant impediment to reproducibility. To address this issue, we used a Docker file and associated Docker container together, as they act as a self-documenting and extremely portable software environment clone.
 
-All code used for the creation of the code can be found on [GitHub](https://github.com/russelljjarvis/ScienceAccess/). It can be run by downloading the github repository to your machine, and then be either building a docker container or by running it using the terminal.
+All code used for the creation of the code can be found on [GitHub](https://github.com/russelljjarvis/ScienceAccess/). It can be run by downloading the github repository to your machine, and then be either building a docker container or by running it using the terminal. 
 
 ### Downloading the application from Github
 
@@ -112,6 +112,8 @@ Other already existing tools, like the Upgoer5 and Hemmingway, use imputed text 
 
 We do not intend to compete with these well-established tools. By contrast, the goal of this work is to apply a more data-driven approach to provide established academic authors with statistical insights into their body of published science work. We believe this will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to use a data-driven approach to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
 
+# Future Work
+We feel that while the application is accessible using the code mentioned in the methods section, it can be burdensome for a user who is less familiar with coding language and processed. Future work will aim to implement the application as a web tool that can be accessed in a more accessible manner. By linking to the code we also hope that other scientists or engineers will help to expand and improve this tool moving forward. 
 
 # References
 see paper.bib
