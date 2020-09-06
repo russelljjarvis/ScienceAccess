@@ -6,6 +6,8 @@
 
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
+[![DOI](https://zenodo.org/badge/256452850.svg)](https://zenodo.org/badge/latestdoi/256452850)
+
 
 # Overview 
 Non-science writing is often expressed with a less complex and more engaging writing style. This makes accessible to a broad audience. In contrast, the content of scientific writing is often more complex. This is due to the tendency of scientists to use jargon-heavy language. This can make it inaccessible to many individuals. 
