@@ -45,7 +45,7 @@ from .utils import (black_string, clue_links, clue_words,
 
 
 from science_access.utils import check_passive
-#from science_access.enter_author_name import create_giant_strings#, not_want_list 
+#from science_access.enter_author_name import create_giant_strings#, not_want_list
 not_want_list = ['et', 'al','text','crossref','isigoogle',
               'cross', 'ref','google','scholar',
               'article','pubmed','full','doi','org','http',
@@ -60,7 +60,7 @@ def create_giant_strings(ar,not_want_list):
         if 'tokens' in t.keys():
             for s in t['tokens']:
                 if s not in not_want_list:
-                    first_pass.append(s)    
+                    first_pass.append(s)
     first_pass =  set(first_pass)
     for s in first_pass:
         if "/" in s:
@@ -74,7 +74,7 @@ def create_giant_strings(ar,not_want_list):
         if s not in set(not_want_list):
             sci_corpus+=str(' ')+s#+str(' ')
     return sci_corpus
-def check_if_real_word(w):    
+def check_if_real_word(w):
     if w in english_words.words():
         return w
     else:
@@ -97,8 +97,8 @@ def unigram_zipf(tokens):
     for word in model:
         model[word] = model[word]/float(sum(model.values()))
     return model
-    
-    
+
+
 #    https://github.com/nltk/nltk/blob/model/nltk/model/ngram.py
 
 def entropy(self, text):
@@ -128,7 +128,7 @@ def perplexity(self, text):
     :type text: Iterable[str]
     """
 
-    return pow(2.0, self.entropy(text))   
+    return pow(2.0, self.entropy(text))
 
 
 
@@ -163,7 +163,7 @@ DEBUG = False
 #    'hello' in english_words.words()
 
 
-#from spacy_langdetect import LanguageDetector 
+#from spacy_langdetect import LanguageDetector
 #import spacy
 #try:
 #nlp = spacy.load('en',disable=["parser"])
@@ -184,16 +184,16 @@ from nltk.tokenize import word_tokenize
 
 import nltk
 ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words('english'))
- 
+
 NON_ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words()) - ENGLISH_STOPWORDS
- 
+
 STOPWORDS_DICT = {lang: set(nltk.corpus.stopwords.words(lang)) for lang in nltk.corpus.stopwords.fileids()}
- 
+
 def get_language(text):
     words = set(nltk.wordpunct_tokenize(text.lower()))
     return max(((lang, len(words & stopwords)) for lang, stopwords in STOPWORDS_DICT.items()), key = lambda x: x[1])[0]
- 
- 
+
+
 def is_english(text):
     text = text.lower()
     words = set(nltk.wordpunct_tokenize(text))
@@ -211,49 +211,38 @@ def complexityAlongtheText(text, chunk_length = 128):
         sub = words[cur:cur+chunk_length]
         #sub.append('.')
         sub_text = ' '.join(sub)
-        print(type(sub_text))
+        #print(type(sub_text))
         #sub_text_str = create_giant_strings(sub_text,not_want_list)
         std = textstat.text_standard(sub_text, float_output=True)
         cur += chunk_length
         stds.append(std)
-        st.text(stds[-1])
-        print(stds[-1],'rolling tally')
-    print(np.mean(stds),'final')
+        #st.text(stds[-1])
+        #print(stds[-1],'rolling tally')
+    #print(np.mean(stds),'final')
 
     return np.mean(stds)
 
-def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
-    # TODO do set
-    # operation on not_want_list and corpus. 
-    # find 
-    #remove unreadable characters
-    #st.text(corpus)
+def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
 
-        
+
     if type(corpus) is type(str()) and not str('privacy policy') in corpus:
         corpus = corpus.replace("-", " ") #remove characters that nltk can't read
         corpus = corpus.replace("/", " ") #remove characters that nltk can't read
         corpus = corpus.replace(".", " ") #remove characters that nltk can't read
         corpus = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"," ", corpus)
-        corpus = ''.join([i for i in corpus if not i.isdigit()]) 
+        corpus = ''.join([i for i in corpus if not i.isdigit()])
 
-            
+
         if 'Abstract' in corpus:
-            corpus = corpus.split("Abstract")[1] 
-            #st.text(acorpus)
+            corpus = corpus.split("Abstract")[1]
 
         elif 'ABSTRACT' in corpus:
             corpus = corpus.split("ABSTRACT")[1]
         if not 'ABSTRACT' in corpus or 'Abstract' in corpus:
             test = textstat.text_standard(corpus, float_output=True)
-            if test > 50:
+            if test > 60:
                 urlDat['page full of links'] = True
-                st.text('page full of links each link is treated like a long word, and complexity measures go through the roof')
-                st.text(tokens)
                 return urlDat
-            #st.text(acorpus)
-        #doc = nlp(corpus)
-        #st.text(corpus)
 
         '''
         Use spacey to sense english faster
@@ -285,31 +274,16 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
         # new set with elements in s but not in t
         urlDat['wcount'] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat['wcount']  > WORD_LIM)
-        
+
         for t in tokens:
             if len(t)>32:
                 urlDat['page full of links'] = True
-                st.text('Rarely is an english word so big')
-
-                st.text('page full of links each link is treated like a long word, and complexity measures go through the roof')
-                st.text(tokens)
                 return urlDat
-        
-        ## Remove the search term from the tokens somehow.
+
         urlDat['tokens'] = tokens
 
-        # Word limits can be used to filter out product merchandise websites, which otherwise dominate scraped results.
-        # Search engine business model is revenue orientated, so most links will be for merchandise.
-        #not_empty = bool(len(tokens) != 0)
-
-
-        #st.text('hit')
-        #st.text(urlDat['wcount'],len(tokens),WORD_LIM)
 
         if len(tokens) and word_lim: #  and server_error:
-
-            #fdist = FreqDist(tokens) #frequency distribution of words only
-            # The larger the ratio of unqiue words to repeated words the more colourful the language.
             lexicon = textstat.lexicon_count(corpus, True)
             urlDat['uniqueness'] = len(set(tokens))/float(len(tokens))
             urlDat['unique_words'] = len(set(tokens))
@@ -318,9 +292,7 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             # big deltas mean redudancy/sparse information/information/density
 
 
-            #urlDat['info_density'] =  comp_ratio(corpus)
             sentences = sent_tokenize(corpus)
-            #Sentiment and Subjectivity analysis
             testimonial = TextBlob(corpus)
             urlDat['sp'] = testimonial.sentiment.polarity
             urlDat['ss'] = testimonial.sentiment.subjectivity
@@ -329,16 +301,9 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
             #urlDat['gf'] = textstat.gunning_fog(corpus)
 
             # explanation of metrics
-            # https://github.com/shivam5992/textstat
             urlDat['standard'] = complexityAlongtheText(corpus)
-            #sensible = textstat.text_standard(str(tokens), float_output=True)
-            #st.text('hit')
-            st.text(urlDat['standard'])
-            #st.text(sensible)
-            #st.text(urlDat['gf'])
-
+    print(urlDat['standard'],urlDat['link'])
     return urlDat
-#from tqdm import tqdm
 
 def process_dics(urlDats):
     dfs = []

@@ -24,4 +24,4 @@ crossref-commons
 sklearn
 pipenv
 spacy-langdetect
-
+orcid
