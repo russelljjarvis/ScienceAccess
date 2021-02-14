@@ -1,5 +1,5 @@
 os:
-  - linux
+  - linux 
   - osx
 language: python
 python:
@@ -10,8 +10,6 @@ python:
 install:
   - pip install -r requirements.txt
   - python setup.py install 
-  - bash install/user_install.sh
-  - python install/align_data_sources.py
   script: 
   - python3 unit_test/scrape_test.py
 after_success:

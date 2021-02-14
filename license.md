@@ -27,7 +27,7 @@ This code is glue built on top of a lot of Free and Open Source tools.
  
  -------------------------------------------------------------------------------
  
-[Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/)
+[Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/) License
 
 You are free to:
 
