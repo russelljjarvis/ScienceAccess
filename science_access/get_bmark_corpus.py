@@ -18,7 +18,20 @@ else:
     heroku = False
 
 REDIRECT = False
-def process(link):
+
+def coauthor(soup):
+    from_pub = soup.find_all('#gs_res_ccl_top a')
+    to_pub = soup.find_all('#gs_res_ccl_mid .gs_r')
+    print(from_pub,'worked 2')
+    print(to_pub,'worked 3')
+    ca=soup.find(lambda tag:"coauthor" in tag.text)
+    if ca is not None:
+        print(ca.text,'worked 1')
+    ca=soup.find(lambda tag:"co-author" in tag.text)
+    if ca is not None:
+        print(ca.text,'worked 0.5')
+    return soup
+def process(link,REDIRECT=False):
     urlDat = {}
 
     if REDIRECT:
@@ -28,22 +41,22 @@ def process(link):
     if str('pdf') not in link:
         driver = get_driver()
         driver.get(link)
- 
+
         crude_html = driver.page_source
 
         soup = BeautifulSoup(crude_html, 'html.parser')
         for script in soup(["script", "style"]):
             script.extract()    # rip it out
+
         text = soup.get_text()
-        #wt = copy.copy(text)
-        #organize text
+        print(text)
         lines = (line.strip() for line in text.splitlines())  # break into lines and remove leading and trailing space on each
         chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
         text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
         buffered = str(text)
 
         driver.close()
-        driver.quit() 
+        driver.quit()
         driver = None
         del driver
 
@@ -54,9 +67,9 @@ def process(link):
         except:
             buffered = ''
     urlDat['link'] = link
-    urlDat['page_rank'] = 'benchmark'   
+    urlDat['page_rank'] = 'benchmark'
     from .t_analysis import text_proc
-
+    print(buffered)
     urlDat = text_proc(buffered,urlDat)
     return urlDat
 
@@ -81,7 +94,7 @@ def get_greg_nicholas():
     #pdf_file = requests.get(link, stream=True)
     #bufferd = convert_pdf_to_txt(pdf_file)
     #File_object = open(r"local_text.txt","Access_Mode")
-    file1 = open("local_text.txt","r") 
+    file1 = open("local_text.txt","r")
     txt = file1.readlines()
     new_str = ''
     for i in txt:

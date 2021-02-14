@@ -205,22 +205,14 @@ import numpy as np
 def complexityAlongtheText(text, chunk_length = 128):
     words = text.split()
     cur = 0
-    #average = textstat.flesch_reading_ease(text)
     stds = []
     while cur < len(words):
         sub = words[cur:cur+chunk_length]
-        #sub.append('.')
         sub_text = ' '.join(sub)
-        #print(type(sub_text))
-        #sub_text_str = create_giant_strings(sub_text,not_want_list)
         std = textstat.text_standard(sub_text, float_output=True)
         cur += chunk_length
         stds.append(std)
-        #st.text(stds[-1])
-        #print(stds[-1],'rolling tally')
-    #print(np.mean(stds),'final')
-
-    return np.mean(stds)
+    return np.mean(stds), textstat.text_standard(text, float_output=True)
 
 def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
 
@@ -298,11 +290,11 @@ def text_proc(corpus, urlDat = {}, WORD_LIM = 50):
             urlDat['ss'] = testimonial.sentiment.subjectivity
             urlDat['sp_norm'] = np.abs(testimonial.sentiment.polarity)
             urlDat['ss_norm'] = np.abs(testimonial.sentiment.subjectivity)
-            #urlDat['gf'] = textstat.gunning_fog(corpus)
+            urlDat['gf'] = textstat.gunning_fog(corpus)
 
             # explanation of metrics
-            urlDat['standard'] = complexityAlongtheText(corpus)
-    print(urlDat['standard'],urlDat['link'])
+            urlDat['standard'],right = complexityAlongtheText(corpus)
+    #print(urlDat['standard'],urlDat['link'])
     return urlDat
 
 def process_dics(urlDats):
