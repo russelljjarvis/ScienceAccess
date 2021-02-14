@@ -125,7 +125,19 @@ def take_url_from_gui(NAME,tns):
 		response = response.json()
 		if 'is_oa' in response.keys():
 			if response['is_oa'] is True:
-				res = response["best_oa_location"]
+				if "url_for_landing_page" in response.keys():
+					res = response["url_for_landing_page"]
+					#print(res)
+					urlDat = process(res)
+				else:
+					if 'url_for_pdf' in response.keys():
+						res = response['url_for_pdf']
+						urlDat = process(res)
+					else:
+						if 'doi_url' in response.keys():
+							res = response['doi_url']
+							urlDat = process(res)
+							#print(response['best_oa_location'])
 			else:
 				res = response["doi_url"]
 				urlDat = process(res)
