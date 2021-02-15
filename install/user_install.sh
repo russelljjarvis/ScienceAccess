@@ -9,9 +9,6 @@ if [[ $(uname) == "Darwin" ]]; then
         brew update
     fi
     
-    #brew install -y jq 
-    #brew install -y wget 
-    #brew cask install -y firefox
     #brew install -y geckodriver
     
     brew install jq 

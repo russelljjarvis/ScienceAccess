@@ -71,6 +71,7 @@ def process(link,REDIRECT=False):
     from .t_analysis import text_proc
     print(buffered)
     urlDat = text_proc(buffered,urlDat)
+    
     return urlDat
 
 #try:
