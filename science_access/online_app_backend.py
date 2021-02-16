@@ -82,7 +82,7 @@ def take_url_from_gui(author_link_scholar_link_list):
         follow_links = collect_pubs(author_link_scholar_link_list)[0:15]
 
     for r in tqdm(follow_links,title='Progess of scraping'):
-  
+
         try:
             urlDat = process(r)
         except:
@@ -90,7 +90,7 @@ def take_url_from_gui(author_link_scholar_link_list):
             for r in tqdm(follow_more_links,title='Progess of scraping'):
                 if heroku:
                     sleep(np.random.uniform(1,3))
-                urlDat = process(r)        
+                urlDat = process(r)
         if not isinstance(urlDat,type(None)):
             author_results.append(urlDat)
     return author_results
@@ -158,7 +158,7 @@ def ar_manipulation(ar):
 
     with open('data/traingDats.p','rb') as f:
         trainingDats = pickle.load(f)
-        
+
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
@@ -178,8 +178,8 @@ def call_from_front_end(NAME):
         #filter_ = {'type': 'journal-article'}
         queries = {'query.author': NAME}
         ar = []
-        bi =[p for p in iterate_publications_as_json(max_results=100, queries=queries)]   
-        for p in bi[0:9]:    
+        bi =[p for p in iterate_publications_as_json(max_results=100, queries=queries)]
+        for p in bi[0:9]:
             res = str('https://api.unpaywall.org/v2/')+str(p['DOI'])+str('?email=YOUR_EMAIL')
             response = requests.get(res)
             response = response.json()
@@ -192,20 +192,20 @@ def call_from_front_end(NAME):
                 except:
                     temp = response['best_oa_location']['url']#['url_for_pdf']
 
-                #temp=str('https://unpaywall.org/'+str(p['DOI'])) 
-                st.text(temp) 
+                #temp=str('https://unpaywall.org/'+str(p['DOI']))
+                st.text(temp)
                 if temp is not None:
-                    urlDat = process(temp)        
+                    urlDat = process(temp)
                     if not isinstance(urlDat,type(None)):
                         ar.append(urlDat)
 
         (ar, trainingDats) = ar_manipulation(ar)
 
     '''
-    with open('data/traingDats.p','rb') as f:            
+    with open('data/traingDats.p','rb') as f:
         trainingDats_old = pickle.load(f)
-    trainingDats.extend(trainingDats_old)    
-    with open('data/traingDats.p','wb') as f:            
-        pickle.dump(trainingDats,f)        
+    trainingDats.extend(trainingDats_old)
+    with open('data/traingDats.p','wb') as f:
+        pickle.dump(trainingDats,f)
     '''
     return ar
