@@ -66,10 +66,8 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
-    driver = webdriver.Firefox(options=options)
-    return driver
+    #driver = webdriver.Firefox(options=options)
 
-    """
     try:
         driver = webdriver.Firefox(options=options)
     except:
@@ -99,7 +97,7 @@ def get_driver():
                     GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
                     options.binary_location = str('./firefox')
                     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-    """
+    return driver
 
 
 rsrcmgr = PDFResourceManager()
