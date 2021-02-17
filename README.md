@@ -4,6 +4,9 @@
   <img src="app_works.gif" width="700" height="450"/>
 </p>
 
+[Try a live sample of the application](https://agile-reaches-20338.herokuapp.com/)
+
+
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
 [![DOI](https://zenodo.org/badge/256452850.svg)](https://zenodo.org/badge/latestdoi/256452850)
 
@@ -15,7 +18,6 @@ This dashboard application allows the user to search for a scientific author. It
 
 More accessible science writing allows knowledge to be more readily transferred into public awareness, as well as between scientists of different fields. Objectively describing the complexity of different writing styles allows us to prescribe how to shift academic science writing into a more accessible niche, where science can better compete with pseudo-science and blogs.
 
-[A live sample of the application](https://agile-reaches-20338.herokuapp.com/)
 
 If you're interested in [contributing](https://github.com/russelljjarvis/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/russelljjarvis/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
 
