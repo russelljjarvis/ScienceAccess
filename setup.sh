@@ -18,6 +18,11 @@ wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/fire
 wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
 mv traingDats.p?dl=0 data/trainingDats.p
 
+wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
+tar -xvzf geckodriver*
+chmod +x geckodriver
+
+
 mkdir -p ~/.streamlit/
 echo "\
 [general]\n\

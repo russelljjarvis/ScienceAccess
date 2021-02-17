@@ -89,9 +89,12 @@ def author_to_affiliations(NAME):
         records = p["records"][0]
         if "doi" in records.keys():
             visit_urls.append(records["doi"])
-            doi_to_affil = crossref_commons.retrieval.get_publication_as_json(records["doi"])
-            key = stored['author'][0]['given']+stored['author'][0]['family']
-            affilations[key] = doi_to_affil['author'][0]['affiliation']
+            try:
+                doi_to_affil = crossref_commons.retrieval.get_publication_as_json(records["doi"])
+                key = stored['author'][0]['given']+stored['author'][0]['family']
+                affilations[key] = doi_to_affil['author'][0]['affiliation']
+            except:
+                pass
     return affilations
 
 def author_to_urls(NAME):
@@ -113,8 +116,6 @@ def author_to_urls(NAME):
         if "doi" in records.keys():
             visit_urls.append(records["doi"])
 
-            doi_to_affil = crossref_commons.retrieval.get_publication_as_json(records["doi"])
-            doi_to_affil['author'][0]['affiliation']
     visit_urls = [i for i in visit_urls if "FIGSHARE" not in i]
     visit_urls = [i for i in visit_urls if "figshare" not in i]
     visit_urls = [i for i in visit_urls if "doi" in i]
