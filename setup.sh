@@ -15,6 +15,9 @@ sudo python3 -m pip install git+https://github.com/pyviz/holoviews.git
 git clone https://github.com/pyviz/holoviews.git
 cd holoviews; sudo pip install -e .; cd ..;
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
+wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0
+mv traingDats.p?dl=0 data/trainingDats.p
+
 mkdir -p ~/.streamlit/
 echo "\
 [general]\n\
