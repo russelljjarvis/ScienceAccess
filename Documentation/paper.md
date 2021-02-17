@@ -7,7 +7,7 @@ tags:
 
 authors:
   - name: Russell Jarvis
-    affiliation: PhD Candidate Neuroscience, Arizona State University
+    affiliation: Previous PhD Neuroscience, Arizona State University
   - name: Patrick McGurrin
     affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
   - name: Marc Skov Madsen
@@ -135,3 +135,5 @@ see paper.bib
 #[8] Bulhak, Andrew C. "On the simulation of postmodernism and mental debility using recursive transition networks." Monash University Department of Computer Science (1996).  
 
 #[9] Gopen, George D., and Judith A. Swan. "The science of scientific writing." American Scientist 78, no. 6 (1990): 550-558.
+
+#[10] Antonin Delpeuch; a3nm; Ryan Lahfa; translatewiki.net; Xia Li-yao; Steph. No.; Lucas Verney; Evarin; p4bl0; jibe-b; Stefan Beck; nemobis; Virgile Andreani; Martin Monperrus; Kenji Maillard; Jill-Jênn Vie; Golls, "[Dissem Software](https://dissemin.readthedocs.io/en/latest/index.html)" Zendo, 2019
