@@ -5,7 +5,6 @@
 </p>
 
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/russelljjarvis/ScienceAccess/master)
 [![DOI](https://zenodo.org/badge/256452850.svg)](https://zenodo.org/badge/latestdoi/256452850)
 
 
@@ -15,6 +14,8 @@ Non-science writing is often expressed with a less complex and more engaging wri
 This dashboard application allows the user to search for a scientific author. It first performs a web search to gather this author's published works. It then shows the readability score for each published works returned from the web scrape as well as an overall score for that individual. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text sources with known complexity. [Read more about the application here](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md).
 
 More accessible science writing allows knowledge to be more readily transferred into public awareness, as well as between scientists of different fields. Objectively describing the complexity of different writing styles allows us to prescribe how to shift academic science writing into a more accessible niche, where science can better compete with pseudo-science and blogs.
+
+[A live sample of the application](https://agile-reaches-20338.herokuapp.com/)
 
 If you're interested in [contributing](https://github.com/russelljjarvis/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/russelljjarvis/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
 
