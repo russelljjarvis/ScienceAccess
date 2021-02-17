@@ -11,8 +11,9 @@ from numpy import random
 import os
 from bs4 import BeautifulSoup
 import pickle
-import _pickle as cPickle #Using cPickle will result in performance gains
-#from GoogleScraper import scrape_with_config, GoogleSearchError
+import _pickle as cPickle  # Using cPickle will result in performance gains
+
+# from GoogleScraper import scrape_with_config, GoogleSearchError
 import dask.bag as db
 
 import pdfminer
@@ -22,13 +23,14 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfdevice import PDFDevice
 from pdfminer.layout import LAParams
-from pdfminer.converter import  TextConverter
+from pdfminer.converter import TextConverter
 
 import os
 import sys, getopt
 from io import StringIO
 
 from delver import Crawler
+
 C = Crawler()
 import requests
 import io
@@ -51,12 +53,14 @@ from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import os
 from selenium import webdriver
-if 'DYNO' in os.environ:
+
+if "DYNO" in os.environ:
     HEROKU = False
 else:
     HEROKU = True
-def get_driver():
 
+
+def get_driver():
 
     options = Options()
     options.add_argument("--headless")
@@ -65,7 +69,7 @@ def get_driver():
     driver = webdriver.Firefox(options=options)
     return driver
 
-    '''
+    """
     try:
         driver = webdriver.Firefox(options=options)
     except:
@@ -95,20 +99,19 @@ def get_driver():
                     GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
                     options.binary_location = str('./firefox')
                     driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
-    '''
-
+    """
 
 
 rsrcmgr = PDFResourceManager()
 retstr = StringIO()
 laparams = LAParams()
-codec = 'utf-8'
-device = TextConverter(rsrcmgr, retstr, laparams = laparams)
+codec = "utf-8"
+device = TextConverter(rsrcmgr, retstr, laparams=laparams)
 interpreter = PDFPageInterpreter(rsrcmgr, device)
 
 
-#converts pdf, returns its text content as a string
-def pdf_to_txt_(infile):#, pages=None):
+# converts pdf, returns its text content as a string
+def pdf_to_txt_(infile):  # , pages=None):
     output = StringIO()
     manager = PDFResourceManager()
     converter = TextConverter(manager, output, laparams=LAParams())
@@ -129,7 +132,7 @@ from PyPDF2 import PdfFileReader
 
 def pdf_to_txt(url):
 
-    if str(content) == str('<Response [404]>'):
+    if str(content) == str("<Response [404]>"):
         return None
     else:
         # from
@@ -146,38 +149,44 @@ def pdf_to_txt(url):
         text = ""
         while count < num_pages:
             pageObj = pdfReader.getPage(count)
-            count +=1
+            count += 1
             text += pageObj.extractText()
         if text != "":
-           text = text
+            text = text
         else:
-           text = textract.process(fileurl, method='tesseract', language='eng')
+            text = textract.process(fileurl, method="tesseract", language="eng")
     return text
 
+
 def html_to_txt(content):
-    soup = BeautifulSoup(content, 'html.parser')
-    #strip HTML
+    soup = BeautifulSoup(content, "html.parser")
+    # strip HTML
 
     for script in soup(["script", "style"]):
-        script.extract()    # rip it out
+        script.extract()  # rip it out
     text = soup.get_text()
     wt = copy.copy(text)
-    #organize text
-    lines = (line.strip() for line in text.splitlines())  # break into lines and remove leading and trailing space on each
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
-    text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
+    # organize text
+    lines = (
+        line.strip() for line in text.splitlines()
+    )  # break into lines and remove leading and trailing space on each
+    chunks = (
+        phrase.strip() for line in lines for phrase in line.split("  ")
+    )  # break multi-headlines into a line each
+    text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
     str_text = str(text)
 
     return str_text
 
-def convert(content,link):
+
+def convert(content, link):
     # This is really ugly, but it's proven to be both fault tolerant and effective.
     try:
-        if str('.html') in link:
+        if str(".html") in link:
             text = html_to_txt(content)
             print(text)
 
-        elif str('.pdf') in link:
+        elif str(".pdf") in link:
             text = pdf_to_txt(content)
         else:
             try:
@@ -192,32 +201,33 @@ def convert(content,link):
 
 def url_to_text(link_tuple):
     se_b, page_rank, link, category, buff = link_tuple
-    if str('pdf') not in link:
+    if str("pdf") not in link:
         if C.open(link) is not None:
             content = C.open(link).content
-            buff = convert(content,link)
+            buff = convert(content, link)
         else:
-            print('problem')
+            print("problem")
     else:
         pdf_file = requests.get(link, stream=True)
         f = io.BytesIO(pdf_file.content)
         reader = PdfFileReader(f)
-        buff = reader.getPage(0).extractText().split('\n')
-
+        buff = reader.getPage(0).extractText().split("\n")
 
     print(buff)
-    link_tuple = ( se_b, page_rank, link, category, buff )
+    link_tuple = (se_b, page_rank, link, category, buff)
     return link_tuple
 
-#@jit
+
+# @jit
 def buffer_to_pickle(link_tuple):
     se_b, page_rank, link, category, buff = link_tuple
     link_tuple = se_b, page_rank, link, category, buff
-    fname = 'results_dir/{0}_{1}_{2}.p'.format(category,se_b,page_rank)
+    fname = "results_dir/{0}_{1}_{2}.p".format(category, se_b, page_rank)
     if type(buff) is not None:
-        with open(fname,'wb') as f:
-            pickle.dump(link_tuple,f)
+        with open(fname, "wb") as f:
+            pickle.dump(link_tuple, f)
     return
+
 
 def process(item):
     text = url_to_text(item)
@@ -229,32 +239,40 @@ def process(item):
 NUM_LINKS = 10
 
 
-
 # this should be a class method with self and self.NUM_LINKS but can't be bothered refactoring.
 def wiki_get(get_links):
     # wikipedia is robot friendly
     # surfraw is fine.
-    se_,index,link,category,buff = get_links
-    url_of_links = str('https://en.wikipedia.org/w/index.php?search=')+str(category)
+    se_, index, link, category, buff = get_links
+    url_of_links = str("https://en.wikipedia.org/w/index.php?search=") + str(category)
     links = collect_pubs(url_of_links)
-    if len(links) > NUM_LINKS: links = links[0:NUM_LINKS]
-    [ process((se_,index,l,category,buff)) for index,l in enumerate(links) ]
+    if len(links) > NUM_LINKS:
+        links = links[0:NUM_LINKS]
+    [process((se_, index, l, category, buff)) for index, l in enumerate(links)]
+
 
 # this should be a class method with self and self.NUM_LINKS but can't be bothered refactoring.
+
 
 def scholar_pedia_get(get_links):
     # wikipedia is robot friendly
     # surfraw is fine.
-    se_,index,link,category,buff = get_links
-    url_of_links = str('http://www.scholarpedia.org/w/index.php?search=')+str(category)+str('&title=Special%3ASearch')
+    se_, index, link, category, buff = get_links
+    url_of_links = (
+        str("http://www.scholarpedia.org/w/index.php?search=")
+        + str(category)
+        + str("&title=Special%3ASearch")
+    )
     links = collect_pubs(url_of_links)
-    if len(links) > NUM_LINKS: links = links[0:NUM_LINKS]
-    [ process((se_,index,l,category,buff)) for index,l in enumerate(links) ]
+    if len(links) > NUM_LINKS:
+        links = links[0:NUM_LINKS]
+    [process((se_, index, l, category, buff)) for index, l in enumerate(links)]
+
 
 # this should be a class method with self and self.NUM_LINKS but can't be bothered refactoring.
 def search_scholar(get_links):
     # from https://github.com/ckreibich/scholar.py/issues/80
-    se_,index,category,category,buff = get_links
+    se_, index, category, category, buff = get_links
     querier = scholar.ScholarQuerier()
     settings = scholar.ScholarSettings()
     querier.apply_settings(settings)
@@ -262,16 +280,19 @@ def search_scholar(get_links):
 
     query.set_words(category)
     querier.send_query(query)
-    links = [ a.attrs['url'][0] for a in querier.articles if a.attrs['url'][0] is not None ]
-    #links = query.get_url()
-    #print(links)
-    #if len(links) > NUM_LINKS: links = links[0:NUM_LINKS]
+    links = [
+        a.attrs["url"][0] for a in querier.articles if a.attrs["url"][0] is not None
+    ]
+    # links = query.get_url()
+    # print(links)
+    # if len(links) > NUM_LINKS: links = links[0:NUM_LINKS]
 
-    [ process((se_,index,l,category,buff)) for index,l in enumerate(links) ]
+    [process((se_, index, l, category, buff)) for index, l in enumerate(links)]
+
 
 def search_author(get_links):
     # from https://github.com/ckreibich/scholar.py/issues/80
-    se_,index,category,category,buff = get_links
+    se_, index, category, category, buff = get_links
     querier = scholar.ScholarQuerier()
     settings = scholar.ScholarSettings()
     querier.apply_settings(settings)
@@ -279,38 +300,43 @@ def search_author(get_links):
 
     query.set_words(category)
     querier.send_query(query)
-    links = [ a.attrs['url'][0] for a in querier.articles if a.attrs['url'][0] is not None ]
-    #links = query.get_url()
-    #print(links)
-    #if len(links) > NUM_LINKS: links = links[0:NUM_LINKS]
+    links = [
+        a.attrs["url"][0] for a in querier.articles if a.attrs["url"][0] is not None
+    ]
+    # links = query.get_url()
+    # print(links)
+    # if len(links) > NUM_LINKS: links = links[0:NUM_LINKS]
 
-    [ process((se_,index,l,category,buff)) for index,l in enumerate(links) ]
+    [process((se_, index, l, category, buff)) for index, l in enumerate(links)]
+
 
 class SW(object):
-    def __init__(self,sengines,sterms,nlinks=10):
+    def __init__(self, sengines, sterms, nlinks=10):
         self.NUM_LINKS = nlinks
         self.links = None
-        if not os.path.exists('results_dir'):
-            os.makedirs('results_dir')
-        self.iterable = [ (v,category) for category in sterms for v in sengines.values() ]
+        if not os.path.exists("results_dir"):
+            os.makedirs("results_dir")
+        self.iterable = [
+            (v, category) for category in sterms for v in sengines.values()
+        ]
         random.shuffle(self.iterable)
 
-    def slat_(self,config):
+    def slat_(self, config):
         try:
-            if str('wiki') in config['search_engines']:
-                get_links = (str('wikipedia'),0,None,config['keyword'],None)
+            if str("wiki") in config["search_engines"]:
+                get_links = (str("wikipedia"), 0, None, config["keyword"], None)
                 wiki_get(get_links)
 
-            elif str('info_wars') in config['search_engines']:
-                get_links = (str('info_wars'),0,None,config['keyword'],None)
+            elif str("info_wars") in config["search_engines"]:
+                get_links = (str("info_wars"), 0, None, config["keyword"], None)
                 info_wars_get(get_links)
 
-            elif str('scholar') in config['search_engines']:
-                get_links = (str('scholar'),0,None,config['keyword'],None)
+            elif str("scholar") in config["search_engines"]:
+                get_links = (str("scholar"), 0, None, config["keyword"], None)
                 search_scholar(get_links)
 
-            elif str('scholarpedia') in config['search_engines']:
-                get_links = (str('scholar'),0,None,config['keyword'],None)
+            elif str("scholarpedia") in config["search_engines"]:
+                get_links = (str("scholar"), 0, None, config["keyword"], None)
                 scholar_pedia_get(get_links)
 
             else:
@@ -322,28 +348,32 @@ class SW(object):
 
                 # This code block jumps over gate two
                 # The (possibly private, or hosted server as a gatekeeper).
-                if len(links) > self.NUM_LINKS: links = links[0:self.NUM_LINKS]
+                if len(links) > self.NUM_LINKS:
+                    links = links[0 : self.NUM_LINKS]
                 if len(links) > 0:
                     print(links)
                     buffer = None
-                    se_ = config['search_engines']
-                    category = config['keyword']
-                    get_links = ((se_,index,link,category,buffer) for index, link in enumerate(links) )
+                    se_ = config["search_engines"]
+                    category = config["keyword"]
+                    get_links = (
+                        (se_, index, link, category, buffer)
+                        for index, link in enumerate(links)
+                    )
                     for gl in get_links:
                         process(gl)
                     # map over the function in parallel since it's 2018
-                    #b = db.from_sequence(get_links,npartitions=8)
-                    #_ = list(b.map(process).compute())
+                    # b = db.from_sequence(get_links,npartitions=8)
+                    # _ = list(b.map(process).compute())
         except GoogleSearchError as e:
             print(e)
             return None
-        print('done scraping')
+        print("done scraping")
 
-    #@jit
-    def scrapelandtext(self,fi):
-        se_,category = fi
+    # @jit
+    def scrapelandtext(self, fi):
+        se_, category = fi
         config = {}
-        #driver = rotate_profiles()
+        # driver = rotate_profiles()
         # This code block, jumps over gate one (the search engine as a gatekeeper)
         # google scholar or wikipedia is not supported by google scraper
         # duckduckgo bang expansion _cannot_ be used as to access engines that GS does not support
@@ -353,17 +383,16 @@ class SW(object):
         # it's easier not to use bang expansion, for that reason.
         # for example twitter etc
 
-        config['keyword'] = str(category)
+        config["keyword"] = str(category)
 
+        config["search_engines"] = se_
+        # config['scrape_method'] = 'http'
 
-        config['search_engines'] = se_
-        #config['scrape_method'] = 'http'
-
-        config['scrape_method'] = 'selenium'
-        config['num_pages_for_keyword'] = 1
-        config['use_own_ip'] = True
-        config['sel_browser'] = 'chrome'
-        config['do_caching'] = False # bloat warning.
+        config["scrape_method"] = "selenium"
+        config["num_pages_for_keyword"] = 1
+        config["use_own_ip"] = True
+        config["sel_browser"] = "chrome"
+        config["do_caching"] = False  # bloat warning.
 
         # Google scrap + selenium implements a lot of human centric browser masquarading tools.
         # Search Engine: 'who are you?' code: 'I am an honest human centric browser, and certainly note a robot surfing in the nude'. Search Engine: 'good, here are some pages'.
@@ -371,7 +400,7 @@ class SW(object):
         # The file crawl.py contains methods for crawling the scrapped links.
         # For this reason, a subsequent action, c.download (crawl download ) is ncessary.
 
-        config['output_filename'] = '{0}_{1}.csv'.format(category,se_)
+        config["output_filename"] = "{0}_{1}.csv".format(category, se_)
 
         self.slat_(config)
         return
@@ -383,5 +412,5 @@ class SW(object):
         # self.iterable.insert(0,("scholar"),str("arbitrary test")))
         # self.iterable.insert(0,("wiki"),str("arbitrary test")))
 
-        _ = list(map(self.scrapelandtext,self.iterable))
+        _ = list(map(self.scrapelandtext, self.iterable))
         return

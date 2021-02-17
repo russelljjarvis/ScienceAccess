@@ -21,6 +21,7 @@ else
     exit 1
 fi
 
+
 export PATH=$PATH:$pwd"/geckodriver"
 
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
