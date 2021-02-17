@@ -7,7 +7,7 @@ tags:
 
 authors:
   - name: Russell Jarvis
-    affiliation: PhD Candidate Neuroscience, Arizona State University
+    affiliation: Previous PhD Neuroscience, Arizona State University
   - name: Patrick McGurrin
     affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
   - name: Marc Skov Madsen
