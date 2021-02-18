@@ -159,8 +159,11 @@ def main():
     if len(sci_corpus) == 0:
         sci_corpus = create_giant_strings(ar, not_want_list)
     if len(sci_corpus) != 0:
-        print(len(sci_corpus))
-        big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+        #print(len(sci_corpus))
+        try:
+            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+        except:
+            pass
     try:
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():

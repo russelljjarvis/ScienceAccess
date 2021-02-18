@@ -249,12 +249,12 @@ def take_url_from_gui_unpaywall(NAME, tns, visit_urls):
     ]
     return author_results, visit_more_urls
 
-def unpaywall_links(NAME, tns, visit_urls):
+def unpaywall_links(NAME, tns):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
-    author_results = []
+    #author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
     for index, doi_ in enumerate(dois):
@@ -270,11 +270,11 @@ def unpaywall_links(NAME, tns, visit_urls):
             # if res not in set(visit_urls):
             visit_more_urls.append(res)
 
-        if "url_for_landing_page" in response.keys() and urlDat is None:
+        if "url_for_landing_page" in response.keys():
             res = response["url_for_landing_page"]
             visit_more_urls.append(res)
 
-        if "doi_url" in response.keys() and urlDat is None:
+        if "doi_url" in response.keys():
             res = response["doi_url"]
             visit_more_urls.append(res)
 
@@ -352,7 +352,7 @@ def info_models(author_results):
 
 def update_web_form(NAME, tns):
     # author_results = brian_function(url,tns)
-    more_links = unpaywall_links(NAME, tns, visit_urls)
+    more_links = unpaywall_links(NAME, tns)
     author_results, visit_urls = take_url_from_gui(NAME, tns,more_links)
     #author_results, visit_more_urls = take_url_from_gui_unpaywall(NAME, tns, visit_urls)
     #print(set(visit_urls) & set(visit_more_urls))
