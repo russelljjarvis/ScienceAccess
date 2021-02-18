@@ -84,7 +84,7 @@ def process(link, REDIRECT=False):
         del driver
 
     else:
-        response = requests.get(link)  # , stream=True)
+        response = requests.get(link, stream=True)
         try:
             buffered = convert_pdf_to_txt(response)
             try:
