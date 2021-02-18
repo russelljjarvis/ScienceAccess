@@ -137,9 +137,9 @@ def main():
 		)
 	)
 
-	st.markdown(""" ### Word cloud""")
+	st.markdown(""" ### Word Frequency Word Cloud""")
 	"""
-	based on the most common words found in the mined text.
+	The word cloud is based on the most common words found in the mined text.
 	This word cloud is for humans to validate scraping work.
 	It is to help ensure trust in mining results.
 	"""
@@ -149,7 +149,7 @@ def main():
 
 	fig = fast_art_cloud(copy.deepcopy(sci_corpus))
 	st.markdown("-----")
-	st.markdown(""" ### Word cloud 	""")
+	st.markdown(""" ### Word Length Word Cloud 	""")
 	"""
 	based on the largest words found in the mined text.
 	These words are likely culprits that hindered readability.
@@ -173,10 +173,6 @@ def main():
 	except:
 		print('shelve error I dont understand')
 
-
-	"""
-	In general, we can equate reading level with grade level.
-	"""
 
 	st.markdown("\n")
 
@@ -243,6 +239,18 @@ def main():
 		uniqueness.append(block["uniqueness"])
 		sentiment.append(block["sp"])
 	temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
+	if "reading_time" in ar[0].keys():
+		average_reading_time = [np.mean([r["reading_time"] for r in ar]), np.mean(sentiment)]
+		st.markdown(
+			"""
+		### Reading Time
+		Mean reading time of author {1} was {0}.
+		""".format(
+				average_reading_time, author_name
+			)
+		)
+
+
 	st.markdown(
 		"""
 	### Sentiment
@@ -256,11 +264,14 @@ def main():
 	labels = [temp, "ART Corpus positive sentiment"]
 	values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
 
+
+	#urlDat["reading_time"]
 	fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
 	st.write(fig)
 
 	"""
 	Here are a few additional established text sources of known complexity:
+	Note that in general, we can equate reading level with grade level.
 	"""
 
 	st.markdown(
@@ -275,7 +286,10 @@ def main():
 	| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
 	"""
 	)
-	st.markdown("Source: [Github](https://github.com/russelljjarvis/ScienceAccess)")
+	st.markdown("-----")
+	st.markdown("\n")
+	st.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
+	st.markdown("\n")
 	st.markdown("-----")
 
 	"""
