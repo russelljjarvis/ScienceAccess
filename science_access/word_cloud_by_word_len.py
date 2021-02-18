@@ -86,6 +86,8 @@ def wrapper(w):
 
 
 import copy
+
+
 def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
@@ -184,21 +186,19 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     #    lazy = ((wrapper)(w) for w in frequencies[0:190])
     #    real_frequencies = list(lazy)
     # except:
-    #if len(frequencies)>100:
+    # if len(frequencies)>100:
     real_frequencies = [(wrapper)(w) for w in frequencies[0:99]]
-    #else:
+    # else:
     #    real_frequencies = [
     #        (wrapper)(w)
     #        for w in frequencies[0 : int(len(frequencies) - len(frequencies) / 2)]
     #    ]
 
-
-
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
 
     self.biggest_words = None
-    self.biggest_words = frequencies#[0:2]
+    self.biggest_words = frequencies  # [0:2]
     if self.random_state is not None:
         random_state = self.random_state
     else:

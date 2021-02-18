@@ -146,7 +146,8 @@ def main():
 	"""
     # flag = author_name in db
     # if not flag:
-    sci_corpus = create_giant_strings(ar, not_want_list)
+    ar1 = copy.deepcopy(ar)
+    sci_corpus = create_giant_strings(ar1, not_want_list)
 
     fig = fast_art_cloud(copy.deepcopy(sci_corpus))
     st.markdown("-----")
@@ -157,9 +158,9 @@ def main():
 	"""
     if len(sci_corpus) == 0:
         sci_corpus = create_giant_strings(ar, not_want_list)
-
-    big_words, word_counts_fz, fig_wl = art_cloud_wl(copy.deepcopy(sci_corpus))
-
+    if len(sci_corpus) != 0:
+        print(len(sci_corpus))
+        big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
     try:
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():
@@ -167,6 +168,7 @@ def main():
                     "ar": ar,
                     "scraped_labels": scraped_labels,
                     "standard_sci": standard_sci,
+                    "sci_corpus":sci_corpus
                 }
             if not "fig_art" in db[author_name].keys():
                 db[author_name]["fig_art"] = fig_art
