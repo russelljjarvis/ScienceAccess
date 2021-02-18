@@ -146,10 +146,10 @@ def main():
 	"""
     # flag = author_name in db
     # if not flag:
-    ar1 = copy.deepcopy(ar)
-    sci_corpus = create_giant_strings(ar1, not_want_list)
+    #ar1 = ar
+    sci_corpus = create_giant_strings(ar, not_want_list)
 
-    fig = fast_art_cloud(copy.deepcopy(sci_corpus))
+    fig = fast_art_cloud(sci_corpus)
     st.markdown("-----")
     st.markdown(""" ### Word Length Word Cloud 	""")
     """
