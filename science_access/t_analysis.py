@@ -52,6 +52,8 @@ tagger = PerceptronTagger(load=False)
 
 # from science_access.enter_author_name import create_giant_strings#, not_want_list
 not_want_list = [
+    "article",
+    "articlepubmedpubmed",
     "et",
     "al",
     "text",
