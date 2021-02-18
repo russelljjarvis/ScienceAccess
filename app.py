@@ -141,8 +141,10 @@ def main():
     st.markdown(""" ### Word Frequency Word Cloud""")
     """
 	The word cloud is based on the most common words found in the mined text.
-	This word cloud is for humans to validate scraping work.
-	It is to help ensure trust in mining results.
+	This word cloud is for humans to validate text mining work.
+	This is because the word cloud frequency often matches a writers
+    own knowledge of concepts in their work, therefore it can to help
+    instill trust in text-mining results.
 	"""
     # flag = author_name in db
     # if not flag:
@@ -258,15 +260,13 @@ def main():
             )
         )
 
-    st.markdown(
-        """
-	### Sentiment
-	It is {} that the mean sentiment of {} is more postive relative to that of ART Corpus.
-    Note that positive sentiment might relate to confirmation bias in science.
-	""".format(
-            temp, author_name
-        )
-    )
+    st.markdown("""### Sentiment""")
+    st.markdown("""It is {} that the mean sentiment of {}'s writing is more postive relative to that of ART Corpus.
+                Note that positive sentiment might relate to confirmation bias in science.
+            	""".format(
+                        temp, author_name
+                    )
+                )
 
     temp = "{0} positive sentiment".format(author_name)
     labels = [temp, "ART Corpus positive sentiment"]
