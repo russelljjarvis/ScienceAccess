@@ -320,7 +320,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
             # explanation of metrics
             urlDat["standard"] = round(textstat.text_standard(corpus, float_output=True),3)
-            if urlDat > 40:
+            if urlDat["standard"] > 40:
                 left, right = complexityAlongtheText(corpus)
                 if right <= left and right != 0:
                     urlDat["standard"] = right
