@@ -39,7 +39,7 @@ def try_grobid(link,response):
         f.write(response.content)
         path = os.getcwd()+str(link)
     os.subprocess(
-        str("python3 grobid_client.py --input ")
+        str("python3 grobid_client_python/grobid_client.py --input ")
         + str(path)
         + str("--output ")
         + str(path)
@@ -85,13 +85,13 @@ def process(link, REDIRECT=False):
         ##
         # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
         ##
-        pdf_response = requests.get(link)#, stream=True)
+        response = requests.get(link)#, stream=True)
 
         try:
-            buffered = convert_pdf_to_txt(pdf_response)
+            buffered = convert_pdf_to_txt(response)
         except:
             try:
-                try_grobid(link,pdf_response)
+                try_grobid(link,response)
             except:
                     # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
                 buffered = ""

@@ -19,7 +19,8 @@ git clone https://github.com/pyviz/holoviews.git
 cd holoviews; sudo pip install -e .; cd ..;
 
 git clone https://github.com/kermitt2/grobid_client_python
-cd grobid_client_python; sudo pip install -e .; cd ..;
+cd grobid_client_python; sudo pip install -e .; cp grobid_client.py ..;cd ..;
+
 
 
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
