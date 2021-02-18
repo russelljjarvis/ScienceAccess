@@ -241,13 +241,13 @@ def main():
     temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
     if "reading_time" in ar[0].keys():
         average_reading_time = [
-            np.mean([r["reading_time"] for r in ar]),
+            np.mean([r["reading_time"][0] for r in ar]),
             np.mean(sentiment),
         ]
         st.markdown(
             """
 		### Reading Time
-		Mean reading time of author {1} was {0}.
+		Mean reading time of author {1} was {0} Minutes.
 		""".format(
                 average_reading_time, author_name
             )
@@ -257,6 +257,7 @@ def main():
         """
 	### Sentiment
 	It is {} that the mean sentiment of {} is more postive relative to that of ART Corpus.
+    Note that positive sentiment might relate to confirmation bias in science.
 	""".format(
             temp, author_name
         )
