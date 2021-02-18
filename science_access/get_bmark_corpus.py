@@ -34,10 +34,11 @@ def coauthor(soup):
         print(ca.text, "worked 0.5")
     return soup
 
-def try_grobid(link,response):
+
+def try_grobid(link, response):
     with open(link, "wb") as f:
         f.write(response.content)
-        path = os.getcwd()+str(link)
+        path = os.getcwd() + str(link)
     os.subprocess(
         str("python3 grobid_client_python/grobid_client.py --input ")
         + str(path)
@@ -48,6 +49,7 @@ def try_grobid(link,response):
         + str(" processFulltextDocument")
     )
     os.subprocess(str("cat ") + str(path) + str("_grobid"))
+
 
 def process(link, REDIRECT=False):
     urlDat = {}
@@ -82,13 +84,13 @@ def process(link, REDIRECT=False):
         del driver
 
     else:
-        response = requests.get(link)#, stream=True)
+        response = requests.get(link)  # , stream=True)
         try:
             buffered = convert_pdf_to_txt(response)
             try:
-                try_grobid(link,response)
+                try_grobid(link, response)
             except:
-                print('grobid not expected to work')
+                print("grobid not expected to work")
         except:
             buffered = ""
     urlDat["link"] = link

@@ -325,9 +325,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             if urlDat["gf"] <= urlDat["standard"]:
                 urlDat["standard"] = urlDat["gf"]
             urlDat["reading_time"] = textstat.reading_time(corpus)
-            urlDat["flesch_kincaid_grade"] = textstat.flesch_kincaid_grade(corpus)
-            if urlDat["flesch_kincaid_grade"] <= urlDat["standard"]:
-                urlDat["standard"] = urlDat["flesch_kincaid_grade"]
+            # urlDat["flesch_kincaid_grade"] = textstat.flesch_kincaid_grade(corpus)
+            # if urlDat["flesch_kincaid_grade"] <= urlDat["standard"]:
+            #    urlDat["standard"] = urlDat["flesch_kincaid_grade"]
 
     return urlDat
 
