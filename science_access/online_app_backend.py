@@ -150,18 +150,19 @@ def author_to_urls(NAME):
 # else:
 
 
-def take_url_from_gui(NAME, tns):
+def take_url_from_gui(NAME, tns,more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    visit_urls.extend(more_links)
     for index, doi_ in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
         link = doi_  # visit_urls[index]
-        print(doi_, "visited \n\n\n\n\n")
+        #print(doi_, "visited \n\n\n\n\n")
         urlDatTemp = process(doi_)
         author_results.append(urlDatTemp)
     author_results = [
@@ -238,15 +239,46 @@ def take_url_from_gui_unpaywall(NAME, tns, visit_urls):
 
             urlDat = process(res)
 
-        if urlDat is None:
-            if "tokens" in urlDatTemp.keys():
+        #if urlDat is None:
+        #    if "tokens" in urlDatTemp.keys():
                 # if len(urlDat["tokens"])<len(urlDatTemp["tokens"]):
-                urlDat = urlDatTemp
+        #        urlDat = urlDatTemp
         author_results.append(urlDat)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
     return author_results, visit_more_urls
+
+def unpaywall_links(NAME, tns, visit_urls):
+    """
+    inputs a URL that's full of publication orientated links, preferably the
+    authors scholar page.
+    """
+    author_results = []
+    dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    visit_more_urls = []
+    for index, doi_ in enumerate(dois):
+        r = (
+            str("https://api.unpaywall.org/v2/")
+            + str(doi_)
+            + str("?email=rjjarvis@asu.edu")
+        )
+        response = requests.get(r)
+        response = response.json()
+        if "url_for_pdf" in response.keys():
+            res = response["url_for_pdf"]
+            # if res not in set(visit_urls):
+            visit_more_urls.append(res)
+
+        if "url_for_landing_page" in response.keys() and urlDat is None:
+            res = response["url_for_landing_page"]
+            visit_more_urls.append(res)
+
+        if "doi_url" in response.keys() and urlDat is None:
+            res = response["doi_url"]
+            visit_more_urls.append(res)
+
+    return visit_more_urls
 
 
 """
@@ -320,10 +352,11 @@ def info_models(author_results):
 
 def update_web_form(NAME, tns):
     # author_results = brian_function(url,tns)
+    more_links = unpaywall_links(NAME, tns, visit_urls)
+    author_results, visit_urls = take_url_from_gui(NAME, tns,more_links)
+    #author_results, visit_more_urls = take_url_from_gui_unpaywall(NAME, tns, visit_urls)
+    #print(set(visit_urls) & set(visit_more_urls))
 
-    author_results, visit_urls = take_url_from_gui(NAME, tns)
-    author_results, visit_more_urls = take_url_from_gui_unpaywall(NAME, tns, visit_urls)
-    print(set(visit_urls) & set(visit_more_urls))
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
     met = metricss(ar)
