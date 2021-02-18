@@ -257,7 +257,7 @@ def unpaywall_links(NAME, tns):
     #author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
-    for index, doi_ in enumerate(dois):
+    for index, doi_ in enumerate(tqdm(dois,title="Building Suitable Links")):
         r = (
             str("https://api.unpaywall.org/v2/")
             + str(doi_)

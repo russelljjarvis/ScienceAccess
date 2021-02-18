@@ -246,7 +246,7 @@ def main():
     temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
     if "reading_time" in ar[0].keys():
         average_reading_time = [
-            np.mean([r["reading_time"][0] for r in ar]),
+            np.mean([r["reading_time"] for r in ar]),
             np.mean(sentiment),
         ]
         st.markdown(
