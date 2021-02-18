@@ -85,6 +85,7 @@ def wrapper(w):
         return None
 
 
+import copy
 def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
@@ -106,6 +107,7 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     frequencies = frequencies[:self.max_words]
     """
     # largest entry will be 1
+    self.max_words = 50
 
     words__ = []
     for word in words:
@@ -153,7 +155,6 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
             words__.append(word)
 
     # words_zipf = list(set(words__)
-    import copy
 
     # df = pd.DataFrame(pd.Series(list(words)),columns='text')
     # df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
@@ -183,20 +184,21 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     #    lazy = ((wrapper)(w) for w in frequencies[0:190])
     #    real_frequencies = list(lazy)
     # except:
-    try:
-        real_frequencies = ((wrapper)(w) for w in frequencies[0:190])
-    except:
-        real_frequencies = (
-            (wrapper)(w)
-            for w in frequencies[0 : int(len(frequencies) - len(frequencies) / 2)]
-        )
+    #if len(frequencies)>100:
+    real_frequencies = [(wrapper)(w) for w in frequencies[0:99]]
+    #else:
+    #    real_frequencies = [
+    #        (wrapper)(w)
+    #        for w in frequencies[0 : int(len(frequencies) - len(frequencies) / 2)]
+    #    ]
 
-        # list(dask.compute(*lazy))
+
 
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
+
     self.biggest_words = None
-    self.biggest_words = frequencies[0:2]
+    self.biggest_words = frequencies#[0:2]
     if self.random_state is not None:
         random_state = self.random_state
     else:

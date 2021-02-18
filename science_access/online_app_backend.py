@@ -167,7 +167,7 @@ def take_url_from_gui(NAME, tns):
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
-    return author_results
+    return author_results, visit_urls
 
     """
 	if "tokens" in urlDatTemp.keys():
@@ -197,18 +197,20 @@ def take_url_from_gui(NAME, tns):
 	"""
 
 
-def take_url_from_gui_old(NAME, tns):
+def take_url_from_gui_unpaywall(NAME, tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    # unpaywall_links =
+    visit_more_urls = []
     for index, doi_ in enumerate(
         tqdm(dois, title="Text mining via API calls. Please wait.")
     ):
-        link = visit_urls[index]
-        urlDatTemp = process(link)
+        # link = visit_urls[index]
+        # urlDatTemp = process(link)
         # if "tokens" in urlDatTemp.keys():
         #    print(urlDatTemp["tokens"])
         r = (
@@ -221,12 +223,19 @@ def take_url_from_gui_old(NAME, tns):
         urlDat = None
         if "url_for_pdf" in response.keys():
             res = response["url_for_pdf"]
+            # if res not in set(visit_urls):
+            visit_more_urls.append(res)
+
             urlDat = process(res)
         if "url_for_landing_page" in response.keys() and urlDat is None:
             res = response["url_for_landing_page"]
+            visit_more_urls.append(res)
+
             urlDat = process(res)
         if "doi_url" in response.keys() and urlDat is None:
             res = response["doi_url"]
+            visit_more_urls.append(res)
+
             urlDat = process(res)
 
         if urlDat is None:
@@ -237,14 +246,14 @@ def take_url_from_gui_old(NAME, tns):
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
-    return author_results
+    return author_results, visit_more_urls
 
+
+"""
 
 def brian_function(author_link_scholar_link_list, tns):
-    """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
-    """
     from bs4 import BeautifulSoup
 
     author_results = []
@@ -268,9 +277,8 @@ def brian_function(author_link_scholar_link_list, tns):
 
 
 def unigram_model(author_results):
-    """
-    takes author results.
-    """
+    #takes author results.
+    #
     terms = []
     for k, v in author_results.items():
         try:
@@ -293,7 +301,6 @@ def unigram_model(author_results):
     return big_model
 
 
-"""
 Not used
 def info_models(author_results):
 	big_model = unigram_model(author_results)
@@ -314,7 +321,9 @@ def info_models(author_results):
 def update_web_form(NAME, tns):
     # author_results = brian_function(url,tns)
 
-    author_results = take_url_from_gui(NAME, tns)
+    author_results, visit_urls = take_url_from_gui(NAME, tns)
+    author_results, visit_more_urls = take_url_from_gui_unpaywall(NAME, tns, visit_urls)
+    print(set(visit_urls) & set(visit_more_urls))
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
     met = metricss(ar)

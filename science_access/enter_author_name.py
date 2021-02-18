@@ -116,8 +116,12 @@ def art_cloud_wl(acorpus):
     fig = plt.figure()
 
     tokens = word_tokenize(acorpus)
-
-    wordcloud = WC.generate_from_lengths(tokens)
+    print(tokens, acorpus)
+    if len(tokens):
+        wordcloud = WC.generate_from_lengths(tokens)
+    else:
+        print(tokens)
+        return None, None, None
     biggest_words = WC.biggest_words
 
     word_counts_fz = WC.word_counts_fz
@@ -125,9 +129,6 @@ def art_cloud_wl(acorpus):
     plt.imshow(wordcloud, aspect="auto", interpolation="bilinear")
     plt.axis("off")
     plt.tight_layout(pad=0)
-    """
-	### A second word cloud where word length controls word size, not word frequency in text
-	"""
     st.pyplot(fig)
     return biggest_words, word_counts_fz, fig
 

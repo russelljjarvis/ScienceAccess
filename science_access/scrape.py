@@ -12,8 +12,6 @@ import os
 from bs4 import BeautifulSoup
 import pickle
 import _pickle as cPickle  # Using cPickle will result in performance gains
-
-# from GoogleScraper import scrape_with_config, GoogleSearchError
 import dask.bag as db
 
 import pdfminer
@@ -40,7 +38,6 @@ import selenium
 from .crawl import convert_pdf_to_txt
 from .crawl import print_best_text
 from .crawl import collect_pubs
-from science_access import scholar
 
 
 import re
@@ -53,6 +50,10 @@ from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import os
 from selenium import webdriver
+
+
+import PyPDF2
+from PyPDF2 import PdfFileReader
 
 if "DYNO" in os.environ:
     HEROKU = False
@@ -135,10 +136,6 @@ def pdf_to_txt_(infile):  # , pages=None):
     text = output.getvalue()
     output.close
     return text
-
-
-import PyPDF2
-from PyPDF2 import PdfFileReader
 
 
 def pdf_to_txt(url):
@@ -289,6 +286,8 @@ def scholar_pedia_get(get_links):
 
 # this should be a class method with self and self.NUM_LINKS but can't be bothered refactoring.
 def search_scholar(get_links):
+    # from science_access import scholar
+
     # from https://github.com/ckreibich/scholar.py/issues/80
     se_, index, category, category, buff = get_links
     querier = scholar.ScholarQuerier()
@@ -309,6 +308,8 @@ def search_scholar(get_links):
 
 
 def search_author(get_links):
+    # #from science_access import scholar
+
     # from https://github.com/ckreibich/scholar.py/issues/80
     se_, index, category, category, buff = get_links
     querier = scholar.ScholarQuerier()
