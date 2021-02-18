@@ -147,14 +147,17 @@ def main():
 	# if not flag:
 	sci_corpus = create_giant_strings(ar, not_want_list)
 
-	fig = fast_art_cloud(sci_corpus)
+	fig = fast_art_cloud(copy.deepcopy(sci_corpus))
 	st.markdown("-----")
 	st.markdown(""" ### Word cloud 	""")
 	"""
 	based on the largest words found in the mined text.
 	These words are likely culprits that hindered readability.
 	"""
-	big_words, word_counts_fz,fig_wl = art_cloud_wl(sci_corpus)
+	if len(sci_corpus)==0:
+		sci_corpus = create_giant_strings(ar, not_want_list)
+
+	big_words, word_counts_fz,fig_wl = art_cloud_wl(copy.deepcopy(sci_corpus))
 
 	try:
 		with shelve.open("fast_graphs_splash.p") as db:
@@ -222,8 +225,8 @@ def main():
 	st.markdown("-----")
 	st.markdown("\n\n\n\n")
 
-	sci_corpus = create_giant_strings(ar, not_want_list)
-	bio_corpus = create_giant_strings(trainingDats, not_want_list)
+	#sci_corpus = create_giant_strings(ar, not_want_list)
+	#bio_corpus = create_giant_strings(trainingDats, not_want_list)
 
 	# st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
 	# st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))

@@ -128,8 +128,8 @@ def art_cloud_wl(acorpus):
     """
 	### A second word cloud where word length controls word size, not word frequency in text
 	"""
-    st.pyplot()
-    return biggest_words, word_counts_fz
+    st.pyplot(fig)
+    return biggest_words, word_counts_fz, fig
 
 
 def zipf_wrapper(acorpus):
