@@ -76,9 +76,12 @@ class IntegralOccupancyMap(object):
 
 
 def wrapper(w):
-    if w[0] in english_words.words():
-        return w
-    else:
+    try:
+        if w[0] in english_words.words():
+            return w
+        else:
+            return None
+    except:
         return None
 
 
@@ -175,13 +178,20 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])
 
+    # try:
+    #
+    #    lazy = ((wrapper)(w) for w in frequencies[0:190])
+    #    real_frequencies = list(lazy)
+    # except:
     try:
-
-        lazy = ((wrapper)(w) for w in frequencies[0:190])
-        real_frequencies = list(lazy)
+        real_frequencies = ((wrapper)(w) for w in frequencies[0:190])
     except:
-        lazy = (dask.delayed(wrapper)(w) for w in frequencies[0:190])
-        real_frequencies = list(dask.compute(*lazy))
+        real_frequencies = (
+            (wrapper)(w)
+            for w in frequencies[0 : int(len(frequencies) - len(frequencies) / 2)]
+        )
+
+        # list(dask.compute(*lazy))
 
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)

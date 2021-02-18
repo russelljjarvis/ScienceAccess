@@ -74,7 +74,7 @@ def main():
     if author_name:
         with shelve.open("fast_graphs_splash.p") as db:
             flag = author_name in db
-            #if True:
+            # if True:
             if not flag:
                 ar = call_from_front_end(author_name)
                 scraped_labels, standard_sci = frame_to_lists(ar)
@@ -86,7 +86,7 @@ def main():
             else:
                 """
                 We have evaluated this query recently, using cached results...
-        		"""
+                """
 
                 temp = db[author_name]
                 ar = temp["ar"]
