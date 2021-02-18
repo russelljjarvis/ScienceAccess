@@ -12,7 +12,7 @@ jobs:
       - python/install-deps
       - python/save-cache
 
-      - run: 
+      - run:
           name: "Setup custom environment variables"
           command: echo 'export MY_ENV_VAR="CIRCLE"' >> $BASH_ENV
       - run: # print the name of the branch we're on
@@ -20,17 +20,20 @@ jobs:
           name: "What branch am I on?"
           command: echo ${CIRCLE_BRANCH}
 
-      - run:      
+      - run:
           command: sudo bash install/gecko_install.sh; sudo pip install -r requirements.txt;
           name: install
 
-      - run: 
+      - run:
           name: more install
-          command:  sudo pip install nltk; sudo python setup.py install; 
+          command:  sudo pip install nltk; sudo python setup.py install;
+      - run:
+          name: even more install
+          command:  sudo bash setup.sh;
 
       - run:
           name: scrape check
-          command: python unit_test/scrape_test.py 
+          command: python unit_test/scrape_test.py
 
   build-docker:
     machine: true

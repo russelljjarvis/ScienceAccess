@@ -82,23 +82,17 @@ def process(link, REDIRECT=False):
         del driver
 
     else:
-        ##
-        # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
-        ##
         response = requests.get(link)#, stream=True)
-
         try:
             buffered = convert_pdf_to_txt(response)
-        except:
             try:
                 try_grobid(link,response)
             except:
-                    # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
-                buffered = ""
+                print('grobid not expected to work')
+        except:
+            buffered = ""
     urlDat["link"] = link
     urlDat["page_rank"] = "benchmark"
-
-    # print(buffered)
     urlDat = text_proc(buffered, urlDat)
     if urlDat is not None:
         print(urlDat.keys(), "failure mode?")

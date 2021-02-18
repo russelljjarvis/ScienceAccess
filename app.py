@@ -135,6 +135,34 @@ def main():
         )
     )
 
+    st.markdown(""" ### Word cloud
+    based on the most common words found in the mined text.
+    This word cloud is for humans to validate scraping work.
+    It is to help ensure trust in mining results.
+	""")
+    # flag = author_name in db
+    # if not flag:
+    sci_corpus = create_giant_strings(ar, not_want_list)
+
+    fig = fast_art_cloud(sci_corpus)
+    with shelve.open("fast_graphs_splash.p") as db:
+        if not author_name in db.keys():
+            db[author_name] = {
+                "ar": ar,
+                "scraped_labels": scraped_labels,
+                "standard_sci": standard_sci,
+            }
+        if not "fig" in db[author_name].keys():
+            db[author_name]["fig"] = fig
+
+    st.markdown("-----")
+    st.markdown(""" ### Word cloud
+    based on the largest words found in the mined text.
+    These words are likely culprits that hindered readability.
+	""")
+
+    big_words, word_counts_fz = art_cloud_wl(sci_corpus)
+
     """
 	In general, we can equate reading level with grade level.
 	"""
@@ -209,24 +237,6 @@ def main():
     sci_corpus = create_giant_strings(ar, not_want_list)
     bio_corpus = create_giant_strings(trainingDats, not_want_list)
 
-    """
-	### Word cloud based on the most common words found in the mined text
-	"""
-    # flag = author_name in db
-    # if not flag:
-
-    fig = fast_art_cloud(sci_corpus)
-    with shelve.open("fast_graphs_splash.p") as db:
-        if not author_name in db.keys():
-            db[author_name]["fig"] = fig
-    st.markdown("-----")
-    st.markdown("\n\n")
-
-    """
-	### Word cloud based on the largest words found in the mined text
-	"""
-
-    big_words, word_counts_fz = art_cloud_wl(sci_corpus)
     # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
     # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
