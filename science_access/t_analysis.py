@@ -319,8 +319,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             urlDat["gf"] = textstat.gunning_fog(corpus)
 
             # explanation of metrics
-            urlDat["standard"] = round(textstat.text_standard(corpus, float_output=True),3)
-            if urlDat["standard"] > 40:
+            urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
+            if urlDat["standard"] > 40 or urlDat["standard"]==0:
                 left, right = complexityAlongtheText(corpus)
                 if right <= left and right != 0:
                     urlDat["standard"] = right
@@ -334,8 +334,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             #    urlDat["flesch_kincaid_grade"] = textstat.flesch_kincaid_grade(corpus)
             #except:
             #    pass
-            if urlDat["standard"]==0:
-                urlDat["standard"] = urlDat["flesch_kincaid_grade"]
+            #if urlDat["standard"]==0:
+            #    urlDat["standard"] = urlDat["flesch_kincaid_grade"]
             # if urlDat["flesch_kincaid_grade"] <= urlDat["standard"]:
             #    urlDat["standard"] = urlDat["flesch_kincaid_grade"]
 
