@@ -254,7 +254,7 @@ def main():
         st.markdown(
             """
 		### Reading Time
-        There were {3} documents. The average reading time
+        There were {2} documents. The average reading time
         per document for author {1} was {0} Minutes.
 		""".format(
                 average_reading_time, author_name, len(ar)

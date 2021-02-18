@@ -320,24 +320,15 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
             # explanation of metrics
             urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
-            if urlDat["standard"] > 40 or urlDat["standard"]==0:
+            if urlDat["standard"] > 40 or urlDat["standard"] == 0:
                 left, right = complexityAlongtheText(corpus)
                 if right <= left and right != 0:
                     urlDat["standard"] = right
-                else:
+                if right == 0 or left <= right:
                     urlDat["standard"] = left
-
             if urlDat["gf"] <= urlDat["standard"] and urlDat["gf"] != 0:
                 urlDat["standard"] = urlDat["gf"]
-            urlDat["reading_time"] = textstat.reading_time(corpus)#[0], 3)
-            #try:
-            #    urlDat["flesch_kincaid_grade"] = textstat.flesch_kincaid_grade(corpus)
-            #except:
-            #    pass
-            #if urlDat["standard"]==0:
-            #    urlDat["standard"] = urlDat["flesch_kincaid_grade"]
-            # if urlDat["flesch_kincaid_grade"] <= urlDat["standard"]:
-            #    urlDat["standard"] = urlDat["flesch_kincaid_grade"]
+            urlDat["reading_time"] = textstat.reading_time(corpus)  # [0], 3)
 
     return urlDat
 
