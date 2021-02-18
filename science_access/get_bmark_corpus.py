@@ -34,6 +34,20 @@ def coauthor(soup):
         print(ca.text, "worked 0.5")
     return soup
 
+def try_grobid(link,response):
+    with open(link, "wb") as f:
+        f.write(response.content)
+        path = os.getcwd()+str(link)
+    os.subprocess(
+        str("python3 grobid_client.py --input ")
+        + str(path)
+        + str("--output ")
+        + str(path)
+        + "_grobid "
+        + str("--include_raw_affiliations")
+        + str(" processFulltextDocument")
+    )
+    os.subprocess(str("cat ") + str(path) + str("_grobid"))
 
 def process(link, REDIRECT=False):
     urlDat = {}
@@ -71,26 +85,15 @@ def process(link, REDIRECT=False):
         ##
         # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
         ##
-        pdf_file = requests.get(link, stream=True)
+        pdf_response = requests.get(link)#, stream=True)
 
         try:
-            buffered = convert_pdf_to_txt(pdf_file)
+            buffered = convert_pdf_to_txt(pdf_response)
         except:
             try:
-                with open(link, "wb") as f:
-                    f.write(response.content)
-                os.subprocess(
-                    str("python3 grobid_client.py --input ")
-                    + str(link)
-                    + str("--output ")
-                    + str(link)
-                    + "_grobid "
-                    + str("--include_raw_affiliations")
-                    + str(" processFulltextDocument")
-                )
-                os.subprocess(str("cat ") + str(link) + str("_grobid"))
+                try_grobid(link,pdf_response)
             except:
-                # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
+                    # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
                 buffered = ""
     urlDat["link"] = link
     urlDat["page_rank"] = "benchmark"

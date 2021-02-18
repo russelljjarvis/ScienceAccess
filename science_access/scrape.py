@@ -210,7 +210,7 @@ def convert(content, link):
     return text
 
 
-import grobid_client as grobid
+#
 
 
 def url_to_text(link_tuple):
