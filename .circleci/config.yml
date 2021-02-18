@@ -31,9 +31,9 @@ jobs:
           name: even more install
           command:  sudo bash setup.sh;
 
-      - run:
-          name: scrape check
-          command: python unit_test/scrape_test.py
+      #- run:
+      #    name: scrape check
+      #    command: python unit_test/scrape_test.py
 
   build-docker:
     machine: true
