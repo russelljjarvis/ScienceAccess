@@ -13,8 +13,9 @@ from bs4 import BeautifulSoup
 
 from .crawl import collect_pubs
 from .get_bmark_corpus import process
-from .t_analysis import text_proc
-from .t_analysis import text_proc, perplexity, unigram_zipf
+
+# from .t_analysis import text_proc
+# from .t_analysis import text_proc, perplexity, unigram_zipf
 
 import streamlit as st
 
@@ -76,7 +77,10 @@ class tqdm:
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
 
+
 import crossref_commons.retrieval
+
+
 def author_to_affiliations(NAME):
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
     author_papers = response.json()
@@ -90,12 +94,15 @@ def author_to_affiliations(NAME):
         if "doi" in records.keys():
             visit_urls.append(records["doi"])
             try:
-                doi_to_affil = crossref_commons.retrieval.get_publication_as_json(records["doi"])
-                key = stored['author'][0]['given']+stored['author'][0]['family']
-                affilations[key] = doi_to_affil['author'][0]['affiliation']
+                doi_to_affil = crossref_commons.retrieval.get_publication_as_json(
+                    records["doi"]
+                )
+                key = stored["author"][0]["given"] + stored["author"][0]["family"]
+                affilations[key] = doi_to_affil["author"][0]["affiliation"]
             except:
                 pass
     return affilations
+
 
 def author_to_urls(NAME):
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
@@ -150,11 +157,60 @@ def take_url_from_gui(NAME, tns):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    for index, doi_ in enumerate(tqdm(dois, title="Scrape in Progress. Please Wait.")):
+    for index, doi_ in enumerate(
+        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+    ):
+        link = doi_  # visit_urls[index]
+        print(doi_, "visited \n\n\n\n\n")
+        urlDatTemp = process(doi_)
+        author_results.append(urlDatTemp)
+    author_results = [
+        urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
+    ]
+    return author_results
+
+    """
+	if "tokens" in urlDatTemp.keys():
+		print(urlDatTemp["tokens"])
+	r = (
+		str("https://api.unpaywall.org/v2/")
+		+ str(doi_)
+		+ str("?email=russelljjarvis@protonmail.com")
+	)
+	response = requests.get(r)
+	response = response.json()
+	urlDat = None
+	if "url_for_pdf" in response.keys():
+		res = response["url_for_pdf"]
+		urlDat = process(res)
+	if "url_for_landing_page" in response.keys() and urlDat is None:
+		res = response["url_for_landing_page"]
+		urlDat = process(res)
+	if "doi_url" in response.keys() and urlDat is None:
+		res = response["doi_url"]
+		urlDat = process(res)
+
+	if urlDat is None:
+		if "tokens" in urlDatTemp.keys():
+			# if len(urlDat["tokens"])<len(urlDatTemp["tokens"]):
+			urlDat = urlDatTemp
+	"""
+
+
+def take_url_from_gui_old(NAME, tns):
+    """
+    inputs a URL that's full of publication orientated links, preferably the
+    authors scholar page.
+    """
+    author_results = []
+    dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    for index, doi_ in enumerate(
+        tqdm(dois, title="Text mining via API calls. Please wait.")
+    ):
         link = visit_urls[index]
         urlDatTemp = process(link)
-        if "tokens" in urlDatTemp.keys():
-            print(urlDatTemp["tokens"])
+        # if "tokens" in urlDatTemp.keys():
+        #    print(urlDatTemp["tokens"])
         r = (
             str("https://api.unpaywall.org/v2/")
             + str(doi_)

@@ -235,7 +235,7 @@ def grab_data_for_splash(trainingDats):
 
 # @st.cache
 def distribution_plot_from_scrape(ar, author_name, scraped_labels, standard_sci, df0):
-    ar = [t for t in ar if t["standard"] < 45]
+    # ar = [t for t in ar if t["standard"] < 45]
     group_labels = ["Author: " + str(author_name)]  # , 'Group 2', 'Group 3']
     lods = []
     for i, j, k in zip(

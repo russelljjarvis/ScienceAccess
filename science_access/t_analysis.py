@@ -2,7 +2,7 @@
 # authors ...,
 # Russell Jarvis
 # https://github.com/russelljjarvis/
-# rjjarvis@asu.edu
+# russelljarvis@protonmail.com
 # Patrick McGurrin
 # patrick.mcgurrin@gmail.com
 
@@ -29,23 +29,26 @@ from nltk.probability import FreqDist
 from nltk.sentiment import SentimentAnalyzer
 from nltk.tag.perceptron import PerceptronTagger
 import nltk
+from nltk.corpus import words as english_words
+from nltk.tokenize import word_tokenize
+
+from nltk.tokenize import sent_tokenize, word_tokenize
+import numpy as np
+import pandas as pd
+import re
+import streamlit as st
+from .utils import black_string, clue_links, clue_words, comp_ratio, publication_check
+
 
 # english_check
 # from tabulate import tabulate
 from textblob import TextBlob
 from textstat.textstat import textstat
 
-tagger = PerceptronTagger(load=False)
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import re
-import seaborn as sns
-
-from .utils import black_string, clue_links, clue_words, comp_ratio, publication_check
-
-
 from science_access.utils import check_passive
+
+tagger = PerceptronTagger(load=False)
+# import matplotlib.pyplot as plt
 
 # from science_access.enter_author_name import create_giant_strings#, not_want_list
 not_want_list = [
@@ -71,8 +74,6 @@ not_want_list = [
     "accessshoping",
     "articlepubmedpubmed",
 ]
-
-from nltk.corpus import words as english_words
 
 
 def create_giant_strings(ar, not_want_list):
@@ -176,41 +177,30 @@ def bi_log_value(value):
     # df[col] = trans
 
 
-# DEBUG = False
-# from numba import jit
-
-
-# try:
-#    'hello' in english_words.words()
-# except:
-#    import nltk
-#    nltk.download('words')
-#    'hello' in english_words.words()
-
-
 # from spacy_langdetect import LanguageDetector
 # import spacy
-# try:
 # nlp = spacy.load('en',disable=["parser"])
-# except:
 # nlp.add_pipe(LanguageDetector(), name='language_detector', last=True)
-
 # nlp = spacy.load("en_core_web_sm")
-import streamlit as st
-
 # from spacy.lang.en import English
 # nlp = English()#.from_disk("/model", disable=["parser"])
 # tokenizer = nlp.Defaults.create_tokenizer(nlp)
-from nltk.tokenize import word_tokenize
 
 # nlp = spacy.load("en_core_web_sm", disable=["parser"])
 # nlp = English().from_disk("/model", disable=["parser"])
 # doc = nlp("I don't want parsed", disable=["parser"])
+"""
+Use spacey to sense english faster
+if doc._.language_scores['en'] <0.5:
+    st.text('mangled_decoding')
+    st.text(doc._.language)
 
-import nltk
+    urlDat['mangled_decoding'] = True
+    return urlDat
+"""
+
 
 ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
-
 NON_ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words()) - ENGLISH_STOPWORDS
 
 STOPWORDS_DICT = {
@@ -234,8 +224,6 @@ def is_english(text):
 
 
 ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
-from nltk.tokenize import sent_tokenize, word_tokenize
-import numpy as np
 
 
 def complexityAlongtheText(text, chunk_length=128):
@@ -253,7 +241,7 @@ def complexityAlongtheText(text, chunk_length=128):
 
 def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
-    if type(corpus) is type(str()) and not str("privacy policy") in corpus:
+    if type(corpus) is type(str()):  # and not str("privacy policy") in corpus:
         corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
         corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
@@ -267,20 +255,15 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
         elif "ABSTRACT" in corpus:
             corpus = corpus.split("ABSTRACT")[1]
+        """
         if not "ABSTRACT" in corpus or "Abstract" in corpus:
             test = textstat.text_standard(corpus, float_output=True)
-            if test > 60:
+            if test > 90:
+                print('premature end')
+                print('premature end too much complexity \n\n\n\n\n\n\n\n')
+
                 urlDat["page full of links"] = True
                 return urlDat
-
-        """
-        Use spacey to sense english faster
-        if doc._.language_scores['en'] <0.5:
-            st.text('mangled_decoding')
-            st.text(doc._.language)
-
-            urlDat['mangled_decoding'] = True
-            return urlDat
         """
         tokens = word_tokenize(corpus)
 
@@ -294,21 +277,27 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         tokens = [w.lower() for w in tokens if w.isalpha()]
 
         tokens = [w.lower() for w in tokens]  # make everything lower case
+        """
         if not is_english(corpus):
             urlDat["mangled_decoding"] = True
-            return urlDat
+            print('premature end not english \n\n\n\n\n')
 
+            return urlDat
+        """
         tokens = list(set(tokens) - set(not_want_list))
         # s.difference(t) s - t
         # new set with elements in s but not in t
         urlDat["wcount"] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat["wcount"] > WORD_LIM)
-
+        """
         for t in tokens:
-            if len(t) > 32:
+            if len(t) > 90:
                 urlDat["page full of links"] = True
-                return urlDat
+                print('premature end')
+                print('premature end long word length \n\n\n\n\n\n\n\n')
 
+                return urlDat
+        """
         urlDat["tokens"] = tokens
 
         if len(tokens) and word_lim:  #  and server_error:

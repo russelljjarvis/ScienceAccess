@@ -13,6 +13,8 @@ from .utils import black_string
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
+from .t_analysis import text_proc
+
 if "DYNO" in os.environ:
     heroku = True
 else:
@@ -70,18 +72,35 @@ def process(link, REDIRECT=False):
         # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
         ##
         pdf_file = requests.get(link, stream=True)
+
         try:
             buffered = convert_pdf_to_txt(pdf_file)
         except:
-            # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
-
-            buffered = ""
+            try:
+                with open(link, "wb") as f:
+                    f.write(response.content)
+                os.subprocess(
+                    str("python3 grobid_client.py --input ")
+                    + str(link)
+                    + str("--output ")
+                    + str(link)
+                    + "_grobid "
+                    + str("--include_raw_affiliations")
+                    + str(" processFulltextDocument")
+                )
+                os.subprocess(str("cat ") + str(link) + str("_grobid"))
+            except:
+                # curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1"
+                buffered = ""
     urlDat["link"] = link
     urlDat["page_rank"] = "benchmark"
-    from .t_analysis import text_proc
 
-    print(buffered)
+    # print(buffered)
     urlDat = text_proc(buffered, urlDat)
+    if urlDat is not None:
+        print(urlDat.keys(), "failure mode?")
+    else:
+        print(link)
     return urlDat
 
 

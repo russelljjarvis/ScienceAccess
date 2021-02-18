@@ -11,7 +11,6 @@ Ultimately, this tool will expand upon current readability metrics by computing 
 
 Author: [Russell Jarvis](https://github.com/russelljjarvis)\n
 Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
-Source: [Github](https://github.com/russelljjarvis/ScienceAccess)
 """
 
 import streamlit as st
@@ -75,6 +74,7 @@ def main():
     if author_name:
         with shelve.open("fast_graphs_splash.p") as db:
             flag = author_name in db
+            #if True:
             if not flag:
                 ar = call_from_front_end(author_name)
                 scraped_labels, standard_sci = frame_to_lists(ar)
@@ -84,6 +84,10 @@ def main():
                     "standard_sci": standard_sci,
                 }
             else:
+                """
+                We have evaluated this query recently, using cached results...
+        		"""
+
                 temp = db[author_name]
                 ar = temp["ar"]
                 standard_sci = temp["standard_sci"]
@@ -117,7 +121,7 @@ def main():
 
     st.markdown(
         """
-	### There were a total number of {0} documents scraped during this query.
+	### There were a total number of {0} documents mined during this query.
 	""".format(
             len(df1)
         )
@@ -159,7 +163,7 @@ def main():
     st.markdown("\n\n")
 
     """
-	### Links to articles obtained from the scrape.
+	### Links to articles obtained from the mined.
 	"""
 
     push_frame_to_screen(scraped_labels, standard_sci)
@@ -173,7 +177,7 @@ def main():
 
     st.markdown(
         """
-	### The average reading level of the scraped work was {0}.""".format(
+	### The average reading level of the mined work was {0}.""".format(
             round(np.mean(standard_sci)), 3
         )
     )
@@ -206,7 +210,7 @@ def main():
     bio_corpus = create_giant_strings(trainingDats, not_want_list)
 
     """
-	### Word cloud based on the most common words found in the scraped text
+	### Word cloud based on the most common words found in the mined text
 	"""
     # flag = author_name in db
     # if not flag:
@@ -219,7 +223,7 @@ def main():
     st.markdown("\n\n")
 
     """
-	### Word cloud based on the largest words found in the scraped text
+	### Word cloud based on the largest words found in the mined text
 	"""
 
     big_words, word_counts_fz = art_cloud_wl(sci_corpus)
@@ -255,6 +259,8 @@ def main():
     st.write(fig)
 
     st.markdown("\n\n")
+    st.markdown("Source: [Github](https://github.com/russelljjarvis/ScienceAccess)")
+
     st.markdown("-----")
 
     """

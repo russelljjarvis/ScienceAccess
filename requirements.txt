@@ -21,7 +21,6 @@ tabulate
 chart_studio
 tqdm
 crossref-commons
-sklearn
 pipenv
-spacy-langdetect
-orcid
+JPype1
+grobid_client grobid_client_python @ git+ssh://git@https://github.com/kermitt2/grobid_client_python.git

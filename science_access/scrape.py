@@ -66,7 +66,7 @@ def get_driver():
     options.add_argument("--headless")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
-    #driver = webdriver.Firefox(options=options)
+    # driver = webdriver.Firefox(options=options)
 
     try:
         driver = webdriver.Firefox(options=options)
@@ -74,8 +74,10 @@ def get_driver():
         try:
             options.binary_location = "/app/vendor/firefox/firefox"
             driver = webdriver.Firefox(options=options)
-            GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-            driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+            GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
+            driver = webdriver.Firefox(
+                options=options, executable_path=GECKODRIVER_PATH
+            )
         except:
             try:
                 chrome_options = webdriver.ChromeOptions()
@@ -83,20 +85,31 @@ def get_driver():
                 chrome_options.add_argument("--headless")
                 chrome_options.add_argument("--disable-dev-shm-usage")
                 chrome_options.add_argument("--no-sandbox")
-                driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+                driver = webdriver.Chrome(
+                    executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+                    chrome_options=chrome_options,
+                )
             except:
                 try:
-                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-                    options.binary_location = str('./firefox')
-                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                    GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
+                    options.binary_location = str("./firefox")
+                    driver = webdriver.Firefox(
+                        options=options, executable_path=GECKODRIVER_PATH
+                    )
                 except:
-                    os.system("wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2")
-                    os.system("wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz")
+                    os.system(
+                        "wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2"
+                    )
+                    os.system(
+                        "wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
+                    )
                     os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
                     os.system("tar xvf firefox-45.0.2.tar.bz2")
-                    GECKODRIVER_PATH=str(os.getcwd())+str("/geckodriver")
-                    options.binary_location = str('./firefox')
-                    driver = webdriver.Firefox(options=options,executable_path=GECKODRIVER_PATH)
+                    GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
+                    options.binary_location = str("./firefox")
+                    driver = webdriver.Firefox(
+                        options=options, executable_path=GECKODRIVER_PATH
+                    )
     return driver
 
 
@@ -197,12 +210,19 @@ def convert(content, link):
     return text
 
 
+import grobid_client as grobid
+
+
 def url_to_text(link_tuple):
     se_b, page_rank, link, category, buff = link_tuple
     if str("pdf") not in link:
         if C.open(link) is not None:
             content = C.open(link).content
             buff = convert(content, link)
+
+            # client = grobid.grobid_client(config_path="./config.json")
+            # client.process("processFulltextDocument", "/mnt/data/covid/pdfs", n=1)
+
         else:
             print("problem")
     else:
