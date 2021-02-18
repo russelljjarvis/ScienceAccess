@@ -4,7 +4,7 @@
   <img src="app_works.gif" width="700" height="450"/>
 </p>
 
-[Try a live sample of the application](https://agile-reaches-20338.herokuapp.com/)
+# [Try a live sample of the application](https://agile-reaches-20338.herokuapp.com/)
 
 
 [![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
