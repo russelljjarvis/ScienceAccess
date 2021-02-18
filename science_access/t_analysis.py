@@ -324,7 +324,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             #    urlDat["standard"] = right
             #else:
             #    urlDat["standard"] = left
-            urlDat["standard"] = round(textstat.text_standard(text, float_output=True),3)
+            urlDat["standard"] = round(textstat.text_standard(corpus, float_output=True),3)
             if urlDat["gf"] <= urlDat["standard"] and urlDat["gf"] != 0:
                 urlDat["standard"] = urlDat["gf"]
             urlDat["reading_time"] = round(textstat.reading_time(corpus)[0], 3)
