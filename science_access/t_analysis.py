@@ -327,7 +327,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             urlDat["standard"] = round(textstat.text_standard(corpus, float_output=True),3)
             if urlDat["gf"] <= urlDat["standard"] and urlDat["gf"] != 0:
                 urlDat["standard"] = urlDat["gf"]
-            urlDat["reading_time"] = round(textstat.reading_time(corpus)[0], 3)
+            urlDat["reading_time"] = textstat.reading_time(corpus)#[0], 3)
             try:
                 urlDat["flesch_kincaid_grade"] = textstat.flesch_kincaid_grade(corpus)
             except:
