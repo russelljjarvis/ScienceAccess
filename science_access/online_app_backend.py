@@ -359,11 +359,14 @@ def process(link, driver, REDIRECT=False):
         wait.until(lambda driver: driver.current_url != link)
         link = driver.current_url
     if str("pdf") not in link:
-
-        driver.get(link)
-
-        crude_html = driver.page_source
-
+        try:
+            driver.get(link)
+            crude_html = driver.page_source
+        except:
+            st.text("failed on link")
+            st.text(link)
+            urlDat = {}
+            return urlDat
         soup = BeautifulSoup(crude_html, "html.parser")
         for script in soup(["script", "style"]):
             script.extract()  # rip it out
@@ -377,7 +380,7 @@ def process(link, driver, REDIRECT=False):
         )  # break multi-headlines into a line each
         text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
         buffered = str(text)
-        driver.close()
+        #driver.close()
         #driver.quit()
         #driver = None
         #del driver
