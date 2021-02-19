@@ -93,6 +93,11 @@ def process(link, REDIRECT=False):
                 print("grobid not expected to work")
         except:
             buffered = ""
+        try:
+            with open(link + str("_pdf_.p")) as f:
+                pickle.dump(f, link)
+        except:
+            pass
     urlDat["link"] = link
     urlDat["page_rank"] = "benchmark"
     urlDat = text_proc(buffered, urlDat)

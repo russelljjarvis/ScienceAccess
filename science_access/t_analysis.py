@@ -75,6 +75,7 @@ not_want_list = [
     "pubmed",
     "accessshoping",
     "articlepubmedpubmed",
+    "author"
 ]
 
 
@@ -255,8 +256,31 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         if "Abstract" in corpus:
             corpus = corpus.split("Abstract")[1]
 
-        elif "ABSTRACT" in corpus:
+        if "ABSTRACT" in corpus:
             corpus = corpus.split("ABSTRACT")[1]
+        if "abstract:" in corpus:
+            #if len(corpus.split("abstract")[1])>8:
+            corpus = corpus.split("abstract:")[1]
+
+        if "references" in corpus:
+            corpus = corpus.split("references")[0]
+        if "REFERENCES" in corpus:
+            corpus = corpus.split("REFERENCES")[0]
+        if "Bibliography" in corpus:
+            corpus = corpus.split("bibliography")[0]
+        if "affiliation" in corpus:
+            affil = corpus.split("affiliation")[1][0:200]
+            urlDat["affil"] = affil
+            print(urlDat["affil"])
+        if "Affiliation" in corpus:
+            affil = corpus.split("Affiliation")[1][0:200]
+            urlDat["affil"] = affil
+            print(urlDat["affil"])
+        if "AFFILIATION" in corpus:
+            affil = corpus.split("AFFILIATION")[1][0:200]
+            urlDat["affil"] = affil
+            print(urlDat["affil"])
+
         """
         if not "ABSTRACT" in corpus or "Abstract" in corpus:
             test = textstat.text_standard(corpus, float_output=True)

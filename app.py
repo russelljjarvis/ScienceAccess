@@ -102,7 +102,7 @@ def main():
 
 
             df1 = pd.concat([df0,df1])
-            fig = px.box(df1, x="Web_Link", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
+            fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
             st.write(fig)
 
             #st.write(fig)
@@ -253,19 +253,20 @@ def main():
 
     st.markdown("-----")
     st.markdown(""" ### Word Length Word Cloud 	""")
-    """
-	based on the largest words found in the mined text.
-	These words are likely culprits that hindered readability.
-	"""
-    sci_corpus = create_giant_strings(ar, not_want_list)
     if len(sci_corpus) != 0:
         try:
+            st.markdown("""
+        	based on the largest words found in the mined text.
+        	These words are likely culprits that hindered readability.
+        	""")
+            sci_corpus = create_giant_strings(ar, not_want_list)
+
             big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
         except:
             pass
 
 
-    st.markdown("concepts, that {0} cares about".format(author_name))
+    st.markdown("### Concepts, that {0} cares about".format(author_name))
     exclusive = create_giant_strings(ar, exclusive)
 
     fig = fast_art_cloud(exclusive)
