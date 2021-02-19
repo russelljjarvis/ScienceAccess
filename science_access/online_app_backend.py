@@ -45,6 +45,7 @@ def get_driver():
 
     try:
         driver = webdriver.Firefox(options=options)
+        return driver
     except:
         try:
             options.binary_location = "/app/vendor/firefox/firefox"
@@ -53,6 +54,7 @@ def get_driver():
             driver = webdriver.Firefox(
                 options=options, executable_path=GECKODRIVER_PATH
             )
+            return driver
         except:
             try:
                 chrome_options = webdriver.ChromeOptions()
@@ -64,6 +66,7 @@ def get_driver():
                     executable_path=os.environ.get("CHROMEDRIVER_PATH"),
                     chrome_options=chrome_options,
                 )
+                return driver
             except:
                 try:
                     GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
@@ -71,6 +74,7 @@ def get_driver():
                     driver = webdriver.Firefox(
                         options=options, executable_path=GECKODRIVER_PATH
                     )
+                    return driver
                 except:
                     os.system(
                         "wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2"
@@ -87,6 +91,7 @@ def get_driver():
                     driver = webdriver.Firefox(
                         options=options, executable_path=GECKODRIVER_PATH
                     )
+                    return driver
     return driver
 
 global driver
@@ -346,6 +351,9 @@ def unpaywall_semantic_links(NAME, tns):
             visit_more_urls.append(res)
 
     return visit_more_urls
+
+from .t_analysis import text_proc
+    
 def process(link, driver, REDIRECT=False):
     urlDat = {}
 
