@@ -101,8 +101,8 @@ def main():
             )
 
 
-            dfall = pd.concat([df0,df1])
-            fig = px.box(dfall, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
+            df1 = pd.concat([df0,df1])
+            fig = px.box(df1, x="Web_Link", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
             st.write(fig)
 
             #st.write(fig)
@@ -126,8 +126,8 @@ def main():
         df1, fig_lost = grand_distribution_plot(
             ar, scraped_labels, standard_sci, df0, author_name=author_name
         )
-        dfall = pd.concat([df0,df1])
-        fig = px.box(dfall, x="Origin", y="Reading_Level", points="all",color="Origin")
+        df1 = pd.concat([df0,df1])
+        fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")
         st.write(fig)
 
     st.markdown(
@@ -159,13 +159,7 @@ def main():
     #ar1 = ar
     sci_corpus = create_giant_strings(ar, not_want_list)
 
-    fig = fast_art_cloud(sci_corpus)
-    st.markdown("-----")
-    st.markdown(""" ### Word Length Word Cloud 	""")
-    """
-	based on the largest words found in the mined text.
-	These words are likely culprits that hindered readability.
-	"""
+    #fig = fast_art_cloud(sci_corpus)
     if len(sci_corpus) == 0:
         sci_corpus = create_giant_strings(ar, not_want_list)
     if len(sci_corpus) != 0:
@@ -244,6 +238,38 @@ def main():
 
     st.markdown("-----")
     st.markdown("\n\n")
+    grab_setr = []
+    grab_set1 = []
+
+    for block in trainingDats:
+        grab_setr.extend(block["tokens"])
+    for block in ar:
+        grab_set1.extend(block["tokens"])
+
+    artset = list(grab_setr)
+    autset = list(set(grab_set1))
+    exclusive = [i for i in autset if i not in artset]
+    #inclusive = [i for i in autset if i in artset]
+
+    st.markdown("-----")
+    st.markdown(""" ### Word Length Word Cloud 	""")
+    """
+	based on the largest words found in the mined text.
+	These words are likely culprits that hindered readability.
+	"""
+    sci_corpus = create_giant_strings(ar, not_want_list)
+    if len(sci_corpus) != 0:
+        try:
+            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+        except:
+            pass
+
+
+    st.markdown("concepts, that {0} cares about".format(author_name))
+    exclusive = create_giant_strings(ar, exclusive)
+
+    fig = fast_art_cloud(exclusive)
+    st.markdown("-----")
 
     # sci_corpus = create_giant_strings(ar,not_want_list)
     # bio_corpus = create_giant_strings(trainingDats,not_want_list)
@@ -256,11 +282,11 @@ def main():
     temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
     if "reading_time" in ar[0].keys():
         average_reading_time = [
-            np.mean([r["reading_time"] for r in ar]),
-            np.mean(sentiment),
-        ]
+            np.mean([r["reading_time"] for r in ar])
+            ]
+
         st.markdown(
-            """
+        """
 		### Reading Time
         There were {2} documents. The average reading time
         per document for author {1} was {0} Minutes.
