@@ -30,6 +30,8 @@ from tqdm.auto import tqdm
 import streamlit as st
 import dask
 import requests
+import crossref_commons.retrieval
+from .t_analysis import text_proc
 
 
 def get_driver():
@@ -142,10 +144,6 @@ class tqdm:
             self.i += 1
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
-
-
-import crossref_commons.retrieval
-
 
 def author_to_affiliations(NAME):
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
@@ -352,15 +350,14 @@ def unpaywall_semantic_links(NAME, tns):
 
     return visit_more_urls
 
-from .t_analysis import text_proc
-    
+
 def process(link, driver, REDIRECT=False):
     urlDat = {}
 
     if REDIRECT:
         wait = WebDriverWait(driver, 10)
         wait.until(lambda driver: driver.current_url != link)
-        link = cddriver.current_url
+        link = driver.current_url
     if str("pdf") not in link:
 
         driver.get(link)
@@ -380,13 +377,16 @@ def process(link, driver, REDIRECT=False):
         )  # break multi-headlines into a line each
         text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
         buffered = str(text)
-
         driver.close()
-        driver.quit()
-        driver = None
-        del driver
-
+        #driver.quit()
+        #driver = None
+        #del driver
     else:
+        try:
+            with open(link + str("_pdf_.p")) as f:
+                pickle.dump(f, link)
+        except:
+            pass
         response = requests.get(link, stream=True)
         try:
             buffered = convert_pdf_to_txt(response)
@@ -396,11 +396,6 @@ def process(link, driver, REDIRECT=False):
                 print("grobid not expected to work")
         except:
             buffered = ""
-        try:
-            with open(link + str("_pdf_.p")) as f:
-                pickle.dump(f, link)
-        except:
-            pass
     urlDat["link"] = link
     urlDat["page_rank"] = "benchmark"
     urlDat = text_proc(buffered, urlDat)
