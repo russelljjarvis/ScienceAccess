@@ -102,7 +102,7 @@ def main():
 
 
             dfall = pd.concat([df0,df1])
-            fig = px.box(dfall, x="Origin", y="Reading_Level", points="all",color="Origin",jitter=0.3, pointpos=-1.)
+            fig = px.box(dfall, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
             st.write(fig)
 
             #st.write(fig)
