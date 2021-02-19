@@ -292,7 +292,7 @@ def main():
         There were {2} documents. The average reading time
         per document for author {1} was {0} Minutes.
 		""".format(
-                average_reading_time, author_name, len(ar)
+                np.mean(average_reading_time), author_name, len(ar)
             )
         )
 
