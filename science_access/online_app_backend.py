@@ -12,7 +12,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 from .crawl import collect_pubs
-from .get_bmark_corpus import process
+#from .get_bmark_corpus import process
 
 # from .t_analysis import text_proc
 # from .t_analysis import text_proc, perplexity, unigram_zipf
@@ -30,6 +30,67 @@ from tqdm.auto import tqdm
 import streamlit as st
 import dask
 import requests
+
+
+def get_driver():
+    from selenium.webdriver.firefox.options import Options
+    from selenium.common.exceptions import NoSuchElementException
+    from selenium import webdriver
+
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    # driver = webdriver.Firefox(options=options)
+
+    try:
+        driver = webdriver.Firefox(options=options)
+    except:
+        try:
+            options.binary_location = "/app/vendor/firefox/firefox"
+            driver = webdriver.Firefox(options=options)
+            GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
+            driver = webdriver.Firefox(
+                options=options, executable_path=GECKODRIVER_PATH
+            )
+        except:
+            try:
+                chrome_options = webdriver.ChromeOptions()
+                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+                chrome_options.add_argument("--headless")
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--no-sandbox")
+                driver = webdriver.Chrome(
+                    executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+                    chrome_options=chrome_options,
+                )
+            except:
+                try:
+                    GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
+                    options.binary_location = str("./firefox")
+                    driver = webdriver.Firefox(
+                        options=options, executable_path=GECKODRIVER_PATH
+                    )
+                except:
+                    os.system(
+                        "wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2"
+                    )
+                    os.system(
+                        "wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
+                    )
+                    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
+                    os.system("tar xvf firefox-45.0.2.tar.bz2")
+                    GECKODRIVER_PATH = str(os.getcwd()) + str(
+                        "/geckodriver-v0.26.0-linux64"
+                    )
+                    options.binary_location = str("./firefox")
+                    driver = webdriver.Firefox(
+                        options=options, executable_path=GECKODRIVER_PATH
+                    )
+    return driver
+
+global driver
+driver = get_driver()
 
 
 def metricss(rg):
@@ -150,11 +211,13 @@ def author_to_urls(NAME):
 # else:
 
 
+
 def take_url_from_gui(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
+
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_urls.extend(more_links)
@@ -163,7 +226,7 @@ def take_url_from_gui(NAME, tns, more_links):
     ):
         link = doi_  # visit_urls[index]
         # print(doi_, "visited \n\n\n\n\n")
-        urlDatTemp = process(doi_)
+        urlDatTemp = process(doi_, driver)
         author_results.append(urlDatTemp)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
@@ -259,7 +322,7 @@ def unpaywall_semantic_links(NAME, tns):
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
     for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
-        r0 = str("https://api.semanticscholar.org/")+ str(doi_)
+        r0 = str("https://api.semanticscholar.org/") + str(doi_)
         visit_more_urls.append(r0)
 
         r = (
@@ -283,6 +346,61 @@ def unpaywall_semantic_links(NAME, tns):
             visit_more_urls.append(res)
 
     return visit_more_urls
+def process(link, driver, REDIRECT=False):
+    urlDat = {}
+
+    if REDIRECT:
+        wait = WebDriverWait(driver, 10)
+        wait.until(lambda driver: driver.current_url != link)
+        link = cddriver.current_url
+    if str("pdf") not in link:
+
+        driver.get(link)
+
+        crude_html = driver.page_source
+
+        soup = BeautifulSoup(crude_html, "html.parser")
+        for script in soup(["script", "style"]):
+            script.extract()  # rip it out
+
+        text = soup.get_text()
+        lines = (
+            line.strip() for line in text.splitlines()
+        )  # break into lines and remove leading and trailing space on each
+        chunks = (
+            phrase.strip() for line in lines for phrase in line.split("  ")
+        )  # break multi-headlines into a line each
+        text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
+        buffered = str(text)
+
+        driver.close()
+        driver.quit()
+        driver = None
+        del driver
+
+    else:
+        response = requests.get(link, stream=True)
+        try:
+            buffered = convert_pdf_to_txt(response)
+            try:
+                try_grobid(link, response)
+            except:
+                print("grobid not expected to work")
+        except:
+            buffered = ""
+        try:
+            with open(link + str("_pdf_.p")) as f:
+                pickle.dump(f, link)
+        except:
+            pass
+    urlDat["link"] = link
+    urlDat["page_rank"] = "benchmark"
+    urlDat = text_proc(buffered, urlDat)
+    if urlDat is not None:
+        print(urlDat.keys(), "failure mode?")
+    else:
+        print(link)
+    return urlDat
 
 
 """

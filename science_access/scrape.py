@@ -46,10 +46,7 @@ import bs4 as bs
 import urllib.request
 from io import StringIO
 import io
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException
 import os
-from selenium import webdriver
 
 
 import PyPDF2
@@ -60,58 +57,6 @@ if "DYNO" in os.environ:
 else:
     HEROKU = True
 
-
-def get_driver():
-
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--no-sandbox")
-    # driver = webdriver.Firefox(options=options)
-
-    try:
-        driver = webdriver.Firefox(options=options)
-    except:
-        try:
-            options.binary_location = "/app/vendor/firefox/firefox"
-            driver = webdriver.Firefox(options=options)
-            GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
-            driver = webdriver.Firefox(
-                options=options, executable_path=GECKODRIVER_PATH
-            )
-        except:
-            try:
-                chrome_options = webdriver.ChromeOptions()
-                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-                chrome_options.add_argument("--headless")
-                chrome_options.add_argument("--disable-dev-shm-usage")
-                chrome_options.add_argument("--no-sandbox")
-                driver = webdriver.Chrome(
-                    executable_path=os.environ.get("CHROMEDRIVER_PATH"),
-                    chrome_options=chrome_options,
-                )
-            except:
-                try:
-                    GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
-                    options.binary_location = str("./firefox")
-                    driver = webdriver.Firefox(
-                        options=options, executable_path=GECKODRIVER_PATH
-                    )
-                except:
-                    os.system(
-                        "wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2"
-                    )
-                    os.system(
-                        "wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
-                    )
-                    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
-                    os.system("tar xvf firefox-45.0.2.tar.bz2")
-                    GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
-                    options.binary_location = str("./firefox")
-                    driver = webdriver.Firefox(
-                        options=options, executable_path=GECKODRIVER_PATH
-                    )
-    return driver
 
 
 rsrcmgr = PDFResourceManager()
@@ -244,7 +189,7 @@ def buffer_to_pickle(link_tuple):
     return
 
 
-def process(item):
+def other_process(item):
     text = url_to_text(item)
     buffer_to_pickle(text)
     return

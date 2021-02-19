@@ -77,7 +77,7 @@ def main():
     if author_name:
         with shelve.open("fast_graphs_splash.p") as db:
             flag = author_name in db
-            # if True:
+            #if True:
             if not flag:
                 ar = call_from_front_end(author_name)
                 scraped_labels, standard_sci = frame_to_lists(ar)
@@ -134,7 +134,7 @@ def main():
         """
 	### There were a total number of {0} documents mined during this query.
 	""".format(
-            len(df1)
+            len(ar)
         )
     )  # - changed this to account for duplicates
 

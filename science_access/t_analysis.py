@@ -75,7 +75,7 @@ not_want_list = [
     "pubmed",
     "accessshoping",
     "articlepubmedpubmed",
-    "author"
+    "author",
 ]
 
 
@@ -259,7 +259,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         if "ABSTRACT" in corpus:
             corpus = corpus.split("ABSTRACT")[1]
         if "abstract:" in corpus:
-            #if len(corpus.split("abstract")[1])>8:
+            # if len(corpus.split("abstract")[1])>8:
             corpus = corpus.split("abstract:")[1]
 
         if "references" in corpus:

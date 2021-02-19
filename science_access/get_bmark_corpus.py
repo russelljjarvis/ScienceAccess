@@ -51,62 +51,6 @@ def try_grobid(link, response):
     os.subprocess(str("cat ") + str(path) + str("_grobid"))
 
 
-def process(link, REDIRECT=False):
-    urlDat = {}
-
-    if REDIRECT:
-        wait = WebDriverWait(driver, 10)
-        wait.until(lambda driver: driver.current_url != link)
-        link = cddriver.current_url
-    if str("pdf") not in link:
-        driver = get_driver()
-        driver.get(link)
-
-        crude_html = driver.page_source
-
-        soup = BeautifulSoup(crude_html, "html.parser")
-        for script in soup(["script", "style"]):
-            script.extract()  # rip it out
-
-        text = soup.get_text()
-        lines = (
-            line.strip() for line in text.splitlines()
-        )  # break into lines and remove leading and trailing space on each
-        chunks = (
-            phrase.strip() for line in lines for phrase in line.split("  ")
-        )  # break multi-headlines into a line each
-        text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
-        buffered = str(text)
-
-        driver.close()
-        driver.quit()
-        driver = None
-        del driver
-
-    else:
-        response = requests.get(link, stream=True)
-        try:
-            buffered = convert_pdf_to_txt(response)
-            try:
-                try_grobid(link, response)
-            except:
-                print("grobid not expected to work")
-        except:
-            buffered = ""
-        try:
-            with open(link + str("_pdf_.p")) as f:
-                pickle.dump(f, link)
-        except:
-            pass
-    urlDat["link"] = link
-    urlDat["page_rank"] = "benchmark"
-    urlDat = text_proc(buffered, urlDat)
-    if urlDat is not None:
-        print(urlDat.keys(), "failure mode?")
-    else:
-        print(link)
-    return urlDat
-
 
 # try:
 #    assert os.path.isfile('../BenchmarkCorpus/benchmarks.p')
