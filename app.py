@@ -55,7 +55,7 @@ from science_access.enter_author_name import (
 )
 
 import shelve
-
+import plotly.express as px
 
 def main():
     with open("data/trainingDats.p", "rb") as f:
@@ -99,7 +99,13 @@ def main():
             df1, fig = distribution_plot_from_scrape(
                 ar, author_name, scraped_labels, standard_sci, df0
             )
+
+
+            dfall = pd.concat([df0,df1])
+            fig = px.box(dfall, x="Origin", y="Reading_Level", points="all",color="Origin",jitter=0.3, pointpos=-1.)
             st.write(fig)
+
+            #st.write(fig)
             cached = False
 
             # {'ar':ar,'scraped_labels':scraped_labels,'scraped_labels':scraped_labels, 'standard_sci':standard_sci}
@@ -117,9 +123,11 @@ def main():
 		Displaying stored results until a new author search is performed.
 		"""
         scraped_labels, standard_sci = frame_to_lists(ar)
-        df1, fig = grand_distribution_plot(
+        df1, fig_lost = grand_distribution_plot(
             ar, scraped_labels, standard_sci, df0, author_name=author_name
         )
+        dfall = pd.concat([df0,df1])
+        fig = px.box(dfall, x="Origin", y="Reading_Level", points="all",color="Origin")
         st.write(fig)
 
     st.markdown(
