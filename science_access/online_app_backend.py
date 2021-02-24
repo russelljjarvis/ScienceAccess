@@ -150,6 +150,7 @@ def author_to_urls(NAME):
         title = p["title"]
         titles.append(title)
         coauthors.append(coauthors_)
+        records = p["records"][0]
         if "pdf_url" in p.keys():
             visit_urls.append(records["pdf_url"])
         records = p["records"][0]
@@ -309,20 +310,20 @@ def unpaywall_semantic_links(NAME, tns):
         if "oa_locations" in response.keys():
         #if response['oa_locations']:
             res_list = response['oa_locations']
-            print(res,type(res))
+            #print(res,type(res))
             for res in res_list:
                 if "url_for_pdf" in res.keys():
-                    res = response["url_for_pdf"]
-                    visit_more_urls.append(res)
+                    res_ = res["url_for_pdf"]
+                    visit_more_urls.append(res_)
 
         if "url_for_landing_page" in response.keys():
             res = response["url_for_landing_page"]
-            print(res,type(res))
+            #print(res,type(res))
             visit_more_urls.append(res)
 
         if "doi_url" in response.keys():
             res = response["doi_url"]
-            print(res,type(res))
+            #print(res,type(res))
 
             visit_more_urls.append(res)
 

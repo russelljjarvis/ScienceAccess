@@ -35,326 +35,326 @@ from science_access.online_app_backend import ar_manipulation
 
 
 from science_access.enter_author_name import (
-    art_cloud,
-    create_giant_strings,
-    art_cloud_wl,
-    zipf_plot,
+	art_cloud,
+	create_giant_strings,
+	art_cloud_wl,
+	zipf_plot,
 )
 from science_access.enter_author_name import (
-    distribution_plot_from_scrape,
-    grand_distribution_plot,
+	distribution_plot_from_scrape,
+	grand_distribution_plot,
 )
 from science_access.enter_author_name import (
-    push_frame_to_screen,
-    fast_art_cloud,
-    grab_data_for_splash,
+	push_frame_to_screen,
+	fast_art_cloud,
+	grab_data_for_splash,
 )
 from science_access.enter_author_name import (
-    frame_to_lists,
-    try_and_update_cache,
-    get_table_download_link,
-    extra_options,
+	frame_to_lists,
+	try_and_update_cache,
+	get_table_download_link,
+	extra_options,
 )
 
 import shelve
 import plotly.express as px
 
 def main():
-    #with open("data/trainingDats.p", "rb") as f:
-    #    trainingDats = pickle.load(f)
-    #    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+	#with open("data/trainingDats.p", "rb") as f:
+	#    trainingDats = pickle.load(f)
+	#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 
-    #with open("data/_author_specificSayali Phatak.p", "rb") as f:
-    #    contents = pickle.load(f)
-    #    (NAME, ar, df, datay, scholar_link) = contents
-    st.title("Search Reading Complexity of an Author")
-    author_name = st.text_input("Enter Author Name:")
-    st.markdown(
-        """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
-    )
+	#with open("data/_author_specificSayali Phatak.p", "rb") as f:
+	#    contents = pickle.load(f)
+	#    (NAME, ar, df, datay, scholar_link) = contents
+	st.title("Search Reading Complexity of an Author")
+	author_name = st.text_input("Enter Author Name:")
+	st.markdown(
+		"""Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+	)
 
-    #cached_author_name = "Sayali Phatak"
-    NBINS = 40
+	#cached_author_name = "Sayali Phatak"
+	NBINS = 40
 
-    if author_name:
-        with shelve.open("fast_graphs_splash.p") as db:
-            flag = author_name in db
-            #if True:
-            if not flag:
-                ar = call_from_front_end(author_name)
-                scraped_labels, standard_sci = frame_to_lists(ar)
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "standard_sci": standard_sci,
-                }
-            else:
-                """
-                We have evaluated this query recently, using cached results...
-                """
+	if author_name:
+		with shelve.open("fast_graphs_splash.p") as db:
+			flag = author_name in db
+			#if True:
+			if not flag:
+				ar = call_from_front_end(author_name)
+				scraped_labels, standard_sci = frame_to_lists(ar)
+				db[author_name] = {
+					"ar": ar,
+					"scraped_labels": scraped_labels,
+					"standard_sci": standard_sci,
+				}
+			else:
+				"""
+				We have evaluated this query recently, using cached results...
+				"""
 
-                temp = db[author_name]
-                ar = temp["ar"]
-                standard_sci = temp["standard_sci"]
-                scraped_labels = temp["scraped_labels"]
+				temp = db[author_name]
+				ar = temp["ar"]
+				standard_sci = temp["standard_sci"]
+				scraped_labels = temp["scraped_labels"]
 
-            df1, not_used_fig = distribution_plot_from_scrape(
-                ar, author_name, scraped_labels, standard_sci, df0
-            )
+			df1, not_used_fig = distribution_plot_from_scrape(
+				ar, author_name, scraped_labels, standard_sci, df0
+			)
 
 
-            df1 = pd.concat([df0,df1])
-            fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
-            st.write(fig)
+			df1 = pd.concat([df0,df1])
+			fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
+			st.write(fig)
 
-            #st.write(fig)
-            #cached = False
+			#st.write(fig)
+			#cached = False
 
-            # {'ar':ar,'scraped_labels':scraped_labels,'scraped_labels':scraped_labels, 'standard_sci':standard_sci}
-            # try and update underlying distribution with query, so information about science
-            # is culmulative, dynamic.
-            # Try to allow researchers of the app to download the data.
-            # Via GUI prompts.
-            # extra_options(ar,trainingDats,df1)
-    #else:
-    #    cached = True
-    #    author_name = cached_author_name
-    #    (ar, trainingDats) = ar_manipulation(ar)
+			# {'ar':ar,'scraped_labels':scraped_labels,'scraped_labels':scraped_labels, 'standard_sci':standard_sci}
+			# try and update underlying distribution with query, so information about science
+			# is culmulative, dynamic.
+			# Try to allow researchers of the app to download the data.
+			# Via GUI prompts.
+			# extra_options(ar,trainingDats,df1)
+		#else:
+		#    cached = True
+		#    author_name = cached_author_name
+		#    (ar, trainingDats) = ar_manipulation(ar)
 
-    #    """
-	#	Displaying stored results until a new author search is performed.
-	#	"""
-    #    scraped_labels, standard_sci = frame_to_lists(ar)
-    #    df1, fig_lost = grand_distribution_plot(
-    #        ar, scraped_labels, standard_sci, df0, author_name=author_name
-    #    )
-    #    df1 = pd.concat([df0,df1])
-    #    fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")
-    #    st.write(fig)
+		#    """
+		#	Displaying stored results until a new author search is performed.
+		#	"""
+		#    scraped_labels, standard_sci = frame_to_lists(ar)
+		#    df1, fig_lost = grand_distribution_plot(
+		#        ar, scraped_labels, standard_sci, df0, author_name=author_name
+		#    )
+		#    df1 = pd.concat([df0,df1])
+		#    fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")
+		#    st.write(fig)
 
-    st.markdown(
-        """
-	### There were a total number of {0} documents mined during this query.
-	""".format(
-            len(ar)
-        )
-    )  # - changed this to account for duplicates
-
-    st.markdown(
-        """
-	### The average reading level was {0}.
-	""".format(
-            round(np.mean(standard_sci)), 3
-        )
-    )
-
-    st.markdown(""" ### Word Frequency Word Cloud""")
-    """
-	The word cloud is based on the most common words found in the mined text.
-	This word cloud is for humans to validate text mining work.
-	This is because the word cloud frequency often matches a writers
-    own knowledge of concepts in their work, therefore it can to help
-    instill trust in text-mining results.
-	"""
-    # flag = author_name in db
-    # if not flag:
-    #ar1 = ar
-    sci_corpus = create_giant_strings(ar, not_want_list)
-
-    #fig = fast_art_cloud(sci_corpus)
-    if len(sci_corpus) == 0:
-        sci_corpus = create_giant_strings(ar, not_want_list)
-    if len(sci_corpus) != 0:
-        #print(len(sci_corpus))
-        try:
-            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        except:
-            pass
-    try:
-        with shelve.open("fast_graphs_splash.p") as db:
-            if not author_name in db.keys():
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "standard_sci": standard_sci,
-                    "sci_corpus":sci_corpus
-                }
-            if not "fig_art" in db[author_name].keys():
-                db[author_name]["fig_art"] = fig_art
-                db[author_name]["fig_wl"] = fig_wl
-    except:
-        print("shelve error I dont understand")
-
-    st.markdown("\n")
-
-    if np.mean(standard_sci) < np.mean(bio_chem):
-        st.markdown(
-            """
-		### {0} was on average easier to read relative to ART Corpus.
+		st.markdown(
+		"""
+		### There were a total number of {0} documents mined during this query.
 		""".format(
-                author_name
-            )
-        )
+				len(ar)
+			)
+		)  # - changed this to account for duplicates
 
-    if np.mean(standard_sci) >= np.mean(bio_chem):
-        st.markdown(
-            """
-		### {0} was on average more difficult to read relative to ART Corpus.
+		st.markdown(
+		"""
+		### The average reading level was {0}.
 		""".format(
-                author_name
-            )
-        )
+				round(np.mean(standard_sci)), 3
+			)
+		)
 
-    st.markdown("-----")
-    st.markdown("\n\n")
+		st.markdown(""" ### Word Frequency Word Cloud""")
+		"""
+		The word cloud is based on the most common words found in the mined text.
+		This word cloud is for humans to validate text mining work.
+		This is because the word cloud frequency often matches a writers
+		own knowledge of concepts in their work, therefore it can to help
+		instill trust in text-mining results.
+		"""
+		# flag = author_name in db
+		# if not flag:
+		#ar1 = ar
+		sci_corpus = create_giant_strings(ar, not_want_list)
 
-    """
-	### Links to articles obtained from the mined.
-	"""
+		#fig = fast_art_cloud(sci_corpus)
+		if len(sci_corpus) == 0:
+			sci_corpus = create_giant_strings(ar, not_want_list)
+		if len(sci_corpus) != 0:
+			#print(len(sci_corpus))
+			try:
+				big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+			except:
+				pass
+		try:
+			with shelve.open("fast_graphs_splash.p") as db:
+				if not author_name in db.keys():
+					db[author_name] = {
+						"ar": ar,
+						"scraped_labels": scraped_labels,
+						"standard_sci": standard_sci,
+						"sci_corpus":sci_corpus
+					}
+				if not "fig_art" in db[author_name].keys():
+					db[author_name]["fig_art"] = fig_art
+					db[author_name]["fig_wl"] = fig_wl
+		except:
+			print("shelve error I dont understand")
 
-    push_frame_to_screen(scraped_labels, standard_sci)
-    # Create a list of possible values and multiselect menu with them in it.
+		st.markdown("\n")
 
-    st.markdown("-----")
-    st.markdown("\n\n")
+		if np.mean(standard_sci) < np.mean(bio_chem):
+			st.markdown(
+				"""
+			### {0} was on average easier to read relative to ART Corpus.
+			""".format(
+					author_name
+				)
+			)
 
-    st.markdown(
-        """
-	### The average reading level of the mined work was {0}.""".format(
-            round(np.mean(standard_sci)), 3
-        )
-    )
+		if np.mean(standard_sci) >= np.mean(bio_chem):
+			st.markdown(
+				"""
+			### {0} was on average more difficult to read relative to ART Corpus.
+			""".format(
+					author_name
+				)
+			)
 
-    """
-	For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
-	"""
+		st.markdown("-----")
+		st.markdown("\n\n")
 
-    st.markdown("-----")
-    st.markdown("\n\n\n\n")
+		"""
+		### Links to articles obtained from the mined.
+		"""
 
-    # sci_corpus = create_giant_strings(ar, not_want_list)
-    # bio_corpus = create_giant_strings(trainingDats, not_want_list)
+		push_frame_to_screen(scraped_labels, standard_sci)
+		# Create a list of possible values and multiselect menu with them in it.
 
-    # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
-    # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
+		st.markdown("-----")
+		st.markdown("\n\n")
 
-    st.markdown("-----")
-    st.markdown("\n\n")
-    grab_setr = []
-    grab_set1 = []
+		st.markdown(
+			"""
+		### The average reading level of the mined work was {0}.""".format(
+				round(np.mean(standard_sci)), 3
+			)
+		)
 
-    for block in trainingDats:
-        grab_setr.extend(block["tokens"])
-    for block in ar:
-        grab_set1.extend(block["tokens"])
+		"""
+		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		"""
 
-    artset = list(grab_setr)
-    autset = list(set(grab_set1))
-    exclusive = [i for i in autset if i not in artset]
-    #inclusive = [i for i in autset if i in artset]
+		st.markdown("-----")
+		st.markdown("\n\n\n\n")
 
-    if len(sci_corpus) != 0:
-        try:
-            st.markdown("-----")
-            st.markdown(""" ### Word Length Word Cloud 	""")
-            st.markdown("""
-        	based on the largest words found in the mined text.
-        	These words are likely culprits that hindered readability.
-        	""")
-            sci_corpus = create_giant_strings(ar, not_want_list)
-            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        except:
-            pass
+		# sci_corpus = create_giant_strings(ar, not_want_list)
+		# bio_corpus = create_giant_strings(trainingDats, not_want_list)
+
+		# st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
+		# st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
+
+		st.markdown("-----")
+		st.markdown("\n\n")
+		grab_setr = []
+		grab_set1 = []
+
+		for block in trainingDats:
+			grab_setr.extend(block["tokens"])
+		for block in ar:
+			grab_set1.extend(block["tokens"])
+
+		artset = list(grab_setr)
+		autset = list(set(grab_set1))
+		exclusive = [i for i in autset if i not in artset]
+		#inclusive = [i for i in autset if i in artset]
+
+		if len(sci_corpus) != 0:
+			try:
+				st.markdown("-----")
+				st.markdown(""" ### Word Length Word Cloud 	""")
+				st.markdown("""
+				based on the largest words found in the mined text.
+				These words are likely culprits that hindered readability.
+				""")
+				sci_corpus = create_giant_strings(ar, not_want_list)
+				big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+			except:
+				pass
 
 
-    st.markdown("### Concepts that differentiate {0} from other science".format(author_name))
-    exclusive = create_giant_strings(ar, exclusive)
+		st.markdown("### Concepts that differentiate {0} from other science".format(author_name))
+		exclusive = create_giant_strings(ar, exclusive)
 
-    fig = fast_art_cloud(exclusive)
-    st.markdown("-----")
+		fig = fast_art_cloud(exclusive)
+		st.markdown("-----")
 
-    # sci_corpus = create_giant_strings(ar,not_want_list)
-    # bio_corpus = create_giant_strings(trainingDats,not_want_list)
+		# sci_corpus = create_giant_strings(ar,not_want_list)
+		# bio_corpus = create_giant_strings(trainingDats,not_want_list)
 
-    sentiment = []
-    uniqueness = []
-    for block in trainingDats:
-        uniqueness.append(block["uniqueness"])
-        sentiment.append(block["sp"])
-    temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
-    if "reading_time" in ar[0].keys():
-        average_reading_time = [
-            np.mean([r["reading_time"] for r in ar])
-            ]
+		sentiment = []
+		uniqueness = []
+		for block in trainingDats:
+			uniqueness.append(block["uniqueness"])
+			sentiment.append(block["sp"])
+		temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
+		if "reading_time" in ar[0].keys():
+			average_reading_time = [
+				np.mean([r["reading_time"] for r in ar])
+				]
 
-        st.markdown("""### Reading Time""")
-        st.markdown("""There were {2} documents. The average reading time
-        per document for author {1} was {0} Minutes.
-		""".format(
-                np.mean(average_reading_time), author_name, len(ar)
-            )
-        )
+			st.markdown("""### Reading Time""")
+			st.markdown("""There were {2} documents. The average reading time
+			per document for author {1} was {0} Minutes.
+			""".format(
+					np.mean(average_reading_time), author_name, len(ar)
+				)
+			)
 
-    st.markdown("""### Sentiment""")
-    st.markdown("""It is {} that the mean sentiment of {}'s writing is more postive relative to that of ART Corpus.
-                Note that positive sentiment might relate to confirmation bias in science.
-            	""".format(
-                        temp, author_name
-                    )
-                )
+		st.markdown("""### Sentiment""")
+		st.markdown("""It is {} that the mean sentiment of {}'s writing is more postive relative to that of ART Corpus.
+					Note that positive sentiment might relate to confirmation bias in science.
+					""".format(
+							temp, author_name
+						)
+					)
 
-    temp = "{0} positive sentiment".format(author_name)
-    labels = [temp, "ART Corpus positive sentiment"]
-    values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+		temp = "{0} positive sentiment".format(author_name)
+		labels = [temp, "ART Corpus positive sentiment"]
+		values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
 
-    # urlDat["reading_time"]
-    fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-    st.write(fig)
+		# urlDat["reading_time"]
+		fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+		st.write(fig)
 
-    """
-	Here are a few additional established text sources of known complexity:
-	Note that in general, we can equate reading level with grade level.
-	"""
+		"""
+		Here are a few additional established text sources of known complexity:
+		Note that in general, we can equate reading level with grade level.
+		"""
 
-    st.markdown(
-        """
-	| Text Source | Mean Complexity | Description |
-	|----------|----------|:-------------:|
-	| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-	| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-	| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-	| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
-	| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-	| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
-	"""
-    )
-    st.markdown("-----")
-    st.markdown("\n")
-    st.markdown(
-        "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
-    )
-    st.markdown("\n")
-    st.markdown("-----")
+		st.markdown(
+			"""
+		| Text Source | Mean Complexity | Description |
+		|----------|----------|:-------------:|
+		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
+		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+		"""
+		)
+		st.markdown("-----")
+		st.markdown("\n")
+		st.markdown(
+			"Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
+		)
+		st.markdown("\n")
+		st.markdown("-----")
 
-    """
-	### Here are some links where you can read about the readability metrics and the algorithms used to compute the metrics:
-	"""
-    """
-	[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
-	"""
-    """
-	[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
-	"""
+		"""
+		### Here are some links where you can read about the readability metrics and the algorithms used to compute the metrics:
+		"""
+		"""
+		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+		"""
+		"""
+		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+		"""
 
-    """
-	#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
-	"""
-    """
-	Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
-	"""
+		"""
+		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
+		"""
+		"""
+		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
+		"""
 
-    st.markdown("-----")
+		st.markdown("-----")
 
 
 if __name__ == "__main__":
-    main()
+	main()
