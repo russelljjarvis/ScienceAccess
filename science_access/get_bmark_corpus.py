@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from .crawl import collect_pubs, convert_pdf_to_txt  # ,process
-from .scrape import get_driver
+from .online_app_backend import get_driver
 from .utils import black_string
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait

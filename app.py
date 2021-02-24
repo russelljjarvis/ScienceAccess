@@ -2,15 +2,17 @@
 ## Science Readability Project
 
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language.
-
 In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public. While readability tools, such as Readable and Upgoer5 currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not focus on complexity in a more academic-type context.
-
 To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies an existing text repository [@Soldatova:2007] with complexity shown to be comparable to that of other scientific journals. The tool subsequently uses this output as a reference to show how the readability of user-selected written work compares to this source.
-
 Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
-
 Author: [Russell Jarvis](https://github.com/russelljjarvis)\n
 Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
+
+from streamlit import components
+html_object = IPython.core.display.HTML
+#html_object = show_weights(clf, vec=vec)
+raw_html = html_object._repr_html_()
+components.v1.html(raw_html)
 """
 
 import streamlit as st
@@ -58,20 +60,20 @@ import shelve
 import plotly.express as px
 
 def main():
-    with open("data/trainingDats.p", "rb") as f:
-        trainingDats = pickle.load(f)
-        df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+    #with open("data/trainingDats.p", "rb") as f:
+    #    trainingDats = pickle.load(f)
+    #    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 
-    with open("data/_author_specificSayali Phatak.p", "rb") as f:
-        contents = pickle.load(f)
-        (NAME, ar, df, datay, scholar_link) = contents
+    #with open("data/_author_specificSayali Phatak.p", "rb") as f:
+    #    contents = pickle.load(f)
+    #    (NAME, ar, df, datay, scholar_link) = contents
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
 
-    cached_author_name = "Sayali Phatak"
+    #cached_author_name = "Sayali Phatak"
     NBINS = 40
 
     if author_name:
@@ -96,7 +98,7 @@ def main():
                 standard_sci = temp["standard_sci"]
                 scraped_labels = temp["scraped_labels"]
 
-            df1, fig = distribution_plot_from_scrape(
+            df1, not_used_fig = distribution_plot_from_scrape(
                 ar, author_name, scraped_labels, standard_sci, df0
             )
 
@@ -106,7 +108,7 @@ def main():
             st.write(fig)
 
             #st.write(fig)
-            cached = False
+            #cached = False
 
             # {'ar':ar,'scraped_labels':scraped_labels,'scraped_labels':scraped_labels, 'standard_sci':standard_sci}
             # try and update underlying distribution with query, so information about science
@@ -114,21 +116,21 @@ def main():
             # Try to allow researchers of the app to download the data.
             # Via GUI prompts.
             # extra_options(ar,trainingDats,df1)
-    else:
-        cached = True
-        author_name = cached_author_name
-        (ar, trainingDats) = ar_manipulation(ar)
+    #else:
+    #    cached = True
+    #    author_name = cached_author_name
+    #    (ar, trainingDats) = ar_manipulation(ar)
 
-        """
-		Displaying stored results until a new author search is performed.
-		"""
-        scraped_labels, standard_sci = frame_to_lists(ar)
-        df1, fig_lost = grand_distribution_plot(
-            ar, scraped_labels, standard_sci, df0, author_name=author_name
-        )
-        df1 = pd.concat([df0,df1])
-        fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")
-        st.write(fig)
+    #    """
+	#	Displaying stored results until a new author search is performed.
+	#	"""
+    #    scraped_labels, standard_sci = frame_to_lists(ar)
+    #    df1, fig_lost = grand_distribution_plot(
+    #        ar, scraped_labels, standard_sci, df0, author_name=author_name
+    #    )
+    #    df1 = pd.concat([df0,df1])
+    #    fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")
+    #    st.write(fig)
 
     st.markdown(
         """
@@ -251,22 +253,21 @@ def main():
     exclusive = [i for i in autset if i not in artset]
     #inclusive = [i for i in autset if i in artset]
 
-    st.markdown("-----")
-    st.markdown(""" ### Word Length Word Cloud 	""")
     if len(sci_corpus) != 0:
         try:
+            st.markdown("-----")
+            st.markdown(""" ### Word Length Word Cloud 	""")
             st.markdown("""
         	based on the largest words found in the mined text.
         	These words are likely culprits that hindered readability.
         	""")
             sci_corpus = create_giant_strings(ar, not_want_list)
-
             big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
         except:
             pass
 
 
-    st.markdown("### Concepts, that {0} cares about".format(author_name))
+    st.markdown("### Concepts that differentiate {0} from other science".format(author_name))
     exclusive = create_giant_strings(ar, exclusive)
 
     fig = fast_art_cloud(exclusive)
@@ -286,10 +287,8 @@ def main():
             np.mean([r["reading_time"] for r in ar])
             ]
 
-        st.markdown(
-        """
-		### Reading Time
-        There were {2} documents. The average reading time
+        st.markdown("""### Reading Time""")
+        st.markdown("""There were {2} documents. The average reading time
         per document for author {1} was {0} Minutes.
 		""".format(
                 np.mean(average_reading_time), author_name, len(ar)

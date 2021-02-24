@@ -10,19 +10,8 @@ import IPython.display as d
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
-
-from .crawl import collect_pubs
-#from .get_bmark_corpus import process
-
-# from .t_analysis import text_proc
-# from .t_analysis import text_proc, perplexity, unigram_zipf
-
 import streamlit as st
 
-if "DYNO" in os.environ:
-    heroku = True
-else:
-    heroku = False
 from time import sleep
 import numpy as np
 
@@ -31,13 +20,20 @@ import streamlit as st
 import dask
 import requests
 import crossref_commons.retrieval
+
+from .crawl import collect_pubs
 from .t_analysis import text_proc
 
+if "DYNO" in os.environ:
+    heroku = True
+else:
+    heroku = False
+
+from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import NoSuchElementException
+from selenium import webdriver
 
 def get_driver():
-    from selenium.webdriver.firefox.options import Options
-    from selenium.common.exceptions import NoSuchElementException
-    from selenium import webdriver
 
     options = Options()
     options.add_argument("--headless")
@@ -100,33 +96,6 @@ global driver
 driver = get_driver()
 
 
-def metricss(rg):
-    if isinstance(rg, list):
-        pub_count = len(rg)
-        mean_standard = np.mean([r["standard"] for r in rg if "standard" in r.keys()])
-        return mean_standard
-    else:
-        return None
-
-
-def metricsp(rg):
-    if isinstance(rg, list):
-        pub_count = len(rg)
-        penalty = np.mean([r["penalty"] for r in rg if "penalty" in r.keys()])
-        penalty = np.mean([r["perplexity"] for r in rg if "perplexity" in r.keys()])
-
-        return penalty
-    else:
-        return None
-
-
-def filter_empty(the_list):
-    the_list = [tl for tl in the_list if tl is not None]
-    the_list = [tl for tl in the_list if type(tl) is not type(str(""))]
-
-    return [tl for tl in the_list if "standard" in tl.keys()]
-
-
 class tqdm:
     def __init__(self, iterable, title=None):
         if title:
@@ -166,9 +135,11 @@ def author_to_affiliations(NAME):
             except:
                 pass
     return affilations
-
-
 def author_to_urls(NAME):
+    '''
+    splash_url is a URL where Dissemin thinks that the paper is described, without being necessarily available. This can be a publisher webpage (with the article available behind a paywall), a page about the paper without a copy of the full text (e.g., a HAL page like https://hal.archives-ouvertes.fr/hal-01664049), or a page from which the paper was discovered (e.g., the profile of a user on ORCID).
+    pdf_url is a URL where Dissemin thinks the full text can be accessed for free. This is rarely a direct link to an actual PDF file, i.e., it is often a link to a landing page (e.g., https://arxiv.org/abs/1708.00363). It is set to null if we could not find a free source for this paper.
+    '''
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
     author_papers = response.json()
     visit_urls = []
@@ -180,7 +151,7 @@ def author_to_urls(NAME):
         titles.append(title)
         coauthors.append(coauthors_)
         if "pdf_url" in p.keys():
-            visit_urls.append(p["pdf_url"])
+            visit_urls.append(records["pdf_url"])
         records = p["records"][0]
         if "splash_url" in records.keys():
             visit_urls.append(records["splash_url"])
@@ -321,7 +292,6 @@ def unpaywall_semantic_links(NAME, tns):
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
-    # author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
     for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
@@ -335,38 +305,51 @@ def unpaywall_semantic_links(NAME, tns):
         )
         response = requests.get(r)
         response = response.json()
-        if "url_for_pdf" in response.keys():
-            res = response["url_for_pdf"]
-            # if res not in set(visit_urls):
-            visit_more_urls.append(res)
+        print(response.keys())
+        if "oa_locations" in response.keys():
+        #if response['oa_locations']:
+            res_list = response['oa_locations']
+            print(res,type(res))
+            for res in res_list:
+                if "url_for_pdf" in res.keys():
+                    res = response["url_for_pdf"]
+                    visit_more_urls.append(res)
 
         if "url_for_landing_page" in response.keys():
             res = response["url_for_landing_page"]
+            print(res,type(res))
             visit_more_urls.append(res)
 
         if "doi_url" in response.keys():
             res = response["doi_url"]
+            print(res,type(res))
+
             visit_more_urls.append(res)
 
     return visit_more_urls
 
 
-def process(link, driver, REDIRECT=False):
+def process(link, driver):#, REDIRECT=False):
     urlDat = {}
 
-    if REDIRECT:
-        wait = WebDriverWait(driver, 10)
-        wait.until(lambda driver: driver.current_url != link)
-        link = driver.current_url
+    #if REDIRECT:
+    #    wait = WebDriverWait(driver, 10)
+    #    wait.until(lambda driver: driver.current_url != link)
+    #    link = driver.current_url
     if str("pdf") not in link:
         try:
             driver.get(link)
             crude_html = driver.page_source
         except:
-            st.text("failed on link")
-            st.text(link)
-            urlDat = {}
-            return urlDat
+            try:
+                driver = get_driver()
+                driver.get(link)
+                crude_html = driver.page_source
+            except:
+                st.text("failed on link")
+                st.text(link)
+                urlDat = {}
+                return urlDat
         soup = BeautifulSoup(crude_html, "html.parser")
         for script in soup(["script", "style"]):
             script.extract()  # rip it out
@@ -385,6 +368,17 @@ def process(link, driver, REDIRECT=False):
         #driver = None
         #del driver
     else:
+
+        from doc2json.pdf2json.process_pdf import process_pdf_stream
+        filename = uploaded_file.filename
+        if filename.endswith('pdf'):
+            pdf_stream = uploaded_file.stream
+            pdf_content = pdf_stream.read()
+            # compute hash
+            pdf_sha = hashlib.sha1(pdf_content).hexdigest()
+            # get results
+            results = process_pdf_stream(filename, pdf_sha, pdf_content)
+            #return jsonify(results)
         try:
             with open(link + str("_pdf_.p")) as f:
                 pickle.dump(f, link)
@@ -409,73 +403,6 @@ def process(link, driver, REDIRECT=False):
     return urlDat
 
 
-"""
-
-def brian_function(author_link_scholar_link_list, tns):
-    inputs a URL that's full of publication orientated links, preferably the
-    authors scholar page.
-    from bs4 import BeautifulSoup
-
-    author_results = []
-    follow_links = collect_pubs(author_link_scholar_link_list)
-    follow_links = follow_links[0 : tns - 1]
-    for r in tqdm(follow_links, title="Scrape in Progress. Please Wait."):
-        urlDat = process(r)
-        # soup = BeautifulSoup(document, 'html.parser')
-
-        # try:
-        #        urlDat = process(r)
-        #    author_results.append(urlDat)
-        # except:
-        #    follow_more_links = collect_pubs(r)
-        #    for r in tqdm(follow_more_links,title='following links from after following original links'):
-        #        sleep(np.random.uniform(1,2))
-        #        urlDat = process(r)
-        #        author_results.append(urlDat)
-        # author_results = [urlDat for urlDat in author_results if not isinstance(urlDat,type(None))]
-    return author_results
-
-
-def unigram_model(author_results):
-    #takes author results.
-    #
-    terms = []
-    for k, v in author_results.items():
-        try:
-            # author_results_r[k] = list(s for s in v.values()  )
-            author_results[k]["files"] = list(s for s in v.values())
-
-            words = [
-                ws["tokens"] for ws in author_results[k]["files"] if ws is not None
-            ]
-            author_results[k]["words"] = words
-            terms.extend(words)  # if isinstance(terms,dict) ]
-        except:
-            print(terms[-1])
-    big_model = unigram(terms)
-    with open("author_results_processed.p", "wb") as file:
-        pickle.dump(author_results, file)
-    with open("big_model_science.p", "wb") as file:
-        pickle.dump(list(big_model), file)
-
-    return big_model
-
-
-Not used
-def info_models(author_results):
-	big_model = unigram_model(author_results)
-	compete_results = {}
-	for k,v in author_results.items():
-		per_dpc = []
-		try:
-			for doc in author_results[k]['words']:
-				per_doc.append(perplexity(doc, big_model))
-		except:
-			pass
-		compete_results[k] = np.mean(per_doc)
-		author_results[k]['perplexity'] = compete_results[k]
-	return author_results, compete_results
-"""
 
 
 def update_web_form(NAME, tns):
@@ -528,7 +455,7 @@ def call_from_front_end(NAME, OPENACCESS=True, tns=16):
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
 
-
+"""
 def call_from_front_end_oa(NAME, OPENACCESS=False, tns=16):
     import os
     from crossref_commons.iteration import iterate_publications_as_json
@@ -547,14 +474,38 @@ def call_from_front_end_oa(NAME, OPENACCESS=False, tns=16):
     #    rawData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
 
     # global url;
-    """
 	url = "firstURL"
 	At the end of your first function you can change the value of the variable to the new URL:
 
 	url = driver.current_url
 	And then you can get the new url at the beginning of your second function:
-	"""
     driver.get(urlData)
+"""
+def metricss(rg):
+    if isinstance(rg, list):
+        pub_count = len(rg)
+        mean_standard = np.mean([r["standard"] for r in rg if "standard" in r.keys()])
+        return mean_standard
+    else:
+        return None
+
+
+def metricsp(rg):
+    if isinstance(rg, list):
+        pub_count = len(rg)
+        penalty = np.mean([r["penalty"] for r in rg if "penalty" in r.keys()])
+        penalty = np.mean([r["perplexity"] for r in rg if "perplexity" in r.keys()])
+
+        return penalty
+    else:
+        return None
+
+
+def filter_empty(the_list):
+    the_list = [tl for tl in the_list if tl is not None]
+    the_list = [tl for tl in the_list if type(tl) is not type(str(""))]
+
+    return [tl for tl in the_list if "standard" in tl.keys()]
 
 
 # -*- coding: utf-8 -*-
@@ -670,4 +621,72 @@ data.to_csv("data.csv",index=False)
 	with open('data/traingDats.p','wb') as f:
 		pickle.dump(trainingDats,f)
 	'''
+"""
+
+"""
+
+def brian_function(author_link_scholar_link_list, tns):
+    inputs a URL that's full of publication orientated links, preferably the
+    authors scholar page.
+    from bs4 import BeautifulSoup
+
+    author_results = []
+    follow_links = collect_pubs(author_link_scholar_link_list)
+    follow_links = follow_links[0 : tns - 1]
+    for r in tqdm(follow_links, title="Scrape in Progress. Please Wait."):
+        urlDat = process(r)
+        # soup = BeautifulSoup(document, 'html.parser')
+
+        # try:
+        #        urlDat = process(r)
+        #    author_results.append(urlDat)
+        # except:
+        #    follow_more_links = collect_pubs(r)
+        #    for r in tqdm(follow_more_links,title='following links from after following original links'):
+        #        sleep(np.random.uniform(1,2))
+        #        urlDat = process(r)
+        #        author_results.append(urlDat)
+        # author_results = [urlDat for urlDat in author_results if not isinstance(urlDat,type(None))]
+    return author_results
+
+
+def unigram_model(author_results):
+    #takes author results.
+    #
+    terms = []
+    for k, v in author_results.items():
+        try:
+            # author_results_r[k] = list(s for s in v.values()  )
+            author_results[k]["files"] = list(s for s in v.values())
+
+            words = [
+                ws["tokens"] for ws in author_results[k]["files"] if ws is not None
+            ]
+            author_results[k]["words"] = words
+            terms.extend(words)  # if isinstance(terms,dict) ]
+        except:
+            print(terms[-1])
+    big_model = unigram(terms)
+    with open("author_results_processed.p", "wb") as file:
+        pickle.dump(author_results, file)
+    with open("big_model_science.p", "wb") as file:
+        pickle.dump(list(big_model), file)
+
+    return big_model
+
+
+Not used
+def info_models(author_results):
+	big_model = unigram_model(author_results)
+	compete_results = {}
+	for k,v in author_results.items():
+		per_dpc = []
+		try:
+			for doc in author_results[k]['words']:
+				per_doc.append(perplexity(doc, big_model))
+		except:
+			pass
+		compete_results[k] = np.mean(per_doc)
+		author_results[k]['perplexity'] = compete_results[k]
+	return author_results, compete_results
 """
