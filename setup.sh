@@ -20,7 +20,8 @@ cd holoviews; sudo pip install -e .; cd ..;
 
 git clone https://github.com/kermitt2/grobid_client_python
 cd grobid_client_python; sudo pip install -e .; cp grobid_client.py ..;cd ..;
-
+git clone https://github.com/dissemin/dissemin
+cd dissemin; sudo pip install -e .;cd ..;
 
 
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
@@ -30,6 +31,9 @@ mv traingDats.p?dl=0 data/trainingDats.p
 wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
 tar -xvzf geckodriver*
 chmod +x geckodriver
+
+git clone https://russelljjarvis@github.com/russelljjarvis/CoauthorNetVis.git
+cd CoauthorNetVis; sudo pip install -e .;cd ..;
 
 
 
