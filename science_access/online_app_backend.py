@@ -390,7 +390,13 @@ def process(link, driver):#, REDIRECT=False):
             pass
         '''
         response = requests.get(link, stream=True)
+        with open(link + str("_pdf_.p")) as f:
+            pickle.dump(f, link)
+        #import pdb
+        #pdb.set_trace()
+
         try:
+
             buffered = convert_pdf_to_txt(response)
             print(buffered)
             #try:
@@ -398,7 +404,7 @@ def process(link, driver):#, REDIRECT=False):
             #except:
             #    print("grobid not expected to work")
         except:
-            print(buffered,"cannot yet do pdf")
+            print("cannot yet do pdf")
 
             buffered = ""
     urlDat["link"] = link
