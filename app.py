@@ -60,9 +60,9 @@ import shelve
 import plotly.express as px
 
 def main():
-	#with open("data/trainingDats.p", "rb") as f:
-	#    trainingDats = pickle.load(f)
-	#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+	with open("data/trainingDats.p", "rb") as f:
+	    trainingDats = pickle.load(f)
+	    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 
 	#with open("data/_author_specificSayali Phatak.p", "rb") as f:
 	#    contents = pickle.load(f)
@@ -102,6 +102,9 @@ def main():
 				ar, author_name, scraped_labels, standard_sci, df0
 			)
 
+			#with open("data/trainingDats.p", "rb") as f:
+			#    trainingDats = pickle.load(f)
+			#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 
 			df1 = pd.concat([df0,df1])
 			fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)

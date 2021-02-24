@@ -196,13 +196,14 @@ def take_url_from_gui(NAME, tns, more_links):
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_urls.extend(more_links)
-    for index, doi_ in enumerate(
+    for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
-        link = doi_  # visit_urls[index]
+        #link = doi_  # visit_urls[index]
         # print(doi_, "visited \n\n\n\n\n")
-        urlDatTemp = process(doi_, driver)
-        author_results.append(urlDatTemp)
+        if link is not None:
+            urlDatTemp = process(link, driver)
+            author_results.append(urlDatTemp)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
@@ -337,6 +338,8 @@ def process(link, driver):#, REDIRECT=False):
     #    wait = WebDriverWait(driver, 10)
     #    wait.until(lambda driver: driver.current_url != link)
     #    link = driver.current_url
+    if link is None:
+        return None
     if str("pdf") not in link:
         try:
             driver.get(link)
@@ -369,7 +372,7 @@ def process(link, driver):#, REDIRECT=False):
         #driver = None
         #del driver
     else:
-
+        '''
         from doc2json.pdf2json.process_pdf import process_pdf_stream
         filename = uploaded_file.filename
         if filename.endswith('pdf'):
@@ -385,14 +388,18 @@ def process(link, driver):#, REDIRECT=False):
                 pickle.dump(f, link)
         except:
             pass
+        '''
         response = requests.get(link, stream=True)
         try:
             buffered = convert_pdf_to_txt(response)
-            try:
-                try_grobid(link, response)
-            except:
-                print("grobid not expected to work")
+            print(buffered)
+            #try:
+            #    try_grobid(link, response)
+            #except:
+            #    print("grobid not expected to work")
         except:
+            print(buffered,"cannot yet do pdf")
+
             buffered = ""
     urlDat["link"] = link
     urlDat["page_rank"] = "benchmark"
