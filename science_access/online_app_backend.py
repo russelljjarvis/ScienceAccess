@@ -390,7 +390,7 @@ def process(link, driver):#, REDIRECT=False):
             pass
         '''
         response = requests.get(link, stream=True)
-        with open(link + str("_pdf_.p")) as f:
+        with open(str(link) + str("_pdf_.p"),'wb') as f:
             pickle.dump(f, link)
         #import pdb
         #pdb.set_trace()
