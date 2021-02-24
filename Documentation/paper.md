@@ -10,12 +10,12 @@ authors:
     affiliation: Previous PhD Neuroscience, Arizona State University
   - name: Patrick McGurrin
     affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
+  - name: Bradley G Lusk
+    affiliation: Science The Earth; Mesa, AZ 85201, USA
   - name: Marc Skov Madsen
     affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted. 
   - name: Shivam Bansal
     affiliation: Senior Data Scientist, H2O.ai
-  - name: Bradley G Lusk
-    affiliation: Science The Earth; Mesa, AZ 85201, USA
   - name: Elise King
     affiliation: Field Ecologist, University of Melbourne
 

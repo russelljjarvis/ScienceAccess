@@ -58,3 +58,7 @@ sudo [output] setup.py install
 ```
 streamlit run app.py
 ```
+
+
+License
+ScienceAccess is released under the CC BY-NC 2.0. By using ScienceAccess, you are agreeing to its usage terms.
