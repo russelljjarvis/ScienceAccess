@@ -43,6 +43,7 @@ from science_access.enter_author_name import (
 from science_access.enter_author_name import (
 	distribution_plot_from_scrape,
 	grand_distribution_plot,
+	data_frames_from_scrape
 )
 from science_access.enter_author_name import (
 	push_frame_to_screen,
@@ -62,7 +63,7 @@ import plotly.express as px
 def main():
 	with open("data/trainingDats.p", "rb") as f:
 	    trainingDats = pickle.load(f)
-	    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+	    art_df, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 
 	#with open("data/_author_specificSayali Phatak.p", "rb") as f:
 	#    contents = pickle.load(f)
@@ -74,7 +75,7 @@ def main():
 	)
 
 	#cached_author_name = "Sayali Phatak"
-	NBINS = 40
+	#NBINS = 40
 
 	if author_name:
 		with shelve.open("fast_graphs_splash.p") as db:
@@ -97,28 +98,29 @@ def main():
 				ar = temp["ar"]
 				standard_sci = temp["standard_sci"]
 				scraped_labels = temp["scraped_labels"]
+	if 'ar' in locals():
+		df_author, merged_df = data_frames_from_scrape(
+			ar, author_name, scraped_labels, standard_sci, art_df
+		)
 
-			df1, not_used_fig = distribution_plot_from_scrape(
-				ar, author_name, scraped_labels, standard_sci, df0
-			)
+		#with open("data/trainingDats.p", "rb") as f:
+		#    trainingDats = pickle.load(f)
+		#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+		df0 = art_df
+		df1 = df_author
+		df1 = pd.concat([art_df,df_author])
+		fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
+		st.write(fig)
 
-			#with open("data/trainingDats.p", "rb") as f:
-			#    trainingDats = pickle.load(f)
-			#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+		#st.write(fig)
+		#cached = False
 
-			df1 = pd.concat([df0,df1])
-			fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
-			st.write(fig)
-
-			#st.write(fig)
-			#cached = False
-
-			# {'ar':ar,'scraped_labels':scraped_labels,'scraped_labels':scraped_labels, 'standard_sci':standard_sci}
-			# try and update underlying distribution with query, so information about science
-			# is culmulative, dynamic.
-			# Try to allow researchers of the app to download the data.
-			# Via GUI prompts.
-			# extra_options(ar,trainingDats,df1)
+		# {'ar':ar,'scraped_labels':scraped_labels,'scraped_labels':scraped_labels, 'standard_sci':standard_sci}
+		# try and update underlying distribution with query, so information about science
+		# is culmulative, dynamic.
+		# Try to allow researchers of the app to download the data.
+		# Via GUI prompts.
+		# extra_options(ar,trainingDats,df1)
 		#else:
 		#    cached = True
 		#    author_name = cached_author_name
@@ -139,7 +141,7 @@ def main():
 		"""
 		### There were a total number of {0} documents mined during this query.
 		""".format(
-				len(ar)
+				len(df1)
 			)
 		)  # - changed this to account for duplicates
 
@@ -165,28 +167,25 @@ def main():
 		sci_corpus = create_giant_strings(ar, not_want_list)
 
 		#fig = fast_art_cloud(sci_corpus)
-		if len(sci_corpus) == 0:
-			sci_corpus = create_giant_strings(ar, not_want_list)
-		if len(sci_corpus) != 0:
+		#if len(sci_corpus) == 0:
+		#	sci_corpus = create_giant_strings(ar, not_want_list)
+		#if len(sci_corpus) != 0:
 			#print(len(sci_corpus))
-			try:
-				big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-			except:
-				pass
-		try:
-			with shelve.open("fast_graphs_splash.p") as db:
-				if not author_name in db.keys():
-					db[author_name] = {
-						"ar": ar,
-						"scraped_labels": scraped_labels,
-						"standard_sci": standard_sci,
-						"sci_corpus":sci_corpus
-					}
-				if not "fig_art" in db[author_name].keys():
-					db[author_name]["fig_art"] = fig_art
-					db[author_name]["fig_wl"] = fig_wl
-		except:
-			print("shelve error I dont understand")
+		#try:
+		big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+		#except:
+		#	pass
+		with shelve.open("fast_graphs_splash.p") as db:
+			if not author_name in db.keys():
+				db[author_name] = {
+					"ar": ar,
+					"scraped_labels": scraped_labels,
+					"standard_sci": standard_sci,
+					"sci_corpus":sci_corpus
+				}
+			#if not "fig_art" in db[author_name].keys():
+			#	db[author_name]["fig_art"] = fig_art
+			#	db[author_name]["fig_wl"] = fig_wl
 
 		st.markdown("\n")
 
@@ -214,6 +213,7 @@ def main():
 		"""
 		### Links to articles obtained from the mined.
 		"""
+		#zip(scraped_labels, standard_sci)
 
 		push_frame_to_screen(scraped_labels, standard_sci)
 		# Create a list of possible values and multiselect menu with them in it.

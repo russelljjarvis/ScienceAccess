@@ -239,10 +239,16 @@ def distribution_plot_from_scrape(ar, author_name, scraped_labels, standard_sci,
     # ar = [t for t in ar if t["standard"] < 45]
     group_labels = ["Author: " + str(author_name)]  # , 'Group 2', 'Group 3']
     lods = []
+    old_reading_level = 0
     for i, j, k in zip(
         standard_sci, [str(author_name) for i in range(0, len(ar))], scraped_labels
     ):
-        lods.append({"Reading_Level": i, "Origin": j, "Web_Link": k})
+        if not old_reading_level == i:
+            # make sure these are not duplicates with different links
+            # exposed as duplicates because their readability scores are identical.
+            lods.append({"Reading_Level": i, "Origin": j, "Web_Link": k})
+        old_reading_level = i
+
     df1 = pd.DataFrame(lods)
     df1.drop_duplicates(subset="Web_Link", inplace=True)
     df = pd.concat([df1, df0])
@@ -267,6 +273,24 @@ def distribution_plot_from_scrape(ar, author_name, scraped_labels, standard_sci,
         height=900,
     )
     return df1, fig
+def data_frames_from_scrape(ar, author_name, scraped_labels, standard_sci, art_df):
+    # ar = [t for t in ar if t["standard"] < 45]
+    group_labels = ["Author: " + str(author_name)]  # , 'Group 2', 'Group 3']
+    lods = []
+    old_reading_level = 0
+    for i, j, k in zip(
+        standard_sci, [str(author_name) for i in range(0, len(ar))], scraped_labels
+    ):
+        if not old_reading_level == i:
+            # make sure these are not duplicates with different links
+            # exposed as duplicates because their readability scores are identical.
+            lods.append({"Reading_Level": i, "Origin": j, "Web_Link": k})
+        old_reading_level = i
+
+    df1 = pd.DataFrame(lods)
+    df1.drop_duplicates(subset="Web_Link", inplace=True)
+    merged_df = pd.concat([df1, art_df])
+    return df1, merged_df
 
 
 # @st.cache

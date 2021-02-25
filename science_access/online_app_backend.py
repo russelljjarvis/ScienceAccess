@@ -1,3 +1,5 @@
+import PyPDF2
+from pathlib import Path
 import copy
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -32,6 +34,7 @@ else:
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
+global driver
 
 def get_driver():
 
@@ -92,7 +95,6 @@ def get_driver():
                     return driver
     return driver
 
-global driver
 driver = get_driver()
 
 
@@ -256,7 +258,7 @@ def take_url_from_gui_unpaywall(NAME, tns, visit_urls):
         r = (
             str("https://api.unpaywall.org/v2/")
             + str(doi_)
-            + str("?email=rjjarvis@asu.edu")
+            + str("?email=russelljarvis@protonmail.com")
         )
         response = requests.get(r)
         response = response.json()
@@ -331,6 +333,27 @@ def unpaywall_semantic_links(NAME, tns):
     return visit_more_urls
 
 
+def convert_pdf_to_txt(content):
+    # https://github.com/allenai/science-parse/blob/master/server/README.md
+    # os.subprocess(curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1")
+    try:
+        pdf = io.BytesIO(content.content)
+    except:
+        pdf = io.BytesIO(content)
+    parser = PDFParser(pdf)
+    if (type(parser) is not type(bytes)) and (type(parser) is not type(None)):
+        document = PDFDocument(parser, password=None)  # this fails
+        write_text = ""
+        for page in PDFPage.create_pages(document):
+            interpreter.process_page(page)
+            write_text += retstr.getvalue()
+            # write_text = write_text.join(retstr.getvalue())
+        # Process all pages in the document
+        text = str(write_text)
+        return text
+    else:
+        #st.text("defered")
+        return str("")
 def process(link, driver):#, REDIRECT=False):
     urlDat = {}
 
@@ -350,7 +373,7 @@ def process(link, driver):#, REDIRECT=False):
                 driver.get(link)
                 crude_html = driver.page_source
             except:
-                st.text("failed on link")
+                #st.text("failed on link")
                 st.text(link)
                 urlDat = {}
                 return urlDat
@@ -389,26 +412,44 @@ def process(link, driver):#, REDIRECT=False):
         except:
             pass
         '''
-        response = requests.get(link, stream=True)
-        with open(str(link) + str("_pdf_.p"),'wb') as f:
-            pickle.dump(f, link)
-        #import pdb
-        #pdb.set_trace()
+        #response = requests.get(link, stream=True)
+        #r = requests.get(link, stream=True)
+        #pdf_path_to_save = str("this_pdf_download_.pdf")
 
+
+        #import requests
         try:
+            filename = Path('metadata.pdf')
+            response = requests.get(link,timeout=10)
 
-            buffered = convert_pdf_to_txt(response)
-            print(buffered)
-            #try:
-            #    try_grobid(link, response)
-            #except:
-            #    print("grobid not expected to work")
-        except:
-            print("cannot yet do pdf")
+            filename.write_bytes(response.content)
 
+            reader = PyPDF2.PdfFileReader('metadata.pdf')
             buffered = ""
+            for p in range(1,reader.numPages):
+                buffered+=str(reader.getPage(p).extractText())
+
+        except:
+            buffered = ""
+        #url = 'http://www.hrecos.org//images/Data/forweb/HRTVBSH.Metadata.pdf'
+
+
+        #link_path_to_save = str("_link_pdf_.p")
+
+        # save the link to pickle.
+
+        #with open('this_pdf.p','wb') as f:
+        #    pickle.dump(link,f)
+
+        #try:
+        #    buffered = convert_pdf_to_txt(response)
+        #    print(buffered)
+        #except:
+        #    print("cannot yet do pdf")
+
+        #    buffered = ""
     urlDat["link"] = link
-    urlDat["page_rank"] = "benchmark"
+    #urlDat["page_rank"] = "benchmark"
     urlDat = text_proc(buffered, urlDat)
     if urlDat is not None:
         print(urlDat.keys(), "failure mode?")

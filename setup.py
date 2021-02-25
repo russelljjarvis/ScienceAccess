@@ -25,7 +25,7 @@ setup(
     version="1.0",
     description="heavily applied scraping, crawling and language analysis, tightly coupled with the goal of analysing scientific discourse",
     author="various",
-    author_email="don_t_email_we_are_on_github@gmail.com",
+    author_email="russelljarvis@protonmail.com",
     url="https://github.com/russelljjarvis/ScienceAccessibility",
     packages=setuptools.find_packages(),
 )
