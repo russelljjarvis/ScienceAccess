@@ -107,7 +107,7 @@ def main():
 		#    trainingDats = pickle.load(f)
 		#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 		df0 = art_df
-		df1 = df_author
+		#df1 = df_author
 		df1 = pd.concat([art_df,df_author])
 		fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
 		st.write(fig)
@@ -141,7 +141,7 @@ def main():
 		"""
 		### There were a total number of {0} documents mined during this query.
 		""".format(
-				len(df1)
+				len(df_author)
 			)
 		)  # - changed this to account for duplicates
 
@@ -172,9 +172,8 @@ def main():
 		#if len(sci_corpus) != 0:
 			#print(len(sci_corpus))
 		#try:
+
 		big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-		#except:
-		#	pass
 		with shelve.open("fast_graphs_splash.p") as db:
 			if not author_name in db.keys():
 				db[author_name] = {
@@ -215,7 +214,7 @@ def main():
 		"""
 		#zip(scraped_labels, standard_sci)
 
-		push_frame_to_screen(scraped_labels, standard_sci)
+		push_frame_to_screen(scraped_labels, df_author)
 		# Create a list of possible values and multiselect menu with them in it.
 
 		st.markdown("-----")
@@ -257,17 +256,17 @@ def main():
 		#inclusive = [i for i in autset if i in artset]
 
 		if len(sci_corpus) != 0:
-			try:
-				st.markdown("-----")
-				st.markdown(""" ### Word Length Word Cloud 	""")
-				st.markdown("""
-				based on the largest words found in the mined text.
-				These words are likely culprits that hindered readability.
-				""")
-				sci_corpus = create_giant_strings(ar, not_want_list)
-				big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-			except:
-				pass
+			#try:
+			st.markdown("-----")
+			st.markdown(""" ### Word Length Word Cloud 	""")
+			st.markdown("""
+			based on the largest words found in the mined text.
+			These words are likely culprits that hindered readability.
+			""")
+			sci_corpus = create_giant_strings(ar, not_want_list)
+			big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+			#except:
+			#	pass
 
 
 		st.markdown("### Concepts that differentiate {0} from other science".format(author_name))

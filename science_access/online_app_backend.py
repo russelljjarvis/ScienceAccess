@@ -189,7 +189,7 @@ def author_to_urls(NAME):
 
 
 
-def take_url_from_gui(NAME, tns, more_links):
+def visit_link(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
@@ -201,8 +201,6 @@ def take_url_from_gui(NAME, tns, more_links):
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
-        #link = doi_  # visit_urls[index]
-        # print(doi_, "visited \n\n\n\n\n")
         if link is not None:
             urlDatTemp = process(link, driver)
             author_results.append(urlDatTemp)
@@ -239,7 +237,7 @@ def take_url_from_gui(NAME, tns, more_links):
 	"""
 
 
-def take_url_from_gui_unpaywall(NAME, tns, visit_urls):
+def visit_link_unpaywall(NAME, tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
@@ -309,11 +307,8 @@ def unpaywall_semantic_links(NAME, tns):
         )
         response = requests.get(r)
         response = response.json()
-        print(response.keys())
         if "oa_locations" in response.keys():
-        #if response['oa_locations']:
             res_list = response['oa_locations']
-            #print(res,type(res))
             for res in res_list:
                 if "url_for_pdf" in res.keys():
                     res_ = res["url_for_pdf"]
@@ -321,15 +316,11 @@ def unpaywall_semantic_links(NAME, tns):
 
         if "url_for_landing_page" in response.keys():
             res = response["url_for_landing_page"]
-            #print(res,type(res))
             visit_more_urls.append(res)
 
         if "doi_url" in response.keys():
             res = response["doi_url"]
-            #print(res,type(res))
-
             visit_more_urls.append(res)
-
     return visit_more_urls
 
 
@@ -463,8 +454,8 @@ def process(link, driver):#, REDIRECT=False):
 def update_web_form(NAME, tns):
     # author_results = brian_function(url,tns)
     more_links = unpaywall_semantic_links(NAME, tns)
-    author_results, visit_urls = take_url_from_gui(NAME, tns, more_links)
-    # author_results, visit_more_urls = take_url_from_gui_unpaywall(NAME, tns, visit_urls)
+    author_results, visit_urls = visit_link(NAME, tns, more_links)
+    # author_results, visit_more_urls = visit_link_unpaywall(NAME, tns, visit_urls)
     # print(set(visit_urls) & set(visit_more_urls))
 
     ar = copy.copy(author_results)

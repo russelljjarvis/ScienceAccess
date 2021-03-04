@@ -116,9 +116,15 @@ def art_cloud_wl(acorpus):
     fig = plt.figure()
 
     tokens = word_tokenize(acorpus)
-    print(tokens, acorpus)
-    if len(tokens):
-        wordcloud = WC.generate_from_lengths(tokens)
+    import pdb
+    pdb.set_trace()
+
+    try:
+        if len(tokens):
+            wordcloud = WC.generate_from_lengths(tokens)
+    except:
+        wordcloud = WC.generate_from_lengths(acorpus)
+
     else:
         print(tokens)
         return None, None, None
@@ -180,14 +186,14 @@ def create_giant_strings(ar, not_want_list):
     for s in first_pass:
         if "/" in s:
             temp = s.split("/")  # , " ")
-            sci_corpus += str(" ") + temp[0]
-            sci_corpus += str(" ") + temp[1]
+            sci_corpus += str(" ") + temp[0] +str(" ")
+            sci_corpus += str(" ") + temp[1] +str(" ")
         if "." in s:
             temp = s.split(".")  # , " ")
-            sci_corpus += str(" ") + temp[0]
-            sci_corpus += str(" ") + temp[1]
+            sci_corpus += str(" ") + temp[0]+str(" ")
+            sci_corpus += str(" ") + temp[1]+str(" ")
         if s not in set(not_want_list):
-            sci_corpus += str(" ") + s  # +str(' ')
+            sci_corpus += str(" ") + s +str(" ") # +str(' ')
     return sci_corpus
 
 
@@ -274,23 +280,30 @@ def distribution_plot_from_scrape(ar, author_name, scraped_labels, standard_sci,
     )
     return df1, fig
 def data_frames_from_scrape(ar, author_name, scraped_labels, standard_sci, art_df):
-    # ar = [t for t in ar if t["standard"] < 45]
-    group_labels = ["Author: " + str(author_name)]  # , 'Group 2', 'Group 3']
+    group_labels = ["Author: " + str(author_name)]
     lods = []
-    old_reading_level = 0
+
+    oc_set = set()
+    res = []
+    for idx, val in enumerate(standard_sci):
+        if val not in oc_set:
+            oc_set.add(val)
+        else:
+            res.append(idx)
+    cnt = 0
     for i, j, k in zip(
         standard_sci, [str(author_name) for i in range(0, len(ar))], scraped_labels
     ):
-        if not old_reading_level == i:
+        if cnt not in res:
             # make sure these are not duplicates with different links
             # exposed as duplicates because their readability scores are identical.
             lods.append({"Reading_Level": i, "Origin": j, "Web_Link": k})
-        old_reading_level = i
+        cnt+=1
 
-    df1 = pd.DataFrame(lods)
-    df1.drop_duplicates(subset="Web_Link", inplace=True)
-    merged_df = pd.concat([df1, art_df])
-    return df1, merged_df
+    df_author = pd.DataFrame(lods)
+    df_author.drop_duplicates(subset="Web_Link", inplace=True)
+    merged_df = pd.concat([df_author, art_df])
+    return df_author, merged_df
 
 
 # @st.cache

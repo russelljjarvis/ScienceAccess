@@ -1,8 +1,5 @@
 from __future__ import division
 
-# class WCWL(WordCloud):
-#    def __init__(self):
-#        super(WCWL).__init__()
 import numpy as np
 from random import Random
 
@@ -148,20 +145,11 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
         if len(words_):
             continue
 
-        # word = re.sub(r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", "", word)
         pattern = re.compile(
             r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"
-        )  # , "", word)
-
+        )
         if not len(words_) and not pattern.match(word):
             words__.append(word)
-
-    # words_zipf = list(set(words__)
-
-    # df = pd.DataFrame(pd.Series(list(words)),columns='text')
-    # df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
-    # Create a word count dataframe
-    # word_list = ' '.join(df.clean_text.values).split(' ')
     words = pd.DataFrame(copy.copy(words__), columns=["word"])
     word_counts = words.word.value_counts().reset_index()
     word_counts.columns = ["word", "n"]
