@@ -178,7 +178,14 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
                 urlDat["ndc"] = ndc[0]  # textstat.text_standard(corpus, float_output=True)
                 # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
                 tokens = word_tokenize(corpus)
+                wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
+                    tokens, ignoreSingleSentences=ignoreSingleSentences
+                )
+                print(wc_t,wc,sc_t,sc)
+
                 urlDat["standard_len"] = complexityAlongtheText(corpus, chunk_length=128)
+                urlDat["fudge"] = np.mean([urlDat["fre"],urlDat["ndc"],urlDat["standard_len"]])
+
                 tokens = [w.lower() for w in tokens if w.isalpha()]
                 tokens = [w.lower() for w in tokens]  # make everything lower case
                 urlDat["wcount"] = textstat.lexicon_count(str(tokens))

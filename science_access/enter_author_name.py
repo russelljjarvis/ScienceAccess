@@ -336,15 +336,31 @@ def grand_distribution_plot(ar, scraped_labels, standard_sci, df0, author_name="
     fig.update_layout(width=900, height=600)  # , hovermode='x')
     return df1, fig
 
+from typing import List,Any
+import pandas as pd
+import streamlit as stList
+def push_frame_to_screen(contents:Any, readability_vector:List)->pd.DataFrame():
+    #st.text(labels)
+    #st.text(readability_vector)
+    #import pdb
+    #pdb.set_trace()
+    if type(contents) is type(list()):
+        df_links = pd.DataFrame()
+        df_links["Web_Link"] = pd.Series(contents)
+        df_links["Reading_Level"] = pd.Series(readability_vector)
+        df_links.drop_duplicates(subset="Web_Link", inplace=True)
+        df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+        df_links = df_links.to_html(escape=False)
+    if type(contents) is type(pd.DataFrame()):
+        df_links = pd.DataFrame()
+        df_links["Web_Link"] = contents["Web_Link"]
+        df_links["Reading_Level"] = contents["Reading_Level"]
+        df_links.drop_duplicates(subset="Web_Link", inplace=True)
+        df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+        df_links = df_links.to_html(escape=False)
 
-def push_frame_to_screen(labels, readability_vector):
-    df_links = pd.DataFrame()
-    df_links["Web_Link"] = pd.Series(labels)
-    df_links["Reading_Level"] = pd.Series(readability_vector)
-    df_links.drop_duplicates(subset="Web_Link", inplace=True)
-    df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
-    df_links = df_links.to_html(escape=False)
     st.write(df_links, unsafe_allow_html=True)
+    return df_links
 
 
 def get_heights(stats_items, histogram_content, x_sub_set, xys=None):

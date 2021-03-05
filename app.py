@@ -65,7 +65,7 @@ rd_df.rename(
     columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
 )
 rd_df = rd_df[["Reading_Level", "Origin"]]
-rd_df["Origin"] = ['ReadabilityScienceDec' for i in rd_df["Origin"]]
+rd_df["Origin"] = ['ReadabilityScienceDeclining' for i in rd_df["Origin"]]
 biochem_labels = rd_df["Origin"]
 bio_chem = rd_df["Reading_Level"]
 rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
@@ -116,11 +116,13 @@ def main():
         )
 
         """
-		### Links to articles obtained from the mined author.
+		### Links to articles obtained from the queried author.
 		"""
-        push_frame_to_screen(scraped_labels, df_author)
+        import pdb
+        pdb.set_trace()
+        push_frame_to_screen(df_author,scraped_labels)
 
-        df_concat_art = pd.concat([art_df, df_author])
+        df_concat_art = pd.concat([art_df,rd_df, df_author])
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
