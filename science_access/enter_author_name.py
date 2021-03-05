@@ -184,14 +184,14 @@ def create_giant_strings(ar, not_want_list):
     for s in first_pass:
         if "/" in s:
             temp = s.split("/")  # , " ")
-            sci_corpus += str(" ") + temp[0] +str(" ")
-            sci_corpus += str(" ") + temp[1] +str(" ")
+            sci_corpus += str(" ") + temp[0] + str(" ")
+            sci_corpus += str(" ") + temp[1] + str(" ")
         if "." in s:
             temp = s.split(".")  # , " ")
-            sci_corpus += str(" ") + temp[0]+str(" ")
-            sci_corpus += str(" ") + temp[1]+str(" ")
+            sci_corpus += str(" ") + temp[0] + str(" ")
+            sci_corpus += str(" ") + temp[1] + str(" ")
         if s not in set(not_want_list):
-            sci_corpus += str(" ") + s +str(" ") # +str(' ')
+            sci_corpus += str(" ") + s + str(" ")  # +str(' ')
     return sci_corpus
 
 
@@ -277,6 +277,8 @@ def distribution_plot_from_scrape(ar, author_name, scraped_labels, standard_sci,
         height=900,
     )
     return df1, fig
+
+
 def data_frames_from_scrape(ar, author_name, scraped_labels, standard_sci, art_df):
     group_labels = ["Author: " + str(author_name)]
     lods = []
@@ -296,7 +298,7 @@ def data_frames_from_scrape(ar, author_name, scraped_labels, standard_sci, art_d
             # make sure these are not duplicates with different links
             # exposed as duplicates because their readability scores are identical.
             lods.append({"Reading_Level": i, "Origin": j, "Web_Link": k})
-        cnt+=1
+        cnt += 1
 
     df_author = pd.DataFrame(lods)
     df_author.drop_duplicates(subset="Web_Link", inplace=True)

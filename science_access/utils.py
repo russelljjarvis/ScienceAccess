@@ -136,6 +136,7 @@ def argument_density(sentence0, sentence1):
     return False
     """
 
+
 """
 def convert_pdf_to_txt(content):
     pdf = io.BytesIO(content.content)

@@ -51,7 +51,6 @@ def try_grobid(link, response):
     os.subprocess(str("cat ") + str(path) + str("_grobid"))
 
 
-
 # try:
 #    assert os.path.isfile('../BenchmarkCorpus/benchmarks.p')
 #    with open('../BenchmarkCorpus/benchmarks.p','rb') as f:

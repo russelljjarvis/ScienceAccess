@@ -33,7 +33,9 @@ else:
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
+
 global driver
+
 
 def get_driver():
 
@@ -94,6 +96,7 @@ def get_driver():
                     return driver
     return driver
 
+
 driver = get_driver()
 
 
@@ -114,6 +117,7 @@ class tqdm:
             self.i += 1
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
+
 
 def author_to_affiliations(NAME):
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
@@ -138,11 +142,13 @@ def author_to_affiliations(NAME):
             except:
                 pass
     return affilations
+
+
 def author_to_urls(NAME):
-    '''
+    """
     splash_url is a URL where Dissemin thinks that the paper is described, without being necessarily available. This can be a publisher webpage (with the article available behind a paywall), a page about the paper without a copy of the full text (e.g., a HAL page like https://hal.archives-ouvertes.fr/hal-01664049), or a page from which the paper was discovered (e.g., the profile of a user on ORCID).
     pdf_url is a URL where Dissemin thinks the full text can be accessed for free. This is rarely a direct link to an actual PDF file, i.e., it is often a link to a landing page (e.g., https://arxiv.org/abs/1708.00363). It is set to null if we could not find a free source for this paper.
-    '''
+    """
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
     author_papers = response.json()
     visit_urls = []
@@ -156,10 +162,10 @@ def author_to_urls(NAME):
         records = p["records"][0]
         if "pdf_url" in records.keys():
             visit_urls.append(records["pdf_url"])
-        #if "pdf_url" in p.keys():
+        # if "pdf_url" in p.keys():
         #    visit_urls.append(p["pdf_url"])
 
-        #records = p["records"][0]
+        # records = p["records"][0]
         if "splash_url" in records.keys():
             visit_urls.append(records["splash_url"])
         if "doi" in records.keys():
@@ -190,7 +196,6 @@ def author_to_urls(NAME):
 # 	urlDat = process(response.content)
 # 	print('elsevier worked')
 # else:
-
 
 
 def visit_link(NAME, tns, more_links):
@@ -312,7 +317,7 @@ def unpaywall_semantic_links(NAME, tns):
         response = requests.get(r)
         response = response.json()
         if "oa_locations" in response.keys():
-            res_list = response['oa_locations']
+            res_list = response["oa_locations"]
             for res in res_list:
                 if "url_for_pdf" in res.keys():
                     res_ = res["url_for_pdf"]
@@ -347,7 +352,9 @@ def convert_pdf_to_txt(content):
         return text
     else:
         return str("")
-def process(link, driver):#, REDIRECT=False):
+
+
+def process(link, driver):  # , REDIRECT=False):
     urlDat = {}
 
     if link is None:
@@ -362,7 +369,7 @@ def process(link, driver):#, REDIRECT=False):
                 driver.get(link)
                 crude_html = driver.page_source
             except:
-                #st.text("failed on link")
+                # st.text("failed on link")
                 st.text(link)
                 urlDat = {}
                 return urlDat
@@ -381,26 +388,24 @@ def process(link, driver):#, REDIRECT=False):
         buffered = str(text)
     else:
         try:
-            filename = Path('this_pdf.pdf')
-            response = requests.get(link,timeout=10)
+            filename = Path("this_pdf.pdf")
+            response = requests.get(link, timeout=10)
 
             filename.write_bytes(response.content)
 
-            reader = PyPDF2.PdfFileReader('this_pdf.pdf')
+            reader = PyPDF2.PdfFileReader("this_pdf.pdf")
             buffered = ""
-            for p in range(1,reader.numPages):
-                buffered+=str(reader.getPage(p).extractText())
+            for p in range(1, reader.numPages):
+                buffered += str(reader.getPage(p).extractText())
 
         except:
             buffered = ""
-        #url = 'http://www.hrecos.org//images/Data/forweb/HRTVBSH.Metadata.pdf'
+        # url = 'http://www.hrecos.org//images/Data/forweb/HRTVBSH.Metadata.pdf'
 
     urlDat["link"] = link
     urlDat = text_proc(buffered, urlDat)
 
     return urlDat
-
-
 
 
 def update_web_form(NAME, tns):
@@ -453,6 +458,7 @@ def call_from_front_end(NAME, OPENACCESS=True, tns=16):
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
 
+
 """
 def call_from_front_end_oa(NAME, OPENACCESS=False, tns=16):
     import os
@@ -479,6 +485,8 @@ def call_from_front_end_oa(NAME, OPENACCESS=False, tns=16):
 	And then you can get the new url at the beginning of your second function:
     driver.get(urlData)
 """
+
+
 def metricss(rg):
     if isinstance(rg, list):
         pub_count = len(rg)

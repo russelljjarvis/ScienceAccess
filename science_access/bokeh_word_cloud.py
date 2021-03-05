@@ -1,6 +1,6 @@
-
 from wordcloud import WordCloud, STOPWORDS
-#import plotly.graph_objs as go
+
+# import plotly.graph_objs as go
 from bokeh.io import show
 from bokeh.models import ColumnDataSource
 from bokeh_wordcloud2 import WordCloud2
@@ -13,18 +13,17 @@ from bokeh.io import show, curdoc
 from bokeh.layouts import widgetbox, column
 from bokeh.models import ColumnDataSource, Button, Div
 
+
 def bokeh_wordcloud(text):
-    wc = WordCloud(stopwords = set(STOPWORDS),
-                   max_words = 50,
-                   max_font_size = 10)
+    wc = WordCloud(stopwords=set(STOPWORDS), max_words=50, max_font_size=10)
     wc.generate(text)
 
-    word_list=[]
-    freq_list=[]
-    fontsize_list=[]
-    position_list=[]
-    orientation_list=[]
-    color_list=[]
+    word_list = []
+    freq_list = []
+    fontsize_list = []
+    position_list = []
+    orientation_list = []
+    color_list = []
 
     for (word, freq), fontsize, position, orientation, color in wc.layout_:
         word_list.append(word)
@@ -33,7 +32,7 @@ def bokeh_wordcloud(text):
         position_list.append(position)
         orientation_list.append(orientation)
         color_list.append(color)
-    '''
+    """
     # get the positions
     x=[]
     y=[]
@@ -47,11 +46,13 @@ def bokeh_wordcloud(text):
         new_freq_list.append(i*100)
     new_freq_list
     names,weights = zip(*data)
-    '''
-    test1 = ColumnDataSource({'names':word_list,'weights':freq_list})
+    """
+    test1 = ColumnDataSource({"names": word_list, "weights": freq_list})
     # we will specify just "blue" for the color
-    wordcloud = WordCloud2(source=test1,wordCol="names",sizeCol="weights")#,colors="blue")
-    '''
+    wordcloud = WordCloud2(
+        source=test1, wordCol="names", sizeCol="weights"
+    )  # ,colors="blue")
+    """
     def clicked_word(evt):
         data=test1.data
         if(7 < evt.weight < 20 ):
@@ -70,11 +71,11 @@ def bokeh_wordcloud(text):
     # show(sdp)
     wordcloud.on_click(clicked_word)
     curdoc().add_root(column(wordcloud))
-    '''
+    """
     st.bokeh_chart(wordcloud)
     return wordcloud
 
-    '''
+    """
     trace = go.Scatter(x=x,
                        y=y,
                        textfont = dict(size=fontsize_list,
@@ -94,4 +95,4 @@ def bokeh_wordcloud(text):
     fig = go.Figure(data=[trace], layout=layout)
     fig["layout"]["width"] = 825
     fig["layout"]["height"] = 825
-    '''
+    """

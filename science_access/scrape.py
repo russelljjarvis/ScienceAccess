@@ -58,7 +58,6 @@ else:
     HEROKU = True
 
 
-
 rsrcmgr = PDFResourceManager()
 retstr = StringIO()
 laparams = LAParams()

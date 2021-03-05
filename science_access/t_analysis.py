@@ -43,7 +43,8 @@ from textstat.textstat import textstat
 
 from science_access.utils import check_passive
 from science_access.abstract_cleanup import cleanup_pretagger_all
-from science_access.readabilityFunctions import countWordsSentSyl,NDC,FRE
+from science_access.readabilityFunctions import countWordsSentSyl, NDC, FRE
+
 tagger = PerceptronTagger(load=False)
 not_want_list = [
     "article",
@@ -96,9 +97,8 @@ def create_giant_strings(ar, not_want_list):
     return sci_corpus
 
 
-
-
 ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
+
 
 def complexityAlongtheText(text, chunk_length=128):
     words = text.split()
@@ -111,18 +111,23 @@ def complexityAlongtheText(text, chunk_length=128):
         cur += chunk_length
         stds.append(std)
     return np.mean(stds), textstat.text_standard(text, float_output=True)
+
+
 def get_ref(references):
-    for nubmer, line in enumerate(references, 1): # skip last element with page number
+    for nubmer, line in enumerate(references, 1):  # skip last element with page number
         line = line.strip()
         if line:  # skip empty line
-            authors_and_year = re.match('((.*)\. (\d{4})\.)', line)
+            authors_and_year = re.match("((.*)\. (\d{4})\.)", line)
             if type(authors_and_year) is not type(None):
                 text, authors, year = authors_and_year.groups()
-                names = re.split(',[ ]*and |,[ ]*| and ', authors)
-                names = [(name, name.split(' ')[-1]) for name in names]
+                names = re.split(",[ ]*and |,[ ]*| and ", authors)
+                names = [(name, name.split(" ")[-1]) for name in names]
+
 
 def text_proc(corpus, urlDat={}, WORD_LIM=60):
-    if type(corpus) is type(str()) and corpus not in str('Redirecting'):  # and not str("privacy policy") in corpus:
+    if type(corpus) is type(str()) and corpus not in str(
+        "Redirecting"
+    ):  # and not str("privacy policy") in corpus:
         corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
         corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
@@ -133,40 +138,44 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
             r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
         )
         corpus = "".join([i for i in corpus if not i.isdigit()])
-        corpus = re.sub(r'^https?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
-        corpus = re.sub(r'^http?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
+        corpus = re.sub(r"^https?:\/\/.*[\r\n]*", "", corpus, flags=re.MULTILINE)
+        corpus = re.sub(r"^http?:\/\/.*[\r\n]*", "", corpus, flags=re.MULTILINE)
         corpus = corpus.replace("\n", " ")  # remove characters that nltk can't read
-        corpus = corpus.replace(u'\xa0', u' ')
-        corpus = corpus.replace(u'\\', u' ')
-        #string = string.replace(u'\xa0', u' ')
+        corpus = corpus.replace(u"\xa0", u" ")
+        corpus = corpus.replace(u"\\", u" ")
+        # string = string.replace(u'\xa0', u' ')
 
-
-        posa = corpus.lower().find('abstract')
+        posa = corpus.lower().find("abstract")
         corpus = corpus[posa:]
-        posr = corpus.lower().find('references')
+        posr = corpus.lower().find("references")
         corpus = corpus[:posr]
-        posb = corpus.lower().find('bibliography')
+        posb = corpus.lower().find("bibliography")
         corpus = corpus[:posb]
-
         corpus = cleanup_pretagger_all(corpus)
-
-        urlDat['big_words'] = [ word for word in corpus if len(word)>33 ]
-        ignoreSingleSentences=1
-        if len(corpus)>=WORD_LIM:
-            wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(corpus,ignoreSingleSentences=ignoreSingleSentences)
-            remainingText = ' '.join(remainingText)
+        urlDat["big_words"] = [word for word in corpus if len(word) > 33]
+        ignoreSingleSentences = 1
+        if len(corpus) >= WORD_LIM:
+            wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
+                corpus, ignoreSingleSentences=ignoreSingleSentences
+            )
+            remainingText = " ".join(remainingText)
             remainingText = remainingText.lower()
-            if wc>0 and sc>0:
+            if wc > 0 and sc > 0:
                 urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
-                fre=FRE(wc,sc,sylCount)
-                ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
-                urlDat["fre"] = fre#textstat.text_standard(corpus, float_output=True)
-                urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
+                if urlDat["standard"] > 50:
+                    return None
+                if urlDat["standard"] == 0:
+                    return None
+
+                fre = FRE(wc, sc, sylCount)
+                ndc = NDC(
+                    remainingText, wc, sc
+                )  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
+                urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
+                urlDat["ndc"] = ndc  # textstat.text_standard(corpus, float_output=True)
                 # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
                 tokens = word_tokenize(corpus)
-
                 tokens = [w.lower() for w in tokens if w.isalpha()]
-
                 tokens = [w.lower() for w in tokens]  # make everything lower case
                 urlDat["wcount"] = textstat.lexicon_count(str(tokens))
                 word_lim = bool(urlDat["wcount"] > WORD_LIM)
