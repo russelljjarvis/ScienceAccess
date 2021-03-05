@@ -128,24 +128,24 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
     if type(corpus) is type(str()) and corpus not in str(
         "Redirecting"
     ):  # and not str("privacy policy") in corpus:
-        #corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
+        # corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
 
-        #corpus = re.sub(
+        # corpus = re.sub(
         #    r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
-        #)
-        #corpus = re.sub(
+        # )
+        # corpus = re.sub(
         #    r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
-        #)
+        # )
         corpus = corpus.lower()
         corpus = "".join([i for i in corpus if not i.isdigit()])
         corpus = re.sub(r"^https?:\/\/.*[\r\n]*", "", corpus, flags=re.MULTILINE)
         corpus = re.sub(r"^http?:\/\/.*[\r\n]*", "", corpus, flags=re.MULTILINE)
-        #corpus = corpus.replace("\n", " ")  # remove characters that nltk can't read
+        # corpus = corpus.replace("\n", " ")  # remove characters that nltk can't read
         corpus = corpus.replace(u"\xa0", u" ")
         corpus = corpus.replace(u"\\", u" ")
         exclusive = [i for i in corpus if i not in not_want_list]
-        print(exclusive,'exclusive')
+        print(exclusive, "exclusive")
         # string = string.replace(u'\xa0', u' ')
 
         posa = corpus.lower().find("abstract")
@@ -175,17 +175,27 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
                     remainingText, wc, sc
                 )  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
                 urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
-                urlDat["ndc"] = ndc[0]  # textstat.text_standard(corpus, float_output=True)
+                urlDat["ndc"] = ndc[
+                    0
+                ]  # textstat.text_standard(corpus, float_output=True)
                 # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
             tokens = word_tokenize(corpus)
             wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
                 tokens, ignoreSingleSentences=ignoreSingleSentences
             )
-            print(wc_t,wc,sc_t,sc)
+            print(wc_t, wc, sc_t, sc)
 
             urlDat["standard_len"] = complexityAlongtheText(corpus, chunk_length=128)
-            urlDat["fudge"] = np.mean([urlDat["fre"],urlDat["ndc"],urlDat["standard_len"]])
-
+            try:
+                urlDat["concensus"] = np.mean(
+                    [
+                        np.mean(urlDat["fre"]),
+                        np.mean(urlDat["ndc"]),
+                        np.mean(urlDat["standard_len"]),
+                    ]
+                )
+            except:
+                pass
             tokens = [w.lower() for w in tokens if w.isalpha()]
             tokens = [w.lower() for w in tokens]  # make everything lower case
             urlDat["wcount"] = textstat.lexicon_count(str(tokens))

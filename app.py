@@ -65,8 +65,8 @@ rd_df.rename(
     columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
 )
 rd_df = rd_df[["Reading_Level", "Origin"]]
-rd_df["Origin"] = ['ReadabilityScienceDeclining' for i in rd_df["Origin"]]
-#rd_df["Reading_Level"] = [i for i in rd_df["Reading_Level"] if i>10]
+rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
+# rd_df["Reading_Level"] = [i for i in rd_df["Reading_Level"] if i>10]
 
 rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
@@ -79,7 +79,7 @@ biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
 
-def check_cache(author_name:str):#->Union[]
+def check_cache(author_name: str):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
         if not flag:
@@ -104,8 +104,14 @@ def check_cache(author_name:str):#->Union[]
 
             scraped_labels = temp["scraped_labels"]
 
-        experimental = [np.mean([a["standard_len"],a["ndc"]]) for a in ar if 'standard_len' in a.keys()]
-    return ar,author_score,scraped_labels
+        experimental = [
+            np.mean([a["standard_len"], a["ndc"]])
+            for a in ar
+            if "standard_len" in a.keys()
+        ]
+    return ar, author_score, scraped_labels
+
+
 def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
@@ -114,7 +120,7 @@ def main():
     )
 
     if author_name:
-        ar,author_score,scraped_labels = check_cache(author_name)
+        ar, author_score, scraped_labels = check_cache(author_name)
     if "ar" in locals():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
@@ -123,16 +129,15 @@ def main():
         """
 		### Links to articles obtained from the queried author.
 		"""
-        push_frame_to_screen(df_author,scraped_labels)
+        push_frame_to_screen(df_author, scraped_labels)
 
+        # temp = "{0} Summary Readability versus large sample of science".format(author_name)
+        # labels = [temp, "ART Corpus readability"]
+        # values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        # fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        # st.write(fig)
 
-        #temp = "{0} Summary Readability versus large sample of science".format(author_name)
-        #labels = [temp, "ART Corpus readability"]
-        #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        #st.write(fig)
-
-        df_concat_art = pd.concat([art_df,rd_df, df_author])
+        df_concat_art = pd.concat([art_df, rd_df, df_author])
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
@@ -172,10 +177,10 @@ def main():
 			"""
             sci_corpus = create_giant_strings(ar, not_want_list)
             big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        #import pdb
-        #pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
 
-        #except:
+        # except:
         #    pass
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():
@@ -207,7 +212,6 @@ def main():
 
         st.markdown("-----")
         st.markdown("\n\n")
-
 
         st.markdown("-----")
         st.markdown("\n\n")
