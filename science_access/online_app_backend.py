@@ -21,7 +21,6 @@ from tqdm.auto import tqdm
 import streamlit as st
 import dask
 import requests
-import crossref_commons.retrieval
 
 from .crawl import collect_pubs
 from .t_analysis import text_proc
@@ -129,6 +128,8 @@ def author_to_affiliations(NAME):
         if "doi" in records.keys():
             visit_urls.append(records["doi"])
             try:
+                import crossref_commons.retrieval
+
                 doi_to_affil = crossref_commons.retrieval.get_publication_as_json(
                     records["doi"]
                 )
