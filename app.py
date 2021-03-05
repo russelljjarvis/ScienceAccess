@@ -149,29 +149,21 @@ def main():
 				round(np.mean(standard_sci)), 3
 			)
 		)
+		try:
 
-		st.markdown(""" ### Word Frequency Word Cloud""")
-		"""
-		The word cloud is based on the most common words found in the mined text.
-		This word cloud is for humans to validate text mining work.
-		This is because the word cloud frequency often matches a writers
-		own knowledge of concepts in their work, therefore it can to help
-		instill trust in text-mining results.
-		"""
-		# flag = author_name in db
-		# if not flag:
-		#ar1 = ar
-		sci_corpus = create_giant_strings(ar, not_want_list)
+			st.markdown(""" ### Word Frequency Word Cloud""")
+			"""
+			The word cloud is based on the most common words found in the mined text.
+			This word cloud is for humans to validate text mining work.
+			This is because the word cloud frequency often matches a writers
+			own knowledge of concepts in their work, therefore it can to help
+			instill trust in text-mining results.
+			"""
+			sci_corpus = create_giant_strings(ar, not_want_list)
 
-		#fig = fast_art_cloud(sci_corpus)
-		#if len(sci_corpus) == 0:
-		#	sci_corpus = create_giant_strings(ar, not_want_list)
-		#if len(sci_corpus) != 0:
-			#print(len(sci_corpus))
-		#try:
-		#fig = bokeh_word_cloud.bokeh_wordcloud(sci_corpus)
-		#st.bokeh_chart(fig)
-		big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+			big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+		except:
+			pass
 		with shelve.open("fast_graphs_splash.p") as db:
 			if not author_name in db.keys():
 				db[author_name] = {
@@ -254,25 +246,27 @@ def main():
 		#inclusive = [i for i in autset if i in artset]
 
 		if len(sci_corpus) != 0:
-			#try:
+			try:
+
+				st.markdown("-----")
+				st.markdown(""" ### Word Length Word Cloud 	""")
+				st.markdown("""
+				based on the largest words found in the mined text.
+				These words are likely culprits that hindered readability.
+				""")
+				sci_corpus = create_giant_strings(ar, not_want_list)
+				big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+			except:
+				pass
+
+		try:
+			st.markdown("### Concepts that differentiate {0} from other science".format(author_name))
+			exclusive = create_giant_strings(ar, exclusive)
+
+			fig = fast_art_cloud(exclusive)
 			st.markdown("-----")
-			st.markdown(""" ### Word Length Word Cloud 	""")
-			st.markdown("""
-			based on the largest words found in the mined text.
-			These words are likely culprits that hindered readability.
-			""")
-			sci_corpus = create_giant_strings(ar, not_want_list)
-			big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-			#except:
-			#	pass
-
-
-		st.markdown("### Concepts that differentiate {0} from other science".format(author_name))
-		exclusive = create_giant_strings(ar, exclusive)
-
-		fig = fast_art_cloud(exclusive)
-		st.markdown("-----")
-
+		except:
+			pass
 		# sci_corpus = create_giant_strings(ar,not_want_list)
 		# bio_corpus = create_giant_strings(trainingDats,not_want_list)
 

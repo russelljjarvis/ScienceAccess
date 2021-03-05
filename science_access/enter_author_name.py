@@ -116,8 +116,6 @@ def art_cloud_wl(acorpus):
     fig = plt.figure()
 
     tokens = word_tokenize(acorpus)
-    import pdb
-    pdb.set_trace()
 
     try:
         if len(tokens):
