@@ -341,20 +341,14 @@ def convert_pdf_to_txt(content):
         for page in PDFPage.create_pages(document):
             interpreter.process_page(page)
             write_text += retstr.getvalue()
-            # write_text = write_text.join(retstr.getvalue())
         # Process all pages in the document
         text = str(write_text)
         return text
     else:
-        #st.text("defered")
         return str("")
 def process(link, driver):#, REDIRECT=False):
     urlDat = {}
 
-    #if REDIRECT:
-    #    wait = WebDriverWait(driver, 10)
-    #    wait.until(lambda driver: driver.current_url != link)
-    #    link = driver.current_url
     if link is None:
         return None
     if str("pdf") not in link:
@@ -384,41 +378,14 @@ def process(link, driver):#, REDIRECT=False):
         )  # break multi-headlines into a line each
         text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
         buffered = str(text)
-        #driver.close()
-        #driver.quit()
-        #driver = None
-        #del driver
     else:
-        '''
-        from doc2json.pdf2json.process_pdf import process_pdf_stream
-        filename = uploaded_file.filename
-        if filename.endswith('pdf'):
-            pdf_stream = uploaded_file.stream
-            pdf_content = pdf_stream.read()
-            # compute hash
-            pdf_sha = hashlib.sha1(pdf_content).hexdigest()
-            # get results
-            results = process_pdf_stream(filename, pdf_sha, pdf_content)
-            #return jsonify(results)
         try:
-            with open(link + str("_pdf_.p")) as f:
-                pickle.dump(f, link)
-        except:
-            pass
-        '''
-        #response = requests.get(link, stream=True)
-        #r = requests.get(link, stream=True)
-        #pdf_path_to_save = str("this_pdf_download_.pdf")
-
-
-        #import requests
-        try:
-            filename = Path('metadata.pdf')
+            filename = Path('this_pdf.pdf')
             response = requests.get(link,timeout=10)
 
             filename.write_bytes(response.content)
 
-            reader = PyPDF2.PdfFileReader('metadata.pdf')
+            reader = PyPDF2.PdfFileReader('this_pdf.pdf')
             buffered = ""
             for p in range(1,reader.numPages):
                 buffered+=str(reader.getPage(p).extractText())
@@ -427,28 +394,9 @@ def process(link, driver):#, REDIRECT=False):
             buffered = ""
         #url = 'http://www.hrecos.org//images/Data/forweb/HRTVBSH.Metadata.pdf'
 
-
-        #link_path_to_save = str("_link_pdf_.p")
-
-        # save the link to pickle.
-
-        #with open('this_pdf.p','wb') as f:
-        #    pickle.dump(link,f)
-
-        #try:
-        #    buffered = convert_pdf_to_txt(response)
-        #    print(buffered)
-        #except:
-        #    print("cannot yet do pdf")
-
-        #    buffered = ""
     urlDat["link"] = link
-    #urlDat["page_rank"] = "benchmark"
     urlDat = text_proc(buffered, urlDat)
-    if urlDat is not None:
-        print(urlDat.keys(), "failure mode?")
-    else:
-        print(link)
+
     return urlDat
 
 

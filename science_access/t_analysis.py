@@ -103,6 +103,7 @@ def create_giant_strings(ar, not_want_list):
             sci_corpus += str(" ") + s  # +str(' ')
     return sci_corpus
 
+"""
 
 def check_if_real_word(w):
     if w in english_words.words():
@@ -112,9 +113,8 @@ def check_if_real_word(w):
 
 
 def unigram_zipf(tokens):
-    """
-    Get the zipf slope histogram for a corpus
-    """
+
+    #Get the zipf slope histogram for a corpus
     model = collections.defaultdict(lambda: 0.01)
     tokens = [term for t in tokens for term in t]
     model = {}
@@ -122,9 +122,7 @@ def unigram_zipf(tokens):
     for word in tokens:
         count = model.get(word, 0)
         model[word] = count + 1
-    """
-    normalize observations relative to number of words in the model
-    """
+    #normalize observations relative to number of words in the model
     for word in model:
         model[word] = model[word] / float(sum(model.values()))
     return model
@@ -134,14 +132,13 @@ def unigram_zipf(tokens):
 
 
 def entropy(self, text):
-    """
-    https://github.com/nltk/nltk/blob/model/nltk/model/ngram.py
-    Calculate the approximate cross-entropy of the n-gram model for a
-    given evaluation text.
-    This is the average log probability of each word in the text.
-    :param text: words to use for evaluation
-    :type text: Iterable[str]
-    """
+
+    #https://github.com/nltk/nltk/blob/model/nltk/model/ngram.py
+    #Calculate the approximate cross-entropy of the n-gram model for a
+    #given evaluation text.
+    #This is the average log probability of each word in the text.
+    #:param text: words to use for evaluation
+    #:type text: Iterable[str]
 
     normed_text = (self._check_against_vocab(word) for word in text)
     H = 0.0  # entropy is conventionally denoted by "H"
@@ -154,13 +151,11 @@ def entropy(self, text):
 
 
 def perplexity(self, text):
-    """
-    Calculates the perplexity of the given text.
-    This is simply 2 ** cross-entropy for the text.
-    :param text: words to calculate perplexity of
-    :type text: Iterable[str]
-    """
-
+    #Calculates the perplexity of the given text.
+    #This is simply 2 ** cross-entropy for the text.
+    #:param text: words to calculate perplexity of
+    #:type text: Iterable[str]
+    
     return pow(2.0, self.entropy(text))
 
 
@@ -194,7 +189,6 @@ def bi_log_value(value):
 # nlp = spacy.load("en_core_web_sm", disable=["parser"])
 # nlp = English().from_disk("/model", disable=["parser"])
 # doc = nlp("I don't want parsed", disable=["parser"])
-"""
 Use spacey to sense english faster
 if doc._.language_scores['en'] <0.5:
     st.text('mangled_decoding')
@@ -205,6 +199,7 @@ if doc._.language_scores['en'] <0.5:
 """
 
 
+'''
 ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 NON_ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words()) - ENGLISH_STOPWORDS
 
@@ -212,7 +207,6 @@ STOPWORDS_DICT = {
     lang: set(nltk.corpus.stopwords.words(lang))
     for lang in nltk.corpus.stopwords.fileids()
 }
-
 
 def get_language(text):
     words = set(nltk.wordpunct_tokenize(text.lower()))
@@ -228,8 +222,8 @@ def is_english(text):
     return len(words & ENGLISH_STOPWORDS) > len(words & NON_ENGLISH_STOPWORDS)
 
 
-ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 
+ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 
 def complexityAlongtheText(text, chunk_length=128):
     words = text.split()
@@ -242,7 +236,7 @@ def complexityAlongtheText(text, chunk_length=128):
         cur += chunk_length
         stds.append(std)
     return np.mean(stds), textstat.text_standard(text, float_output=True)
-
+'''
 
 def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
@@ -253,112 +247,102 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(corpus,ignoreSingleSentences=ignoreSingleSentences)
         remainingText = ' '.join(remainingText)
         remainingText=remainingText.lower()
-        fre=FRE(wc,sc,sylCount)
-        ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
+        if wc>0 and sc>0:
 
-        #corpus = text
-        corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
-        corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
-        corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
-        corpus = re.sub(
-            r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
-        )
-        corpus = re.sub(
-            r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
-        )
+            fre=FRE(wc,sc,sylCount)
+            ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
 
-        corpus = "".join([i for i in corpus if not i.isdigit()])
-        corpus = re.sub(r'^https?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
-        corpus = re.sub(r'^http?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
-        if "Abstract:" in corpus:
-            corpus = corpus.split("Abstract:")[1]
+            corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
+            corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
+            corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
+            corpus = re.sub(
+                r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
+            )
+            corpus = re.sub(
+                r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
+            )
 
-        if "ABSTRACT:" in corpus:
-            corpus = corpus.split("ABSTRACT:")[1]
-        if "abstract:" in corpus:
-            # if len(corpus.split("abstract")[1])>8:
-            corpus = corpus.split("abstract:")[1]
-        # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
-        pos = corpus.lower().find('references')
-        # only referencers as text
-        references = corpus[pos+len('references '):]
-        # doc without references
-        # referencers as list
-        references = references.split('\n')
-        # remove empty lines and lines which have 2 chars (ie. page number)
-        references = [item.strip() for item in references if len(item.strip()) > 2]
-        corpus = doc = corpus[:pos]
-        data = []
+            corpus = "".join([i for i in corpus if not i.isdigit()])
+            corpus = re.sub(r'^https?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
+            corpus = re.sub(r'^http?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
+            if "Abstract:" in corpus:
+                corpus = corpus.split("Abstract:")[1]
 
-        for nubmer, line in enumerate(references, 1): # skip last element with page number
-            line = line.strip()
-            if line:  # skip empty line
-                authors_and_year = re.match('((.*)\. (\d{4})\.)', line)
-                if type(authors_and_year) is not type(None):
-                    text, authors, year = authors_and_year.groups()
-                    names = re.split(',[ ]*and |,[ ]*| and ', authors)
-                    names = [(name, name.split(' ')[-1]) for name in names]
+            if "ABSTRACT:" in corpus:
+                corpus = corpus.split("ABSTRACT:")[1]
+            if "abstract:" in corpus:
+                # if len(corpus.split("abstract")[1])>8:
+                corpus = corpus.split("abstract:")[1]
+            # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
+            pos = corpus.lower().find('references')
+            # only referencers as text
+            references = corpus[pos+len('references '):]
+            # doc without references
+            # referencers as list
+            references = references.split('\n')
+            # remove empty lines and lines which have 2 chars (ie. page number)
+            references = [item.strip() for item in references if len(item.strip()) > 2]
+            corpus = doc = corpus[:pos]
+            data = []
 
-        if "references" in corpus:
-            corpus = corpus.split("references")[0]
-        if "REFERENCES" in corpus:
-            corpus = corpus.split("REFERENCES")[0]
-        if "Bibliography" in corpus:
-            corpus = corpus.split("bibliography")[0]
-        if "affiliation" in corpus:
-            affil = corpus.split("affiliation")[1][0:200]
-            urlDat["affil"] = affil
-            print(urlDat["affil"])
-        if "Affiliation" in corpus:
-            affil = corpus.split("Affiliation")[1][0:200]
-            urlDat["affil"] = affil
-            print(urlDat["affil"])
-        if "AFFILIATION" in corpus:
-            affil = corpus.split("AFFILIATION")[1][0:200]
-            urlDat["affil"] = affil
-            print(urlDat["affil"])
-        tokens = word_tokenize(corpus)
-        print(tokens)
+            for nubmer, line in enumerate(references, 1): # skip last element with page number
+                line = line.strip()
+                if line:  # skip empty line
+                    authors_and_year = re.match('((.*)\. (\d{4})\.)', line)
+                    if type(authors_and_year) is not type(None):
+                        text, authors, year = authors_and_year.groups()
+                        names = re.split(',[ ]*and |,[ ]*| and ', authors)
+                        names = [(name, name.split(' ')[-1]) for name in names]
 
-        tokens = [w.lower() for w in tokens if w.isalpha()]
+            if "references" in corpus:
+                corpus = corpus.split("references")[0]
+            if "REFERENCES" in corpus:
+                corpus = corpus.split("REFERENCES")[0]
+            if "Bibliography" in corpus:
+                corpus = corpus.split("bibliography")[0]
+            if "affiliation" in corpus:
+                affil = corpus.split("affiliation")[1][0:200]
+                urlDat["affil"] = affil
+                print(urlDat["affil"])
+            if "Affiliation" in corpus:
+                affil = corpus.split("Affiliation")[1][0:200]
+                urlDat["affil"] = affil
+                print(urlDat["affil"])
+            if "AFFILIATION" in corpus:
+                affil = corpus.split("AFFILIATION")[1][0:200]
+                urlDat["affil"] = affil
+                print(urlDat["affil"])
+            tokens = word_tokenize(corpus)
 
-        tokens = [w.lower() for w in tokens]  # make everything lower case
-        tokens = list(set(tokens) - set(not_want_list))
-        urlDat["wcount"] = textstat.lexicon_count(str(tokens))
-        word_lim = bool(urlDat["wcount"] > WORD_LIM)
-        urlDat["tokens"] = tokens
+            tokens = [w.lower() for w in tokens if w.isalpha()]
 
-        if len(tokens) and word_lim:
-            lexicon = textstat.lexicon_count(corpus, True)
-            urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
-            urlDat["unique_words"] = len(set(tokens))
+            tokens = [w.lower() for w in tokens]  # make everything lower case
+            tokens = list(set(tokens) - set(not_want_list))
+            urlDat["wcount"] = textstat.lexicon_count(str(tokens))
+            word_lim = bool(urlDat["wcount"] > WORD_LIM)
+            urlDat["tokens"] = tokens
 
-            # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
-            # big deltas mean redudancy/sparse information/information/density
+            if len(tokens) and word_lim:
+                lexicon = textstat.lexicon_count(corpus, True)
+                urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
+                urlDat["unique_words"] = len(set(tokens))
 
-            sentences = sent_tokenize(corpus)
-            testimonial = TextBlob(corpus)
-            urlDat["sp"] = testimonial.sentiment.polarity
-            urlDat["ss"] = testimonial.sentiment.subjectivity
-            urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
-            urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
-            urlDat["gf"] = textstat.gunning_fog(corpus)
+                # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
+                # big deltas mean redudancy/sparse information/information/density
 
-            # explanation of metrics
-            urlDat["standard"] = fre#textstat.text_standard(corpus, float_output=True)
-            urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
+                sentences = sent_tokenize(corpus)
+                testimonial = TextBlob(corpus)
+                urlDat["sp"] = testimonial.sentiment.polarity
+                urlDat["ss"] = testimonial.sentiment.subjectivity
+                urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
+                urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
+                urlDat["gf"] = textstat.gunning_fog(corpus)
 
-            '''
-            if urlDat["standard"] > 40 or urlDat["standard"] == 0:
-                left, right = complexityAlongtheText(corpus)
-                if right <= left and right != 0:
-                    urlDat["standard"] = right
-                if right == 0 or left <= right:
-                    urlDat["standard"] = left
-            if urlDat["gf"] <= urlDat["standard"] and urlDat["gf"] != 0:
-                urlDat["standard"] = urlDat["gf"]
-            urlDat["reading_time"] = textstat.reading_time(corpus)  # [0], 3)
-            '''
+                # explanation of metrics
+                urlDat["standard"] = fre#textstat.text_standard(corpus, float_output=True)
+                urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
+
+
     return urlDat
 
 
