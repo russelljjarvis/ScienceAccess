@@ -128,9 +128,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
     if type(corpus) is type(str()) and corpus not in str(
         "Redirecting"
     ):  # and not str("privacy policy") in corpus:
-        corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
+        #corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
-        corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
+
         corpus = re.sub(
             r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
         )

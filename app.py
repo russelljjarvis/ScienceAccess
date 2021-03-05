@@ -71,7 +71,28 @@ bio_chem = art_df["Reading_Level"]
 
 art_df = art_df.loc[sample(list(art_df.index), 1999)]
 
+def check_cache(author_name):
+    with shelve.open("fast_graphs_splash.p") as db:
+        flag = author_name in db
+        if True:
+            #if not flag:
+            ar = call_from_front_end(author_name)
+            scraped_labels, standard_sci = frame_to_lists(ar)
+            db[author_name] = {
+                "ar": ar,
+                "scraped_labels": scraped_labels,
+                "standard_sci": standard_sci,
+            }
+        else:
+            """
+            We have evaluated this query recently, using cached results...
+            """
 
+            temp = db[author_name]
+            ar = temp["ar"]
+            standard_sci = temp["standard_sci"]
+            scraped_labels = temp["scraped_labels"]
+    return ar,standard_sci,scraped_labels
 def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
@@ -80,25 +101,7 @@ def main():
     )
 
     if author_name:
-        with shelve.open("fast_graphs_splash.p") as db:
-            flag = author_name in db
-            if not flag:
-                ar = call_from_front_end(author_name)
-                scraped_labels, standard_sci = frame_to_lists(ar)
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "standard_sci": standard_sci,
-                }
-            else:
-                """
-                We have evaluated this query recently, using cached results...
-                """
-
-                temp = db[author_name]
-                ar = temp["ar"]
-                standard_sci = temp["standard_sci"]
-                scraped_labels = temp["scraped_labels"]
+        ar,standard_sci,scraped_labels = check_cache(author_name)
     if "ar" in locals():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, standard_sci, art_df
@@ -174,10 +177,7 @@ def main():
         """
 		### Links to articles obtained from the mined.
 		"""
-        # zip(scraped_labels, standard_sci)
-
         push_frame_to_screen(scraped_labels, df_author)
-        # Create a list of possible values and multiselect menu with them in it.
 
         st.markdown("-----")
         st.markdown("\n\n")
