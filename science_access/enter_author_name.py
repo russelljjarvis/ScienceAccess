@@ -338,12 +338,9 @@ def grand_distribution_plot(ar, scraped_labels, standard_sci, df0, author_name="
 
 from typing import List,Any
 import pandas as pd
-import streamlit as stList
+#import streamlit as st
+#List
 def push_frame_to_screen(contents:Any, readability_vector:List)->pd.DataFrame():
-    #st.text(labels)
-    #st.text(readability_vector)
-    #import pdb
-    #pdb.set_trace()
     if type(contents) is type(list()):
         df_links = pd.DataFrame()
         df_links["Web_Link"] = pd.Series(contents)
