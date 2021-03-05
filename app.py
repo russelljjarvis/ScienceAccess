@@ -32,7 +32,7 @@ import plotly.graph_objects as go
 from science_access.t_analysis import not_want_list  # ,
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
-from science_access	import plotly_word_cloud
+from science_access	import bokeh_word_cloud
 
 
 from science_access.enter_author_name import (
