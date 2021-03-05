@@ -16,13 +16,16 @@ import re
 import time
 import pandas as pd
 import numpy as np
-import treetaggerwrapper
+#import treetaggerwrapper
 import functions.abstract_cleanup as qc
 import os
 
 
 d = cmudict.dict()
-tagger = treetaggerwrapper.TreeTagger(TAGLANG='en')
+from nltk.tag.perceptron import PerceptronTagger
+tagger = PerceptronTagger(load=False)
+
+#tagger = treetaggerwrapper.TreeTagger(TAGLANG='en')
 
 #Load easy word list
 easywordpath=os.path.join(os.path.dirname(__file__), 'NDCeasywords.txt')

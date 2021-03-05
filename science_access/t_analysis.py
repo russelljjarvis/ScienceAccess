@@ -6,7 +6,6 @@
 # Patrick McGurrin
 # patrick.mcgurrin@gmail.com
 
-
 import base64
 import copy
 import math
@@ -47,7 +46,9 @@ from textblob import TextBlob
 from textstat.textstat import textstat
 
 from science_access.utils import check_passive
-
+from science_access.abstract_cleanup import cleanup_pretagger_all
+from science_access.readabilityFunctions import countWordsSentSyl,NDC,FRE
+#science_access/readabilityFunctions.py
 tagger = PerceptronTagger(load=False)
 # import matplotlib.pyplot as plt
 
@@ -246,6 +247,16 @@ def complexityAlongtheText(text, chunk_length=128):
 def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
     if type(corpus) is type(str()):  # and not str("privacy policy") in corpus:
+
+        corpus = cleanup_pretagger_all(corpus)
+        ignoreSingleSentences=1
+        wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(corpus,ignoreSingleSentences=ignoreSingleSentences)
+        remainingText = ' '.join(remainingText)
+        remainingText=remainingText.lower()
+        fre=FRE(wc,sc,sylCount)
+        ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
+
+        #corpus = text
         corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
         corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
@@ -259,7 +270,6 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         corpus = "".join([i for i in corpus if not i.isdigit()])
         corpus = re.sub(r'^https?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
         corpus = re.sub(r'^http?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
-
         if "Abstract:" in corpus:
             corpus = corpus.split("Abstract:")[1]
 
@@ -318,7 +328,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         word_lim = bool(urlDat["wcount"] > WORD_LIM)
         urlDat["tokens"] = tokens
 
-        if len(tokens) and word_lim:  #  and server_error:
+        if len(tokens) and word_lim:
             lexicon = textstat.lexicon_count(corpus, True)
             urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
             urlDat["unique_words"] = len(set(tokens))
@@ -335,7 +345,10 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             urlDat["gf"] = textstat.gunning_fog(corpus)
 
             # explanation of metrics
-            urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
+            urlDat["standard"] = fre#textstat.text_standard(corpus, float_output=True)
+            urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
+
+            '''
             if urlDat["standard"] > 40 or urlDat["standard"] == 0:
                 left, right = complexityAlongtheText(corpus)
                 if right <= left and right != 0:
@@ -345,7 +358,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             if urlDat["gf"] <= urlDat["standard"] and urlDat["gf"] != 0:
                 urlDat["standard"] = urlDat["gf"]
             urlDat["reading_time"] = textstat.reading_time(corpus)  # [0], 3)
-
+            '''
     return urlDat
 
 
