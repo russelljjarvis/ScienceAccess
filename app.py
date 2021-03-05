@@ -66,15 +66,17 @@ rd_df.rename(
 )
 rd_df = rd_df[["Reading_Level", "Origin"]]
 rd_df["Origin"] = ['ReadabilityScienceDeclining' for i in rd_df["Origin"]]
-biochem_labels = rd_df["Origin"]
-bio_chem = rd_df["Reading_Level"]
+#rd_df["Reading_Level"] = [i for i in rd_df["Reading_Level"] if i>10]
+
+rd_labels = rd_df["Origin"]
+rd_level = rd_df["Reading_Level"]
 rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 
 with open("data/trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
-    art_df, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
+    art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
-bio_chem = art_df["Reading_Level"]
+bio_chem_level = art_df["Reading_Level"]
 
 
 def check_cache(author_name:str):#->Union[]
@@ -82,11 +84,11 @@ def check_cache(author_name:str):#->Union[]
         flag = author_name in db
         if not flag:
             ar = call_from_front_end(author_name)
-            scraped_labels, standard_sci = frame_to_lists(ar)
+            scraped_labels, author_score = frame_to_lists(ar)
             db[author_name] = {
                 "ar": ar,
                 "scraped_labels": scraped_labels,
-                "standard_sci": standard_sci,
+                "author_score": author_score,
             }
         else:
             """
@@ -95,12 +97,15 @@ def check_cache(author_name:str):#->Union[]
 
             temp = db[author_name]
             ar = temp["ar"]
-            standard_sci = temp["standard_sci"]
+            if "standard_sci" in temp.keys():
+                author_score = temp["standard_sci"]
+            if "author_score" in temp.keys():
+                author_score = temp["author_score"]
+
             scraped_labels = temp["scraped_labels"]
 
-        fudge = [np.mean([a["standard_len"],a["ndc"]]) for a in ar if 'standard_len' in a.keys()]
-        print(fudge,'fudge')
-    return ar,standard_sci,scraped_labels
+        experimental = [np.mean([a["standard_len"],a["ndc"]]) for a in ar if 'standard_len' in a.keys()]
+    return ar,author_score,scraped_labels
 def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
@@ -109,16 +114,23 @@ def main():
     )
 
     if author_name:
-        ar,standard_sci,scraped_labels = check_cache(author_name)
+        ar,author_score,scraped_labels = check_cache(author_name)
     if "ar" in locals():
         df_author, merged_df = data_frames_from_scrape(
-            ar, author_name, scraped_labels, standard_sci, art_df
+            ar, author_name, scraped_labels, author_score, art_df
         )
 
         """
 		### Links to articles obtained from the queried author.
 		"""
         push_frame_to_screen(df_author,scraped_labels)
+
+
+        #temp = "{0} Summary Readability versus large sample of science".format(author_name)
+        #labels = [temp, "ART Corpus readability"]
+        #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #st.write(fig)
 
         df_concat_art = pd.concat([art_df,rd_df, df_author])
         fig_art = px.box(
@@ -145,7 +157,7 @@ def main():
             """
 		### The average reading level was {0}.
 		""".format(
-                round(np.mean(standard_sci)), 3
+                round(np.mean(author_score)), 3
             )
         )
         if True:
@@ -170,12 +182,12 @@ def main():
                 db[author_name] = {
                     "ar": ar,
                     "scraped_labels": scraped_labels,
-                    "standard_sci": standard_sci,
+                    "author_score": author_score,
                     "sci_corpus": sci_corpus,
                 }
         st.markdown("\n")
 
-        if np.mean(standard_sci) < np.mean(bio_chem):
+        if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
 			### {0} was on average easier to read relative to Readability of Science Declining Over Time Corpus.
@@ -184,7 +196,7 @@ def main():
                 )
             )
 
-        if np.mean(standard_sci) >= np.mean(bio_chem):
+        if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
 			### {0} was on average more difficult to read relative to Readability of Science Declining Over Time Corpus.
@@ -203,7 +215,7 @@ def main():
         st.markdown(
             """
 		### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(standard_sci)), 3
+                round(np.mean(author_score)), 3
             )
         )
 
