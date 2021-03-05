@@ -118,8 +118,6 @@ def main():
         """
 		### Links to articles obtained from the queried author.
 		"""
-        import pdb
-        pdb.set_trace()
         push_frame_to_screen(df_author,scraped_labels)
 
         df_concat_art = pd.concat([art_df,rd_df, df_author])
