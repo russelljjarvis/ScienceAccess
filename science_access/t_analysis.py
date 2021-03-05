@@ -38,6 +38,7 @@ import pandas as pd
 import re
 import streamlit as st
 from .utils import black_string, clue_links, clue_words, comp_ratio, publication_check
+import re
 
 
 # english_check
@@ -251,16 +252,42 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         corpus = re.sub(
             r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
         )
+        corpus = re.sub(
+            r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
+        )
+
         corpus = "".join([i for i in corpus if not i.isdigit()])
+        corpus = re.sub(r'^https?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
+        corpus = re.sub(r'^http?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
 
-        if "Abstract" in corpus:
-            corpus = corpus.split("Abstract")[1]
+        if "Abstract:" in corpus:
+            corpus = corpus.split("Abstract:")[1]
 
-        if "ABSTRACT" in corpus:
-            corpus = corpus.split("ABSTRACT")[1]
+        if "ABSTRACT:" in corpus:
+            corpus = corpus.split("ABSTRACT:")[1]
         if "abstract:" in corpus:
             # if len(corpus.split("abstract")[1])>8:
             corpus = corpus.split("abstract:")[1]
+        # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
+        pos = corpus.lower().find('references')
+        # only referencers as text
+        references = corpus[pos+len('references '):]
+        # doc without references
+        # referencers as list
+        references = references.split('\n')
+        # remove empty lines and lines which have 2 chars (ie. page number)
+        references = [item.strip() for item in references if len(item.strip()) > 2]
+        corpus = doc = corpus[:pos]
+        data = []
+
+        for nubmer, line in enumerate(references, 1): # skip last element with page number
+            line = line.strip()
+            if line:  # skip empty line
+                authors_and_year = re.match('((.*)\. (\d{4})\.)', line)
+                if type(authors_and_year) is not type(None):
+                    text, authors, year = authors_and_year.groups()
+                    names = re.split(',[ ]*and |,[ ]*| and ', authors)
+                    names = [(name, name.split(' ')[-1]) for name in names]
 
         if "references" in corpus:
             corpus = corpus.split("references")[0]
@@ -280,8 +307,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             affil = corpus.split("AFFILIATION")[1][0:200]
             urlDat["affil"] = affil
             print(urlDat["affil"])
+        print(tokens)
 
-        """
+        '''
         if not "ABSTRACT" in corpus or "Abstract" in corpus:
             test = textstat.text_standard(corpus, float_output=True)
             if test > 90:
@@ -290,40 +318,14 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
                 urlDat["page full of links"] = True
                 return urlDat
-        """
+        '''
         tokens = word_tokenize(corpus)
-
-        # tokens = tokenizer(corpus, disable=["parser"])
-        # (len(tokens))
-
-        stop_words = stopwords.words("english")
-        # stop_words = (lex for lex in nlp.vocab if lex.is_stop)
-
-        tokens = [word for word in tokens if not word in stop_words]
         tokens = [w.lower() for w in tokens if w.isalpha()]
 
         tokens = [w.lower() for w in tokens]  # make everything lower case
-        """
-        if not is_english(corpus):
-            urlDat["mangled_decoding"] = True
-            print('premature end not english \n\n\n\n\n')
-
-            return urlDat
-        """
         tokens = list(set(tokens) - set(not_want_list))
-        # s.difference(t) s - t
-        # new set with elements in s but not in t
         urlDat["wcount"] = textstat.lexicon_count(str(tokens))
         word_lim = bool(urlDat["wcount"] > WORD_LIM)
-        """
-        for t in tokens:
-            if len(t) > 90:
-                urlDat["page full of links"] = True
-                print('premature end')
-                print('premature end long word length \n\n\n\n\n\n\n\n')
-
-                return urlDat
-        """
         urlDat["tokens"] = tokens
 
         if len(tokens) and word_lim:  #  and server_error:

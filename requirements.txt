@@ -23,3 +23,5 @@ tqdm
 crossref-commons
 pipenv
 JPype1
+bokeh=1.4.0
+bokeh_wordcloud2

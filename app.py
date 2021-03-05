@@ -32,6 +32,7 @@ import plotly.graph_objects as go
 from science_access.t_analysis import not_want_list  # ,
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
+from science_access	import plotly_word_cloud
 
 
 from science_access.enter_author_name import (
@@ -172,7 +173,8 @@ def main():
 		#if len(sci_corpus) != 0:
 			#print(len(sci_corpus))
 		#try:
-
+		fig = plotly_word_cloud.bokeh_wordcloud(sci_corpus)
+		st.bokeh_chart(fig)
 		big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 		with shelve.open("fast_graphs_splash.p") as db:
 			if not author_name in db.keys():
