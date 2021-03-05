@@ -58,24 +58,29 @@ from science_access.enter_author_name import (
     extra_options,
 )
 
-art_df = pd.read_csv("Figure4_SourceData1.csv")
+rd_df = pd.read_csv("Figure4_SourceData1.csv")
 # st.text(art_df.columns)
 
-art_df.rename(
+rd_df.rename(
     columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
 )
-art_df = art_df[["Reading_Level", "Origin"]]
-art_df["Origin"] = ['ReadabilityScienceDec' for i in art_df["Origin"]]
+rd_df = rd_df[["Reading_Level", "Origin"]]
+rd_df["Origin"] = ['ReadabilityScienceDec' for i in rd_df["Origin"]]
+biochem_labels = rd_df["Origin"]
+bio_chem = rd_df["Reading_Level"]
+rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+
+with open("data/trainingDats.p", "rb") as f:
+    trainingDats = pickle.load(f)
+    art_df, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
 bio_chem = art_df["Reading_Level"]
 
-art_df = art_df.loc[sample(list(art_df.index), 1999)]
 
-def check_cache(author_name):
+def check_cache(author_name:str):#->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
-        if True:
-            #if not flag:
+        if not flag:
             ar = call_from_front_end(author_name)
             scraped_labels, standard_sci = frame_to_lists(ar)
             db[author_name] = {
@@ -92,6 +97,9 @@ def check_cache(author_name):
             ar = temp["ar"]
             standard_sci = temp["standard_sci"]
             scraped_labels = temp["scraped_labels"]
+
+        fudge = [np.mean([a["standard_len"],a["ndc"]]) for a in ar if 'standard_len' in a.keys()]
+        print(fudge,'fudge')
     return ar,standard_sci,scraped_labels
 def main():
     st.title("Search Reading Complexity of an Author")
@@ -107,19 +115,27 @@ def main():
             ar, author_name, scraped_labels, standard_sci, art_df
         )
 
-        df_concat = pd.concat([art_df, df_author])
-        fig = px.box(
-            df_concat, x="Origin", y="Reading_Level", points="all", color="Origin"
-        )  # ,jitter=0.3, pointpos=-1.)
-        st.write(fig)
-        df0 = art_df
+
+        df_concat_art = pd.concat([art_df, df_author])
+        fig_art = px.box(
+            df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+        )
+        st.write(fig_art)
+
+        df_concat_rd = pd.concat([rd_df, df_author])
+        fig_rd = px.box(
+            df_concat_rd, x="Origin", y="Reading_Level", points="all", color="Origin"
+        )
+        st.write(fig_rd)
+
+        df0 = df_concat_art
         st.markdown(
             """
 		### There were a total number of {0} documents mined during this query.
 		""".format(
                 len(df_author)
             )
-        )  # - changed this to account for duplicates
+        ) 
 
         st.markdown(
             """
@@ -128,7 +144,7 @@ def main():
                 round(np.mean(standard_sci)), 3
             )
         )
-        try:
+        if True:
 
             st.markdown(""" ### Word Frequency Word Cloud""")
             """
@@ -139,10 +155,12 @@ def main():
 			instill trust in text-mining results.
 			"""
             sci_corpus = create_giant_strings(ar, not_want_list)
-
             big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        except:
-            pass
+        import pdb
+        pdb.set_trace()
+
+        #except:
+        #    pass
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():
                 db[author_name] = {
@@ -175,7 +193,7 @@ def main():
         st.markdown("\n\n")
 
         """
-		### Links to articles obtained from the mined.
+		### Links to articles obtained from the mined author.
 		"""
         push_frame_to_screen(scraped_labels, df_author)
 
