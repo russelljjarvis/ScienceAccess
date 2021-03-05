@@ -307,19 +307,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             affil = corpus.split("AFFILIATION")[1][0:200]
             urlDat["affil"] = affil
             print(urlDat["affil"])
+        tokens = word_tokenize(corpus)
         print(tokens)
 
-        '''
-        if not "ABSTRACT" in corpus or "Abstract" in corpus:
-            test = textstat.text_standard(corpus, float_output=True)
-            if test > 90:
-                print('premature end')
-                print('premature end too much complexity \n\n\n\n\n\n\n\n')
-
-                urlDat["page full of links"] = True
-                return urlDat
-        '''
-        tokens = word_tokenize(corpus)
         tokens = [w.lower() for w in tokens if w.isalpha()]
 
         tokens = [w.lower() for w in tokens]  # make everything lower case
