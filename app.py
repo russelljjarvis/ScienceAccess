@@ -115,6 +115,10 @@ def main():
             ar, author_name, scraped_labels, standard_sci, art_df
         )
 
+        """
+		### Links to articles obtained from the mined author.
+		"""
+        push_frame_to_screen(scraped_labels, df_author)
 
         df_concat_art = pd.concat([art_df, df_author])
         fig_art = px.box(
@@ -135,7 +139,7 @@ def main():
 		""".format(
                 len(df_author)
             )
-        ) 
+        )
 
         st.markdown(
             """
@@ -156,8 +160,8 @@ def main():
 			"""
             sci_corpus = create_giant_strings(ar, not_want_list)
             big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        import pdb
-        pdb.set_trace()
+        #import pdb
+        #pdb.set_trace()
 
         #except:
         #    pass
@@ -192,10 +196,6 @@ def main():
         st.markdown("-----")
         st.markdown("\n\n")
 
-        """
-		### Links to articles obtained from the mined author.
-		"""
-        push_frame_to_screen(scraped_labels, df_author)
 
         st.markdown("-----")
         st.markdown("\n\n")
