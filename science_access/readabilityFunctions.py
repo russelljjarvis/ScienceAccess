@@ -17,7 +17,7 @@ import time
 import pandas as pd
 import numpy as np
 #import treetaggerwrapper
-import abstract_cleanup as qc
+from science_access import abstract_cleanup as qc
 import os
 
 
