@@ -155,7 +155,7 @@ def perplexity(self, text):
     #This is simply 2 ** cross-entropy for the text.
     #:param text: words to calculate perplexity of
     #:type text: Iterable[str]
-    
+
     return pow(2.0, self.entropy(text))
 
 
@@ -237,6 +237,15 @@ def complexityAlongtheText(text, chunk_length=128):
         stds.append(std)
     return np.mean(stds), textstat.text_standard(text, float_output=True)
 '''
+def get_ref(references):
+    for nubmer, line in enumerate(references, 1): # skip last element with page number
+        line = line.strip()
+        if line:  # skip empty line
+            authors_and_year = re.match('((.*)\. (\d{4})\.)', line)
+            if type(authors_and_year) is not type(None):
+                text, authors, year = authors_and_year.groups()
+                names = re.split(',[ ]*and |,[ ]*| and ', authors)
+                names = [(name, name.split(' ')[-1]) for name in names]
 
 def text_proc(corpus, urlDat={}, WORD_LIM=50):
 
@@ -245,13 +254,16 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         corpus = cleanup_pretagger_all(corpus)
         ignoreSingleSentences=1
         wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(corpus,ignoreSingleSentences=ignoreSingleSentences)
+        corpus = list(set(corpus) - set(not_want_list))
         remainingText = ' '.join(remainingText)
         remainingText=remainingText.lower()
         if wc>0 and sc>0:
 
             fre=FRE(wc,sc,sylCount)
             ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
-
+            urlDat["standard"] = fre#textstat.text_standard(corpus, float_output=True)
+            urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
+            '''
             corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
             corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
             corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
@@ -274,6 +286,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
                 # if len(corpus.split("abstract")[1])>8:
                 corpus = corpus.split("abstract:")[1]
             # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
+            '''
             pos = corpus.lower().find('references')
             # only referencers as text
             references = corpus[pos+len('references '):]
@@ -283,21 +296,13 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
             # remove empty lines and lines which have 2 chars (ie. page number)
             references = [item.strip() for item in references if len(item.strip()) > 2]
             corpus = doc = corpus[:pos]
-            data = []
-
-            for nubmer, line in enumerate(references, 1): # skip last element with page number
-                line = line.strip()
-                if line:  # skip empty line
-                    authors_and_year = re.match('((.*)\. (\d{4})\.)', line)
-                    if type(authors_and_year) is not type(None):
-                        text, authors, year = authors_and_year.groups()
-                        names = re.split(',[ ]*and |,[ ]*| and ', authors)
-                        names = [(name, name.split(' ')[-1]) for name in names]
-
+            '''
             if "references" in corpus:
                 corpus = corpus.split("references")[0]
             if "REFERENCES" in corpus:
                 corpus = corpus.split("REFERENCES")[0]
+
+
             if "Bibliography" in corpus:
                 corpus = corpus.split("bibliography")[0]
             if "affiliation" in corpus:
@@ -312,6 +317,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
                 affil = corpus.split("AFFILIATION")[1][0:200]
                 urlDat["affil"] = affil
                 print(urlDat["affil"])
+            '''
             tokens = word_tokenize(corpus)
 
             tokens = [w.lower() for w in tokens if w.isalpha()]
@@ -336,11 +342,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
                 urlDat["ss"] = testimonial.sentiment.subjectivity
                 urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
                 urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
-                urlDat["gf"] = textstat.gunning_fog(corpus)
+                #urlDat["gf"] = textstat.gunning_fog(corpus)
 
                 # explanation of metrics
-                urlDat["standard"] = fre#textstat.text_standard(corpus, float_output=True)
-                urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
 
 
     return urlDat

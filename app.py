@@ -173,7 +173,7 @@ def main():
 		#if len(sci_corpus) != 0:
 			#print(len(sci_corpus))
 		#try:
-		fig = plotly_word_cloud.bokeh_wordcloud(sci_corpus)
+		fig = bokeh_word_cloud.bokeh_wordcloud(sci_corpus)
 		st.bokeh_chart(fig)
 		big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 		with shelve.open("fast_graphs_splash.p") as db:

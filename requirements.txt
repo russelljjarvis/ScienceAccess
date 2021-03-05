@@ -23,4 +23,3 @@ tqdm
 pipenv
 JPype1
 bokeh
-bokeh_wordcloud2
