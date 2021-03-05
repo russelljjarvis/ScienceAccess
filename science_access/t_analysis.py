@@ -121,11 +121,8 @@ def get_ref(references):
                 names = re.split(',[ ]*and |,[ ]*| and ', authors)
                 names = [(name, name.split(' ')[-1]) for name in names]
 
-def text_proc(corpus, urlDat={}, WORD_LIM=50):
-
-    if type(corpus) is type(str()):  # and not str("privacy policy") in corpus:
-
-        corpus = cleanup_pretagger_all(corpus)
+def text_proc(corpus, urlDat={}, WORD_LIM=60):
+    if type(corpus) is type(str()) and corpus not in str('Redirecting'):  # and not str("privacy policy") in corpus:
         corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
         corpus = corpus.replace(".", " ")  # remove characters that nltk can't read
@@ -135,79 +132,61 @@ def text_proc(corpus, urlDat={}, WORD_LIM=50):
         corpus = re.sub(
             r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
         )
-
         corpus = "".join([i for i in corpus if not i.isdigit()])
         corpus = re.sub(r'^https?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
         corpus = re.sub(r'^http?:\/\/.*[\r\n]*', '', corpus, flags=re.MULTILINE)
-        if "Abstract:" in corpus:
-            corpus = corpus.split("Abstract:")[1]
+        corpus = corpus.replace("\n", " ")  # remove characters that nltk can't read
+        corpus = corpus.replace(u'\xa0', u' ')
+        corpus = corpus.replace(u'\\', u' ')
+        #string = string.replace(u'\xa0', u' ')
 
-        if "ABSTRACT:" in corpus:
-            corpus = corpus.split("ABSTRACT:")[1]
-        if "abstract:" in corpus:
-            corpus = corpus.split("abstract:")[1]
-        pos = corpus.lower().find('references')
-        corpus = corpus[:pos]
+
+        posa = corpus.lower().find('abstract')
+        corpus = corpus[posa:]
+        posr = corpus.lower().find('references')
+        corpus = corpus[:posr]
+        posb = corpus.lower().find('bibliography')
+        corpus = corpus[:posb]
+
+        corpus = cleanup_pretagger_all(corpus)
+
         urlDat['big_words'] = [ word for word in corpus if len(word)>33 ]
-        # exclude words bigger than 37 as they are probably non linguistic artifacts.
-        corpus = [ word for word in corpus if len(word)<33 ]
         ignoreSingleSentences=1
-        wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(corpus,ignoreSingleSentences=ignoreSingleSentences)
-        corpus = list(set(corpus) - set(not_want_list))
-        remainingText = ' '.join(remainingText)
-        remainingText = remainingText.lower()
-        if wc>0 and sc>0:
+        if len(corpus)>=WORD_LIM:
+            wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(corpus,ignoreSingleSentences=ignoreSingleSentences)
+            remainingText = ' '.join(remainingText)
+            remainingText = remainingText.lower()
+            if wc>0 and sc>0:
+                urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
+                fre=FRE(wc,sc,sylCount)
+                ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
+                urlDat["fre"] = fre#textstat.text_standard(corpus, float_output=True)
+                urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
+                # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
+                tokens = word_tokenize(corpus)
 
-            fre=FRE(wc,sc,sylCount)
-            if fre>40:
-                import pdb
-                pdb.set_trace()
-            ndc=NDC(remainingText, wc, sc)   #calc NDC Index and Perctage Diff Words                                         #calc NDC index
-            urlDat["standard"] = fre#textstat.text_standard(corpus, float_output=True)
-            urlDat["ndc"] = ndc#textstat.text_standard(corpus, float_output=True)
-            # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
-            if "references" in corpus:
-                corpus = corpus.split("references")[0]
-            if "REFERENCES" in corpus:
-                corpus = corpus.split("REFERENCES")[0]
+                tokens = [w.lower() for w in tokens if w.isalpha()]
 
+                tokens = [w.lower() for w in tokens]  # make everything lower case
+                urlDat["wcount"] = textstat.lexicon_count(str(tokens))
+                word_lim = bool(urlDat["wcount"] > WORD_LIM)
+                urlDat["tokens"] = tokens
 
-            if "Bibliography" in corpus:
-                corpus = corpus.split("bibliography")[0]
-            if "affiliation" in corpus:
-                affil = corpus.split("affiliation")[1][0:200]
-                urlDat["affil"] = affil
-            if "Affiliation" in corpus:
-                affil = corpus.split("Affiliation")[1][0:200]
-                urlDat["affil"] = affil
-            if "AFFILIATION" in corpus:
-                affil = corpus.split("AFFILIATION")[1][0:200]
-                urlDat["affil"] = affil
-            tokens = word_tokenize(corpus)
+                if len(tokens) and word_lim:
+                    lexicon = textstat.lexicon_count(corpus, True)
+                    urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
+                    urlDat["unique_words"] = len(set(tokens))
 
-            tokens = [w.lower() for w in tokens if w.isalpha()]
+                    # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
+                    # big deltas mean redudancy/sparse information/information/density
 
-            tokens = [w.lower() for w in tokens]  # make everything lower case
-            tokens = list(set(tokens) - set(not_want_list))
-            urlDat["wcount"] = textstat.lexicon_count(str(tokens))
-            word_lim = bool(urlDat["wcount"] > WORD_LIM)
-            urlDat["tokens"] = tokens
-
-            if len(tokens) and word_lim:
-                lexicon = textstat.lexicon_count(corpus, True)
-                urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
-                urlDat["unique_words"] = len(set(tokens))
-
-                # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
-                # big deltas mean redudancy/sparse information/information/density
-
-                sentences = sent_tokenize(corpus)
-                testimonial = TextBlob(corpus)
-                urlDat["sp"] = testimonial.sentiment.polarity
-                urlDat["ss"] = testimonial.sentiment.subjectivity
-                urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
-                urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
-                urlDat["gf"] = textstat.gunning_fog(corpus)
+                    sentences = sent_tokenize(corpus)
+                    testimonial = TextBlob(corpus)
+                    urlDat["sp"] = testimonial.sentiment.polarity
+                    urlDat["ss"] = testimonial.sentiment.subjectivity
+                    urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
+                    urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
+                    urlDat["gf"] = textstat.gunning_fog(corpus)
 
     return urlDat
 

@@ -8,11 +8,7 @@ Ultimately, this tool will expand upon current readability metrics by computing 
 Author: [Russell Jarvis](https://github.com/russelljjarvis)\n
 Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
-from streamlit import components
-html_object = IPython.core.display.HTML
-#html_object = show_weights(clf, vec=vec)
-raw_html = html_object._repr_html_()
-components.v1.html(raw_html)
+
 """
 
 import streamlit as st
@@ -27,13 +23,16 @@ import streamlit as st
 import math
 import scipy
 import plotly.graph_objects as go
+import shelve
+import plotly.express as px
+import pandas as pd
+from random import sample
 
 
 from science_access.t_analysis import not_want_list  # ,
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
-from science_access	import bokeh_word_cloud
-
+#from science_access	import bokeh_word_cloud
 
 from science_access.enter_author_name import (
 	art_cloud,
@@ -57,26 +56,23 @@ from science_access.enter_author_name import (
 	get_table_download_link,
 	extra_options,
 )
+art_df = pd.read_csv("Figure4_SourceData1.csv")
+#st.text(art_df.columns)
 
-import shelve
-import plotly.express as px
+art_df.rename(columns={"flesch_fulltexts":"Reading_Level","journal":"Origin"},inplace=True)
+art_df = art_df[['Reading_Level','Origin']]
 
+biochem_labels = art_df["Origin"]
+bio_chem = art_df["Reading_Level"]
+
+art_df = art_df.loc[sample(list(art_df.index), 500)]
 def main():
-	with open("data/trainingDats.p", "rb") as f:
-	    trainingDats = pickle.load(f)
-	    art_df, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
-
-	#with open("data/_author_specificSayali Phatak.p", "rb") as f:
-	#    contents = pickle.load(f)
-	#    (NAME, ar, df, datay, scholar_link) = contents
 	st.title("Search Reading Complexity of an Author")
 	author_name = st.text_input("Enter Author Name:")
 	st.markdown(
 		"""Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
 	)
 
-	#cached_author_name = "Sayali Phatak"
-	#NBINS = 40
 
 	if author_name:
 		with shelve.open("fast_graphs_splash.p") as db:
@@ -100,18 +96,18 @@ def main():
 				standard_sci = temp["standard_sci"]
 				scraped_labels = temp["scraped_labels"]
 	if 'ar' in locals():
-		df_author, merged_df = data_frames_from_scrape(
-			ar, author_name, scraped_labels, standard_sci, art_df
-		)
-
-		#with open("data/trainingDats.p", "rb") as f:
-		#    trainingDats = pickle.load(f)
-		#    df0, bio_chem, biochem_labels = grab_data_for_splash(trainingDats)
-		df0 = art_df
-		#df1 = df_author
-		df1 = pd.concat([art_df,df_author])
-		fig = px.box(df1, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
+		#import pdb
+		#pdb.set_trace()
+		df_author, merged_df = data_frames_from_scrape(ar, author_name, scraped_labels, standard_sci, art_df)
+		st.text(ar)
+		#st.dataframe(df_author)
+		fig = px.box(df_author, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
 		st.write(fig)
+
+		df_concat = pd.concat([art_df,df_author])
+		fig = px.box(df_concat, x="Origin", y="Reading_Level", points="all",color="Origin")#,jitter=0.3, pointpos=-1.)
+		st.write(fig)
+		df0 = art_df
 
 		#st.write(fig)
 		#cached = False
@@ -173,8 +169,8 @@ def main():
 		#if len(sci_corpus) != 0:
 			#print(len(sci_corpus))
 		#try:
-		fig = bokeh_word_cloud.bokeh_wordcloud(sci_corpus)
-		st.bokeh_chart(fig)
+		#fig = bokeh_word_cloud.bokeh_wordcloud(sci_corpus)
+		#st.bokeh_chart(fig)
 		big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 		with shelve.open("fast_graphs_splash.p") as db:
 			if not author_name in db.keys():
