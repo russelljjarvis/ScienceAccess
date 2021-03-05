@@ -177,36 +177,36 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
                 urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
                 urlDat["ndc"] = ndc[0]  # textstat.text_standard(corpus, float_output=True)
                 # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
-                tokens = word_tokenize(corpus)
-                wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
-                    tokens, ignoreSingleSentences=ignoreSingleSentences
-                )
-                print(wc_t,wc,sc_t,sc)
+            tokens = word_tokenize(corpus)
+            wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
+                tokens, ignoreSingleSentences=ignoreSingleSentences
+            )
+            print(wc_t,wc,sc_t,sc)
 
-                urlDat["standard_len"] = complexityAlongtheText(corpus, chunk_length=128)
-                urlDat["fudge"] = np.mean([urlDat["fre"],urlDat["ndc"],urlDat["standard_len"]])
+            urlDat["standard_len"] = complexityAlongtheText(corpus, chunk_length=128)
+            urlDat["fudge"] = np.mean([urlDat["fre"],urlDat["ndc"],urlDat["standard_len"]])
 
-                tokens = [w.lower() for w in tokens if w.isalpha()]
-                tokens = [w.lower() for w in tokens]  # make everything lower case
-                urlDat["wcount"] = textstat.lexicon_count(str(tokens))
-                word_lim = bool(urlDat["wcount"] > WORD_LIM)
-                urlDat["tokens"] = tokens
+            tokens = [w.lower() for w in tokens if w.isalpha()]
+            tokens = [w.lower() for w in tokens]  # make everything lower case
+            urlDat["wcount"] = textstat.lexicon_count(str(tokens))
+            word_lim = bool(urlDat["wcount"] > WORD_LIM)
+            urlDat["tokens"] = tokens
 
-                if len(tokens) and word_lim:
-                    lexicon = textstat.lexicon_count(corpus, True)
-                    urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
-                    urlDat["unique_words"] = len(set(tokens))
+            if len(tokens):
+                lexicon = textstat.lexicon_count(corpus, True)
+                urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
+                urlDat["unique_words"] = len(set(tokens))
 
-                    # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
-                    # big deltas mean redudancy/sparse information/information/density
+                # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
+                # big deltas mean redudancy/sparse information/information/density
 
-                    sentences = sent_tokenize(corpus)
-                    testimonial = TextBlob(corpus)
-                    urlDat["sp"] = testimonial.sentiment.polarity
-                    urlDat["ss"] = testimonial.sentiment.subjectivity
-                    urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
-                    urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
-                    urlDat["gf"] = textstat.gunning_fog(corpus)
+                sentences = sent_tokenize(corpus)
+                testimonial = TextBlob(corpus)
+                urlDat["sp"] = testimonial.sentiment.polarity
+                urlDat["ss"] = testimonial.sentiment.subjectivity
+                urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
+                urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
+                urlDat["gf"] = textstat.gunning_fog(corpus)
 
     return urlDat
 
