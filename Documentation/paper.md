@@ -1,10 +1,11 @@
+-----
 title: 'A Tool for Assesing the Readability of Scientific Publications'
 
 tags:
   - readability
   - science communication
   - science writing
-
+  - Natural Language Processing
 authors:
   - name: Russell Jarvis
     affiliation: Previous PhD Neuroscience, Arizona State University
@@ -18,8 +19,9 @@ authors:
     affiliation: Senior Data Scientist, H2O.ai
   - name: Elise King
     affiliation: Field Ecologist, University of Melbourne
+  - name: Rebecca Featherston affiliation: Monash University
 
-date: August 2020
+date: March 2021
 
 # Introduction
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language [@Plavén-Sigray:2017]. In fact, this trend is becoming more evident over time [@Ball:2017]. Science writing using accessible language can be challenging to begin with, and is often not a part of formalized academic training. In addition, communicating scientific information is difficult given the overall breadth and niche detail of content.
@@ -137,3 +139,7 @@ see paper.bib
 #[9] Gopen, George D., and Judith A. Swan. "The science of scientific writing." American Scientist 78, no. 6 (1990): 550-558.
 
 #[10] Antonin Delpeuch; a3nm; Ryan Lahfa; translatewiki.net; Xia Li-yao; Steph. No.; Lucas Verney; Evarin; p4bl0; jibe-b; Stefan Beck; nemobis; Virgile Andreani; Martin Monperrus; Kenji Maillard; Jill-Jênn Vie; Golls, "[Dissem Software](https://dissemin.readthedocs.io/en/latest/index.html)" Zendo, 2019
+#[11] Plavén-Sigray, P. and Granville, J. and Schiffler, B. and Thompson, W.,
+ The readability of scientific texts is decreasing over time,
+ Elife, 2017
+
