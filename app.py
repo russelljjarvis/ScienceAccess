@@ -104,11 +104,11 @@ def check_cache(author_name: str):  # ->Union[]
 
             scraped_labels = temp["scraped_labels"]
 
-        experimental = [
-            np.mean([a["standard_len"], a["ndc"]])
-            for a in ar
-            if "standard_len" in a.keys()
-        ]
+        #experimental = [
+        #    np.mean([a["standard_len"], a["ndc"]])
+        #    for a in ar
+        #    if "standard_len" in a.keys()
+        #]
     return ar, author_score, scraped_labels
 
 
@@ -120,7 +120,17 @@ def main():
     )
 
     if author_name:
-        ar, author_score, scraped_labels = check_cache(author_name)
+        try:
+        	ar, author_score, scraped_labels = check_cache(author_name)
+        except:
+            ar = call_from_front_end(author_name)
+            scraped_labels, author_score = frame_to_lists(ar)
+            db[author_name] = {
+                "ar": ar,
+                "scraped_labels": scraped_labels,
+                "author_score": author_score,
+            }
+
     if "ar" in locals():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
