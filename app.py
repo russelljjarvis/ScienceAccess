@@ -78,7 +78,7 @@ with open("data/trainingDats.p", "rb") as f:
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
-
+@st.cache
 def check_cache(author_name: str):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
@@ -175,7 +175,7 @@ def main():
                 round(np.mean(author_score)), 3
             )
         )
-        if True:
+        try:
 
             st.markdown(""" ### Word Frequency Word Cloud""")
             """
@@ -190,8 +190,8 @@ def main():
         # import pdb
         # pdb.set_trace()
 
-        # except:
-        #    pass
+        except:
+            pass
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():
                 db[author_name] = {

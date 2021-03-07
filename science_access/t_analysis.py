@@ -97,10 +97,10 @@ def create_giant_strings(ar, not_want_list):
     return sci_corpus
 
 
-ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
+#ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 
-
-def complexityAlongtheText(text, chunk_length=128):
+from typing import Union
+def complexityAlongtheText(str:text, int:chunk_length=128)->Union[float(),float()]:
     words = text.split()
     cur = 0
     stds = []
@@ -112,8 +112,23 @@ def complexityAlongtheText(text, chunk_length=128):
         stds.append(std)
     return np.mean(stds), textstat.text_standard(text, float_output=True)
 
+def freeAlongtheText(str:text, int:chunk_length=128)->float():
+    words = text.split()
+    cur = 0
+    stds = []
+    while cur < len(words):
+        sub = words[cur : cur + chunk_length]
+        sub_text = " ".join(sub)
+        wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
+            sub_text, ignoreSingleSentences=1
+        )
+        fre = FRE(wc, sc, sylCount)
+        cur += chunk_length
+        fres.append(fre)
+    return np.mean(fres)
 
-def get_ref(references):
+
+def get_ref(str:references):
     for nubmer, line in enumerate(references, 1):  # skip last element with page number
         line = line.strip()
         if line:  # skip empty line
@@ -123,29 +138,23 @@ def get_ref(references):
                 names = re.split(",[ ]*and |,[ ]*| and ", authors)
                 names = [(name, name.split(" ")[-1]) for name in names]
 
-
+from collections import Iterable
 def text_proc(corpus, urlDat={}, WORD_LIM=60):
     if type(corpus) is type(str()) and corpus not in str(
         "Redirecting"
     ):  # and not str("privacy policy") in corpus:
         # corpus = corpus.replace("-", " ")  # remove characters that nltk can't read
         corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
-
-        # corpus = re.sub(
-        #    r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
-        # )
-        # corpus = re.sub(
-        #    r"http?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+", " ", corpus
-        # )
         corpus = corpus.lower()
         corpus = "".join([i for i in corpus if not i.isdigit()])
         corpus = re.sub(r"^https?:\/\/.*[\r\n]*", "", corpus, flags=re.MULTILINE)
         corpus = re.sub(r"^http?:\/\/.*[\r\n]*", "", corpus, flags=re.MULTILINE)
-        # corpus = corpus.replace("\n", " ")  # remove characters that nltk can't read
+        corpus = corpus.replace("\n",""" """)  # remove characters that nltk can't read
         corpus = corpus.replace(u"\xa0", u" ")
         corpus = corpus.replace(u"\\", u" ")
-        exclusive = [i for i in corpus if i not in not_want_list]
-        print(exclusive, "exclusive")
+        corpus = [i for i in corpus if i not in not_want_list]
+        assert type(exclusive) is type(Iterable)
+        #print(exclusive, "exclusive")
         # string = string.replace(u'\xa0', u' ')
 
         posa = corpus.lower().find("abstract")
@@ -157,14 +166,21 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
         corpus = cleanup_pretagger_all(corpus)
         urlDat["big_words"] = [word for word in corpus if len(word) > 40]
         ignoreSingleSentences = 1
-        if len(corpus) >= WORD_LIM:
-            wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
-                corpus, ignoreSingleSentences=ignoreSingleSentences
-            )
+
+
+
+        wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
+            corpus, ignoreSingleSentences=1
+        )
+        if wordLen < WORD_LIM:
+            return {}
+        if wordLen >= WORD_LIM:
+
             remainingText = " ".join(remainingText)
             remainingText = remainingText.lower()
             if wc > 0 and sc > 0:
                 urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
+                urlDat["fre_unbiased"] = freeAlongtheText(corpus)
                 if urlDat["standard"] > 50:
                     return None
                 if urlDat["standard"] == 0:
@@ -183,15 +199,15 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60):
             wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
                 tokens, ignoreSingleSentences=ignoreSingleSentences
             )
-            print(wc_t, wc, sc_t, sc)
+            #print(wc_t, wc, sc_t, sc)
 
-            urlDat["standard_len"] = complexityAlongtheText(corpus, chunk_length=128)
+            urlDat["standard_unbiased"] = complexityAlongtheText(corpus, chunk_length=128)
             try:
                 urlDat["concensus"] = np.mean(
                     [
                         np.mean(urlDat["fre"]),
                         np.mean(urlDat["ndc"]),
-                        np.mean(urlDat["standard_len"]),
+                        np.mean(urlDat["standard_unbiased"]),
                     ]
                 )
             except:
