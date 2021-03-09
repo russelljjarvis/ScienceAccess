@@ -219,7 +219,7 @@ def main():
 		"""
         sci_corpus = create_giant_strings(ar, not_want_list)
         fast_art_cloud(sci_corpus)
-        clouds_by_big_words = True
+        clouds_by_big_words = False
         if clouds_by_big_words:
             clouds_big_words(sci_corpus)
 
