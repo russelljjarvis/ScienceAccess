@@ -245,6 +245,15 @@ def visit_link(NAME, tns, more_links):
 			urlDat = urlDatTemp
 	"""
 
+def get_aliases_and_papers(doi):
+    import semanticscholar as sch
+    paper =  sch.paper(doi, timeout=12)# for doi_ in tqdm(dois) ]
+    for paper in tqdm(papers):
+        if 'authors' in paper.keys():
+            for author_ in paper['authors']:
+                if NAME == author_:
+                    if 'aliases' in author_.keys():
+                        author = sch.author(author_['authorId'], timeout=12)
 
 def visit_link_unpaywall(NAME, tns, visit_urls):
     """
@@ -270,6 +279,11 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
         response = requests.get(r)
         response = response.json()
         urlDat = None
+        records = p["records"][0]
+        if "doi" in records.keys():
+            visit_urls.append(records["doi"])
+            #get_aliases_and_papers(records["doi"])
+
         if "url_for_pdf" in response.keys():
             res = response["url_for_pdf"]
             # if res not in set(visit_urls):
@@ -308,6 +322,7 @@ def unpaywall_semantic_links(NAME, tns):
     for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
         r0 = str("https://api.semanticscholar.org/") + str(doi_)
         visit_more_urls.append(r0)
+
 
         r = (
             str("https://api.unpaywall.org/v2/")
@@ -349,6 +364,10 @@ def convert_pdf_to_txt(content,verbose=False):
             write_text += " "+retstr.getvalue()+" "
         # Process all pages in the document
         text = str(write_text)
+        mean_word_len = np.mean([ len(t) for t in text ])
+        if mean_word_len>33:
+            return str("")
+
         if verbose:
             st.text(text)
         return text
