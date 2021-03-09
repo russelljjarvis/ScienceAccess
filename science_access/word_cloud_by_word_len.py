@@ -168,9 +168,10 @@ def generate_from_lengths(self, words, max_font_size=None,verbose=False):  # noq
             # we only have one word. We make it big!
             font_size = self.height
         else:
-            self.generate_from_frequencies(
-                dict(frequencies), max_font_size=self.height
-            )
+            #font_size = self.height
+            #self.generate_from_frequencies(
+            #    dict(frequencies), max_font_size=self.height
+            #)
             # find font sizes
             sizes = [x[1] for x in self.layout_]
             try:
