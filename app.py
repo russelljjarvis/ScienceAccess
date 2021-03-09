@@ -33,6 +33,8 @@ import click
 from typing import List, Any
 
 from science_access.t_analysis import not_want_list  # ,
+not_want_list.extend(["abstract","science"])
+
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 
@@ -279,26 +281,23 @@ def main():
             grab_set1.extend(block["tokens"])
 
         artset = list(grab_setr)
+        artset.extend(not_want_list)
         autset = list(set(grab_set1))
         exclusive = [i for i in autset if i not in artset]
         # inclusive = [i for i in autset if i in artset]
 
         if len(sci_corpus) != 0:
-            try:
 
-                st.markdown("-----")
-                st.markdown(""" ### Word Length Word Cloud 	""")
-                st.markdown(
-                    """
-				based on the largest words found in the mined text.
-				These words are likely culprits that hindered readability.
-				"""
-                )
-                sci_corpus = create_giant_strings(ar, not_want_list)
-                big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-            except:
-                pass
-
+            st.markdown("-----")
+            st.markdown(""" ### Word Length Word Cloud 	""")
+            st.markdown(
+                """
+			based on the largest words found in the mined text.
+			These words are likely culprits that hindered readability.
+			"""
+            )
+            sci_corpus = create_giant_strings(ar, not_want_list)
+            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
         try:
             st.markdown(
                 "### Concepts that differentiate {0} from other science".format(
