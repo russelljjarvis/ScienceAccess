@@ -32,8 +32,8 @@ from random import sample
 import click
 from typing import List, Any
 
-from science_access.t_analysis import not_want_list  # ,
-not_want_list.extend(["abstract","science"])
+from science_access.t_analysis import not_want_list
+not_want_list.extend(["librarian","issue","abstract","science","cookie","publication"])
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
@@ -142,8 +142,7 @@ verbose=0
 def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
-    st.markdown("In many cases entering a middle initial followed by '.' improves accuracy of results")
-    st.markdown("Eg Brian H. Smith")
+    st.markdown("In many cases entering a middle initial followed by '.' improves accuracy of results. Eg. Sayali S. Phatak")
 
     st.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
@@ -196,26 +195,26 @@ def main():
                 round(np.mean(author_score)), 3
             )
         )
-        try:
+        #try:
 
-            st.markdown(""" ### Word Frequency Word Cloud""")
-            """
-			The word cloud is based on the most common words found in the mined text.
-			This word cloud is for humans to validate text mining work.
-			This is because the word cloud frequency often matches a writers
-			own knowledge of concepts in their work, therefore it can to help
-			instill trust in text-mining results.
-			"""
-            sci_corpus = create_giant_strings(ar, not_want_list)
-            if verbose:
-                st.text(sci_corpus)
-            fast_art_cloud(sci_corpus)
+        st.markdown(""" ### Word Frequency Word Cloud""")
+        """
+		The word cloud is based on the most common words found in the mined text.
+		This word cloud is for humans to validate text mining work.
+		This is because the word cloud frequency often matches a writers
+		own knowledge of concepts in their work, therefore it can to help
+		instill trust in text-mining results.
+		"""
+        sci_corpus = create_giant_strings(ar, not_want_list)
+        if verbose:
+            st.text(sci_corpus)
+        fast_art_cloud(sci_corpus)
             #big_words, word_counts_fz, fig_wl = art_cloud(sci_corpus)
         # import pdb
         # pdb.set_trace()
 
-        except:
-            pass
+        #except:
+        #    pass
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():
                 db[author_name] = {
@@ -285,31 +284,29 @@ def main():
         autset = list(set(grab_set1))
         exclusive = [i for i in autset if i not in artset]
         # inclusive = [i for i in autset if i in artset]
+        clouds_by_big_words = False
+        if clouds_by_big_words:
+            if len(sci_corpus) != 0:
 
-        if len(sci_corpus) != 0:
-
-            st.markdown("-----")
-            st.markdown(""" ### Word Length Word Cloud 	""")
-            st.markdown(
-                """
-			based on the largest words found in the mined text.
-			These words are likely culprits that hindered readability.
-			"""
-            )
-            sci_corpus = create_giant_strings(ar, not_want_list)
-            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        try:
-            st.markdown(
-                "### Concepts that differentiate {0} from other science".format(
-                    author_name
+                st.markdown("-----")
+                st.markdown(""" ### Word Length Word Cloud 	""")
+                st.markdown(
+                    """
+    			based on the largest words found in the mined text.
+    			These words are likely culprits that hindered readability.
+    			"""
                 )
+                big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+        #try:
+        st.markdown(
+            "### Concepts that differentiate {0} from other science".format(
+                author_name
             )
-            exclusive = create_giant_strings(ar, exclusive)
+        )
+        exclusive = create_giant_strings(ar, exclusive)
 
-            fig = fast_art_cloud(exclusive)
-            st.markdown("-----")
-        except:
-            pass
+        fig = fast_art_cloud(exclusive)
+        st.markdown("-----")
 
         sentiment = []
         uniqueness = []

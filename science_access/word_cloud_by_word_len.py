@@ -84,6 +84,7 @@ def wrapper(w):
 
 import copy
 
+from nltk.tokenize import word_tokenize
 
 def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """Create a word_cloud from words and frequencies.
@@ -153,22 +154,27 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     words = pd.DataFrame(copy.copy(words__), columns=["word"])
 
     '''
-    words = pd.DataFrame(copy.copy(words), columns=["word"])
+    #import pdb
+    #pdb.set_trace()
+    #words = pd.DataFrame(words, columns=["word"])
+    words = word_tokenize(words)
+    wordss = set(words)
+
+    words = pd.DataFrame([{'word':w} for w in words], columns=["word"])
 
     word_counts = words.word.value_counts().reset_index()
     word_counts.columns = ["word", "n"]
     word_counts["word_rank"] = word_counts.n.rank(ascending=False)
     self.word_counts_fz = None
     self.word_counts_fz = word_counts
-    words = set(words__)
 
-    sizes = [len(word) for word in words]
+    sizes = [len(word) for word in wordss]
     max_len = np.max(sizes)
 
     frequencies = [
         (word, word_len / max_len)
         for word, word_len in zip(words, sizes)
-        if word_len < 39
+        if word_len < 45
     ]
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])

@@ -25,7 +25,7 @@ from nltk.sentiment import SentimentAnalyzer
 from nltk.tag.perceptron import PerceptronTagger
 import nltk
 from nltk.corpus import words as english_words
-from nltk.tokenize import word_tokenize
+#from nltk.tokenize import word_tokenize
 
 from nltk.tokenize import sent_tokenize, word_tokenize
 import numpy as np
