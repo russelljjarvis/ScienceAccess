@@ -229,9 +229,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 					remainingText, wc, sc
 				)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
 				urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
-				urlDat["ndc"] = ndc[
-					0
-				]  # textstat.text_standard(corpus, float_output=True)
+				urlDat["ndc"] = ndc[0]
+				# textstat.text_standard(corpus, float_output=True)
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
 
 			wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
@@ -241,8 +240,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 				urlDat["standard"] = urlDat["fre_unbiased"]
 			if urlDat["standard_unbiased"]< urlDat["standard"]  and urlDat["standard_unbiased"]>0:
 				urlDat["standard"] = urlDat["standard_unbiased"]
-			if urlDat["NDC"]< urlDat["standard"] and urlDat["NDC"]>0 and len(tokens)<220:
-				urlDat["standard"] = urlDat["NDC"]
+			if urlDat["ndc"]< urlDat["standard"] and urlDat["ndc"]>0 and len(tokens)<220:
+				urlDat["standard"] = urlDat["ndc"]
 
 			if urlDat["standard"] > 65:
 				return None
