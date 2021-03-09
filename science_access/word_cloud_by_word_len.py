@@ -159,14 +159,13 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     #words = pd.DataFrame(words, columns=["word"])
     words = word_tokenize(words)
     wordss = set(words)
-
-    words = pd.DataFrame([{'word':w} for w in words], columns=["word"])
+    '''
+    words = pd.DataFrame([{'lexicon':w} for w in words], columns=["lexicon"])
 
     word_counts = words.word.value_counts().reset_index()
     word_counts.columns = ["word", "n"]
     word_counts["word_rank"] = word_counts.n.rank(ascending=False)
-    self.word_counts_fz = None
-    self.word_counts_fz = word_counts
+    '''
 
     sizes = [len(word) for word in wordss]
     max_len = np.max(sizes)
@@ -194,6 +193,8 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
 
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
+    self.word_counts_fz = None
+    self.word_counts_fz = frequencies
 
     self.biggest_words = None
     self.biggest_words = frequencies  # [0:2]

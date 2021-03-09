@@ -33,7 +33,7 @@ import click
 from typing import List, Any
 
 from science_access.t_analysis import not_want_list
-not_want_list.extend(["librarian","issue","abstract","science","cookie","publication"])
+not_want_list.extend(["link","librarian","issue","abstract","science","cookie","publication"])
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
@@ -81,7 +81,7 @@ with open("data/trainingDats.p", "rb") as f:
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
-@st.cache(suppress_st_warning=True)
+#@st.cache(suppress_st_warning=True)
 def check_cache(author_name: str,verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
@@ -134,6 +134,18 @@ def show_hardest_passage(ar:List=[])->str:
     return ar[i]
 
 
+def clouds_big_words(sci_corpus):
+    if len(sci_corpus) != 0:
+
+        st.markdown("-----")
+        st.markdown(""" ### Word Length Word Cloud 	""")
+        st.markdown(
+            """
+		based on the largest words found in the mined text.
+		These words are likely culprits that hindered readability.
+		"""
+        )
+        big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
 #@click.command()
 #@click.argument('verbose', type=int, default=0)
@@ -206,9 +218,14 @@ def main():
 		instill trust in text-mining results.
 		"""
         sci_corpus = create_giant_strings(ar, not_want_list)
+        fast_art_cloud(sci_corpus)
+        clouds_by_big_words = True
+        if clouds_by_big_words:
+            clouds_big_words(sci_corpus)
+
+
         if verbose:
             st.text(sci_corpus)
-        fast_art_cloud(sci_corpus)
             #big_words, word_counts_fz, fig_wl = art_cloud(sci_corpus)
         # import pdb
         # pdb.set_trace()
@@ -284,20 +301,6 @@ def main():
         autset = list(set(grab_set1))
         exclusive = [i for i in autset if i not in artset]
         # inclusive = [i for i in autset if i in artset]
-        clouds_by_big_words = False
-        if clouds_by_big_words:
-            if len(sci_corpus) != 0:
-
-                st.markdown("-----")
-                st.markdown(""" ### Word Length Word Cloud 	""")
-                st.markdown(
-                    """
-    			based on the largest words found in the mined text.
-    			These words are likely culprits that hindered readability.
-    			"""
-                )
-                big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
-        #try:
         st.markdown(
             "### Concepts that differentiate {0} from other science".format(
                 author_name
