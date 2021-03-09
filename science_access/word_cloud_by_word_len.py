@@ -85,8 +85,8 @@ def wrapper(w):
 import copy
 
 from nltk.tokenize import word_tokenize
-
-def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
+import streamlit as st
+def generate_from_lengths(self, words, max_font_size=None,verbose=True):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
     ----------
@@ -108,89 +108,26 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """
     # largest entry will be 1
     self.max_words = 50
-    '''
-    words__ = []
-    for word in words:
-        words_ = []
-        if "-" in word:
-            # continue
-            temp = word.split("-")  # , " ")
-            words_.append(str(" ") + temp[0])
-            words_.append(str(" ") + temp[1])
-
-        if "." in word:
-            # continue
-            temp = word.split(".")  # , " ")
-            words_.append(str(" ") + temp[0])
-            words_.append(str(" ") + temp[1])
-
-        if "//" in word:
-            # continue
-            temp = word.split("//")
-            words_.append(str(" ") + temp[0])
-            words_.append(str(" ") + temp[1])
-
-        if "/" in word:
-            # continue
-            temp = word.split("/")  # , " ")
-            words_.append(str(" ") + temp[0])
-            words_.append(str(" ") + temp[1])
-        if "=" in word:
-            # continue
-            temp = word.split("=")  # , " ")
-            words_.append(str(" ") + temp[0])
-            words_.append(str(" ") + temp[1])
-        #if word.isnumeric():
-        #    continue
-
-        if len(words_):
-            continue
-        words__.append(word)
-
-        #pattern = re.compile(
-        #    r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"
-        #)
-        #if not len(words_) and not pattern.match(word):
-    words = pd.DataFrame(copy.copy(words__), columns=["word"])
-
-    '''
-    #import pdb
-    #pdb.set_trace()
-    #words = pd.DataFrame(words, columns=["word"])
     words = word_tokenize(words)
-    wordss = set(words)
-    '''
-    words = pd.DataFrame([{'lexicon':w} for w in words], columns=["lexicon"])
+    wordss = list(set(words))
+    wordss = [word for word in wordss if len(word)<20]
 
-    word_counts = words.word.value_counts().reset_index()
-    word_counts.columns = ["word", "n"]
-    word_counts["word_rank"] = word_counts.n.rank(ascending=False)
-    '''
+    sizes = [len(word) for word in wordss if len(word)<20]
 
-    sizes = [len(word) for word in wordss]
+    if verbose:
+        st.text(wordss)
+        st.text(sizes)
+
     max_len = np.max(sizes)
 
     frequencies = [
         (word, word_len / max_len)
         for word, word_len in zip(words, sizes)
-        if word_len < 45
     ]
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])
 
-    # try:
-    #
-    #    lazy = ((wrapper)(w) for w in frequencies[0:190])
-    #    real_frequencies = list(lazy)
-    # except:
-    # if len(frequencies)>100:
-    real_frequencies = [(wrapper)(w) for w in frequencies[0:99]]
-    # else:
-    #    real_frequencies = [
-    #        (wrapper)(w)
-    #        for w in frequencies[0 : int(len(frequencies) - len(frequencies) / 2)]
-    #    ]
-
+    real_frequencies = [(wrapper)(w) for w in frequencies]
     real_frequencies = [w for w in real_frequencies if w is not None]
     frequencies = sorted(real_frequencies, key=lambda item: item[1], reverse=True)
     self.word_counts_fz = None

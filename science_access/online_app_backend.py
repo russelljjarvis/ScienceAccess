@@ -332,8 +332,8 @@ def unpaywall_semantic_links(NAME, tns):
             visit_more_urls.append(res)
     return visit_more_urls
 
-
-def convert_pdf_to_txt(content):
+import streamlit as st
+def convert_pdf_to_txt(content,verbose=False):
     # https://github.com/allenai/science-parse/blob/master/server/README.md
     # os.subprocess(curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1")
     try:
@@ -346,9 +346,11 @@ def convert_pdf_to_txt(content):
         write_text = ""
         for page in PDFPage.create_pages(document):
             interpreter.process_page(page)
-            write_text += retstr.getvalue()
+            write_text += " "+retstr.getvalue()+" "
         # Process all pages in the document
         text = str(write_text)
+        if verbose:
+            st.text(text)
         return text
     else:
         return str("")

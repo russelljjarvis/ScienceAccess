@@ -226,12 +226,6 @@ def main():
 
         if verbose:
             st.text(sci_corpus)
-            #big_words, word_counts_fz, fig_wl = art_cloud(sci_corpus)
-        # import pdb
-        # pdb.set_trace()
-
-        #except:
-        #    pass
         with shelve.open("fast_graphs_splash.p") as db:
             if not author_name in db.keys():
                 db[author_name] = {
