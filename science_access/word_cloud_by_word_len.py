@@ -107,7 +107,7 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
     """
     # largest entry will be 1
     self.max_words = 50
-
+    '''
     words__ = []
     for word in words:
         words_ = []
@@ -139,18 +139,22 @@ def generate_from_lengths(self, words, max_font_size=None):  # noqa: C901
             temp = word.split("=")  # , " ")
             words_.append(str(" ") + temp[0])
             words_.append(str(" ") + temp[1])
-        if word.isnumeric():
-            continue
+        #if word.isnumeric():
+        #    continue
 
         if len(words_):
             continue
+        words__.append(word)
 
-        pattern = re.compile(
-            r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"
-        )
-        if not len(words_) and not pattern.match(word):
-            words__.append(word)
+        #pattern = re.compile(
+        #    r"https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(/\S+)?|\S+\.com\S+"
+        #)
+        #if not len(words_) and not pattern.match(word):
     words = pd.DataFrame(copy.copy(words__), columns=["word"])
+
+    '''
+    words = pd.DataFrame(copy.copy(words), columns=["word"])
+
     word_counts = words.word.value_counts().reset_index()
     word_counts.columns = ["word", "n"]
     word_counts["word_rank"] = word_counts.n.rank(ascending=False)

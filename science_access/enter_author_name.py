@@ -110,21 +110,18 @@ def zipf_plot(word_counts_fz):
 
 
 # @st.cache
-def art_cloud_wl(acorpus):
+def art_cloud_wl(acorpus:str=""):
     WC = WordCloud(background_color="white")
     WC.generate_from_lengths = MethodType(generate_from_lengths, WC)
     fig = plt.figure()
-
-    tokens = word_tokenize(acorpus)
-
-    try:
+    if type(acorpus) is not type(str()):
+        tokens = word_tokenize(acorpus)
         if len(tokens):
             wordcloud = WC.generate_from_lengths(tokens)
-    except:
+    if type(acorpus) is type(""):
         wordcloud = WC.generate_from_lengths(acorpus)
 
-    else:
-        print(tokens)
+    if not 'wordcloud' in locals():
         return None, None, None
     biggest_words = WC.biggest_words
 
@@ -145,7 +142,7 @@ def zipf_wrapper(acorpus):
 # @st.cache
 
 
-def art_cloud(acorpus):
+def art_cloud(acorpus:str=""):
 
     # Generate a word cloud image
     WC = WordCloud(background_color="white")
@@ -161,16 +158,10 @@ def art_cloud(acorpus):
     return wordcloud, fig, plt
 
 
-def fast_art_cloud(acorpus):
-    # uses cache
-    try:
-        wordcloud, fig, plt = art_cloud(acorpus)
-    except:
-        wordcloud, fig, plt = art_cloud(acorpus)
+def fast_art_cloud(acorpus:str=""):
+    wordcloud, fig, plt = art_cloud(acorpus)
     st.pyplot(fig)
     return fig
-    #    st.pyplot(width =517)
-
 
 def create_giant_strings(ar, not_want_list):
     sci_corpus = ""
