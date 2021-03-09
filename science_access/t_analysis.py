@@ -240,8 +240,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 				urlDat["standard"] = urlDat["fre_unbiased"]
 			if urlDat["standard_unbiased"]< urlDat["standard"]  and urlDat["standard_unbiased"]>0:
 				urlDat["standard"] = urlDat["standard_unbiased"]
-			if urlDat["ndc"]< urlDat["standard"] and urlDat["ndc"]>0 and len(tokens)<220:
-				urlDat["standard"] = urlDat["ndc"]
+			#if urlDat["ndc"]< urlDat["standard"] and urlDat["ndc"]>0 and len(tokens)<220:
+			#	urlDat["standard"] = urlDat["ndc"]
 
 			if urlDat["standard"] > 65:
 				return None
