@@ -10,7 +10,9 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 
 """
-
+import click
+#import argparse
+import sys
 import streamlit as st
 import os
 import pandas as pd
@@ -27,7 +29,8 @@ import shelve
 import plotly.express as px
 import pandas as pd
 from random import sample
-
+import click
+from typing import List, Any
 
 from science_access.t_analysis import not_want_list  # ,
 from science_access.online_app_backend import call_from_front_end
@@ -59,14 +62,12 @@ from science_access.enter_author_name import (
 )
 
 rd_df = pd.read_csv("Figure4_SourceData1.csv")
-# st.text(art_df.columns)
 
 rd_df.rename(
     columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
 )
 rd_df = rd_df[["Reading_Level", "Origin"]]
 rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
-# rd_df["Reading_Level"] = [i for i in rd_df["Reading_Level"] if i>10]
 
 rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
@@ -78,18 +79,24 @@ with open("data/trainingDats.p", "rb") as f:
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
-@st.cache
-def check_cache(author_name: str):  # ->Union[]
+@st.cache(suppress_st_warning=True)
+def check_cache(author_name: str,verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
         if not flag:
             ar = call_from_front_end(author_name)
             scraped_labels, author_score = frame_to_lists(ar)
-            db[author_name] = {
-                "ar": ar,
-                "scraped_labels": scraped_labels,
-                "author_score": author_score,
-            }
+            ##
+            # This shelve
+            # caching wont scale on heroku.
+            # need TinyDb on Amazon
+            ##
+            if len(db.keys())<11:
+                db[author_name] = {
+                    "ar": ar,
+                    "scraped_labels": scraped_labels,
+                    "author_score": author_score,
+                }
         else:
             """
             We have evaluated this query recently, using cached results...
@@ -111,30 +118,42 @@ def check_cache(author_name: str):  # ->Union[]
         #]
     return ar, author_score, scraped_labels
 
+def show_hardest_passage(ar:List=[])->str:
+    largest = 0
+    li = 0
+    for i,a in enumerate(ar):
+        if a["standard"]>largest:
+            largest = a["standard"]
+            li=i
+    if "hard_snippet" in ar[i].keys():
+        st.markdown("A hard to read passage from the authors work.")
+        if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
+            st.text(ar[i]["hard_snippet"])
+    return ar[i]
+
+
+
+#@click.command()
+#@click.argument('verbose', type=int, default=0)
+verbose=0
 
 def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
+    st.markdown("In many cases entering a middle initial followed by '.' improves accuracy of results")
+    st.markdown("Eg Brian H. Smith")
+
     st.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
 
     if author_name:
-        try:
-        	ar, author_score, scraped_labels = check_cache(author_name)
-        except:
-            ar = call_from_front_end(author_name)
-            scraped_labels, author_score = frame_to_lists(ar)
-            db[author_name] = {
-                "ar": ar,
-                "scraped_labels": scraped_labels,
-                "author_score": author_score,
-            }
-
+    	ar, author_score, scraped_labels = check_cache(author_name,verbose)
     if "ar" in locals():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
+        #hard=show_hardest_passage(ar)
 
         """
 		### Links to articles obtained from the queried author.
@@ -147,17 +166,17 @@ def main():
         # fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         # st.write(fig)
 
-        df_concat_art = pd.concat([art_df, rd_df, df_author])
+        df_concat_art = pd.concat([rd_df, df_author])
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
         st.write(fig_art)
 
-        df_concat_rd = pd.concat([rd_df, df_author])
-        fig_rd = px.box(
-            df_concat_rd, x="Origin", y="Reading_Level", points="all", color="Origin"
-        )
-        st.write(fig_rd)
+        #df_concat_art = pd.concat([art_df, df_author])
+        #fig_art = px.box(
+        #    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+        #)
+        #st.write(fig_art)
 
         df0 = df_concat_art
         st.markdown(
@@ -186,7 +205,10 @@ def main():
 			instill trust in text-mining results.
 			"""
             sci_corpus = create_giant_strings(ar, not_want_list)
-            big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+            if verbose:
+                st.text(sci_corpus)
+            fast_art_cloud(sci_corpus)
+            #big_words, word_counts_fz, fig_wl = art_cloud(sci_corpus)
         # import pdb
         # pdb.set_trace()
 
@@ -205,7 +227,7 @@ def main():
         if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to Readability of Science Declining Over Time Corpus.
+			### {0} was on average easier to read relative to the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -214,7 +236,7 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to Readability of Science Declining Over Time Corpus.
+			### {0} was on average more difficult to read relative to the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -310,8 +332,7 @@ def main():
 
         st.markdown("""### Sentiment""")
         st.markdown(
-            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of Science Declining Over Time Corpus.
-					Note that positive sentiment might relate to confirmation bias in science.
+            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
 					""".format(
                 temp, author_name
             )
@@ -371,4 +392,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
