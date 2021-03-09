@@ -292,8 +292,8 @@ def main():
 
         artset = list(grab_setr)
         artset.extend(not_want_list)
-        autset = list(set(grab_set1))
-        exclusive = [i for i in autset if i not in artset]
+        auth_set = list(set(grab_set1))
+        exclusive = [i for i in auth_set if i not in artset]
         # inclusive = [i for i in autset if i in artset]
         st.markdown(
             "### Concepts that differentiate {0} from other science".format(

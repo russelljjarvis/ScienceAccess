@@ -71,6 +71,7 @@ not_want_list = [
 	"articlepubmedpubmed",
 	"author",
 ]
+not_want_list.extend(["link","librarian","issue","abstract","science","cookie","publication"])
 
 
 def create_giant_strings(ar, not_want_list):
@@ -222,7 +223,6 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 				urlDat["hard_snippet"] = hard_snippet
 				urlDat["fre_unbiased"] = freeAlongtheText(corpus)
 
-				#    return None
 
 				fre = FRE(wc, sc, sylCount)
 				ndc = NDC(
@@ -239,8 +239,11 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 			)
 			if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
 				urlDat["standard"] = urlDat["fre_unbiased"]
-			if urlDat["standard_unbiased"]< urlDat["standard"]  and urlDat["fre_unbiased"]>0:
+			if urlDat["standard_unbiased"]< urlDat["standard"]  and urlDat["standard_unbiased"]>0:
 				urlDat["standard"] = urlDat["standard_unbiased"]
+			if urlDat["NDC"]< urlDat["standard"] and urlDat["NDC"]>0 and len(tokens)<220:
+				urlDat["standard"] = urlDat["NDC"]
+
 			if urlDat["standard"] > 65:
 				return None
 
