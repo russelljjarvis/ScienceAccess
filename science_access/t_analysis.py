@@ -215,7 +215,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 			remainingText = remainingText.lower()
 			if wc > 0 and sc > 0:
 				#urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
-				meanv,total,hard_snippet = complexityAlongtheText(corpus, chunk_length=128)
+				meanv,total,hard_snippet = complexityAlongtheText(corpus, chunk_length=5)
 				urlDat["standard_unbiased"] = meanv
 				urlDat["standard"] = total
 
