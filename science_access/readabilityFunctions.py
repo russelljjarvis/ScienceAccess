@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 
+This code is borrowed from:
+https://github.com/wiheto/readabilityinscience
+
+Until that becomes a PIP installable module.
+
 This file contains all
 Requires: curses, nltk, pandas, treetagwrapper
 Also requires abstract_cleanup and NDCeasywords.txt
