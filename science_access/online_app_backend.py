@@ -2,8 +2,9 @@ from typing import List
 import PyPDF2
 from pathlib import Path
 import copy
-#import matplotlib.pyplot as plt
-#import seaborn as sns
+
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 import semanticscholar as sch
 
 import os.path
@@ -11,7 +12,7 @@ import pdb
 import pickle
 from collections import OrderedDict
 
-#import IPython.display as d
+# import IPython.display as d
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -188,6 +189,7 @@ def author_to_urls(NAME):
             dois.append(li[1])
     return dois, coauthors, titles, visit_urls
 
+
 def visit_link(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -209,6 +211,7 @@ def visit_link(NAME, tns, more_links):
 
     return author_results, visit_urls
 
+
 def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -219,18 +222,18 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     aliases = None
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     for d in dois:
-        paper =  sch.paper(d, timeout=6)
+        paper = sch.paper(d, timeout=6)
         urlDat = {}
-        urlDat["link"] = paper['url']
+        urlDat["link"] = paper["url"]
         urlDat["semantic"] = True
         if aliases is None:
             try:
-                aliases = get_aliases_and_papers(paper,NAME)
+                aliases = get_aliases_and_papers(paper, NAME)
                 urlDat["aliases"] = aliases
-                print(urlDat["aliases"],'aliases')
+                print(urlDat["aliases"], "aliases")
             except:
                 pass
-        urlDat = text_proc(str(paper['abstract']), urlDat)
+        urlDat = text_proc(str(paper["abstract"]), urlDat)
         author_results.append(urlDat)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
@@ -239,13 +242,15 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     return author_results, visit_urls
 
 
-def get_aliases_and_papers(paper,NAME):
-    if 'authors' in paper.keys():
-        for author_ in paper['authors']:
+def get_aliases_and_papers(paper, NAME):
+    if "authors" in paper.keys():
+        for author_ in paper["authors"]:
             if NAME in author_:
-                if 'aliases' in author_.keys():
-                    aliases = author_['aliases']
+                if "aliases" in author_.keys():
+                    aliases = author_["aliases"]
     return aliases
+
+
 def visit_link_unpaywall(NAME, tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -303,7 +308,6 @@ def unpaywall_semantic_links(NAME, tns):
         r0 = str("https://api.semanticscholar.org/") + str(doi_)
         visit_more_urls.append(r0)
 
-
         r = (
             str("https://api.unpaywall.org/v2/")
             + str(doi_)
@@ -327,7 +331,8 @@ def unpaywall_semantic_links(NAME, tns):
             visit_more_urls.append(res)
     return visit_more_urls
 
-def convert_pdf_to_txt(content,verbose=False):
+
+def convert_pdf_to_txt(content, verbose=False):
     # https://github.com/allenai/science-parse/blob/master/server/README.md
     # os.subprocess(curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1")
     try:
@@ -340,11 +345,11 @@ def convert_pdf_to_txt(content,verbose=False):
         write_text = ""
         for page in PDFPage.create_pages(document):
             interpreter.process_page(page)
-            write_text += " "+retstr.getvalue()+" "
+            write_text += " " + retstr.getvalue() + " "
         # Process all pages in the document
         text = str(write_text)
-        mean_word_len = np.mean([ len(t) for t in text ])
-        if mean_word_len>33:
+        mean_word_len = np.mean([len(t) for t in text])
+        if mean_word_len > 33:
             return str("")
 
         if verbose:
@@ -410,7 +415,9 @@ def process(link, driver):  # , REDIRECT=False):
 
 def update_web_form(NAME, tns):
     more_links = unpaywall_semantic_links(NAME, tns)
-    author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(NAME, tns, more_links)
+    author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
+        NAME, tns, more_links
+    )
     author_results, visit_urls = visit_link(NAME, tns, more_links)
     author_results.extend(author_results_temp)
     ar = copy.copy(author_results)
@@ -431,7 +438,7 @@ def find_nearest(array, value):
     return idx
 
 
-def ar_manipulation(ar:List=[]):
+def ar_manipulation(ar: List = []):
     ar = [tl for tl in ar if tl is not None]
     ar = [tl for tl in ar if type(tl) is not type(str(""))]
     ar = [tl for tl in ar if "standard" in tl.keys()]
@@ -443,10 +450,11 @@ def ar_manipulation(ar:List=[]):
     return (ar, trainingDats)
 
 
-def call_from_front_end(NAME:str="", OPENACCESS:bool=True, tns:int=16):
+def call_from_front_end(NAME: str = "", OPENACCESS: bool = True, tns: int = 16):
     df, datay, ar = update_web_form(NAME, tns)
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
+
 
 def metricss(rg):
     if isinstance(rg, list):

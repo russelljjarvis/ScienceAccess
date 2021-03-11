@@ -110,7 +110,7 @@ def zipf_plot(word_counts_fz):
 
 
 # @st.cache
-def art_cloud_wl(acorpus:str=""):
+def art_cloud_wl(acorpus: str = ""):
     WC = WordCloud(background_color="white")
     WC.generate_from_lengths = MethodType(generate_from_lengths, WC)
     fig = plt.figure()
@@ -121,7 +121,7 @@ def art_cloud_wl(acorpus:str=""):
     if type(acorpus) is type(""):
         wordcloud = WC.generate_from_lengths(acorpus)
 
-    if not 'wordcloud' in locals():
+    if not "wordcloud" in locals():
         return None, None, None
     biggest_words = WC.biggest_words
 
@@ -142,7 +142,7 @@ def zipf_wrapper(acorpus):
 # @st.cache
 
 
-def art_cloud(acorpus:str=""):
+def art_cloud(acorpus: str = ""):
 
     # Generate a word cloud image
     WC = WordCloud(background_color="white")
@@ -158,10 +158,11 @@ def art_cloud(acorpus:str=""):
     return wordcloud, fig, plt
 
 
-def fast_art_cloud(acorpus:str=""):
+def fast_art_cloud(acorpus: str = ""):
     wordcloud, fig, plt = art_cloud(acorpus)
     st.pyplot(fig)
     return fig
+
 
 def create_giant_strings(ar, not_want_list):
     sci_corpus = ""
@@ -327,11 +328,13 @@ def grand_distribution_plot(ar, scraped_labels, standard_sci, df0, author_name="
     fig.update_layout(width=900, height=600)  # , hovermode='x')
     return df1, fig
 
-from typing import List,Any
+
+from typing import List, Any
 import pandas as pd
-#import streamlit as st
-#List
-def push_frame_to_screen(contents:Any, readability_vector:List)->pd.DataFrame():
+
+# import streamlit as st
+# List
+def push_frame_to_screen(contents: Any, readability_vector: List) -> pd.DataFrame():
     if type(contents) is type(list()):
         df_links = pd.DataFrame()
         df_links["Web_Link"] = pd.Series(contents)

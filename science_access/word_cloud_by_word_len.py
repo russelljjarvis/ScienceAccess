@@ -86,7 +86,9 @@ import copy
 
 from nltk.tokenize import word_tokenize
 import streamlit as st
-def generate_from_lengths(self, words, max_font_size=None,verbose=False):  # noqa: C901
+
+
+def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
     ----------
@@ -110,9 +112,9 @@ def generate_from_lengths(self, words, max_font_size=None,verbose=False):  # noq
     self.max_words = 50
     words = word_tokenize(words)
     wordss = list(set(words))
-    wordss = [word for word in wordss if len(word)<20]
+    wordss = [word for word in wordss if len(word) < 20]
 
-    sizes = [len(word) for word in wordss if len(word)<20]
+    sizes = [len(word) for word in wordss if len(word) < 20]
 
     if verbose:
         st.text(wordss)
@@ -120,10 +122,7 @@ def generate_from_lengths(self, words, max_font_size=None,verbose=False):  # noq
 
     max_len = np.max(sizes)
 
-    frequencies = [
-        (word, word_len / max_len)
-        for word, word_len in zip(words, sizes)
-    ]
+    frequencies = [(word, word_len / max_len) for word, word_len in zip(words, sizes)]
     frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     max_frequency = float(frequencies[0][1])
 
@@ -168,10 +167,10 @@ def generate_from_lengths(self, words, max_font_size=None,verbose=False):  # noq
             # we only have one word. We make it big!
             font_size = self.height
         else:
-            #font_size = self.height
-            #self.generate_from_frequencies(
+            # font_size = self.height
+            # self.generate_from_frequencies(
             #    dict(frequencies), max_font_size=self.height
-            #)
+            # )
             # find font sizes
             sizes = [x[1] for x in self.layout_]
             try:
