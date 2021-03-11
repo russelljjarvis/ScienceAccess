@@ -153,7 +153,7 @@ def get_ref(references:str):
 				names = re.split(",[ ]*and |,[ ]*| and ", authors)
 				names = [(name, name.split(" ")[-1]) for name in names]
 
-def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
+def text_proc(corpus, urlDat={}, WORD_LIM=40,verbose=False):
 	if type(corpus) is type(str()) and corpus not in str(
 		"Redirecting"
 	):  # and not str("privacy policy") in corpus:
@@ -170,21 +170,44 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 		corpus = corpus.lower()
 		corpus = corpus.replace(u"\xa0", u" ")
 		corpus = corpus.replace(u"\\", u" ")
-		if not "significance" in corpus and not "abstract" in corpus:
-			return {}
-		if "abstract" in corpus:
-			posa = corpus.lower().find("abstract")
+
+		if "abstract" in corpus[0:250]:
+			posa = corpus.lower().find("abstract ")
 			corpus = corpus[posa:]
-			posr = corpus.lower().find("references")
+		else:
+			posa = False
+
+		if "references" in corpus:
+			posr = corpus.lower().find("references ")
 			corpus = corpus[:posr]
-			posb = corpus.lower().find("bibliography")
+		else:
+			posr = False
+		if "bibliography" in corpus:
+			posb = corpus.lower().find("bibliography ")
 			corpus = corpus[:posb]
+		else:
+			posb = False
 		if "significance" in corpus:
-			poss = corpus.lower().find("significance")
+			poss = corpus.lower().find("significance ")
 			corpus = corpus[poss:]
+		else:
+			poss = False;
+		if "purpose" in corpus[0:250]:
 			posp = corpus.lower().find("purpose")
 			corpus = corpus[:posp]
+		else:
+			posp = False
 
+		if (posa and (posb or posr)) or poss and posp:
+			this_is_science = True
+		else:
+			# if its not science its probably a junk web page.
+			this_is_science = False
+		if "semantic" in urlDat.keys():
+			if urlDat["semantic"]:
+				this_is_science = True
+		print(corpus)
+		print(this_is_science,'this_is_science')
 		urlDat["big_words"] = [word for word in corpus if len(word) > 40]
 		ignoreSingleSentences = 1
 
@@ -215,49 +238,35 @@ def text_proc(corpus, urlDat={}, WORD_LIM=60,verbose=False):
 			remainingText = " ".join(remainingText)
 			remainingText = remainingText.lower()
 			if wc > 0 and sc > 0:
-				#urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 				meanv,total,hard_snippet = complexityAlongtheText(corpus, chunk_length=128)
 				urlDat["standard_unbiased"] = meanv
 				urlDat["standard"] = total
-
-				urlDat["hard_snippet"] = hard_snippet
-				urlDat["fre_unbiased"] = freeAlongtheText(corpus)
-
-
-				fre = FRE(wc, sc, sylCount)
-				ndc = NDC(
-					remainingText, wc, sc
-				)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
-				urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
-				urlDat["ndc"] = ndc[0]
+				if this_is_science:
+					urlDat["hard_snippet"] = hard_snippet
+				else:
+					urlDat["hard_snippet"] = None
+				#urlDat["fre_unbiased"] = freeAlongtheText(corpus)
+				#fre = FRE(wc, sc, sylCount)
+				#ndc = NDC(
+				#	remainingText, wc, sc
+				#)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
+				#urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
+				#urlDat["ndc"] = ndc[0]
 				# textstat.text_standard(corpus, float_output=True)
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
 
-			wc_t, sc_t, sylCount, remainingText, wordLen = countWordsSentSyl(
-				tokens, ignoreSingleSentences=ignoreSingleSentences
-			)
-			if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
-				urlDat["standard"] = urlDat["fre_unbiased"]
+			#if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
+			#	urlDat["standard"] = urlDat["fre_unbiased"]
 			if urlDat["standard_unbiased"]< urlDat["standard"]  and urlDat["standard_unbiased"]>0:
 				urlDat["standard"] = urlDat["standard_unbiased"]
-			try:
-				if urlDat["ndc"]< urlDat["standard"] and urlDat["ndc"]>0 and len(tokens)<220:
-					urlDat["standard"] = urlDat["ndc"]
-			except:
-				pass
-			if urlDat["standard"] > 65:
-				return None
 
-			try:
-				urlDat["concensus"] = np.mean(
-					[
-						np.mean(urlDat["fre"]),
-						np.mean(urlDat["ndc"]),
-						np.mean(urlDat["standard_unbiased"]),
-					]
-				)
-			except:
-				pass
+			#urlDat["concensus"] = np.mean(
+			#	[
+			#		np.mean(urlDat["fre"]),
+			#		np.mean(urlDat["ndc"]),
+			#		np.mean(urlDat["standard_unbiased"]),
+			#	]
+			#)
 			tokens = [w.lower() for w in tokens if w.isalpha()]
 			tokens = [w.lower() for w in tokens]  # make everything lower case
 			urlDat["wcount"] = textstat.lexicon_count(str(tokens))

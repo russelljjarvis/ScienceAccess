@@ -1,14 +1,17 @@
+from typing import List
 import PyPDF2
 from pathlib import Path
 import copy
-import matplotlib.pyplot as plt
-import seaborn as sns
+#import matplotlib.pyplot as plt
+#import seaborn as sns
+import semanticscholar as sch
+
 import os.path
 import pdb
 import pickle
 from collections import OrderedDict
 
-import IPython.display as d
+#import IPython.display as d
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -185,19 +188,6 @@ def author_to_urls(NAME):
             dois.append(li[1])
     return dois, coauthors, titles, visit_urls
 
-
-# def elsevier():
-# MY_API_KEY = str("6fae5b65e32e1c403792a2c7301ebfe7")
-# r = str("https://api.elsevier.com/content/article/doi/")+str(doi_)+str("?view=FULL")+str("?APIKey=")+MY_API_KEY
-# response = requests.get(r)
-# print(response.status_code)
-# if response.status_code>1 and response.status_code<3:
-# 	print(response.content)
-# 	urlDat = process(response.content)
-# 	print('elsevier worked')
-# else:
-
-
 def visit_link(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -216,45 +206,46 @@ def visit_link(NAME, tns, more_links):
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
+
     return author_results, visit_urls
 
+def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     """
-	if "tokens" in urlDatTemp.keys():
-		print(urlDatTemp["tokens"])
-	r = (
-		str("https://api.unpaywall.org/v2/")
-		+ str(doi_)
-		+ str("?email=russelljjarvis@protonmail.com")
-	)
-	response = requests.get(r)
-	response = response.json()
-	urlDat = None
-	if "url_for_pdf" in response.keys():
-		res = response["url_for_pdf"]
-		urlDat = process(res)
-	if "url_for_landing_page" in response.keys() and urlDat is None:
-		res = response["url_for_landing_page"]
-		urlDat = process(res)
-	if "doi_url" in response.keys() and urlDat is None:
-		res = response["doi_url"]
-		urlDat = process(res)
+    inputs a URL that's full of publication orientated links, preferably the
+    authors scholar page.
+    """
 
-	if urlDat is None:
-		if "tokens" in urlDatTemp.keys():
-			# if len(urlDat["tokens"])<len(urlDatTemp["tokens"]):
-			urlDat = urlDatTemp
-	"""
+    author_results = []
+    aliases = None
+    dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    for d in dois:
+        paper =  sch.paper(d, timeout=6)
+        urlDat = {}
+        urlDat["link"] = paper['url']
+        urlDat["semantic"] = True
+        if aliases is None:
+            try:
+                aliases = get_aliases_and_papers(paper,NAME)
+                urlDat["aliases"] = aliases
+                print(urlDat["aliases"],'aliases')
+            except:
+                pass
+        urlDat = text_proc(str(paper['abstract']), urlDat)
+        author_results.append(urlDat)
+    author_results = [
+        urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
+    ]
 
-def get_aliases_and_papers(doi):
-    import semanticscholar as sch
-    paper =  sch.paper(doi, timeout=12)# for doi_ in tqdm(dois) ]
-    for paper in tqdm(papers):
-        if 'authors' in paper.keys():
-            for author_ in paper['authors']:
-                if NAME == author_:
-                    if 'aliases' in author_.keys():
-                        author = sch.author(author_['authorId'], timeout=12)
+    return author_results, visit_urls
 
+
+def get_aliases_and_papers(paper,NAME):
+    if 'authors' in paper.keys():
+        for author_ in paper['authors']:
+            if NAME in author_:
+                if 'aliases' in author_.keys():
+                    aliases = author_['aliases']
+    return aliases
 def visit_link_unpaywall(NAME, tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -262,15 +253,10 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    # unpaywall_links =
     visit_more_urls = []
     for index, doi_ in enumerate(
         tqdm(dois, title="Text mining via API calls. Please wait.")
     ):
-        # link = visit_urls[index]
-        # urlDatTemp = process(link)
-        # if "tokens" in urlDatTemp.keys():
-        #    print(urlDatTemp["tokens"])
         r = (
             str("https://api.unpaywall.org/v2/")
             + str(doi_)
@@ -282,11 +268,9 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
         records = p["records"][0]
         if "doi" in records.keys():
             visit_urls.append(records["doi"])
-            #get_aliases_and_papers(records["doi"])
 
         if "url_for_pdf" in response.keys():
             res = response["url_for_pdf"]
-            # if res not in set(visit_urls):
             visit_more_urls.append(res)
 
             urlDat = process(res)
@@ -301,10 +285,6 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
 
             urlDat = process(res)
 
-        # if urlDat is None:
-        #    if "tokens" in urlDatTemp.keys():
-        # if len(urlDat["tokens"])<len(urlDatTemp["tokens"]):
-        #        urlDat = urlDatTemp
         author_results.append(urlDat)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
@@ -347,7 +327,6 @@ def unpaywall_semantic_links(NAME, tns):
             visit_more_urls.append(res)
     return visit_more_urls
 
-import streamlit as st
 def convert_pdf_to_txt(content,verbose=False):
     # https://github.com/allenai/science-parse/blob/master/server/README.md
     # os.subprocess(curl -v -H "Content-type: application/pdf" --data-binary @paper.pdf "http://scienceparse.allenai.org/v1")
@@ -430,12 +409,10 @@ def process(link, driver):  # , REDIRECT=False):
 
 
 def update_web_form(NAME, tns):
-    # author_results = brian_function(url,tns)
     more_links = unpaywall_semantic_links(NAME, tns)
+    author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(NAME, tns, more_links)
     author_results, visit_urls = visit_link(NAME, tns, more_links)
-    # author_results, visit_more_urls = visit_link_unpaywall(NAME, tns, visit_urls)
-    # print(set(visit_urls) & set(visit_more_urls))
-
+    author_results.extend(author_results_temp)
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
     met = metricss(ar)
@@ -454,7 +431,7 @@ def find_nearest(array, value):
     return idx
 
 
-def ar_manipulation(ar):
+def ar_manipulation(ar:List=[]):
     ar = [tl for tl in ar if tl is not None]
     ar = [tl for tl in ar if type(tl) is not type(str(""))]
     ar = [tl for tl in ar if "standard" in tl.keys()]
@@ -466,47 +443,10 @@ def ar_manipulation(ar):
     return (ar, trainingDats)
 
 
-def call_from_front_end(NAME, OPENACCESS=True, tns=16):
-    # if not OPENACCESS:
-    # scholar_link=str('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C3&q=')+str(NAME)
-    # scholar_link=str('https://academic.microsoft.com/search?q=')+str(NAME)
-    # scholar_link=str('https://www.base-search.net/Search/Results?lookfor=')+str(NAME)
-
-    # https://paperpile.com/g/academic-search-engines/
+def call_from_front_end(NAME:str="", OPENACCESS:bool=True, tns:int=16):
     df, datay, ar = update_web_form(NAME, tns)
-
-    # _, _, ar  = enter_name_here(scholar_link,NAME,tns)
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
-
-
-"""
-def call_from_front_end_oa(NAME, OPENACCESS=False, tns=16):
-    import os
-    from crossref_commons.iteration import iterate_publications_as_json
-    import requests
-    from crossref.restful import Works
-
-    url = "https://pub.orcid.org/v3.0/csv-search/?q=" + str(NAME)
-    # https://pub.orcid.org/v3.0/csv-search/?q=
-    response = requests.get(url)
-
-    import requests
-    import pandas as pd
-    import io
-
-    urlData = requests.get(url).content
-    #    rawData = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
-
-    # global url;
-	url = "firstURL"
-	At the end of your first function you can change the value of the variable to the new URL:
-
-	url = driver.current_url
-	And then you can get the new url at the beginning of your second function:
-    driver.get(urlData)
-"""
-
 
 def metricss(rg):
     if isinstance(rg, list):

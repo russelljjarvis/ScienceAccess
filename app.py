@@ -10,7 +10,7 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 
 """
-import click
+#import click
 #import argparse
 import sys
 import streamlit as st
@@ -127,10 +127,11 @@ def show_hardest_passage(ar:List=[])->str:
         if a["standard"]>largest:
             largest = a["standard"]
             li=i
-    if "hard_snippet" in ar[i].keys():
+    if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
         st.markdown("A hard to read passage from the authors work.")
         if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
-            st.text(ar[i]["hard_snippet"])
+            st.error(ar[i]["hard_snippet"])
+
     return ar[i]
 
 
@@ -147,18 +148,13 @@ def clouds_big_words(sci_corpus):
         )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
-#@click.command()
-#@click.argument('verbose', type=int, default=0)
 verbose=0
-
 def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
-    st.markdown("In many cases entering a middle initial followed by '.' improves accuracy of results. Eg. Sayali S. Phatak")
+    st.markdown("""Entering a middle initial followed by ```.``` can change the accuracy of results.""")
+    st.markdown("""Eg. ```Sayali S. Phatak```""")
 
-    st.markdown(
-        """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
-    )
 
     if author_name:
     	ar, author_score, scraped_labels = check_cache(author_name,verbose)
@@ -166,18 +162,18 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
-        #hard=show_hardest_passage(ar)
+        hard = show_hardest_passage(ar)
 
         """
 		### Links to articles obtained from the queried author.
 		"""
         push_frame_to_screen(df_author, scraped_labels)
 
-        # temp = "{0} Summary Readability versus large sample of science".format(author_name)
-        # labels = [temp, "ART Corpus readability"]
-        # values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        # fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        # st.write(fig)
+        temp = "{0} Summary Readability versus large sample of science".format(author_name)
+        labels = [temp, "ART Corpus readability"]
+        values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        st.write(fig)
 
         df_concat_art = pd.concat([rd_df, df_author])
         fig_art = px.box(
@@ -217,12 +213,29 @@ def main():
 		own knowledge of concepts in their work, therefore it can to help
 		instill trust in text-mining results.
 		"""
-        sci_corpus = create_giant_strings(ar, not_want_list)
-        fast_art_cloud(sci_corpus)
-        clouds_by_big_words = False
-        if clouds_by_big_words:
-            clouds_big_words(sci_corpus)
 
+        grab_setr = []
+        grab_set1 = []
+
+        for block in trainingDats:
+            grab_setr.extend(block["tokens"])
+        for block in ar:
+            grab_set1.extend(block["tokens"])
+
+        artset = list(grab_setr)
+        artset.extend(not_want_list)
+        auth_set = list(set(grab_set1))
+        exclusive = [i for i in auth_set if i not in artset]
+        fig = fast_art_cloud(exclusive)
+        st.markdown("-----")
+        #fast_art_cloud(sci_corpus)
+        clouds_by_big_words = True
+        if clouds_by_big_words:
+            try:
+                sci_corpus = create_giant_strings(ar, not_want_list)
+                clouds_big_words(sci_corpus)
+            except:
+                pass
 
         if verbose:
             st.text(sci_corpus)
@@ -281,29 +294,16 @@ def main():
         # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
         st.markdown("-----")
-        st.markdown("\n\n")
-        grab_setr = []
-        grab_set1 = []
+        #st.markdown("\n\n")
 
-        for block in trainingDats:
-            grab_setr.extend(block["tokens"])
-        for block in ar:
-            grab_set1.extend(block["tokens"])
-
-        artset = list(grab_setr)
-        artset.extend(not_want_list)
-        auth_set = list(set(grab_set1))
-        exclusive = [i for i in auth_set if i not in artset]
         # inclusive = [i for i in autset if i in artset]
-        st.markdown(
-            "### Concepts that differentiate {0} from other science".format(
-                author_name
-            )
-        )
-        exclusive = create_giant_strings(ar, exclusive)
+        #st.markdown(
+        #    "### Concepts that differentiate {0} from other science".format(
+        #        author_name
+        #    )
+        #)
+        #exclusive = create_giant_strings(ar, exclusive)
 
-        fig = fast_art_cloud(exclusive)
-        st.markdown("-----")
 
         sentiment = []
         uniqueness = []
@@ -359,8 +359,16 @@ def main():
         st.markdown("-----")
         st.markdown("\n")
         st.markdown(
+            "Code Author: [Github](https://github.com/russelljjarvis/)"
+        )
+
+        st.markdown(
             "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
         )
+        st.markdown(
+            """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) semantic scholar and unpaywall APIs"""
+        )
+
         st.markdown("\n")
         st.markdown("-----")
 
