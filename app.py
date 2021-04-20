@@ -168,9 +168,21 @@ def main():
         )
         #hard=show_hardest_passage(ar)
 
-        """
-		### Links to articles obtained from the queried author.
-		"""
+	st.markdown("-----")
+	st.markdown(
+            "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
+        )
+	st.markdown("-----")
+	st.markdown("\n")
+	
+	st.markdown(
+            """
+		### There were a total number of {0} documents mined during this query. 
+		""".format(
+                len(df_author)
+            )
+        )
+
         push_frame_to_screen(df_author, scraped_labels)
 
         # temp = "{0} Summary Readability versus large sample of science".format(author_name)
@@ -192,28 +204,50 @@ def main():
         #st.write(fig_art)
 
         df0 = df_concat_art
-        st.markdown(
-            """
-		### There were a total number of {0} documents mined during this query.
-		""".format(
-                len(df_author)
-            )
-        )
+	
+	st.markdown("-----")
 
-        st.markdown(
+
+	st.markdown(
             """
-		### The average reading level was {0}.
-		""".format(
+		### The average reading level of the mined work was {0}.""".format(
                 round(np.mean(author_score)), 3
             )
         )
+
+        """
+		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		"""
         #try:
 
+	st.markdown("\n")
+	if np.mean(author_score) < np.mean(bio_chem_level):
+            st.markdown(
+                """
+			### {0} was on average easier to read relative to the ART Corpus.
+			""".format(
+                    author_name
+                )
+            )
+
+        if np.mean(author_score) >= np.mean(bio_chem_level):
+            st.markdown(
+                """
+			### {0} was on average more difficult to read relative to the ART Corpus.
+			""".format(
+                    author_name
+                )
+            )
+	
+	st.markdown("\n\n")
+        st.markdown("-----")
+        
+	
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		The word cloud is based on the most common words found in the mined text.
 		This word cloud is for humans to validate text mining work.
-		This is because the word cloud frequency often matches a writers
+		This is because the word cloud frequency often matches a writer's
 		own knowledge of concepts in their work, therefore it can to help
 		instill trust in text-mining results.
 		"""
@@ -235,44 +269,9 @@ def main():
                     "sci_corpus": sci_corpus,
                 }
         st.markdown("\n")
-
-        if np.mean(author_score) < np.mean(bio_chem_level):
-            st.markdown(
-                """
-			### {0} was on average easier to read relative to the ART Corpus.
-			""".format(
-                    author_name
-                )
-            )
-
-        if np.mean(author_score) >= np.mean(bio_chem_level):
-            st.markdown(
-                """
-			### {0} was on average more difficult to read relative to the ART Corpus.
-			""".format(
-                    author_name
-                )
-            )
-
         st.markdown("-----")
         st.markdown("\n\n")
 
-        st.markdown("-----")
-        st.markdown("\n\n")
-
-        st.markdown(
-            """
-		### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(author_score)), 3
-            )
-        )
-
-        """
-		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
-		"""
-
-        st.markdown("-----")
-        st.markdown("\n\n\n\n")
 
         # sci_corpus = create_giant_strings(ar, not_want_list)
         # bio_corpus = create_giant_strings(trainingDats, not_want_list)
@@ -280,7 +279,6 @@ def main():
         # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
         # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
-        st.markdown("-----")
         st.markdown("\n\n")
         grab_setr = []
         grab_set1 = []
@@ -339,8 +337,10 @@ def main():
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         st.write(fig)
 
+	st.markdown("\n")
+	st.markdown("-----")
         """
-		Here are a few additional established text sources of known complexity:
+		### Here are a few additional established text sources of known complexity.
 		Note that in general, we can equate reading level with grade level.
 		"""
 
@@ -356,11 +356,7 @@ def main():
 		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
 		"""
         )
-        st.markdown("-----")
-        st.markdown("\n")
-        st.markdown(
-            "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
-        )
+        
         st.markdown("\n")
         st.markdown("-----")
 
