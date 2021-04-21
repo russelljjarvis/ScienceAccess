@@ -269,7 +269,8 @@ def main():
                 }
         st.markdown("\n")
         st.markdown("-----")
-        st.markdown("\n\n")
+        
+	#st.markdown("\n\n")
 
 
         # sci_corpus = create_giant_strings(ar, not_want_list)
@@ -278,7 +279,7 @@ def main():
         # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
         # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
-        st.markdown("\n\n")
+        #st.markdown("\n\n")
         grab_setr = []
         grab_set1 = []
 
@@ -292,15 +293,15 @@ def main():
         autset = list(set(grab_set1))
         exclusive = [i for i in autset if i not in artset]
         # inclusive = [i for i in autset if i in artset]
-        st.markdown(
-            "### Concepts that differentiate {0} from other science".format(
-                author_name
-            )
-        )
-        exclusive = create_giant_strings(ar, exclusive)
+        #st.markdown(
+        #    "### Concepts that differentiate {0} from other science".format(
+        #        author_name
+        #    )
+        #)
+        #exclusive = create_giant_strings(ar, exclusive)
 
-        fig = fast_art_cloud(exclusive)
-        st.markdown("-----")
+        #fig = fast_art_cloud(exclusive)
+        #st.markdown("-----")
 
         sentiment = []
         uniqueness = []
