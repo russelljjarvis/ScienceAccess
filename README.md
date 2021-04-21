@@ -51,7 +51,7 @@ which python3
 ```
 place output from above command in
 ```
-sudo [output] setup.py install
+sudo $(which python3) setup.py install
 ```
 
 ```
