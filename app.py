@@ -153,8 +153,7 @@ verbose=0
 
 def main():
     st.title("Search Reading Complexity of an Author")
-    author_name = st.text_input("Enter Author Name:")
-    st.markdown("In many cases entering a middle initial followed by '.' improves accuracy of results. Eg. Sayali S. Phatak")
+    author_name = st.text_input("Enter Author Name. In many cases entering a middle initial followed by '.' improves accuracy of results. Eg. Sayali S. Phatak")
 
     st.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
