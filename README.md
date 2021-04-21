@@ -41,16 +41,11 @@ This last command will print two hyperlinks to the terminal. Click on the hyperl
 
 
 # Running the application from the terminal
+
+# Install
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
-
-```
-```
-which python3
-```
-place output from above command in
-```
 sudo $(which python3) setup.py install
 ```
 
