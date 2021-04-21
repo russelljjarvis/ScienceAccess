@@ -9,14 +9,14 @@ science writing
 Natural Language Processing
 
 authors:
-name: Russell Jarvis affiliation:Previous PhD Computational Neuroscience, Arizona State University 
-name: Patrick McGurrin affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
-name: Bradley G Lusk affiliation: Science The Earth; Mesa, AZ 85201, USA
-name: Rebecca Featherston affiliation: Research Fellow Department of Social Work Monash University
-name: Marc Skov Madsen affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted.
-name: Shivam Bansal affiliation: Senior Data Scientist, H2O.ai
+- Russell Jarvis affiliation:Previous PhD Computational Neuroscience, Arizona State University 
+- Patrick McGurrin affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
+- Bradley G Lusk affiliation: Science The Earth; Mesa, AZ 85201, USA
+- Rebecca Featherston affiliation: Research Fellow Department of Social Work Monash University
+- Marc Skov Madsen affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted.
+- Shivam Bansal affiliation: Senior Data Scientist, H2O.ai
 
-date: March 2021
+date: April 2021
 
 ### Introduction
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language when publishing their work in scientific journals [@Plavén-Sigray:2017], a trend that is becoming more evident over time [@Ball:2017]. 
@@ -24,7 +24,7 @@ To ensure that writing is accessible to the general population, authors must con
 In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media [@Yong 2010]. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public [@Shulman:2020]. Information outflow from scientists that is not accessible can contribute to a general misunderstanding of scientific concepts and a disconnect from scientists [@Schulman:2020]. To date over half (57%) of the world's population do not think they know much – if anything – about science. We speculated that this may be due to challenges when attempting to read and understand complex scientific topics.
 To address the increasing difficulty in reading science, we created a data-driven tool to provide authors with insights into the readability of their published open access work with respect to a known collection of science documents called the ART corpus [@Soldatova:2007].  An additional collection derived from the work “the Readability of Science is Declining over time”. has been shown to have complexity that is comparable to that of other scientific journals [@Plavén-Sigray:2017].
 
-The tool we describe consists of a text analysis service and an author search service. These services were created by using or extending many existing Free and Open Source (FOS) tools, including streamlit, requests, WordCloud, TextStat, and The Natural Language Tool Kit (NLTK). The tool has the capability to retrieve journal hosting links and journal article content (both html and PDF) from APIs, and journal hosting websites. Several Python libraries helped with querying and gaining access to open science scholarly research documents, the library python-requests were used to obtain content from three different APIs, including dissemin[reference], semantic-scholar[reference], and unpaywall[reference].
+The tool we describe consists of a text analysis service and an author search service. These services were created by using or extending many existing Free and Open Source (FOS) tools, including streamlit, requests, WordCloud, TextStat, and The Natural Language Tool Kit (NLTK). The tool has the capability to retrieve journal hosting links and journal article content (both html and PDF) from APIs, and journal hosting websites. Several Python libraries helped with querying and gaining access to open science scholarly research documents, the library python-requests were used to obtain content from three different APIs, including [dissemin](https://gitlab.com/dissemin/dissemin), [semantic-scholar](https://www.semanticscholar.org/), and [unpaywall](https://unpaywall.org/faq).
 
 This large hierarchy of software dependencies might act as an impediment to reproducibility. To address this issue we did two things. First, we deployed a [live version of the application](https://agile-reaches-20338.herokuapp.com/). Second, we created a Docker file and associated Docker container that acts as a self-documenting software environment clone. All code used for this tool can be found on GitHub, which can be run by downloading the github repository and then either building a docker container or running it using the terminal.
 
@@ -98,15 +98,23 @@ By sharing the project source code we hope that other scientists or engineers wi
 One other consideration is the idea of calculating the readability score for groups of co-authors. Since scientific documents are often co-authored, the output metrics from the scrapper tool reflect the contributions from a network of co-authors rather a single individual. Capturing the writing contributions of the author searched for and their closest co-authors may help to understand readability with a broader scope.
 
 ### References
-#[1] Kutner, Mark, Elizabeth Greenberg, and Justin Baer. "A First Look at the Literacy of America's Adults in the 21st Century. NCES 2006-470." The National Center for Education Statistics. (2006).
-#[2] Plavén-Sigray, Pontus, Granville James Matheson, Björn Christian Schiffler, and William Hedley Thompson. "The readability of scientific texts is decreasing over time." Elife. (2017).
-#[3] Ball, Philip. "It's not just you: science papers are getting harder to read." Nature News (2017).
-#[4] Shulman, H. C., Dixon, G. N., Bullock, O. M., & Colón Amill, D. (2020). The Effects of Jargon on Processing Fluency, Self-Perceptions, and Scientific Engagement. Journal of Language and Social Psychology (2020).
-#[5] Kincaid JP, Fishburne RP Jr, Rogers RL, Chissom BS. "Derivation of new readability formulas (Automated Readability Index, FogCount and Flesch Reading Ease Formula) for Navy enlisted personnel".The Institute for Simulation and Training, (1975): 8–75.
-#[6] Soldatova, Larisa, and Maria Liakata. "An ontology methodology and cisp-the proposed core information about scientific papers." JISC Project Report (2007).
-#[7] Kuhn, Tobias. "The controlled natural language of randall munroe’s thing explainer." International Workshop on Controlled Natural Language. Springer, Cham, (2016).
-#[8] Bulhak, Andrew C. "On the simulation of postmodernism and mental debility using recursive transition networks." Monash University Department of Computer Science (1996).
-#[9] Gopen, George D., and Judith A. Swan. "The science of scientific writing." American Scientist 78, no. 6 (1990): 550-558.
+[1] Kutner, Mark, Elizabeth Greenberg, and Justin Baer. "A First Look at the Literacy of America's Adults in the 21st Century. NCES 2006-470." The National Center for Education Statistics. (2006).
+
+[2] Plavén-Sigray, Pontus, Granville James Matheson, Björn Christian Schiffler, and William Hedley Thompson. "The readability of scientific texts is decreasing over time." Elife. (2017).
+
+[3] Ball, Philip. "It's not just you: science papers are getting harder to read." Nature News (2017).
+
+[4] Shulman, H. C., Dixon, G. N., Bullock, O. M., & Colón Amill, D. (2020). The Effects of Jargon on Processing Fluency, Self-Perceptions, and Scientific Engagement. Journal of Language and Social Psychology (2020).
+
+[5] Kincaid JP, Fishburne RP Jr, Rogers RL, Chissom BS. "Derivation of new readability formulas (Automated Readability Index, FogCount and Flesch Reading Ease Formula) for Navy enlisted personnel".The Institute for Simulation and Training, (1975): 8–75.
+
+[6] Soldatova, Larisa, and Maria Liakata. "An ontology methodology and cisp-the proposed core information about scientific papers." JISC Project Report (2007).
+
+[7] Kuhn, Tobias. "The controlled natural language of randall munroe’s thing explainer." International Workshop on Controlled Natural Language. Springer, Cham, (2016).
+
+[8] Bulhak, Andrew C. "On the simulation of postmodernism and mental debility using recursive transition networks." Monash University Department of Computer Science (1996).
+
+[9] Gopen, George D., and Judith A. Swan. "The science of scientific writing." American Scientist 78, no. 6 (1990): 550-558.
  
-#[10] Antonin Delpeuch; a3nm; Ryan Lahfa; translatewiki.net; Xia Li-yao; Steph. No.; Lucas Verney; Evarin; p4bl0; jibe-b; Stefan Beck; nemobis; Virgile Andreani; Martin Monperrus; Kenji Maillard; Jill-Jênn Vie; Golls, "Dissem Software" Zendo, 2019
+[10] Antonin Delpeuch; a3nm; Ryan Lahfa; translatewiki.net; Xia Li-yao; Steph. No.; Lucas Verney; Evarin; p4bl0; jibe-b; Stefan Beck; nemobis; Virgile Andreani; Martin Monperrus; Kenji Maillard; Jill-Jênn Vie; Golls, "Dissem Software" Zendo, 2019
 
