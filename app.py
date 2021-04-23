@@ -134,18 +134,18 @@ def show_hardest_passage(ar:List=[])->str:
     return ar[i]
 
 
-def clouds_big_words(sci_corpus):
-    if len(sci_corpus) != 0:
+#def clouds_big_words(sci_corpus):
+    #if len(sci_corpus) != 0:
 
-        st.markdown("-----")
-        st.markdown(""" ### Word Length Word Cloud 	""")
-        st.markdown(
-            """
-		based on the largest words found in the mined text.
-		These words are likely culprits that hindered readability.
-		"""
-        )
-        big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+        #st.markdown("-----")
+        #st.markdown(""" ### Word Length Word Cloud 	""")
+        #st.markdown(
+        #    """
+		#based on the largest words found in the mined text.
+		#These words are likely culprits that hindered readability.
+		#"""
+        #)
+        #big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
 #@click.command()
 #@click.argument('verbose', type=int, default=0)
@@ -153,11 +153,18 @@ verbose=0
 
 def main():
     st.title("Search Reading Complexity of an Author")
-    author_name = st.text_input("Enter Author Name. In many cases entering a middle initial followed by '.' improves accuracy of results. Eg. Sayali S. Phatak")
+    author_name = st.text_input("Enter Author Name. Entering a middle initial followed by '.' may improve accuracy of results. Eg. Sayali S. Phatak")
+
+    st.markdown(
+        """[Background information for the app](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md) and
+           [source code](https://github.com/russelljjarvis/ScienceAccess)"""
+    )
 
     st.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
+
+    st.markdown("-----")
 
     if author_name:
     	ar, author_score, scraped_labels = check_cache(author_name,verbose)
@@ -167,16 +174,15 @@ def main():
         )
         #hard=show_hardest_passage(ar)
 
-	st.markdown("-----")
-	st.markdown(
-            "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
-        )
-	st.markdown("-----")
-	st.markdown("\n")
-	
-	st.markdown(
+        st.markdown("-----")
+        """
+        ## Results:
+		"""
+        st.markdown("\n\n")
+
+        st.markdown(
             """
-		### There were a total number of {0} documents mined during this query. 
+		### There was a total of {0} documents mined during this query.
 		""".format(
                 len(df_author)
             )
@@ -203,11 +209,8 @@ def main():
         #st.write(fig_art)
 
         df0 = df_concat_art
-	
-	st.markdown("-----")
 
-
-	st.markdown(
+        st.markdown(
             """
 		### The average reading level of the mined work was {0}.""".format(
                 round(np.mean(author_score)), 3
@@ -219,11 +222,12 @@ def main():
 		"""
         #try:
 
-	st.markdown("\n")
-	if np.mean(author_score) < np.mean(bio_chem_level):
+        st.markdown("\n\n")
+
+        if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to the ART Corpus.
+			### The author {0} was on average easier to read relative to the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -237,41 +241,33 @@ def main():
                     author_name
                 )
             )
-	
-	st.markdown("\n\n")
+
         st.markdown("-----")
-        
-	
+
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		The word cloud is based on the most common words found in the mined text.
-		This word cloud is for humans to validate text mining work.
-		This is because the word cloud frequency often matches a writer's
-		own knowledge of concepts in their work, therefore it can to help
-		instill trust in text-mining results.
+		This allows the user to validate the text mining work, as the output should match a writers
+		own knowledge of concepts in their work.
 		"""
         sci_corpus = create_giant_strings(ar, not_want_list)
         fast_art_cloud(sci_corpus)
-        clouds_by_big_words = True
-        if clouds_by_big_words:
-            clouds_big_words(sci_corpus)
+        #clouds_by_big_words = True
+        #if clouds_by_big_words:
+        #    clouds_big_words(sci_corpus)
 
 
-        if verbose:
-            st.text(sci_corpus)
-        with shelve.open("fast_graphs_splash.p") as db:
-            if not author_name in db.keys():
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "author_score": author_score,
-                    "sci_corpus": sci_corpus,
-                }
+        #if verbose:
+        #    st.text(sci_corpus)
+        #with shelve.open("fast_graphs_splash.p") as db:
+        #    if not author_name in db.keys():
+        #        db[author_name] = {
+        #            "ar": ar,
+        #            "scraped_labels": scraped_labels,
+        #            "author_score": author_score,
+        #            "sci_corpus": sci_corpus,
+        #        }
         st.markdown("\n")
-        st.markdown("-----")
-        
-	#st.markdown("\n\n")
-
 
         # sci_corpus = create_giant_strings(ar, not_want_list)
         # bio_corpus = create_giant_strings(trainingDats, not_want_list)
@@ -279,7 +275,6 @@ def main():
         # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
         # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
-        #st.markdown("\n\n")
         grab_setr = []
         grab_set1 = []
 
@@ -301,7 +296,6 @@ def main():
         #exclusive = create_giant_strings(ar, exclusive)
 
         #fig = fast_art_cloud(exclusive)
-        #st.markdown("-----")
 
         sentiment = []
         uniqueness = []
@@ -321,9 +315,11 @@ def main():
                 )
             )
 
+        st.markdown("-----")
+
         st.markdown("""### Sentiment""")
         st.markdown(
-            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
+            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of ART Corpus.
 					""".format(
                 temp, author_name
             )
@@ -337,10 +333,10 @@ def main():
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         st.write(fig)
 
-	st.markdown("\n")
-	st.markdown("-----")
+        st.markdown("-----")
+
         """
-		### Here are a few additional established text sources of known complexity.
+		Here are a few established text sources of known complexity.
 		Note that in general, we can equate reading level with grade level.
 		"""
 
@@ -353,11 +349,9 @@ def main():
 		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
 		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
 		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+		| [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
 		"""
         )
-        
-        st.markdown("\n")
         st.markdown("-----")
 
         """
