@@ -23,14 +23,6 @@ authors:
   - name: Rebecca Featherston affiliation: Monash University
 
 date: April  2021
-
-# Introduction
-To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language [@Plavén-Sigray:2017]. In fact, this trend is becoming more evident over time [@Ball:2017]. Science writing using accessible language can be challenging to begin with, and is often not a part of formalized academic training. In addition, communicating scientific information is difficult given the overall breadth and niche detail of content.
-
-In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public [@Shulman:2020].
-
-While readability tools, such as [Readable](https://www.webfx.com/tools/read-able/) and [Upgoer5](https://splasho.com/upgoer5/) currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not focus on complexity in a more academic-type context. To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies an existing text repository [@Soldatova:2007] with complexity shown to be comparable to that of other scientific journals [@Plavén-Sigray:2017]. The tool subsequently uses this output as a reference to show how the readability of user-selected written work compares to this source.
-
 Bibliography: paper.bib
 
 ### Summary
@@ -38,8 +30,10 @@ Here we present a new text analysis tool capable of reviewing the complexity of 
 
 The goal of this work is to apply a more data-driven approach that provides established academic authors with statistical insights into their body of published peer reviewed work. By monitoring these readability metrics, scientists may be able to cater their writing to reach broader audiences, contributing to an improved global communication and understanding of complex topics.
 
+
 ### Statement of Need
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language when publishing their work in scientific journals [@Plavén-Sigray:2017], a trend that is becoming more evident over time [@Ball:2017]. 
+
 In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public [@Shulman:2020]. This can contribute to a general misunderstanding of scientific concepts and a disconnect from scientists [@Schulman:2020]. 
 
 To address the increasing difficulty in reading science, we created a data-driven tool to provide authors with insights into the readability of their published open access work with respect to a known collection of science documents called the ART corpus [@Soldatova:2007]. This collection and an additional collection derived from the work “the Readability of Science is Declining over time” has been shown to have complexity that is comparable to that of other scientific journals [@Plavén-Sigray:2017].
@@ -48,7 +42,7 @@ The tool we describe consists of a text analysis service and an author search se
 
 ### Search Output
 
-By entering an author’s name into the search box, a system of API calls and web resource requests collects and analyzes text written by that author from the dissemin API. Our tool contrasts the queried authors readability with expected science readability scores because it has pre-processed and quantified the existing corpus of publicly licenced scientific texts contained in ART Corpus (creative commons license), as well as a number of available text repositories and common resources with varying complexity (Table 1). 
+By entering an author’s name into the search box, a system of API calls and web resource requests collects and analyzes text written by that author from the dissemin API. Our tool contrasts the queried authors readability with expected science readability scores because it has pre-processed and quantified the existing corpus of publicly licenced scientific texts contained in ART Corpus (creative commons license), as well as a number of available text repositories and common resources with varying complexity (see Table). 
 
 After querying an author, the readability of the author's work is evaluated by a variety of pre-established metrics. We used  “text_standard,” a readability consensus score that returns the average estimated school grade level required to understand the text. Results from the dissem query include the number of documents on which the readability score was based. Each mined text is presented to the user in a table with an active link to the source text. This allows the user to verify that the results are correct and also provides individual readability scores for each text source.
 
@@ -64,7 +58,7 @@ After querying an author, the readability of the author's work is evaluated by a
 
 The mined text is compared against the ART Corpus as a side-by-side boxplot of readability scores, as well as data points of each individual readability score. This allows the user to easily review the readability of their work with regard to the ART Corpus. 
 
-Sentiment is also calculated to see overall how positive or negative the text scores are and to cross validate the overall approach. It is expected that science papers should have high objectivity and thus low sentiment polarity. Lastly, two word clouds are also generated that show the most commonly used words and the largest words in the mined text. The collection of big words may help to reconcile unfavorable and high readability scores with the actual written words of the scientific author.
+Sentiment is also calculated to see overall how positive or negative the text scores are and to cross validate the overall approach. It is expected that science papers should have high objectivity and thus low sentiment polarity. Lastly, two word clouds are also generated that show the most commonly used and most unique words in the mined text. 
 
 ### Reproducibility
 This large hierarchy of software dependencies might act as an impediment to reproducibility. To address this issue we did two things. First, we deployed a [live version of the application](https://agile-reaches-20338.herokuapp.com/). Second, we created a Docker file and associated Docker container that acts as a self-documenting software environment clone. All code used for this tool can be found on GitHub, which can be run by downloading the github repository and then either building a docker container or running it using the terminal.
