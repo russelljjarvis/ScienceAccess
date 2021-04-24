@@ -3,16 +3,13 @@ import PyPDF2
 from pathlib import Path
 import copy
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
 import semanticscholar as sch
 
 import os.path
-import pdb
-import pickle
+#import pdb
+#import pickle
 from collections import OrderedDict
 
-# import IPython.display as d
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -418,6 +415,17 @@ def update_web_form(NAME, tns):
     author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
         NAME, tns, more_links
     )
+    ar = copy.copy(author_results)
+    datax = filter_empty(ar)
+    met = metricss(ar)
+    df = pd.DataFrame(datax)
+    return df, met, author_results
+
+def update_web_form_full_text(NAME, tns):
+    more_links = unpaywall_semantic_links(NAME, tns)
+    author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
+        NAME, tns, more_links
+    )
     author_results, visit_urls = visit_link(NAME, tns, more_links)
     author_results.extend(author_results_temp)
     ar = copy.copy(author_results)
@@ -425,6 +433,7 @@ def update_web_form(NAME, tns):
     met = metricss(ar)
     df = pd.DataFrame(datax)
     return df, met, author_results
+
 
 
 def enter_name_here(scholar_page, name, tns):

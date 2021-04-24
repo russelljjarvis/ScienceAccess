@@ -6,7 +6,6 @@ In the age of growing science communication, this tendency for scientists to use
 To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies an existing text repository [@Soldatova:2007] with complexity shown to be comparable to that of other scientific journals. The tool subsequently uses this output as a reference to show how the readability of user-selected written work compares to this source.
 Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
 Author: [Russell Jarvis](https://github.com/russelljjarvis)\n
-Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 
 """
@@ -35,10 +34,7 @@ from typing import List, Any
 from science_access.t_analysis import not_want_list
 not_want_list.extend(["link","librarian","issue","abstract","science","cookie","publication"])
 
-from science_access.online_app_backend import call_from_front_end
-from science_access.online_app_backend import ar_manipulation
-
-# from science_access	import bokeh_word_cloud
+from science_access.online_app_backend import call_from_front_end,ar_manipulation
 
 from science_access.enter_author_name import (
     art_cloud,
@@ -73,7 +69,11 @@ rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
 
 rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
+max = np.max(rd_df["Reading_Level"])
+
+#rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
 with open("data/trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
@@ -81,13 +81,14 @@ with open("data/trainingDats.p", "rb") as f:
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
-#@st.cache(suppress_st_warning=True)
+@st.cache(suppress_st_warning=True)
 def check_cache(author_name: str,verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
         if not flag:
             ar = call_from_front_end(author_name)
             scraped_labels, author_score = frame_to_lists(ar)
+
             ##
             # This shelve
             # caching wont scale on heroku.
@@ -130,7 +131,9 @@ def show_hardest_passage(ar:List=[])->str:
     if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
         st.markdown("A hard to read passage from the authors work.")
         if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
-            st.error(ar[i]["hard_snippet"])
+            if len(ar[i]["hard_snippet"]):
+                if "semantic" in ar[i].keys():
+                    st.error(ar[i]["hard_snippet"])
 
     return ar[i]
 
@@ -153,7 +156,7 @@ def main():
     st.title("Search Reading Complexity of an Author")
     author_name = st.text_input("Enter Author Name:")
     st.markdown("""Entering a middle initial followed by ```.``` can change the accuracy of results.""")
-    st.markdown("""Eg. ```Sayali S. Phatak```""")
+    st.markdown("""Eg. Sayali S```.``` Phatak""")
 
 
     if author_name:
@@ -162,7 +165,6 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
-        hard = show_hardest_passage(ar)
 
         """
 		### Links to articles obtained from the queried author.
@@ -203,7 +205,6 @@ def main():
                 round(np.mean(author_score)), 3
             )
         )
-        #try:
 
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
@@ -215,27 +216,32 @@ def main():
 		"""
 
         grab_setr = []
-        grab_set1 = []
+        grab_set_auth = []
 
-        for block in trainingDats:
-            grab_setr.extend(block["tokens"])
-        for block in ar:
-            grab_set1.extend(block["tokens"])
+        for paper in trainingDats:
+            grab_setr.extend(paper["tokens"])
 
+        for paper in ar:
+            grab_set_auth.extend(paper["tokens"])
         artset = list(grab_setr)
         artset.extend(not_want_list)
-        auth_set = list(set(grab_set1))
-        exclusive = [i for i in auth_set if i not in artset]
-        fig = fast_art_cloud(exclusive)
+        #auth_set = grab_set_auth
+        #exclusive = [i for i in grab_set_auth if i not in artset]
+        fig = fast_art_cloud(grab_set_auth)
+        hard = show_hardest_passage(ar)
+
         st.markdown("-----")
         #fast_art_cloud(sci_corpus)
         clouds_by_big_words = True
         if clouds_by_big_words:
-            try:
-                sci_corpus = create_giant_strings(ar, not_want_list)
-                clouds_big_words(sci_corpus)
-            except:
-                pass
+            grab_set_auth = []
+            for paper in ar:
+                if "semantic" in paper.keys():
+                    grab_set_auth.extend(paper["tokens"])
+            sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
+            clouds_big_words(sci_corpus)
+            #except:
+            #    pass
 
         if verbose:
             st.text(sci_corpus)
@@ -305,12 +311,6 @@ def main():
         #exclusive = create_giant_strings(ar, exclusive)
 
 
-        sentiment = []
-        uniqueness = []
-        for block in trainingDats:
-            uniqueness.append(block["uniqueness"])
-            sentiment.append(block["sp"])
-        temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
         if "reading_time" in ar[0].keys():
             average_reading_time = [np.mean([r["reading_time"] for r in ar])]
 
@@ -323,21 +323,8 @@ def main():
                 )
             )
 
-        st.markdown("""### Sentiment""")
-        st.markdown(
-            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
-					""".format(
-                temp, author_name
-            )
-        )
-
-        temp = "{0} positive sentiment".format(author_name)
-        labels = [temp, "ART Corpus positive sentiment"]
-        values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
-
-        # urlDat["reading_time"]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
+        df, met, author_results = update_web_form_full_text(NAME, tns)
+        (ar, trainingDats) = ar_manipulation(ar)
 
         """
 		Here are a few additional established text sources of known complexity:
@@ -359,11 +346,11 @@ def main():
         st.markdown("-----")
         st.markdown("\n")
         st.markdown(
-            "Code Author: [Github](https://github.com/russelljjarvis/)"
+            "[Code Author: Russell J. Jarvis](https://github.com/russelljjarvis/)"
         )
 
         st.markdown(
-            "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
+            "[Source Code: Github](https://github.com/russelljjarvis/ScienceAccess)"
         )
         st.markdown(
             """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) semantic scholar and unpaywall APIs"""

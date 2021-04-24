@@ -5,6 +5,7 @@ nltk
 selenium
 delver
 pdfminer
+semanticscholar
 pyvirtualdisplay
 textstat
 fsspec>=0.3.3

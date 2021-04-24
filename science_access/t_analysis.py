@@ -160,7 +160,41 @@ def get_ref(references: str):
                 text, authors, year = authors_and_year.groups()
                 names = re.split(",[ ]*and |,[ ]*| and ", authors)
                 names = [(name, name.split(" ")[-1]) for name in names]
+def extract_science_block(corpus):
+    if "abstract" in corpus:
+        posa = corpus.lower().find("abstract ")
+        corpus = corpus[posa:]
+    else:
+        posa = False
 
+    if "references" in corpus:
+        posr = corpus.lower().find("references ")
+        corpus = corpus[:posr]
+    else:
+        posr = False
+    if "bibliography" in corpus:
+        posb = corpus.lower().find("bibliography ")
+        corpus = corpus[:posb]
+    else:
+        posb = False
+    if "significance" in corpus:
+        poss = corpus.lower().find("significance ")
+        corpus = corpus[poss:]
+    else:
+        poss = False
+    if "purpose" in corpus[0:250]:
+        posp = corpus.lower().find("purpose")
+        corpus = corpus[:posp]
+    else:
+        posp = False
+
+    if (posa and (posb or posr)) or poss and posp:
+        this_is_science = True
+    else:
+        # if its not science its probably a junk web page.
+        this_is_science = False
+
+    return corpus, this_is_science
 
 def text_proc(corpus, urlDat={}, WORD_LIM=40, verbose=False):
     if type(corpus) is type(str()) and corpus not in str(
@@ -178,42 +212,11 @@ def text_proc(corpus, urlDat={}, WORD_LIM=40, verbose=False):
         corpus = corpus.lower()
         corpus = corpus.replace(u"\xa0", u" ")
         corpus = corpus.replace(u"\\", u" ")
-
-        if "abstract" in corpus[0:250]:
-            posa = corpus.lower().find("abstract ")
-            corpus = corpus[posa:]
-        else:
-            posa = False
-
-        if "references" in corpus:
-            posr = corpus.lower().find("references ")
-            corpus = corpus[:posr]
-        else:
-            posr = False
-        if "bibliography" in corpus:
-            posb = corpus.lower().find("bibliography ")
-            corpus = corpus[:posb]
-        else:
-            posb = False
-        if "significance" in corpus:
-            poss = corpus.lower().find("significance ")
-            corpus = corpus[poss:]
-        else:
-            poss = False
-        if "purpose" in corpus[0:250]:
-            posp = corpus.lower().find("purpose")
-            corpus = corpus[:posp]
-        else:
-            posp = False
-
-        if (posa and (posb or posr)) or poss and posp:
-            this_is_science = True
-        else:
-            # if its not science its probably a junk web page.
-            this_is_science = False
+        corpus, this_is_science = extract_science_block(corpus)
         if "semantic" in urlDat.keys():
             if urlDat["semantic"]:
                 this_is_science = True
+
         print(corpus)
         print(this_is_science, "this_is_science")
         urlDat["big_words"] = [word for word in corpus if len(word) > 40]
@@ -255,31 +258,37 @@ def text_proc(corpus, urlDat={}, WORD_LIM=40, verbose=False):
                     urlDat["hard_snippet"] = hard_snippet
                 else:
                     urlDat["hard_snippet"] = None
-                # urlDat["fre_unbiased"] = freeAlongtheText(corpus)
-                # fre = FRE(wc, sc, sylCount)
-                # ndc = NDC(
-                # 	remainingText, wc, sc
-                # )  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
-                # urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
-                # urlDat["ndc"] = ndc[0]
+                urlDat["fre_unbiased"] = freeAlongtheText(corpus)
+                fre = FRE(wc, sc, sylCount)
+                if "semantic" in urlDat.keys():
+                    if urlDat["semantic"]:
+                        ndc = NDC(
+                         	remainingText, wc, sc
+                        )  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
+                        # urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
+                        urlDat["standard"] = ndc[0]
                 # textstat.text_standard(corpus, float_output=True)
                 # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
 
-            # if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
-            # 	urlDat["standard"] = urlDat["fre_unbiased"]
+            if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
+             	urlDat["standard"] = urlDat["fre_unbiased"]
             if (
                 urlDat["standard_unbiased"] < urlDat["standard"]
                 and urlDat["standard_unbiased"] > 0
             ):
                 urlDat["standard"] = urlDat["standard_unbiased"]
+            if fre<urlDat["standard"] and fre>0:
+                urlDat["standard"] = fre
+            if urlDat["standard"] > 60 and ndc[0]>0 and ndc[0]<60:
+                urlDat["standard"] = ndc[0]
 
-            # urlDat["concensus"] = np.mean(
-            # 	[
-            # 		np.mean(urlDat["fre"]),
-            # 		np.mean(urlDat["ndc"]),
-            # 		np.mean(urlDat["standard_unbiased"]),
-            # 	]
-            # )
+            urlDat["concensus"] = np.mean(
+             	[
+             		np.mean(urlDat["fre"]),
+             		np.mean(urlDat["ndc"]),
+             		np.mean(urlDat["standard_unbiased"]),
+             	]
+            )
             tokens = [w.lower() for w in tokens if w.isalpha()]
             tokens = [w.lower() for w in tokens]  # make everything lower case
             urlDat["wcount"] = textstat.lexicon_count(str(tokens))

@@ -3,25 +3,25 @@
 #
 # download and install latest geckodriver for linux or mac.
 # required for selenium to drive a firefox browser.
-sudo apt-get update
-sudo apt-get install jq wget chromium-chromedriver firefox
-sudo python3 -m pip install -r requirements.txt
-sudo python3 -m pip install seaborn
-sudo python3 -m pip install bs4
-sudo python3 -m pip install natsort dask plotly tabulate
-sudo python3 -m conda install -c pyviz holoviews bokeh
-sudo conda install -c pyviz holoviews bokeh
-sudo python3 -m pip install git+https://github.com/pyviz/holoviews.git
+apt-get update
+apt-get install jq wget chromium-chromedriver firefox
+python3 -m pip install -r requirements.txt
+python3 -m pip install seaborn
+python3 -m pip install bs4
+python3 -m pip install natsort dask plotly tabulate
+python3 -m conda install -c pyviz holoviews bokeh
+conda install -c pyviz holoviews bokeh
+python3 -m pip install git+https://github.com/pyviz/holoviews.git
 
 # hack package installs:
 
 git clone https://github.com/pyviz/holoviews.git
-cd holoviews; sudo pip install -e .; cd ..;
+cd holoviews; pip install -e .; cd ..;
 
 git clone https://github.com/kermitt2/grobid_client_python
-cd grobid_client_python; sudo pip install -e .; cp grobid_client.py ..;cd ..;
+cd grobid_client_python; pip install -e .; cp grobid_client.py ..;cd ..;
 git clone https://github.com/dissemin/dissemin
-cd dissemin; sudo pip install -e .;cd ..;
+cd dissemin; pip install -e .;cd ..;
 
 
 wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2
@@ -33,10 +33,11 @@ tar -xvzf geckodriver*
 chmod +x geckodriver
 
 git clone https://russelljjarvis@github.com/russelljjarvis/CoauthorNetVis.git
-cd CoauthorNetVis; sudo pip install -e .;cd ..;
+cd CoauthorNetVis; pip install -e .;cd ..;
 
 
-
+git clone https://github.com/russelljjarvis/readabilityinscience
+cd readabilityinscience; pip install -e .;cd ..;
 
 
 
