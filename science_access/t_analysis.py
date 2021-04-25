@@ -26,7 +26,6 @@ from nltk.tag.perceptron import PerceptronTagger
 import nltk
 from nltk.corpus import words as english_words
 
-# from nltk.tokenize import word_tokenize
 
 from nltk.tokenize import sent_tokenize, word_tokenize
 import numpy as np
@@ -103,7 +102,30 @@ def create_giant_strings(ar, not_want_list):
 # ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 
 from typing import Union
+def complexityAlongtheText(text:str, chunk_length:int=5)->Union[float,float,str]:
+	words = sent_tokenize(text)
+	#words = #text.split()
+	cur = 0
+	stds = []
+	hardest_chunk_index = 0
+	while cur < len(words):
+		sub = words[cur : cur + 5]
+		sub_text = " ".join(sub)
+		std = textstat.text_standard(sub_text, float_output=True)
+		cur += chunk_length
+		if std>hardest_chunk_index:
+			hardest_chunk_index = cur
+		stds.append(std)
+	hard_snippet = words[hardest_chunk_index : hardest_chunk_index + chunk_length]
+	hs=""
+	for h in hard_snippet:
+		hs+=h+str(" ")
+	#st.text(hs)
+	return np.mean(stds), textstat.text_standard(text, float_output=True), hs
 
+def freeAlongtheText(text:str, chunk_length:int=5)->float:
+	#words = text.split()
+	words = sent_tokenize(text)
 
 def complexityAlongtheText(
     text: str, chunk_length: int = 5
