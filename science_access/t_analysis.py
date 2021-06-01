@@ -304,13 +304,12 @@ def text_proc(corpus, urlDat={}, WORD_LIM=40, verbose=False):
             if urlDat["standard"] > 60 and ndc[0]>0 and ndc[0]<60:
                 urlDat["standard"] = ndc[0]
 
-            urlDat["concensus"] = np.mean(
-             	[
-             		np.mean(fre),
-             		np.mean(urlDat["ndc"]),
-             		np.mean(urlDat["standard_unbiased"]),
-             	]
-            )
+            #urlDat["concensus"] = np.mean(
+            # 	[
+            # 		np.mean(fre),
+            # 		np.mean(urlDat["standard_unbiased"]),
+            # 	]
+            #)
             tokens = [w.lower() for w in tokens if w.isalpha()]
             tokens = [w.lower() for w in tokens]  # make everything lower case
             urlDat["wcount"] = textstat.lexicon_count(str(tokens))
