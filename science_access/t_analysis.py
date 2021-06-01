@@ -306,7 +306,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=40, verbose=False):
 
             urlDat["concensus"] = np.mean(
              	[
-             		np.mean(urlDat["fre"]),
+             		np.mean(fre),
              		np.mean(urlDat["ndc"]),
              		np.mean(urlDat["standard_unbiased"]),
              	]

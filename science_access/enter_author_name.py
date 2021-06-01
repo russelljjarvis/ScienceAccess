@@ -178,11 +178,17 @@ def fast_art_cloud(acorpus):
 def create_giant_strings(ar, not_want_list):
     sci_corpus = ""
     first_pass = []
-    for t in ar:
-        if "tokens" in t.keys():
-            for s in t["tokens"]:
-                if s not in not_want_list:
-                    first_pass.append(s)
+    if type(ar[0]) is type(dict()):
+        for t in ar:
+            if "tokens" in t.keys():
+                for s in t["tokens"]:
+                    if s not in not_want_list:
+                        first_pass.append(s)
+    else:
+        for t in ar:
+            if t not in not_want_list:
+                first_pass.append(t)
+
     first_pass = set(first_pass)
     for s in first_pass:
         if "/" in s:
