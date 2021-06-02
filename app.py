@@ -325,7 +325,7 @@ def main():
 		#exclusive = [i for i in grab_set_auth if i not in artset]
 		fig = fast_art_cloud(grab_set_auth)
 		hard = show_hardest_passage(ar)
-		i#f hard is not None:
+		#if hard is not None:
 		#	st.markdown(hard)
 		show_author_alias(ar)
 
