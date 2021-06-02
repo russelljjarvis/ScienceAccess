@@ -10,7 +10,9 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 
 """
-
+import nltk
+nltk.download('punkt')
+nltk.download("cmudict")
 try:
 	from nltk.corpus import cmudict
 except:
