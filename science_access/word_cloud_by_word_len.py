@@ -109,7 +109,7 @@ def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # no
     frequencies = frequencies[:self.max_words]
     """
     # largest entry will be 1
-    self.max_words = 30
+    self.max_words = 31
     words = word_tokenize(words)
     wordss = list(set(words))
     wordss = [word for word in wordss if len(word)]
@@ -161,7 +161,7 @@ def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # no
 
     if max_font_size is None:
         # if not provided use default font_size
-        max_font_size = self.max_font_size*2.5
+        max_font_size = self.max_font_size
 
     if max_font_size is None:
         # figure out a good font size by trying to draw with
