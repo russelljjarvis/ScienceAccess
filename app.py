@@ -15,7 +15,8 @@ try:
 	from nltk.corpus import cmudict
 except:
 	import os
-	os.system("python -c 'import nltk;nltk.download("cmudict")'")
+	exec_string = str('import nltk;nltk.download("cmudict")')
+	os.system("python -c '{0}'".format(exec_string))
 	import site
 	from importlib import reload
 	reload(site)
