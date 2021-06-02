@@ -31,13 +31,13 @@ if "DYNO" in os.environ:
 else:
     heroku = False
 
-from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException
-from selenium import webdriver
+#from selenium.webdriver.firefox.options import Options
+#from selenium.common.exceptions import NoSuchElementException
+#from selenium import webdriver
 
-global driver
+#global driver
 
-
+"""
 def get_driver():
 
     options = Options()
@@ -95,11 +95,12 @@ def get_driver():
                         options=options, executable_path=GECKODRIVER_PATH
                     )
                     return driver
+
     return driver
 
 
 driver = get_driver()
-
+"""
 
 class tqdm:
     def __init__(self, iterable, title=None):
@@ -197,7 +198,7 @@ def visit_link(NAME, tns, more_links):
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
         if link is not None:
-            urlDatTemp = process(link, driver)
+            urlDatTemp = process(link)
             author_results.append(urlDatTemp)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
@@ -359,15 +360,21 @@ def convert_pdf_to_txt(content, verbose=False):
         return str("")
 
 
-def process(link, driver):  # , REDIRECT=False):
+def process(link):  # , REDIRECT=False):
     urlDat = {}
 
     if link is None:
         return None
     if str("pdf") not in link:
+        response = requests.get(link)
+        #crude_html = response.json()
+        import html
+
+        crude_html = html.unescape(response.text)
+        """
         try:
-            driver.get(link)
-            crude_html = driver.page_source
+            #driver.get(link)
+            #crude_html = driver.page_source
         except:
             try:
                 driver = get_driver()
@@ -378,6 +385,7 @@ def process(link, driver):  # , REDIRECT=False):
                 st.text(link)
                 urlDat = {}
                 return urlDat
+        """
         soup = BeautifulSoup(crude_html, "html.parser")
         for script in soup(["script", "style"]):
             script.extract()  # rip it out

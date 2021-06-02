@@ -145,15 +145,18 @@ def show_hardest_passage(ar:List=[])->str:
 			li=i
 		#st.text(ar[i].keys())
 		#st.text(ar[i]["hard_snippet"])
+	for i,a in enumerate(ar):
+		if a["standard"]==largest:
 
-		if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
-			st.markdown("---")
-
-			st.markdown("### A hard to read passage from the authors work.")
-
-			if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
+			if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
 				if len(ar[i]["hard_snippet"]):
-					if "semantic" in ar[i].keys():
+					if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
+						#if "semantic" in ar[i].keys():
+
+						st.markdown("---")
+
+						st.markdown("### A hard to read passage from the authors work.")
+
 						st.error(ar[i]["hard_snippet"])
 
 	return ar[i]
