@@ -16,7 +16,15 @@ The NDCeasywords.txt list originates from the textstat python package. - https:/
 import curses  # For windows: download and pip install curses from http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
 from curses.ascii import isdigit
 import nltk
-from nltk.corpus import cmudict
+
+
+try:
+    from nltk.corpus import cmudict
+except:
+
+    nltk.download('cmudict')
+    from nltk.corpus import cmudict
+
 import re
 import time
 import pandas as pd

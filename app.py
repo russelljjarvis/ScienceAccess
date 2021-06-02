@@ -85,6 +85,7 @@ bio_chem_level = art_df["Reading_Level"]
 def check_cache(author_name: str,verbose=0):  # ->Union[]
 	with shelve.open("fast_graphs_splash.p") as db:
 		flag = author_name in db
+		flag = False
 		if not flag:
 			ar = call_from_front_end(author_name)
 			scraped_labels, author_score = frame_to_lists(ar)
@@ -128,8 +129,11 @@ def show_hardest_passage(ar:List=[])->str:
 		if a["standard"]>largest:
 			largest = a["standard"]
 			li=i
+	st.text(ar[i].keys())
 	if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
 		st.markdown("A hard to read passage from the authors work.")
+		st.text(ar[i]["hard_snippet"])
+
 		if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
 			if len(ar[i]["hard_snippet"]):
 				if "semantic" in ar[i].keys():
@@ -182,8 +186,8 @@ def main():
 			"Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
 		)
 
-	my_expander = st.sidebar.beta_expander("Information about readability")
-
+	my_expander = st.beta_expander("Information about readability")
+	#if my_expander:
 	my_expander.markdown("""-----
 	### Here are a few additional established text sources of known complexity.
 	Note that in general, we can equate reading level with grade level.
@@ -212,8 +216,6 @@ def main():
 	""")
 	my_expander.markdown("-----")
 
-	st.markdown("-----")
-	st.markdown("\n")
 	if "df_author" in locals():
 		st.markdown(
 				"""
