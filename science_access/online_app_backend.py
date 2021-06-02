@@ -223,7 +223,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
             urlDat["link"] = paper["title"]
         urlDat["semantic"] = True
         if aliases is None:
-            if "aliases" in paper.keys()
+            if "aliases" in paper.keys():
                 urlDat["aliases"] = paper['aliases']
             else:
                 pass
