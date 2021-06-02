@@ -338,9 +338,10 @@ def main():
 				if "semantic" in paper.keys():
 					grab_set_auth.extend(paper["tokens"])
 			sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
-			clouds_big_words(sci_corpus)
-			#except:
-			#    pass
+			try:
+				clouds_big_words(sci_corpus)
+			except:
+			    pass
 
 		if verbose:
 			st.text(sci_corpus)
