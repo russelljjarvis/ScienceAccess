@@ -6,7 +6,7 @@ FROM python:3.7.4
 
 
 # https://github.com/joyzoursky/docker-python-chromedriver/blob/master/py3/py3.6-xvfb-selenium/Dockerfile
-RUN apt-get update 
+RUN apt-get update
 # install selenium
 RUN apt-get install -y python3-software-properties
 RUN apt-get install -y software-properties-common
@@ -48,7 +48,7 @@ RUN wget \
     https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && mkdir /root/.conda \
     && bash Miniconda3-latest-Linux-x86_64.sh -b \
-    && rm -f Miniconda3-latest-Linux-x86_64.sh 
+    && rm -f Miniconda3-latest-Linux-x86_64.sh
 RUN pip install pyvirtualdisplay
 RUN pip install nltk
 RUN pip install selenium==3.8.0
@@ -75,7 +75,9 @@ RUN conda --version
 RUN conda update --yes conda
 RUN apt-get install -y python3-dev gcc
 RUN conda install --yes gcc_linux-64
-RUN apt-get install -y --no-install-recommends g++ protobuf-compiler     
+RUN apt-get install -y --no-install-recommends g++ protobuf-compiler
+RUN python -m pip install -U pip
+RUN pip install --user --upgrade pip
 RUN python -m pip install -U pycld3
 # Copy local code to the container image.
 # --------------- Install python packages using `pip` ---------------
@@ -83,7 +85,7 @@ RUN python -m pip install -U pycld3
 RUN bash -c 'echo -e "\
     pycld3\n\
 	regex\n\
-	pdfminer\n\	
+	pdfminer\n\
 	PyPDF2\n\
 	nltk\n\
 	selenium\n\
@@ -125,7 +127,7 @@ RUN wget https://www.dropbox.com/s/x66zf52himmp5ox/benchmarks.p?dl=0
 RUN mv traingDats.p?dl=0 traingDats.p
 RUN mv benchmarks.p?dl=0 benchmarks.p
 # This may be more correct app doesn't mind
-# WORKDIR $APP_HOME																	
+# WORKDIR $APP_HOME
 RUN pip install spacy
 RUN python -m spacy download en_core_web_sm \
     && python -m spacy download en_core_web_md \
@@ -133,11 +135,11 @@ RUN python -m spacy download en_core_web_sm \
 	&& python -m spacy download en
 
 
-RUN apt-get update && apt-get install -y procps libsm6 libxext6 libxrender-dev libglib2.0-0 
+RUN apt-get update && apt-get install -y procps libsm6 libxext6 libxrender-dev libglib2.0-0
 ADD . .
 #ADD requirements.txt ./
 
-#RUN groupadd -g 2000 go 
+#RUN groupadd -g 2000 go
 #RUN useradd -m -u 2001 -g go go
 #RUN useradd -ms /bin/bash go
 #RUN mkdir -p go_dir

@@ -47,4 +47,3 @@ workflows:
   main:
     jobs:
       - build-and-test
-      - build-docker
