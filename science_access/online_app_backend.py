@@ -463,7 +463,7 @@ def ar_manipulation(ar: List = []):
     ar = [tl for tl in ar if tl is not None]
     ar = [tl for tl in ar if type(tl) is not type(str(""))]
     ar = [tl for tl in ar if "standard" in tl.keys()]
-    with open("data/trainingDats.p", "rb") as f:
+    with open("trainingDats.p", "rb") as f:
         trainingDats = pickle.load(f)
 
     trainingDats.extend(ar)
