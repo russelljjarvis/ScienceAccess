@@ -18,8 +18,8 @@ python3 -m pip install git+https://github.com/pyviz/holoviews.git
 git clone https://github.com/pyviz/holoviews.git
 cd holoviews; pip install -e .; cd ..;
 
-git clone https://github.com/kermitt2/grobid_client_python
-cd grobid_client_python; pip install -e .; cp grobid_client.py ..;cd ..;
+#git clone https://github.com/kermitt2/grobid_client_python
+#cd grobid_client_python; pip install -e .; cp grobid_client.py ..;cd ..;
 git clone https://github.com/dissemin/dissemin
 cd dissemin; pip install -e .;cd ..;
 
@@ -32,12 +32,12 @@ wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodrive
 tar -xvzf geckodriver*
 chmod +x geckodriver
 
-git clone https://russelljjarvis@github.com/russelljjarvis/CoauthorNetVis.git
-cd CoauthorNetVis; pip install -e .;cd ..;
+#git clone https://russelljjarvis@github.com/russelljjarvis/CoauthorNetVis.git
+#cd CoauthorNetVis; pip install -e .;cd ..;
 
 
-git clone https://github.com/russelljjarvis/readabilityinscience
-cd readabilityinscience; pip install -e .;cd ..;
+#git clone https://github.com/russelljjarvis/readabilityinscience
+#cd readabilityinscience; pip install -e .;cd ..;
 
 
 

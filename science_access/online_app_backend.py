@@ -90,7 +90,7 @@ def get_driver():
                     GECKODRIVER_PATH = str(os.getcwd()) + str(
                         "/geckodriver-v0.26.0-linux64"
                     )
-                    options.binary_location = str("./firefox")
+                    options.binary_location = str(os.getcwd()) +str("/firefox")
                     driver = webdriver.Firefox(
                         options=options, executable_path=GECKODRIVER_PATH
                     )

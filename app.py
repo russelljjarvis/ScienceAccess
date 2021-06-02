@@ -13,16 +13,16 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 import nltk
 nltk.download('punkt')
 nltk.download("cmudict")
-try:
-	from nltk.corpus import cmudict
-except:
-	import os
-	exec_string = str('import nltk;nltk.download("cmudict")')
-	os.system("python -c '{0}'".format(exec_string))
-	import site
-	from importlib import reload
-	reload(site)
-	from nltk.corpus import cmudict
+#try:
+#	from nltk.corpus import cmudict
+#except:
+#	import os
+#	exec_string = str('import nltk;nltk.download("cmudict")')
+#	os.system("python -c '{0}'".format(exec_string))
+#	import site
+#	from importlib import reload
+#	reload(site)
+#	from nltk.corpus import cmudict
 
 import sys
 import streamlit as st
@@ -183,10 +183,6 @@ def main():
 	author_name = st.text_input("Enter Author Name:")
 	st.markdown("""Entering a middle initial followed by ```.``` can change the accuracy of results.""")
 	st.markdown("""Eg. Sayali S```.``` Phatak""")
-
-	st.markdown(
-		"""Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
-	)
 	ar = None
 	if author_name:
 		ar, author_score, scraped_labels = check_cache(author_name,verbose)
@@ -202,6 +198,12 @@ def main():
 	my_expander.markdown(
 			"[Github](https://github.com/russelljjarvis/ScienceAccess)"
 		)
+
+
+	my_expander.markdown(
+		"""Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+	)
+
 
 	my_expander = st.beta_expander("Information about readability")
 	#if my_expander:
