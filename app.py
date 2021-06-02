@@ -182,7 +182,7 @@ def show_hardest_passage(ar:List=[])->str:
 
 						st.markdown("### A hard to read passage from the authors work.")
 
-						st.error(ar[i]["hard_snippet"])
+						st.success(ar[i]["hard_snippet"])
 
 						return ar[i]
 	return None
