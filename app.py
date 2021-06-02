@@ -129,15 +129,18 @@ def show_hardest_passage(ar:List=[])->str:
 		if a["standard"]>largest:
 			largest = a["standard"]
 			li=i
-	st.text(ar[i].keys())
-	if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
-		st.markdown("A hard to read passage from the authors work.")
-		st.text(ar[i]["hard_snippet"])
+		#st.text(ar[i].keys())
+		#st.text(ar[i]["hard_snippet"])
 
-		if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
-			if len(ar[i]["hard_snippet"]):
-				if "semantic" in ar[i].keys():
-					st.error(ar[i]["hard_snippet"])
+		if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
+			st.markdown("---")
+
+			st.markdown("### A hard to read passage from the authors work.")
+
+			if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
+				if len(ar[i]["hard_snippet"]):
+					if "semantic" in ar[i].keys():
+						st.error(ar[i]["hard_snippet"])
 
 	return ar[i]
 
@@ -183,12 +186,14 @@ def main():
 	my_expander = st.sidebar.beta_expander("source code")
 
 	my_expander.markdown(
-			"Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
+			"[Github](https://github.com/russelljjarvis/ScienceAccess)"
 		)
 
 	my_expander = st.beta_expander("Information about readability")
 	#if my_expander:
-	my_expander.markdown("""-----
+	my_expander.markdown("""-----""")
+
+	my_expander.markdown("""
 	### Here are a few additional established text sources of known complexity.
 	Note that in general, we can equate reading level with grade level.
 	""")
