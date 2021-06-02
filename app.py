@@ -215,8 +215,8 @@ def main():
 	ar = None
 	if author_name:
 		ar, author_score, scraped_labels = check_cache(author_name,verbose)
-    if len(ar) == 0:
-		st.warning("Author Not Found")
+	    if len(ar) == 0:
+			st.warning("Author Not Found")
 	if ar is not None:
 		df_author, merged_df = data_frames_from_scrape(
 			ar, author_name, scraped_labels, author_score, art_df
