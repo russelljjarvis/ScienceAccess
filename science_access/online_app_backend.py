@@ -219,19 +219,13 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     for d in dois:
         paper = sch.paper(d, timeout=8)
         urlDat = {}
-        #print(paper.keys())
-        #import pdb
-        #pdb.set_trace()
-        #st.text(paper.keys())""
         if "url" in paper.keys():
             urlDat["link"] = paper["title"]
         urlDat["semantic"] = True
         if aliases is None:
-            try:
-                aliases = get_aliases_and_papers(paper, NAME)
-                urlDat["aliases"] = aliases
-                #print(urlDat["aliases"], "aliases")
-            except:
+            if "aliases" in paper.keys()
+                urlDat["aliases"] = paper['aliases']
+            else:
                 pass
         if 'abstract' in paper.keys():
             urlDat = text_proc(str(paper["abstract"]), urlDat)
@@ -242,7 +236,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
 
     return author_results, visit_urls
 
-
+"""
 def get_aliases_and_papers(paper, NAME):
     if "authors" in paper.keys():
         for author_ in paper["authors"]:
@@ -250,7 +244,7 @@ def get_aliases_and_papers(paper, NAME):
                 if "aliases" in author_.keys():
                     aliases = author_["aliases"]
     return aliases
-
+"""
 
 def visit_link_unpaywall(NAME, tns, visit_urls):
     """
@@ -448,11 +442,12 @@ def update_web_form_full_text(NAME, tns):
 
 
 def enter_name_here(scholar_page, name, tns):
-    try:
-        df, datay, author_results = update_web_form_full_text(scholar_page, tns)
-    except:
-        df, datay, author_results = update_web_form(scholar_page, tns)
-
+    df0, datay, author_results0 = update_web_form_full_text(scholar_page, tns)
+    #except:
+    df1, datay, author_results1 = update_web_form(scholar_page, tns)
+    df = pd.concat([df0,df1])
+    author_results=author_results0
+    author_results.extend(author_results1)
     return df, datay, author_results
 
 
