@@ -126,6 +126,8 @@ def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # no
     real_frequencies = [w for w in frequencies if w is not None]
 
     frequencies = sorted(frequencies, key=lambda item: item[1],reverse=True)
+    if frequencies>30:
+        frequencies = frequencies[0:30] 
     max_frequency = float(frequencies[0][1])
 
     #real_frequencies = [(wrapper)(w) for w in frequencies]

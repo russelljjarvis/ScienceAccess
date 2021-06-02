@@ -135,7 +135,7 @@ def art_cloud_wl(acorpus):
     plt.imshow(wordcloud, aspect="auto", interpolation="bilinear")
     plt.axis("off")
     plt.tight_layout(pad=0)
-    st.pyplot(fig)
+    st.pyplot(fig, use_column_width=True)
     return biggest_words, word_counts_fz, fig
 
 '''
