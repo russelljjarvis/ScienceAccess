@@ -182,7 +182,7 @@ def show_hardest_passage(ar:List=[])->str:
 
 						st.markdown("### A hard to read passage from the authors work.")
 
-						st.success(ar[i]["hard_snippet"])
+						st.success(ar[i]["hard_snippet"][0:600])
 
 						return ar[i]
 	return None
@@ -386,8 +386,9 @@ def main():
 			)
 		)
 
+		my_expander.markdown("# Information about Readability")
 
-		my_expander = st.beta_expander("# Expand Information about Readability")
+		my_expander = st.beta_expander("Expand Information about Readability")
 		#if my_expander:
 		my_expander.markdown("""-----""")
 
