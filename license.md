@@ -1,7 +1,3 @@
-This code is glue built on top of a lot of Free and Open Source tools.  
- Any GNU licenses associated with existing tools may take precedence over this one.
-
- -------------------------------------------------------------------------------
 
   MIT License
 
