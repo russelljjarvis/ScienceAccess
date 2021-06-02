@@ -142,17 +142,36 @@ def check_cache(author_name: str,verbose=0):  # ->Union[]
 		#]
 	return ar, author_score, scraped_labels
 
-def show_hardest_passage(ar:List=[])->str:
+
+
+def show_author_alias(ar:List=[])->None:
+	"""
+	Synpopsis show the hardest to read passage from the entire query to the app user.
+	"""
 	largest = 0
 	li = 0
 	for i,a in enumerate(ar):
-		if a["standard"]>largest:
+		if "aliases" in a.keys():
+			st.markdown(a["aliases"])
+			break
+	return None
+
+def show_hardest_passage(ar:List=[])->str:
+	"""
+	Synpopsis show the hardest to read passage from the entire query to the app user.
+	"""
+	largest = 0
+	li = 0
+	smallest = 0
+	for i,a in enumerate(ar):
+		if a["standard"]>=largest and len(ar[i]["hard_snippet"]):
 			largest = a["standard"]
 			li=i
-		#st.text(ar[i].keys())
-		#st.text(ar[i]["hard_snippet"])
+		if a["standard"]<smallest :
+			smallest = a["standard"]
+
 	for i,a in enumerate(ar):
-		if a["standard"]==largest:
+		if a["standard"]==largest or if a["standard"]==smallest:
 
 			if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
 				if len(ar[i]["hard_snippet"]):
@@ -165,7 +184,8 @@ def show_hardest_passage(ar:List=[])->str:
 
 						st.error(ar[i]["hard_snippet"])
 
-	return ar[i]
+						return ar[i]
+	return None
 
 
 def clouds_big_words(sci_corpus):
@@ -305,6 +325,9 @@ def main():
 		#exclusive = [i for i in grab_set_auth if i not in artset]
 		fig = fast_art_cloud(grab_set_auth)
 		hard = show_hardest_passage(ar)
+		i#f hard is not None:
+		#	st.markdown(hard)
+		show_author_alias(ar)
 
 		st.markdown("-----")
 		#fast_art_cloud(sci_corpus)

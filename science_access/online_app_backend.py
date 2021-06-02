@@ -217,20 +217,20 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     aliases = None
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     for d in dois:
-        paper = sch.paper(d, timeout=6)
+        paper = sch.paper(d, timeout=8)
         urlDat = {}
         #print(paper.keys())
         #import pdb
         #pdb.set_trace()
-        #st.text(paper.keys())
+        #st.text(paper.keys())""
         if "url" in paper.keys():
-            urlDat["link"] = paper["url"]
+            urlDat["link"] = paper["title"]
         urlDat["semantic"] = True
         if aliases is None:
             try:
                 aliases = get_aliases_and_papers(paper, NAME)
                 urlDat["aliases"] = aliases
-                print(urlDat["aliases"], "aliases")
+                #print(urlDat["aliases"], "aliases")
             except:
                 pass
         if 'abstract' in paper.keys():
@@ -448,7 +448,11 @@ def update_web_form_full_text(NAME, tns):
 
 
 def enter_name_here(scholar_page, name, tns):
-    df, datay, author_results = update_web_form(scholar_page, tns)
+    try:
+        df, datay, author_results = update_web_form_full_text(scholar_page, tns)
+    except:
+        df, datay, author_results = update_web_form(scholar_page, tns)
+
     return df, datay, author_results
 
 
