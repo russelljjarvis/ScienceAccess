@@ -1,5 +1,0 @@
-update
-jq
-wget
-chromium-chromedriver
-firefox
