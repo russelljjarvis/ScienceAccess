@@ -178,29 +178,30 @@ def fast_art_cloud(acorpus):
 def create_giant_strings(ar, not_want_list):
     sci_corpus = ""
     first_pass = []
-    if type(ar[0]) is type(dict()):
-        for t in ar:
-            if "tokens" in t.keys():
-                for s in t["tokens"]:
-                    if s not in not_want_list:
-                        first_pass.append(s)
-    else:
-        for t in ar:
-            if t not in not_want_list:
-                first_pass.append(t)
+    if len(ar):
+        if type(ar[0]) is type(dict()):
+            for t in ar:
+                if "tokens" in t.keys():
+                    for s in t["tokens"]:
+                        if s not in not_want_list:
+                            first_pass.append(s)
+        else:
+            for t in ar:
+                if t not in not_want_list:
+                    first_pass.append(t)
 
-    first_pass = set(first_pass)
-    for s in first_pass:
-        if "/" in s:
-            temp = s.split("/")  # , " ")
-            sci_corpus += str(" ") + temp[0] + str(" ")
-            sci_corpus += str(" ") + temp[1] + str(" ")
-        if "." in s:
-            temp = s.split(".")  # , " ")
-            sci_corpus += str(" ") + temp[0] + str(" ")
-            sci_corpus += str(" ") + temp[1] + str(" ")
-        if s not in set(not_want_list):
-            sci_corpus += str(" ") + s + str(" ")  # +str(' ')
+        first_pass = set(first_pass)
+        for s in first_pass:
+            if "/" in s:
+                temp = s.split("/")  # , " ")
+                sci_corpus += str(" ") + temp[0] + str(" ")
+                sci_corpus += str(" ") + temp[1] + str(" ")
+            if "." in s:
+                temp = s.split(".")  # , " ")
+                sci_corpus += str(" ") + temp[0] + str(" ")
+                sci_corpus += str(" ") + temp[1] + str(" ")
+            if s not in set(not_want_list):
+                sci_corpus += str(" ") + s + str(" ")  # +str(' ')
     return sci_corpus
 
 
@@ -359,15 +360,20 @@ def push_frame_to_screen(contents: Any, readability_vector: List) -> pd.DataFram
         df_links.drop_duplicates(subset="Web_Link", inplace=True)
         df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
         df_links = df_links.to_html(escape=False)
+        st.write(df_links, unsafe_allow_html=True)
+
     if type(contents) is type(pd.DataFrame()):
         df_links = pd.DataFrame()
-        df_links["Web_Link"] = contents["Web_Link"]
-        df_links["Reading_Level"] = contents["Reading_Level"]
-        df_links.drop_duplicates(subset="Web_Link", inplace=True)
-        df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
-        df_links = df_links.to_html(escape=False)
+        try:
+            df_links["Web_Link"] = contents["Web_Link"]
+            df_links["Reading_Level"] = contents["Reading_Level"]
+            df_links.drop_duplicates(subset="Web_Link", inplace=True)
+            df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+            df_links = df_links.to_html(escape=False)
+            st.write(df_links, unsafe_allow_html=True)
 
-    st.write(df_links, unsafe_allow_html=True)
+        except:
+            pass
     return df_links
 
 

@@ -104,7 +104,6 @@ def create_giant_strings(ar, not_want_list):
 from typing import Union
 def complexityAlongtheText(text:str, chunk_length:int=5)->Union[float,float,str]:
 	words = sent_tokenize(text)
-	#words = #text.split()
 	cur = 0
 	stds = []
 	hardest_chunk_index = 0
@@ -120,11 +119,10 @@ def complexityAlongtheText(text:str, chunk_length:int=5)->Union[float,float,str]
 	hs=""
 	for h in hard_snippet:
 		hs+=h+str(" ")
-	#st.text(hs)
 	return np.mean(stds), textstat.text_standard(text, float_output=True), hs
 
+'''
 def freeAlongtheText(text:str, chunk_length:int=5)->float:
-	#words = text.split()
 	words = sent_tokenize(text)
 
 def complexityAlongtheText(
@@ -149,7 +147,7 @@ def complexityAlongtheText(
         hs += h + str(" ")
     # st.text(hs)
     return np.mean(stds), textstat.text_standard(text, float_output=True), hs
-
+'''
 
 def freeAlongtheText(text: str, chunk_length: int = 5) -> float:
     # words = text.split()
@@ -276,10 +274,10 @@ def text_proc(corpus, urlDat={}, WORD_LIM=40, verbose=False):
                 )
                 urlDat["standard_unbiased"] = meanv
                 urlDat["standard"] = total
-                if this_is_science:
-                    urlDat["hard_snippet"] = hard_snippet
-                else:
-                    urlDat["hard_snippet"] = None
+                #if this_is_science:
+                urlDat["hard_snippet"] = hard_snippet
+                #else:
+                #    urlDat["hard_snippet"] = None
                 urlDat["fre_unbiased"] = freeAlongtheText(corpus)
                 fre = FRE(wc, sc, sylCount)
                 if "semantic" in urlDat.keys():

@@ -232,8 +232,9 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
                 print(urlDat["aliases"], "aliases")
             except:
                 pass
-        urlDat = text_proc(str(paper["abstract"]), urlDat)
-        author_results.append(urlDat)
+        if 'abstract' in paper.keys():
+            urlDat = text_proc(str(paper["abstract"]), urlDat)
+            author_results.append(urlDat)
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
