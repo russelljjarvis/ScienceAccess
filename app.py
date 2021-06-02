@@ -10,6 +10,17 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 
 """
+
+try:
+    from nltk.corpus import cmudict
+except:
+	import os
+	os.system("python -c 'import nltk;nltk.download('cmudict')'")
+	import site
+	from importlib import reload
+	reload(site)
+    from nltk.corpus import cmudict
+
 import sys
 import streamlit as st
 import os
