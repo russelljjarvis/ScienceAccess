@@ -208,7 +208,7 @@ def visit_link(NAME, tns, more_links):
 
     return author_results, visit_urls
 
-
+import streamlit as st
 def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -221,7 +221,12 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     for d in dois:
         paper = sch.paper(d, timeout=6)
         urlDat = {}
-        urlDat["link"] = paper["url"]
+        #print(paper.keys())
+        #import pdb
+        #pdb.set_trace()
+        #st.text(paper.keys())
+        if "url" in paper.keys():
+            urlDat["link"] = paper["url"]
         urlDat["semantic"] = True
         if aliases is None:
             try:
@@ -412,7 +417,7 @@ def process(link, driver):  # , REDIRECT=False):
 
 def update_web_form(NAME, tns):
     more_links = unpaywall_semantic_links(NAME, tns)
-    author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
+    author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
         NAME, tns, more_links
     )
     ar = copy.copy(author_results)
@@ -446,20 +451,21 @@ def find_nearest(array, value):
     idx = (np.abs(array - value)).argmin()
     return idx
 
+import pickle
 
 def ar_manipulation(ar: List = []):
     ar = [tl for tl in ar if tl is not None]
     ar = [tl for tl in ar if type(tl) is not type(str(""))]
     ar = [tl for tl in ar if "standard" in tl.keys()]
-
     with open("data/trainingDats.p", "rb") as f:
         trainingDats = pickle.load(f)
 
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
+#def call_from_front_end(NAME: str = "", OPENACCESS: bool = True, tns: int = 16):
 
-def call_from_front_end(NAME: str = "", OPENACCESS: bool = True, tns: int = 16):
+def call_from_front_end(NAME="", OPENACCESS=True,tns=16):
     df, datay, ar = update_web_form(NAME, tns)
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
