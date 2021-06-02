@@ -43,9 +43,7 @@ By entering an author’s name into the search box, a system of API calls and we
 
 
 ### Running the Application
-Verifying the Application From a Live Hoste
-https://agile-reaches-20338.herokuapp.com/
-
+[Verifying the Application From a Live Host](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py)
 Downloading the application from Github
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
