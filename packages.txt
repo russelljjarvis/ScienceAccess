@@ -1,0 +1,4 @@
+jq
+wget
+chromium-chromedriver
+firefox
