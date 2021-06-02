@@ -171,7 +171,7 @@ def show_hardest_passage(ar:List=[])->str:
 			smallest = a["standard"]
 
 	for i,a in enumerate(ar):
-		if a["standard"]==largest or if a["standard"]==smallest:
+		if a["standard"]==largest or a["standard"]==smallest:
 
 			if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
 				if len(ar[i]["hard_snippet"]):
@@ -386,7 +386,7 @@ def main():
 		)
 
 
-		my_expander = st.beta_expander("Information about readability")
+		my_expander = st.beta_expander("# Expand Information about Readability")
 		#if my_expander:
 		my_expander.markdown("""-----""")
 
