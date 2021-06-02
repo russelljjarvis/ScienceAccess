@@ -13,10 +13,16 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 import nltk
 nltk.download('punkt')
 nltk.download("cmudict")
+
+
 #try:
 #	from nltk.corpus import cmudict
 #except:
-#	import os
+import os
+#os.system("wget ")
+os.system("wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0")
+os.system("mv traingDats.p?dl=0 trainingDats.p")
+
 #	exec_string = str('import nltk;nltk.download("cmudict")')
 #	os.system("python -c '{0}'".format(exec_string))
 #	import site
@@ -89,7 +95,7 @@ max = np.max(rd_df["Reading_Level"])
 rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
-with open("data/trainingDats.p", "rb") as f:
+with open("trainingDats.p", "rb") as f:
 	trainingDats = pickle.load(f)
 	art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
@@ -206,39 +212,6 @@ def main():
 	my_expander.markdown(
 		"""Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
 	)
-
-
-	my_expander = st.beta_expander("Information about readability")
-	#if my_expander:
-	my_expander.markdown("""-----""")
-
-	my_expander.markdown("""
-	### Here are a few additional established text sources of known complexity.
-	Note that in general, we can equate reading level with grade level.
-	""")
-
-	my_expander.markdown("""
-	| Text Source | Mean Complexity | Description |
-	|----------|----------|:-------------:|
-	| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-	| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-	| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-	| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
-	| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-	| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
-	"""
-	)
-
-	my_expander.markdown("\n")
-	my_expander.markdown("-----")
-
-	my_expander.markdown("""
-	[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
-	[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
-	#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
-	Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
-	""")
-	my_expander.markdown("-----")
 
 	if "df_author" in locals():
 		st.markdown(
@@ -388,6 +361,39 @@ def main():
 				round(np.mean(author_score)), 3
 			)
 		)
+
+
+		my_expander = st.beta_expander("Information about readability")
+		#if my_expander:
+		my_expander.markdown("""-----""")
+
+		my_expander.markdown("""
+		### Here are a few additional established text sources of known complexity.
+		Note that in general, we can equate reading level with grade level.
+		""")
+
+		my_expander.markdown("""
+		| Text Source | Mean Complexity | Description |
+		|----------|----------|:-------------:|
+		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
+		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+		"""
+		)
+
+		my_expander.markdown("\n")
+		my_expander.markdown("-----")
+
+		my_expander.markdown("""
+		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
+		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
+		""")
+		my_expander.markdown("-----")
 
 		"""
 		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
