@@ -163,10 +163,7 @@ def author_to_urls(NAME):
         records = p["records"][0]
         if "pdf_url" in records.keys():
             visit_urls.append(records["pdf_url"])
-        # if "pdf_url" in p.keys():
-        #    visit_urls.append(p["pdf_url"])
 
-        # records = p["records"][0]
         if "splash_url" in records.keys():
             visit_urls.append(records["splash_url"])
         if "doi" in records.keys():
