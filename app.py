@@ -18,10 +18,10 @@ nltk.download("cmudict")
 #try:
 #	from nltk.corpus import cmudict
 #except:
-import os
+#import os
 #os.system("wget ")
-os.system("wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0")
-os.system("mv traingDats.p?dl=0 trainingDats.p")
+#os.system("wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0")
+#os.system("mv traingDats.p?dl=0 trainingDats.p")
 
 #	exec_string = str('import nltk;nltk.download("cmudict")')
 #	os.system("python -c '{0}'".format(exec_string))
