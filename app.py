@@ -105,7 +105,7 @@ bio_chem_level = art_df["Reading_Level"]
 def check_cache(author_name: str,verbose=0):  # ->Union[]
 	with shelve.open("fast_graphs_splash.p") as db:
 		flag = author_name in db
-		flag = False
+		#flag = False
 		if not flag:
 			ar = call_from_front_end(author_name)
 			scraped_labels, author_score = frame_to_lists(ar)
