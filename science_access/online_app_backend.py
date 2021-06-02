@@ -444,11 +444,11 @@ def update_web_form_full_text(NAME, tns):
 def enter_name_here(scholar_page, name, tns):
     df0, datay, author_results0 = update_web_form_full_text(scholar_page, tns)
     #except:
-    df1, datay, author_results1 = update_web_form(scholar_page, tns)
-    df = pd.concat([df0,df1])
-    author_results=author_results0
-    author_results.extend(author_results1)
-    return df, datay, author_results
+    #df1, datay, author_results1 = update_web_form(scholar_page, tns)
+    #df = pd.concat([df0,df1])
+    #author_results=author_results0
+    #author_results.extend(author_results1)
+    return df0, datay, author_results0 
 
 
 def find_nearest(array, value):

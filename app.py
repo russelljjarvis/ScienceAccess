@@ -182,7 +182,7 @@ def show_hardest_passage(ar:List=[])->str:
 
 						st.markdown("### A hard to read passage from the authors work.")
 
-						st.success(ar[i]["hard_snippet"][0:600])
+						st.success(ar[i]["hard_snippet"])#[0:200])
 
 						return ar[i]
 	return None
@@ -209,9 +209,9 @@ def main():
 	st.sidebar.title("Explanations and Options")
 
 
-	author_name = st.text_input("Enter Author Name:")
-	st.markdown("""Entering a middle initial followed by ```.``` can change the accuracy of results.""")
-	st.markdown("""Eg. Sayali S```.``` Phatak""")
+	author_name = st.sidebar.text_input("Enter Author Name:")
+	st.sidebar.markdown("""Entering a middle initial followed by ```.``` can change the accuracy of results.""")
+	st.sidebar.markdown("""Eg. Sayali S```.``` Phatak""")
 	ar = None
 	if author_name:
 		ar, author_score, scraped_labels = check_cache(author_name,verbose)
