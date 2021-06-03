@@ -253,7 +253,7 @@ def main():
 
         push_frame_to_screen(df_author, scraped_labels)
 
-	st.markdown("-----")
+        st.markdown("-----")
 	
 	#df_concat_art = pd.concat([rd_df, df_author])
         df_concat_art = pd.concat([rd_df,df_author])
