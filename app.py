@@ -15,22 +15,6 @@ import nltk
 nltk.download("punkt")
 nltk.download("cmudict")
 
-
-# try:
-# 	from nltk.corpus import cmudict
-# except:
-# import os
-# os.system("wget ")
-# os.system("wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0")
-# os.system("mv traingDats.p?dl=0 trainingDats.p")
-
-# 	exec_string = str('import nltk;nltk.download("cmudict")')
-# 	os.system("python -c '{0}'".format(exec_string))
-# 	import site
-# 	from importlib import reload
-# 	reload(site)
-# 	from nltk.corpus import cmudict
-
 import sys
 import streamlit as st
 import os
@@ -107,8 +91,8 @@ bio_chem_level = art_df["Reading_Level"]
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
-        flag = author_name in db
-        # flag = False
+        #flag = author_name in db
+        flag = False
         if not flag:
             ar = call_from_front_end(author_name)
             scraped_labels, author_score = frame_to_lists(ar)
