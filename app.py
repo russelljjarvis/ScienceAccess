@@ -231,10 +231,12 @@ def main():
     my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
 
     my_expander.markdown(
-        """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+        """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
 
-    #my_expander.markdown("# Information about Readability")
+    my_expander.markdown(
+	"""[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
+    )
 
     if "df_author" in locals():
         st.markdown(
