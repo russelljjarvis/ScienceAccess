@@ -212,7 +212,7 @@ def main():
     st.title("Search Reading Complexity of an Author")
     st.sidebar.title("Code Information")
 
-    author_name = st.text_input("Enter Author Name (entering a middle initial followed by "." can change the accuracy of results (e.g. Sayali S. Phatak)):")
+    author_name = st.text_input("Enter Author Name (entering a middle initial followed by '.' can change the accuracy of results (e.g. Sayali S. Phatak)):")
     #st.markdown(
     #    """Entering a middle initial followed by "." can change the accuracy of results (e.g. Sayali S. Phatak)."""
     #)
