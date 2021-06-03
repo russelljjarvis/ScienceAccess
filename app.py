@@ -215,7 +215,7 @@ def main():
 
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
-        """Entering a middle initial followed by ```.``` can change the accuracy of results (e.g. Sayali S. Phatak)."""
+        """Entering a middle initial followed by "." can change the accuracy of results (e.g. Sayali S. Phatak)."""
     )
 	
     ar = None
