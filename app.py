@@ -132,7 +132,7 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
 
 def show_author_alias(ar: List = []) -> None:
     """
-    Synpopsis show the hardest to read passage from the entire query to the app user.
+    Synopsis show the hardest to read passage from the entire query to the app user.
     """
     largest = 0
     li = 0
@@ -145,7 +145,7 @@ def show_author_alias(ar: List = []) -> None:
 
 def show_hardest_passage(ar: List = []) -> str:
     """
-    Synpopsis show the hardest to read passage from the entire query to the app user.
+    Synopsis show the hardest to read passage from the entire query to the app user.
     """
     largest = 0
     li = 0
@@ -198,7 +198,7 @@ def clouds_big_words(sci_corpus):
         st.markdown(""" ### Word Length Word Cloud 	""")
         st.markdown(
             """
-		based on the largest words found in the mined text.
+		This word cloud is based on the largest words found in the mined text.
 		These words are likely culprits that hindered readability.
 		"""
         )
@@ -348,17 +348,13 @@ def main():
         my_expander.markdown("-----")
 	
 	
-	
         st.markdown("\n\n")
-        st.markdown("-----")
-
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
-		The word cloud is based on the most common words found in the mined text.
-		This word cloud is for humans to validate text mining work.
-		This is because the word cloud frequency often matches a writer's
-		own knowledge of concepts in their work, therefore it can to help
-		instill trust in text-mining results.
+		This word cloud is based on the most common words found in the mined text.
+		It is for humans to validate the text mining work. As the word cloud 
+		frequency often matches a writer's own knowledge of concepts in their work, 
+		it may also help instill trust in text-mining results.
 		"""
 
         grab_setr = []
