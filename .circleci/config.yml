@@ -21,15 +21,8 @@ jobs:
           command: echo ${CIRCLE_BRANCH}
 
       - run:
-          command: sudo bash install/gecko_install.sh; sudo pip install -r requirements.txt;
-          name: install
-
-      - run:
           name: more install
           command:  sudo pip install nltk; sudo python setup.py install;
-      - run:
-          name: even more install
-          command:  sudo bash setup.sh;
       - run:
           name: install coveralls
           command: pip install coverage

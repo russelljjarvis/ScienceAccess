@@ -15,22 +15,6 @@ import nltk
 nltk.download("punkt")
 nltk.download("cmudict")
 
-
-# try:
-# 	from nltk.corpus import cmudict
-# except:
-# import os
-# os.system("wget ")
-# os.system("wget https://www.dropbox.com/s/3h12l5y2pn49c80/traingDats.p?dl=0")
-# os.system("mv traingDats.p?dl=0 trainingDats.p")
-
-# 	exec_string = str('import nltk;nltk.download("cmudict")')
-# 	os.system("python -c '{0}'".format(exec_string))
-# 	import site
-# 	from importlib import reload
-# 	reload(site)
-# 	from nltk.corpus import cmudict
-
 import sys
 import streamlit as st
 import os
@@ -107,7 +91,7 @@ bio_chem_level = art_df["Reading_Level"]
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
-        flag = author_name in db
+        #flag = author_name in db
         flag = False
         if not flag:
             ar = call_from_front_end(author_name)
@@ -185,14 +169,22 @@ def show_hardest_passage(ar: List = []) -> str:
                         not in ar[i]["hard_snippet"]
                     ):
 
+
                         st.markdown("---")
 
-                        st.markdown("### A hard to read passage from the authors work.")
+                        st.error("### A hard to read passage from the authors work.")
                         from nltk import word_tokenize
 
                         tokens = word_tokenize(ar[i]["hard_snippet"])
+                        #string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
+                        #string_from_tokens2 = "..."
+                        #string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
 
-                        st.success(tokens[0:90])  # [0:200])
+                        #string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
+                        string_from_tokens = create_giant_strings(tokens, not_want_list)
+
+
+                        st.warning(string_from_tokens)  # [0:200])
 
                         return ar[i]
     return None
