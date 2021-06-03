@@ -393,7 +393,6 @@ def main():
 
         st.markdown("-----")
 
-        st.markdown("-----")
         st.markdown("\n\n")
 
         st.markdown(
@@ -452,8 +451,7 @@ def main():
         # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
         # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
-        st.markdown("-----")
-        st.markdown("\n\n")
+        st.markdown("\n")
         grab_setr = []
         grab_set1 = []
 
