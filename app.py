@@ -240,10 +240,12 @@ def main():
 	"""[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
     )
 
-    st.markdown("-----")
-    st.markdown(""" ## Results """)
 
     if "df_author" in locals():
+
+	st.markdown("-----")
+        st.markdown(""" ### Results """)
+
         st.markdown(
             """
 			### There were a total number of {0} documents mined during this query.
