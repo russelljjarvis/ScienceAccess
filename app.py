@@ -212,7 +212,7 @@ def main():
     st.title("Search Reading Complexity of an Author")
     st.sidebar.title("Code Information")
 
-    author_name = st.text_input("### Enter Author Name:")
+    author_name = st.text_input("Enter Author Name:")
     st.markdown(
         """Entering a middle initial may improve search accuracy."""
     )
@@ -231,11 +231,11 @@ def main():
     
     my_expander = st.sidebar.beta_expander("")
 
-    my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
-
     my_expander.markdown(
         """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
+    
+    my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
 
     my_expander.markdown(
 	"""[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
