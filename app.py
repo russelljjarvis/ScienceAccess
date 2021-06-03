@@ -243,7 +243,7 @@ def main():
 
     if "df_author" in locals():
 
-	st.markdown("-----")
+        st.markdown("-----")
         st.markdown(""" ### Results """)
 
         st.markdown(
