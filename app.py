@@ -216,6 +216,8 @@ def main():
     st.markdown(
         """Entering a middle initial may improve search accuracy."""
     )
+    
+    st.markdown("-----")
 	
     ar = None
     if author_name:
