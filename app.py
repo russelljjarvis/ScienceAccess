@@ -312,9 +312,8 @@ def main():
                 )
             )
 
-        my_expander = st.beta_expander("Expand Information about Readability")
+        my_expander = st.beta_expander("Expand for more information about readability")
         # if my_expander:
-        my_expander.markdown("""-----""")
 
         my_expander.markdown(
             """
@@ -336,7 +335,7 @@ def main():
 		"""
         )
 
-        my_expander.markdown("\n")
+        my_expander.markdown("\n\n")
 
         my_expander.markdown(
             """
