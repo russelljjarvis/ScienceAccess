@@ -229,7 +229,7 @@ def main():
             ar, author_name, scraped_labels, author_score, art_df
         )
 
-    st.markdown("-----")
+    #st.markdown("-----")
     
     my_expander = st.sidebar.beta_expander("")
 
