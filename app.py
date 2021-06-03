@@ -355,7 +355,7 @@ def main():
 	
 	
         st.markdown("\n\n")
-	st.markdown("-----")
+        st.markdown("-----")
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		This word cloud is based on the most common words found in the mined text.
