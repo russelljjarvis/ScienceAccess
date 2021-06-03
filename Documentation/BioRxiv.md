@@ -16,7 +16,7 @@ authors:
 - Marc Skov Madsen affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted.
 - Shivam Bansal affiliation: Senior Data Scientist, H2O.ai
 
-date: April 2021
+date: June 2021
 
 ### Introduction
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language when publishing their work in scientific journals [@Plavén-Sigray:2017], a trend that is becoming more evident over time [@Ball:2017]. 
