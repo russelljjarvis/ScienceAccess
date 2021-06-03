@@ -194,7 +194,6 @@ def show_hardest_passage(ar: List = []) -> str:
 def clouds_big_words(sci_corpus):
     if len(sci_corpus) != 0:
 
-        st.markdown("-----")
         st.markdown(""" ### Word Length Word Cloud 	""")
         st.markdown(
             """
@@ -230,13 +229,15 @@ def main():
 
     st.markdown("-----")
     
-    my_expander = st.sidebar.beta_expander("source code")
+    my_expander = st.sidebar.beta_expander("Source Code")
 
     my_expander.markdown("[Github](https://github.com/russelljjarvis/ScienceAccess)")
 
     my_expander.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
+
+    #my_expander.markdown("# Information about Readability")
 
     if "df_author" in locals():
         st.markdown(
@@ -307,8 +308,6 @@ def main():
                     author_name
                 )
             )
-
-        my_expander.markdown("# Information about Readability")
 
         my_expander = st.beta_expander("Expand Information about Readability")
         # if my_expander:
