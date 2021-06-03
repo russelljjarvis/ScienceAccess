@@ -212,7 +212,7 @@ def main():
     st.title("Search Reading Complexity of an Author")
     st.sidebar.title("Code Information")
 
-    author_name = st.text_input("Enter Author Name:")
+    author_name = st.text_input("### Enter Author Name:")
     st.markdown(
         """Entering a middle initial may improve search accuracy."""
     )
