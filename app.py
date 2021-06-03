@@ -215,9 +215,9 @@ def main():
 
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
-        """Entering a middle initial followed by ```.``` can change the accuracy of results."""
+        """Entering a middle initial followed by ```.``` can change the accuracy of results (e.g. Sayali S. Phatak)."""
     )
-    st.markdown("""Eg. Sayali S```.``` Phatak""")
+	
     ar = None
     if author_name:
         ar, author_score, scraped_labels = check_cache(author_name, verbose)
@@ -442,9 +442,6 @@ def main():
         )
         my_expander.markdown("-----")
 
-        """
-		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
-		"""
 
         st.markdown("-----")
         st.markdown("\n\n\n\n")
