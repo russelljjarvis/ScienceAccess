@@ -307,6 +307,47 @@ def main():
                 )
             )
 
+	my_expander.markdown("# Information about Readability")
+
+        my_expander = st.beta_expander("Expand Information about Readability")
+        # if my_expander:
+        my_expander.markdown("""-----""")
+
+        my_expander.markdown(
+            """
+		### Here are a few additional established text sources of known complexity.
+		Note that in general, we can equate reading level with grade level.
+		"""
+        )
+
+        my_expander.markdown(
+            """
+		| Text Source | Mean Complexity | Description |
+		|----------|----------|:-------------:|
+		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
+		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+		"""
+        )
+
+        my_expander.markdown("\n")
+        my_expander.markdown("-----")
+
+        my_expander.markdown(
+            """
+		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
+		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
+		"""
+        )
+        my_expander.markdown("-----")
+	
+	
+	
         st.markdown("\n\n")
         st.markdown("-----")
 
@@ -372,76 +413,7 @@ def main():
                     "sci_corpus": sci_corpus,
                 }
         st.markdown("\n")
-
-        if np.mean(author_score) < np.mean(bio_chem_level):
-            st.markdown(
-                """
-			### {0} was on average easier to read relative to the ART Corpus.
-			""".format(
-                    author_name
-                )
-            )
-
-        if np.mean(author_score) >= np.mean(bio_chem_level):
-            st.markdown(
-                """
-			### {0} was on average more difficult to read relative to the ART Corpus.
-			""".format(
-                    author_name
-                )
-            )
-
-        st.markdown("-----")
-
-        st.markdown("\n\n")
-
-        st.markdown(
-            """
-		### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(author_score)), 3
-            )
-        )
-
-        my_expander.markdown("# Information about Readability")
-
-        my_expander = st.beta_expander("Expand Information about Readability")
-        # if my_expander:
-        my_expander.markdown("""-----""")
-
-        my_expander.markdown(
-            """
-		### Here are a few additional established text sources of known complexity.
-		Note that in general, we can equate reading level with grade level.
-		"""
-        )
-
-        my_expander.markdown(
-            """
-		| Text Source | Mean Complexity | Description |
-		|----------|----------|:-------------:|
-		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
-		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
-		"""
-        )
-
-        my_expander.markdown("\n")
-        my_expander.markdown("-----")
-
-        my_expander.markdown(
-            """
-		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
-		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
-		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
-		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
-		"""
-        )
-        my_expander.markdown("-----")
-
-
+       
         st.markdown("-----")
         st.markdown("\n\n\n\n")
 
