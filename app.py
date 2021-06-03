@@ -245,7 +245,7 @@ def main():
     if "df_author" in locals():
 
         st.markdown("-----")
-        st.markdown("### Results")
+        st.markdown("#### Results")
 
         st.markdown(
             """
@@ -266,13 +266,13 @@ def main():
         st.write(fig_art)
 	
 	
-        temp = "{0} Summary Readability versus large sample of science".format(
-            author_name
-        )
-        labels = [temp, "ART Corpus readability"]
-        values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
+        #temp = "{0} Summary Readability versus large sample of science".format(
+        #    author_name
+        #)
+        #labels = [temp, "ART Corpus readability"]
+        #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #st.write(fig)
 
 
         # df_concat_art = pd.concat([art_df, df_author])
