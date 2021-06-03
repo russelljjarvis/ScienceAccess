@@ -340,9 +340,9 @@ def main():
         #st.markdown(urlDat.values())
         #st.markdown(urlDat.keys())
 
-        st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
-        st.markdown(urlDat["standard"])
-        hard = show_hardest_passage(ar)
+        #st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
+        #st.markdown(urlDat["standard"])
+        #hard = show_hardest_passage(ar)
         # if hard is not None:
         # 	st.markdown(hard)
         show_author_alias(ar)
