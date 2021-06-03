@@ -5,6 +5,7 @@ nltk
 selenium
 delver
 pdfminer
+semanticscholar
 pyvirtualdisplay
 textstat
 fsspec>=0.3.3
@@ -20,4 +21,6 @@ plotly
 tabulate
 chart_studio
 tqdm
-crossref-commons
+pipenv
+JPype1
+bokeh

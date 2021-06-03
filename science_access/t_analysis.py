@@ -2,10 +2,7 @@
 # authors ...,
 # Russell Jarvis
 # https://github.com/russelljjarvis/
-# rjjarvis@asu.edu
-# Patrick McGurrin
-# patrick.mcgurrin@gmail.com
-
+# russelljarvis@protonmail.com
 
 import base64
 import copy
@@ -17,231 +14,338 @@ import sys
 import time
 import collections
 
-#import matplotlib  # Its not that this file is responsible for doing plotting, but it calls many modules that are, such that it needs to pre-empt
-#matplotlib.use('Agg')
 
 import numpy as np
 import pandas as pd
-from nltk import pos_tag, sent_tokenize, word_tokenize
+from nltk import word_tokenize
 from nltk.classify import NaiveBayesClassifier
 from nltk.corpus import cmudict, stopwords, subjectivity
 from nltk.probability import FreqDist
 from nltk.sentiment import SentimentAnalyzer
 from nltk.tag.perceptron import PerceptronTagger
 import nltk
-# english_check
-#from tabulate import tabulate
-from textblob import TextBlob
-from textstat.textstat import textstat
-tagger = PerceptronTagger(load=False)
-import matplotlib.pyplot as plt
+from nltk.corpus import words as english_words
+
+
+from nltk.tokenize import sent_tokenize, word_tokenize
 import numpy as np
 import pandas as pd
 import re
-import seaborn as sns
+import streamlit as st
+from .utils import black_string, clue_links, clue_words, comp_ratio, publication_check
+import re
 
-from .utils import (black_string, clue_links, clue_words,
-                               comp_ratio, publication_check)
+from collections import Iterable
 
+from textblob import TextBlob
+from textstat.textstat import textstat
 
-def unigram_zipf(tokens):
-    '''
-    Get the zipf slope histogram for a corpus
-    '''
-    model = collections.defaultdict(lambda: 0.01)
-    tokens = [ term for t in tokens for term in t ]
-    model = {}
+from science_access.utils import check_passive
+from science_access.abstract_cleanup import cleanup_pretagger_all
+from science_access.readabilityFunctions import countWordsSentSyl, NDC, FRE
 
-    for word in tokens:
-        count = model.get(word,0)
-        model[word] = count + 1
-    '''
-    normalize observations relative to number of words in the model
-    '''
-    for word in model:
-        model[word] = model[word]/float(sum(model.values()))
-    return model
-    
-    
-#    https://github.com/nltk/nltk/blob/model/nltk/model/ngram.py
-
-def entropy(self, text):
-    """
-    https://github.com/nltk/nltk/blob/model/nltk/model/ngram.py
-    Calculate the approximate cross-entropy of the n-gram model for a
-    given evaluation text.
-    This is the average log probability of each word in the text.
-    :param text: words to use for evaluation
-    :type text: Iterable[str]
-    """
-
-    normed_text = (self._check_against_vocab(word) for word in text)
-    H = 0.0     # entropy is conventionally denoted by "H"
-    processed_ngrams = 0
-    for ngram in self.ngram_counter.to_ngrams(normed_text):
-        context, word = tuple(ngram[:-1]), ngram[-1]
-        H += self.logscore(word, context)
-        processed_ngrams += 1
-    return - (H / processed_ngrams)
-
-def perplexity(self, text):
-    """
-    Calculates the perplexity of the given text.
-    This is simply 2 ** cross-entropy for the text.
-    :param text: words to calculate perplexity of
-    :type text: Iterable[str]
-    """
-
-    return pow(2.0, self.entropy(text))   
+tagger = PerceptronTagger(load=False)
+not_want_list = [
+	"article",
+	"articlepubmedpubmed",
+	"et",
+	"al",
+	"text",
+	"crossref",
+	"isigoogle",
+	"cross",
+	"ref",
+	"google",
+	"scholar",
+	"article",
+	"pubmed",
+	"full",
+	"doi",
+	"org",
+	"http",
+	"copyright",
+	"org",
+	"figure",
+	"pubmed",
+	"accessshoping",
+	"articlepubmedpubmed",
+	"author",
+]
+not_want_list.extend(
+	["link", "librarian", "issue", "abstract", "science", "cookie", "publication"]
+)
 
 
-def zipf_plot(tokens):
-    # https://www.kaggle.com/kaitlyn/zipf-s-law
-    df = pd.DataFrame(tokens,columns='text')
-    df['clean_text'] = df.text.apply(lambda x: re.sub('[^A-Za-z\']', ' ', x.lower()))
-    # Create a word count dataframe
-    word_list = ' '.join(df.clean_text.values).split(' ')
-    words = pd.DataFrame(word_list, columns=['word'])
-    word_counts = words.word.value_counts().reset_index()
-    word_counts.columns = ['word', 'n']
-    word_counts['word_rank'] = word_counts.n.rank(ascending=False)    
-    f, ax = plt.subplots(figsize=(7, 7))
-    ax.set(xscale="log", yscale="log")
-    sns.regplot("n", "word_rank", word_counts, ax=ax, scatter_kws={"s": 100})
-    return
+def create_giant_strings(ar, not_want_list):
+	sci_corpus = ""
+	first_pass = []
+	for t in ar:
+		if "tokens" in t.keys():
+			for s in t["tokens"]:
+				if s not in not_want_list:
+					first_pass.append(s)
+	first_pass = set(first_pass)
+	for s in first_pass:
+		if "/" in s:
+			temp = s.split("/")  # , " ")
+			sci_corpus += str(" ") + temp[0]
+			sci_corpus += str(" ") + temp[1]
+		if "." in s:
+			temp = s.split(".")  # , " ")
+			sci_corpus += str(" ") + temp[0]
+			sci_corpus += str(" ") + temp[1]
+		if s not in set(not_want_list):
+			sci_corpus += str(" ") + s  # +str(' ')
+	return sci_corpus
 
 
-def perplexity(testset, model):
-    # https://stackoverflow.com/questions/33266956/nltk-package-to-estimate-the-unigram-perplexity
-    perplexity = 1
-    N = 0
-    for word in testset:
-        N += 1
-        perplexity = perplexity + (1.0/model[word])
-    return perplexity
+# ENGLISH_STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 
-def bi_log_value(value):
-    # Bi-symmetric log-like transformation, from:
-    # http://iopscience.iop.org/article/10.1088/0957-0233/24/2/027001/pdf
-    trans = np.sign(value)*np.log(1+np.abs(value*2.302585))
-    return trans
-    #df[col] = trans
+from typing import Union
+def complexityAlongtheText(text:str, chunk_length:int=5)->Union[float,float,str]:
+	words = sent_tokenize(text)
+	cur = 0
+	stds = []
+	hardest_chunk_index = 0
+	while cur < len(words):
+		sub = words[cur : cur + 5]
+		sub_text = " ".join(sub)
+		std = textstat.text_standard(sub_text, float_output=True)
+		cur += chunk_length
+		if std>hardest_chunk_index:
+			hardest_chunk_index = cur
+		stds.append(std)
+	hard_snippet = words[hardest_chunk_index : hardest_chunk_index + chunk_length]
+	hs=""
+	for h in hard_snippet:
+		hs+=h+str(" ")
+	return np.mean(stds), textstat.text_standard(text, float_output=True), hs
 
+'''
+def freeAlongtheText(text:str, chunk_length:int=5)->float:
+	words = sent_tokenize(text)
 
-DEBUG = False
-#from numba import jit
+def complexityAlongtheText(
+	text: str, chunk_length: int = 5
+) -> Union[float, float, str]:
+	words = sent_tokenize(text)
+	# words = #text.split()
+	cur = 0
+	stds = []
+	hardest_chunk_index = 0
+	while cur < len(words):
+		sub = words[cur : cur + 5]
+		sub_text = " ".join(sub)
+		std = textstat.text_standard(sub_text, float_output=True)
+		cur += chunk_length
+		if std > hardest_chunk_index:
+			hardest_chunk_index = cur
+		stds.append(std)
+	hard_snippet = words[hardest_chunk_index : hardest_chunk_index + chunk_length]
+	hs = ""
+	for h in hard_snippet:
+		hs += h + str(" ")
+	# st.text(hs)
+	return np.mean(stds), textstat.text_standard(text, float_output=True), hs
+'''
 
-# word limit smaller than 1000 gets product/merchandise sites.
-def text_proc(corpus, urlDat = {}, WORD_LIM = 100):
+def freeAlongtheText(text: str, chunk_length: int = 5) -> float:
+	# words = text.split()
+	words = sent_tokenize(text)
 
-    #remove unreadable characters
-    if type(corpus) is str and str('privacy policy') not in corpus:
-        corpus = corpus.replace("-", " ") #remove characters that nltk can't read
-        textNum = re.findall(r'\d', corpus) #locate numbers that nltk cannot see to analyze
-        tokens = word_tokenize(corpus)
-
-        stop_words = stopwords.words('english')
-        #We create a list comprehension which only returns a list of words #that are NOT IN stop_words and NOT IN punctuations.
-
-        tokens = [ word for word in tokens if not word in stop_words]
-        tokens = [ w.lower() for w in tokens ] #make everything lower case
-
-        # the kind of change that might break everything
-        urlDat['wcount'] = textstat.lexicon_count(str(tokens))
-        word_lim = bool(urlDat['wcount']  > WORD_LIM)
-
-        ## Remove the search term from the tokens somehow.
-        urlDat['tokens'] = tokens
-
-        if 'big_model' in urlDat.keys():
-            urlDat['perplexity'] = perplexity(corpus, urlDat['big_model'])
-        else:
-            urlDat['perplexity'] = None
-        # Word limits can be used to filter out product merchandise websites, which otherwise dominate scraped results.
-        # Search engine business model is revenue orientated, so most links will be for merchandise.
-
-        urlDat['publication'] = publication_check(str(tokens))[1]
-        urlDat['clue_words'] = clue_words(str(tokens))[1]
-        if str('link') in urlDat.keys():
-            urlDat['clue_links'] = clue_links(urlDat['link'])[1]
-
-            temp = len(urlDat['clue_words'])+len(urlDat['publication'])+len(urlDat['clue_links'])
-            if temp  > 10 and str('wiki') not in urlDat['link']:
-                urlDat['science'] = True
-            else:
-                urlDat['science'] = False
-            if str('wiki') in urlDat['link']:
-                urlDat['wiki'] = True
-            else:
-                urlDat['wiki'] = False
-        # The post modern essay generator is so obfuscated, that ENGLISH classification fails, and this criteria needs to be relaxed.
-        not_empty = bool(len(tokens) != 0)
-
-        if not_empty and word_lim: #  and server_error:
-
-            tokens = [ w.lower() for w in tokens if w.isalpha() ]
-            #fdist = FreqDist(tokens) #frequency distribution of words only
-            # The larger the ratio of unqiue words to repeated words the more colourful the language.
-            lexicon = textstat.lexicon_count(corpus, True)
-            urlDat['uniqueness'] = len(set(tokens))/float(len(tokens))
-            # It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
-            # big deltas mean redudancy/sparse information/information/density
+	cur = 0
+	stds = []
+	fres = []
+	while cur < len(words):
+		sub = words[cur : cur + chunk_length]
+		sub_text = " ".join(sub)
+		wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
+			sub_text, ignoreSingleSentences=1
+		)
+		try:
+			fre = FRE(wc, sc, sylCount)
+			fres.append(fre)
+		except:
+			pass
+		cur += chunk_length
+	return np.mean(fres)
 
 
-            urlDat['info_density'] =  comp_ratio(corpus)
+def get_ref(references: str):
+	for nubmer, line in enumerate(references, 1):  # skip last element with page number
+		line = line.strip()
+		if line:  # skip empty line
+			authors_and_year = re.match("((.*)\. (\d{4})\.)", line)
+			if type(authors_and_year) is not type(None):
+				text, authors, year = authors_and_year.groups()
+				names = re.split(",[ ]*and |,[ ]*| and ", authors)
+				names = [(name, name.split(" ")[-1]) for name in names]
+def extract_science_block(corpus):
+	if "abstract" in corpus:
+		posa = corpus.lower().find("abstract ")
+		corpus = corpus[posa:]
+	else:
+		posa = False
 
-            #Sentiment and Subjectivity analysis
-            testimonial = TextBlob(corpus)
-            urlDat['sp'] = testimonial.sentiment.polarity
-            urlDat['ss'] = testimonial.sentiment.subjectivity
-            urlDat['sp_norm'] = np.abs(testimonial.sentiment.polarity)
-            urlDat['ss_norm'] = np.abs(testimonial.sentiment.subjectivity)
-            urlDat['gf'] = textstat.gunning_fog(corpus)
+	if "references" in corpus:
+		posr = corpus.lower().find("references ")
+		corpus = corpus[:posr]
+	else:
+		posr = False
+	if "bibliography" in corpus:
+		posb = corpus.lower().find("bibliography ")
+		corpus = corpus[:posb]
+	else:
+		posb = False
+	if "significance" in corpus:
+		poss = corpus.lower().find("significance ")
+		corpus = corpus[poss:]
+	else:
+		poss = False
+	if "purpose" in corpus[0:250]:
+		posp = corpus.lower().find("purpose")
+		corpus = corpus[:posp]
+	else:
+		posp = False
 
-            # explanation of metrics
-            # https://github.com/shivam5992/textstat
+	if (posa and (posb or posr)) or poss and posp:
+		this_is_science = True
+	else:
+		# if its not science its probably a junk web page.
+		this_is_science = False
 
-            urlDat['standard'] = textstat.text_standard(corpus, float_output=True)
-            #urlDat['standard_'] = copy.copy(urlDat['standard'] )
-            # special sauce
-            # Good writing should be readable, objective, concise.
-            # The writing should be articulate/expressive enough not to have to repeat phrases,
-            # thereby seeming redundant. Articulate expressive writing then employs
-            # many unique words, and does not yield high compression savings.
-            # Good writing should not be obfucstated either. The reading level is a check for obfucstation.
-            # The resulting metric is a balance of concision, low obfucstation, expression.
+	return corpus, this_is_science
 
-            wc = float(1.0/urlDat['wcount'])
-            # compressed/uncompressed. Smaller is better.
-            # as it means writing was low entropy, redundant, and easily compressible.
-            urlDat['scaled'] = wc * urlDat['standard']
-            urlDat['conciseness'] = urlDat['wcount']*(urlDat['uniqueness']) + \
-            urlDat['wcount']*(urlDat['info_density'])
+def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
+	if type(corpus) is type(str()) and corpus not in str(
+		"Redirecting"
+	):  # and not str("privacy policy") in corpus:
 
-            urlDat['conciseness'] = bi_log_value(urlDat['conciseness'])
-            if urlDat['perplexity'] is not None:
-                urlDat['perplexity'] = bi_log_value(urlDat['perplexity'])
+		if str("some error has occurred while processing your request") in corpus:
+			return {}
+		if str("We apologize for the inconvenience...") in corpus:
+			return {}
+		#if np.mean([len(w) for w in corpus]) > 35:
+		#	return {}
 
-                penalty = (urlDat['standard'] + urlDat['conciseness']+\
-                urlDat['scaled'] + urlDat['perplexity'])/4.0
-            else:
-                penalty = (urlDat['standard'] + urlDat['conciseness']+urlDat['scaled'] )/3.0
+		corpus = corpus.replace("/", " ")  # remove characters that nltk can't read
+		corpus = corpus.lower()
+		corpus = corpus.replace(u"\xa0", u" ")
+		corpus = corpus.replace(u"\\", u" ")
+		corpus, this_is_science = extract_science_block(corpus)
+		if "semantic" in urlDat.keys():
+			if urlDat["semantic"]:
+				this_is_science = True
+		urlDat["science"] = this_is_science
 
-            #computes perplexity of the unigram model on a testset
-            urlDat['penalty'] = penalty
+		#print(corpus)
+		#print(this_is_science, "this_is_science")
+		urlDat["big_words"] = [word for word in corpus if len(word) > 40]
+		ignoreSingleSentences = 1
 
-        return urlDat
+		corpus = cleanup_pretagger_all(corpus)
+		if verbose:
+			st.text("pretagger all")
+			st.text(type(corpus))
 
-from tqdm import tqdm
+		tokens = word_tokenize(corpus)
+		if verbose:
+			st.text("token input")
+			st.text(tokens)
+		tokens = [t for t in tokens if t not in not_want_list]
+		#if np.mean([len(t) for t in tokens]) > 50:
+		#	return {}
+		#tokens = [t for t in tokens if len(t) < 50]
+		if verbose:
+			st.text("token input")
+			st.text(tokens)
+		wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
+			tokens, ignoreSingleSentences=1
+		)
+
+		if len(tokens) < WORD_LIM:
+			return {}
+		if len(tokens) >= WORD_LIM:
+
+			remainingText = " ".join(remainingText)
+			remainingText = remainingText.lower()
+			if wc > 0 and sc > 0:
+				meanv, total, hard_snippet = complexityAlongtheText(
+					corpus, chunk_length=64
+				)
+				urlDat["standard_unbiased"] = meanv
+				urlDat["standard"] = total
+				#if this_is_science:
+				urlDat["hard_snippet"] = hard_snippet
+				#else:
+				#    urlDat["hard_snippet"] = None
+				urlDat["fre_unbiased"] = freeAlongtheText(corpus)
+				fre = FRE(wc, sc, sylCount)
+				if "semantic" in urlDat.keys():
+					if urlDat["semantic"]:
+						ndc = NDC(
+							remainingText, wc, sc
+						)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
+						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
+						#urlDat["standard"] = ndc[0]
+			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
+				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
+
+			if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
+				urlDat["standard"] = urlDat["fre_unbiased"]
+			#if (
+			#    urlDat["standard_unbiased"] < urlDat["standard"]
+			#    and urlDat["standard_unbiased"] > 0
+			#):
+			#    urlDat["standard"] = urlDat["standard_unbiased"]
+			#if fre<urlDat["standard"] and fre>0:
+			#    urlDat["standard"] = fre
+			#if urlDat["standard"] > 60 and ndc[0]>0 and ndc[0]<60:
+			#    urlDat["standard"] = ndc[0]
+
+			#urlDat["concensus"] = np.mean(
+			# 	[
+			# 		np.mean(fre),
+			# 		np.mean(urlDat["standard_unbiased"]),
+			# 	]
+			#)
+			tokens = [w.lower() for w in tokens if w.isalpha()]
+			tokens = [w.lower() for w in tokens]  # make everything lower case
+			urlDat["wcount"] = textstat.lexicon_count(str(tokens))
+			word_lim = bool(urlDat["wcount"] > WORD_LIM)
+			urlDat["tokens"] = tokens
+
+			if len(tokens):
+				lexicon = textstat.lexicon_count(corpus, True)
+				urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
+				urlDat["unique_words"] = len(set(tokens))
+
+				# It's harder to have a good unique ratio in a long document, as 'and', 'the' and 'a', will dominate.
+				# big deltas mean redudancy/sparse information/information/density
+
+				testimonial = TextBlob(corpus)
+				urlDat["sp"] = testimonial.sentiment.polarity
+				urlDat["ss"] = testimonial.sentiment.subjectivity
+				urlDat["sp_norm"] = np.abs(testimonial.sentiment.polarity)
+				urlDat["ss_norm"] = np.abs(testimonial.sentiment.subjectivity)
+				urlDat["gf"] = textstat.gunning_fog(corpus)
+	if "standard" in urlDat.keys():
+		if urlDat["standard"] == 0:
+			if verbose:
+				st.text('gets here')
+			return {}
+
+	return urlDat
+
 
 def process_dics(urlDats):
-    dfs = []
-    for urlDat in tqdm(urlDats):
-        # pandas Data frames are best data container for maths/stats, but steep learning curve.
-        # Other exclusion criteria. Exclude reading levels above grade 100,
-        # as this is most likely a problem with the metric algorithm, and or rubbish data in.
-        # TODO: speed everything up, by performing exclusion criteri above not here.
-        if len(dfs) == 0:
-            dfs = pd.DataFrame(pd.Series(urlDat)).T
-        dfs = pd.concat([ dfs, pd.DataFrame(pd.Series(urlDat)).T ])
-    return dfs
+	dfs = []
+	for urlDat in tqdm(urlDats):
+		# pandas Data frames are best data container for maths/stats, but steep learning curve.
+		# Other exclusion criteria. Exclude reading levels above grade 100,
+		# as this is most likely a problem with the metric algorithm, and or rubbish data in.
+		# TODO: speed everything up, by performing exclusion criteri above not here.
+		if len(dfs) == 0:
+			dfs = pd.DataFrame(pd.Series(urlDat)).T
+		dfs = pd.concat([dfs, pd.DataFrame(pd.Series(urlDat)).T])
+	return dfs

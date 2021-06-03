@@ -12,26 +12,27 @@ jobs:
       - python/install-deps
       - python/save-cache
 
-      - run: 
+      - run:
           name: "Setup custom environment variables"
           command: echo 'export MY_ENV_VAR="CIRCLE"' >> $BASH_ENV
       - run: # print the name of the branch we're on
-          command: echo ${CIRCLE_BRANCH}
+
           name: "What branch am I on?"
-      - run:      
-          command: sudo bash install/gecko_install.sh; sudo pip install -r requirements.txt;
-          name: install
-      - run: 
+          command: echo ${CIRCLE_BRANCH}
+
+      - run:
           name: more install
-          command: sudo python setup.py install; 
+          command:  sudo pip install nltk; sudo python setup.py install;
+      - run:
+          name: install coveralls
+          command: pip install coverage
+
 
   build-docker:
     machine: true
     steps:
       - checkout
-      # start proprietary DB using private Docker image
-      # with credentials stored in the UI
-      # build the application image
+
       - run: docker build -t wcp .
       - run: docker run -d -p 127.0.0.1:80:80 --name wcp wcp
       - run: docker ps | grep -q wcp
@@ -39,4 +40,3 @@ workflows:
   main:
     jobs:
       - build-and-test
-      - build-docker

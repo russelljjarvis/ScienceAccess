@@ -1,338 +1,522 @@
+"""
+## Science Readability Project
+
+To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language.
+In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public. While readability tools, such as Readable and Upgoer5 currently exist to report on readability of text, they report the complexity of only a single document. In addition, these tools do not focus on complexity in a more academic-type context.
+To address this, we created a tool that uses a data-driven approach to provide authors with insights into the readability of the entirety of their published scholarly work with regard to other text repositories. The tool first quantifies an existing text repository [@Soldatova:2007] with complexity shown to be comparable to that of other scientific journals. The tool subsequently uses this output as a reference to show how the readability of user-selected written work compares to this source.
+Ultimately, this tool will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text. We hope that this will allow scientists and other experts to better monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. And perhaps more broadly contribute to an improved global communication and understanding of complex topics.
+Author: [Russell Jarvis](https://github.com/russelljjarvis)\n
+Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
+
+
+"""
+import nltk
+
+nltk.download("punkt")
+nltk.download("cmudict")
+
+import sys
 import streamlit as st
 import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-from wordcloud import WordCloud
 import pandas as pd
 import pickle
 import numpy as np
 import plotly.figure_factory as ff
 import plotly.express as px
 import copy
-import nltk
+import streamlit as st
+import math
+import scipy
+import plotly.graph_objects as go
+import shelve
+import plotly.express as px
+import pandas as pd
+from random import sample
+import click
+from typing import List, Any
 
+from science_access.t_analysis import not_want_list
+
+not_want_list.extend(
+    ["link", "librarian", "issue", "abstract", "science", "cookie", "publication"]
+)
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
 
-trainingDats = pickle.load(open('data/trainingDats.p','rb'))
-bio_chem = [ t['standard'] for t in trainingDats ]
-biochem_labels =  [ x['file_name'] for x in trainingDats if 'file_name' in x.keys()]
-biochem_labels = [x.split("/")[-1] for x in biochem_labels ]
 
-lods = []
-for i,j,k in zip(bio_chem,[str('Comparison Data') for i in range(0,len(bio_chem))],biochem_labels):
-     lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
-df0 = pd.DataFrame(lods)
+from science_access.enter_author_name import (
+    art_cloud,
+    create_giant_strings,
+    art_cloud_wl,
+    zipf_plot,
+)
+from science_access.enter_author_name import (
+    distribution_plot_from_scrape,
+    grand_distribution_plot,
+    data_frames_from_scrape,
+)
+from science_access.enter_author_name import (
+    push_frame_to_screen,
+    fast_art_cloud,
+    grab_data_for_splash,
+)
+from science_access.enter_author_name import (
+    frame_to_lists,
+    try_and_update_cache,
+    get_table_download_link,
+    extra_options,
+)
 
-theme = px.colors.diverging.Portland
-colors = [theme[0], theme[1]]
-st.title('Search Reading Difficulty of Academic')
-author_name = st.text_input('Enter Author:')
-def make_clickable(link):
-    # target _blank to open new window
-    # extract clickable text to display for your link
-    text = link#.split('=')[1]
-    return f'<a target="_blank" href="{link}">{text}</a>'
+rd_df = pd.read_csv("Figure4_SourceData1.csv")
 
-#if 'DYNO' in os.environ:
-heroku = True
-#else:
-#    heroku = False
-st.text(str('heroku')+str(heroku))
-with open('data/_author_specificSayali Phatak.p','rb') as f: 
-    contents = pickle.load(f)   
-(NAME,ar,df,datay,scholar_link) =  contents     
-cached_author_name = "Sayali Phatak"
+rd_df.rename(
+    columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
+)
+rd_df = rd_df[["Reading_Level", "Origin"]]
+rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
 
-if author_name:
-    ar = call_from_front_end(author_name)
-    # remove false outliers.
-    ar = [ t for t in ar if t['standard']<45 ]
+rd_labels = rd_df["Origin"]
+rd_level = rd_df["Reading_Level"]
+max = np.max(rd_df["Reading_Level"])
+rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
-    standard_sci = [ t['standard'] for t in ar ]
-    group_labels = ['Author: '+str(author_name)]#, 'Group 2', 'Group 3']
-    scraped_labels = [ str(x['link']) for x in ar]
+with open("trainingDats.p", "rb") as f:
+    trainingDats = pickle.load(f)
+    art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
+biochem_labels = art_df["Origin"]
+bio_chem_level = art_df["Reading_Level"]
 
+# @st.cache(suppress_st_warning=True)
+def check_cache(author_name: str, verbose=0):  # ->Union[]
+    with shelve.open("fast_graphs_splash.p") as db:
+        #flag = author_name in db
+        flag = False
+        if not flag:
+            ar = call_from_front_end(author_name)
+            scraped_labels, author_score = frame_to_lists(ar)
 
-    lods = []
-    for i,j,k in zip(standard_sci,[str(author_name) for i in range(0,len(ar))],scraped_labels):
-        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.concat([df1,df0])
-    if not heroku:
-
-        fig0 = px.histogram(df, x="Reading_Level", y="Web_Link", color="Origin",
-                        marginal="box",
-                        opacity=0.7,# marginal='violin',# or violin, rug
-                        hover_data=df.columns,
-                        hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors)
-
-        fig0.update_layout(title_text='Scholar scraped {0} Versus Art Corpus'.format(author_name),width=900, height=900)#, hovermode='x')
-                
-        st.write(fig0)
-        cached = False
-    else:
-        df_links = pd.DataFrame()
-        df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
-        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-        df_links = df_links.to_html(escape=False)
-        st.write(df_links, unsafe_allow_html=True)
-
-        x1 = df0['Reading_Level']#np.random.randn(200)
-        x2 = df1['Reading_Level']#np.random.randn(200) + 2
-        if author_name:
-            group_labels = ['Comparison Data ', str(author_name)]
+            ##
+            # This shelve
+            # caching wont scale on heroku.
+            # need TinyDb on Amazon
+            ##
+            if len(db.keys()) < 11:
+                db[author_name] = {
+                    "ar": ar,
+                    "scraped_labels": scraped_labels,
+                    "author_score": author_score,
+                }
         else:
-            group_labels = ['Comparison Data ', str(cached_author_name)]
-        colors = [theme[-1], theme[-2]]
-        rt=list(pd.Series(scraped_labels))
-        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-        hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
-        fig.update_layout(width=900, height=600)#, hovermode='x')
-        '''
-    	Displaying stored results until a new author search is entered.
-    	'''
-        st.write(fig) 
+            """
+            We have evaluated this query recently, using cached results...
+            """
+
+            temp = db[author_name]
+            ar = temp["ar"]
+            if "standard_sci" in temp.keys():
+                author_score = temp["standard_sci"]
+            if "author_score" in temp.keys():
+                author_score = temp["author_score"]
+
+            scraped_labels = temp["scraped_labels"]
+
+        # experimental = [
+        #    np.mean([a["standard_len"], a["ndc"]])
+        #    for a in ar
+        #    if "standard_len" in a.keys()
+        # ]
+    return ar, author_score, scraped_labels
 
 
+def show_author_alias(ar: List = []) -> None:
+    """
+    Synpopsis show the hardest to read passage from the entire query to the app user.
+    """
+    largest = 0
+    li = 0
+    for i, a in enumerate(ar):
+        if "aliases" in a.keys():
+            st.markdown(a["aliases"])
+            break
+    return None
 
 
-else:      
-    cached = True
+def show_hardest_passage(ar: List = []) -> str:
+    """
+    Synpopsis show the hardest to read passage from the entire query to the app user.
+    """
+    largest = 0
+    li = 0
+    smallest = 0
+    mean = np.mean([a["standard"] for i, a in enumerate(ar)])
+
+    for i, a in enumerate(ar):
+        if a["standard"] >= largest and len(ar[i]["hard_snippet"]):
+            largest = a["standard"]
+            li = i
+        if a["standard"] < smallest:
+            smallest = a["standard"]
+
+    for i, a in enumerate(ar):
+        if a["standard"] == largest or a["standard"] > mean:
+
+            if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
+                if len(ar[i]["hard_snippet"]):
+                    if (
+                        str("can log in with their society credentials")
+                        not in ar[i]["hard_snippet"]
+                    ):
 
 
-    (ar, trainingDats) = ar_manipulation(ar)
-    standard_sci = [ t['standard'] for t in ar ]
+                        st.markdown("---")
 
-    scraped_labels = [ str(x['link']) for x in ar]
-    group_labels = ['Author Scraped']#, 'Group 2', 'Group 3']
-    lods = []
-    for i,j,k in zip(standard_sci,[str(cached_author_name) for i in range(0,len(ar))],scraped_labels):
-        lods.append({'Reading_Level':i,'Origin':j,'Web_Link':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.concat([df1,df0])
-    if not heroku:
+                        st.error("### Some hard to read passage(s) from the authors work.")
+                        from nltk import word_tokenize
 
-        fig = px.histogram(df, y="Web_Link", x="Reading_Level", color="Origin",
-                        marginal="box",
-                        opacity=0.7,
-                        hover_data=df.columns,
-                        hover_name=df["Web_Link"],
-                        color_discrete_sequence=colors)
+                        tokens = word_tokenize(ar[i]["hard_snippet"])
+                        #string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
+                        #string_from_tokens2 = "..."
+                        #string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
 
-        fig.update_layout(title_text='Scholar {0} Versus Art Corpus'.format(cached_author_name),width=900, height=600)
-        '''
-    	Displaying stored results until a new author search is entered.
-    	'''
+                        #string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
+                        string_from_tokens = create_giant_strings(tokens, not_want_list)
+
+
+                        st.warning(string_from_tokens)  # [0:200])
+                        st.warning("...")  # [0:200])
+
+                        return ar[i]
+    return None
+
+
+def clouds_big_words(sci_corpus):
+    if len(sci_corpus) != 0:
+
+        st.markdown("-----")
+        st.markdown(""" ### Word Length Word Cloud 	""")
+        st.markdown(
+            """
+		based on the largest words found in the mined text.
+		These words are likely culprits that hindered readability.
+		"""
+        )
+        big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
+
+
+verbose = 0
+
+from science_access.t_analysis import text_proc
+
+def main():
+    st.title("Search Reading Complexity of an Author")
+    st.sidebar.title("Explanations and Options")
+
+    author_name = st.text_input("Enter Author Name:")
+    st.markdown(
+        """Entering a middle initial followed by ```.``` can change the accuracy of results."""
+    )
+    st.markdown("""Eg. Sayali S```.``` Phatak""")
+    ar = None
+    if author_name:
+        ar, author_score, scraped_labels = check_cache(author_name, verbose)
+        if len(ar) == 0:
+            st.warning("Author Not Found")
+    if ar is not None:
+        df_author, merged_df = data_frames_from_scrape(
+            ar, author_name, scraped_labels, author_score, art_df
+        )
+
+    st.markdown("-----")
+    my_expander = st.sidebar.beta_expander("source code")
+
+    my_expander.markdown("[Github](https://github.com/russelljjarvis/ScienceAccess)")
+
+    my_expander.markdown(
+        """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+    )
+
+    if "df_author" in locals():
+        st.markdown(
+            """
+			### There were a total number of {0} documents mined during this query.
+			""".format(
+                len(df_author)
+            )
+        )
+
+        push_frame_to_screen(df_author, scraped_labels)
+
+        temp = "{0} Summary Readability versus large sample of science".format(
+            author_name
+        )
+        labels = [temp, "ART Corpus readability"]
+        values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         st.write(fig)
 
-    else:
-        df_links = pd.DataFrame()
-        df_links['Web_Link'] = pd.Series(scraped_labels)
-        df_links['Reading_Level'] = pd.Series(standard_sci)
-        df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-        df_links = df_links.to_html(escape=False)
-        st.write(df_links, unsafe_allow_html=True)
+        #df_concat_art = pd.concat([rd_df, df_author])
+        df_concat_art = pd.concat([rd_df,df_author])
 
-        x1 = df0['Reading_Level']#np.random.randn(200)
-        x2 = df1['Reading_Level']#np.random.randn(200) + 2
-        if author_name:
-            group_labels = ['Comparison Data ', str(author_name)]
-        else:
-            group_labels = ['Comparison Data ', str(cached_author_name)]
-        colors = [theme[-1], theme[-2]]
-        rt=list(pd.Series(scraped_labels))
-        fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-        hover_trace = [t for t in fig['data'] if 'text' in t]
-        fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
-        fig.update_layout(width=900, height=600)#, hovermode='x')
-        '''
-    	Displaying stored results until a new author search is entered.
-    	'''
-        st.write(fig) 
+        fig_art = px.box(
+            df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+        )
+        st.write(fig_art)
 
-if cached:
+        # df_concat_art = pd.concat([art_df, df_author])
+        # fig_art = px.box(
+        #    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+        # )
+        # st.write(fig_art)
 
-    '''
+        df0 = df_concat_art
 
-    ### Total number {0} scraped documents:
+        st.markdown("-----")
 
-    '''.format('previously')
-    st.text(len(ar))
-else:
-    '''
+        if len(author_score) == 0:
+            st.warning("Author Not Found")
+        st.markdown(
+            """
+			### The average reading level of the mined work was {0}.""".format(
+                round(np.mean(author_score)), 3
+            )
+        )
 
-    ### Total number {0} scraped documents:
+        """
+		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		"""
+        # try:
 
-    '''.format('previously')
-    st.text(len(ar))
-if np.mean(standard_sci) < np.mean(bio_chem):
-    '''
+        st.markdown("\n")
+        if np.mean(author_score) < np.mean(bio_chem_level):
+            st.markdown(
+                """
+			### {0} was on average easier to read relative to the ART Corpus.
+			""".format(
+                    author_name
+                )
+            )
+
+        if np.mean(author_score) >= np.mean(bio_chem_level):
+            st.markdown(
+                """
+			### {0} was on average more difficult to read relative to the ART Corpus.
+			""".format(
+                    author_name
+                )
+            )
+
+        st.markdown("\n\n")
+        st.markdown("-----")
+
+        st.markdown(""" ### Word Frequency Word Cloud""")
+        """
+		The word cloud is based on the most common words found in the mined text.
+		This word cloud is for humans to validate text mining work.
+		This is because the word cloud frequency often matches a writer's
+		own knowledge of concepts in their work, therefore it can to help
+		instill trust in text-mining results.
+		"""
+
+        grab_setr = []
+        grab_set_auth = []
+
+        for paper in trainingDats:
+            grab_setr.extend(paper["tokens"])
+
+        for paper in ar:
+            grab_set_auth.extend(paper["tokens"])
+        artset = list(grab_setr)
+        #artset.extend(not_want_list)
+        # auth_set = grab_set_auth
+        # exclusive = [i for i in grab_set_auth if i not in artset]
+        fig = fast_art_cloud(grab_set_auth)
+
+        giant_string = create_giant_strings(grab_set_auth,not_want_list)
+        #st.markdown(giant_string)
+        urlDat = text_proc(giant_string,urlDat={},verbose=False)
+
+        #st.markdown(urlDat.values())
+        #st.markdown(urlDat.keys())
+
+        #st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
+        #st.markdown(urlDat["standard"])
+        #hard = show_hardest_passage(ar)
+        # if hard is not None:
+        # 	st.markdown(hard)
+        show_author_alias(ar)
+
+        st.markdown("-----")
+        # fast_art_cloud(sci_corpus)
+        clouds_by_big_words = True
+        if clouds_by_big_words:
+            grab_set_auth = []
+            for paper in ar:
+                if "semantic" in paper.keys():
+                    grab_set_auth.extend(paper["tokens"])
+            sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
+            try:
+                clouds_big_words(sci_corpus)
+            except:
+                pass
+
+        if verbose:
+            st.text(sci_corpus)
+        with shelve.open("fast_graphs_splash.p") as db:
+            if not author_name in db.keys():
+                db[author_name] = {
+                    "ar": ar,
+                    "scraped_labels": scraped_labels,
+                    "author_score": author_score,
+                    "sci_corpus": sci_corpus,
+                }
+        st.markdown("\n")
+
+        if np.mean(author_score) < np.mean(bio_chem_level):
+            st.markdown(
+                """
+			### {0} was on average easier to read relative to the ART Corpus.
+			""".format(
+                    author_name
+                )
+            )
+
+        if np.mean(author_score) >= np.mean(bio_chem_level):
+            st.markdown(
+                """
+			### {0} was on average more difficult to read relative to the ART Corpus.
+			""".format(
+                    author_name
+                )
+            )
+
+        st.markdown("-----")
+
+        st.markdown("-----")
+        st.markdown("\n\n")
+
+        st.markdown(
+            """
+		### The average reading level of the mined work was {0}.""".format(
+                round(np.mean(author_score)), 3
+            )
+        )
+
+        my_expander.markdown("# Information about Readability")
+
+        my_expander = st.beta_expander("Expand Information about Readability")
+        # if my_expander:
+        my_expander.markdown("""-----""")
+
+        my_expander.markdown(
+            """
+		### Here are a few additional established text sources of known complexity.
+		Note that in general, we can equate reading level with grade level.
+		"""
+        )
+
+        my_expander.markdown(
+            """
+		| Text Source | Mean Complexity | Description |
+		|----------|----------|:-------------:|
+		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
+		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+		"""
+        )
+
+        my_expander.markdown("\n")
+        my_expander.markdown("-----")
+
+        my_expander.markdown(
+            """
+		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
+		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
+		"""
+        )
+        my_expander.markdown("-----")
+
+        """
+		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		"""
+
+        st.markdown("-----")
+        st.markdown("\n\n\n\n")
+
+        # sci_corpus = create_giant_strings(ar, not_want_list)
+        # bio_corpus = create_giant_strings(trainingDats, not_want_list)
+
+        # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
+        # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
+
+        st.markdown("-----")
+        st.markdown("\n\n")
+        grab_setr = []
+        grab_set1 = []
+
+        for block in trainingDats:
+            grab_setr.extend(block["tokens"])
+        for block in ar:
+            grab_set1.extend(block["tokens"])
+
+        artset = list(grab_setr)
+        artset.extend(not_want_list)
+        autset = list(set(grab_set1))
+        exclusive = [i for i in autset if i not in artset]
+        # inclusive = [i for i in autset if i in artset]
+        # st.markdown(
+        #    "### Concepts that differentiate {0} from other science".format(
+        #        author_name
+        #    )
+        # )
+        # exclusive = create_giant_strings(ar, exclusive)
+
+        # fig = fast_art_cloud(exclusive)
+        # st.markdown("-----")
+
+        sentiment = []
+        uniqueness = []
+        for block in trainingDats:
+            uniqueness.append(block["uniqueness"])
+            sentiment.append(block["sp"])
+        temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
+        if "reading_time" in ar[0].keys():
+            average_reading_time = [np.mean([r["reading_time"] for r in ar])]
+
+            st.markdown("""### Reading Time""")
+            st.markdown(
+                """There were {2} documents. The average reading time
+			per document for author {1} was {0} Minutes.
+			""".format(
+                    np.mean(average_reading_time), author_name, len(ar)
+                )
+            )
+
+        st.markdown("""### Sentiment""")
+        st.markdown(
+            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
+					""".format(
+                temp, author_name
+            )
+        )
+
+        temp = "{0} positive sentiment".format(author_name)
+        labels = [temp, "ART Corpus positive sentiment"]
+        values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+
+        # urlDat["reading_time"]
+        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        st.write(fig)
+
+        st.markdown("\n")
 
 
-    ### This author was on average easier to read as the average of ARTCORPUS:
-    A varied collection of biochemistry science papers
-    '''
+if __name__ == "__main__":
 
-if np.mean(standard_sci) >= np.mean(bio_chem):
-    '''
-
-
-    ### This author was on average harder or just as hard to read as average of ARTCORPUS:
-    A varied collection of biochemistry science papers
-    '''
-
-
-sci_corpus = ''
-
-black_list = ['et', 'al','text','crossref','cross', 'ref','google','scholar', 'article','pubmed','full']
-
-for t in ar:
-    if 'tokens' in t.keys():
-        for s in t['tokens']:
-            if s not in set(black_list):
-                sci_corpus+=str(' ')+s
-
-
-def art_cloud(acorpus):
-
-    # Generate a word cloud image
-
-    wordcloud = WordCloud().generate(acorpus)
-    fig = plt.figure()
-
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-    st.pyplot()
-
-#DEVELOP = True
-#if DEVELOP:
-import scipy
-twosample_results = scipy.stats.ttest_ind(bio_chem, standard_sci)
-
-matrix_twosample = [
-    ['', 'Test Statistic', 'p-value'],
-    ['Sample Data', twosample_results[0], twosample_results[1]]
-]
-
-fig = ff.create_table(matrix_twosample, index=True)
-'''
-###  A t-test 
- it checks if the authors distribution 
- is significantly different from the ART-corpus distribution
-'''
-st.write(fig)
-#py.iplot(twosample_table, filename='twosample-table')
-'''
-### Links 
-to the articles that were used to perform this calculation
-'''
-
-df_links = pd.DataFrame()
-df_links['Web_Link'] = pd.Series(scraped_labels)
-df_links['Reading_Level'] = pd.Series(standard_sci)
-#st.write(df)
-# link is the column with hyperlinks
-df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-df_links = df_links.to_html(escape=False)
-st.write(df_links, unsafe_allow_html=True)
-# Create a list of possible values and multiselect menu with them in it.
-
-
-
-'''
-
-
-### Here are some word clouds, that show the frequency of scraped texts
-You can eye ball them to see if they fit your intuition about what your searched author writes about
-'''
-try:
-    art_cloud(sci_corpus)
-except:
-
-    pass
-if not heroku:
-    df_links = pd.DataFrame()
-    df_links['Web_Link'] = pd.Series(scraped_labels)
-    df_links['Reading_Level'] = pd.Series(standard_sci)
-    #st.write(df)
-    # link is the column with hyperlinks
-    df_links['Web_Link'] = df_links['Web_Link'].apply(make_clickable)
-    df_links = df_links.to_html(escape=False)
-    st.write(df_links, unsafe_allow_html=True)
-
-    x1 = df0['Reading_Level']#np.random.randn(200)
-    x2 = df1['Reading_Level']#np.random.randn(200) + 2
-    if author_name:
-        group_labels = ['Comparison Data ', str(author_name)]
-    else:
-        group_labels = ['Comparison Data ', str(cached_author_name)]
-    colors = [theme[-1], theme[-2]]
-    rt=list(pd.Series(scraped_labels))
-    fig = ff.create_distplot([x1, x2], group_labels, bin_size=2,colors=colors,rug_text=rt)
-    hover_trace = [t for t in fig['data'] if 'text' in t]
-    fig.update_layout(title_text='Scholar scraped Author Versus Art Corpus')
-    fig.update_layout(width=900, height=600)#, hovermode='x')
-    st.write(fig)
-
-list_df = pickle.load(open("data/benchmarks.p","rb")) 
-bm = pd.DataFrame(list_df)
-
-bm = bm.rename(columns={'link': 'Web_Link', 'standard': 'Reading_Level'})
-bm["Origin"] = pd.Series(["Benchmark" for i in range(0,len(bm))])
-
-bm = bm.drop(4, axis=0)
-bm = bm.drop(5, axis=0)
-
-bm_temp = pd.DataFrame()
-bm_temp["Origin"] = bm["Origin"]
-bm_temp["Web_Link"] = bm["Web_Link"]
-bm_temp["Reading_Level"] = bm["Reading_Level"]
-bm = copy.copy(bm_temp)
-
-bm_temp['Web_Link'] = bm_temp['Web_Link'].apply(make_clickable)
-bm_temp = bm_temp.to_html(escape=False)
-
-'''
-In the table below there are benchmarks texts that are 
-used as a comparison to investigate some very easy to read scientific writing.
-and some very cryptic and unreadable texts too.
-'''
-
-st.write(bm_temp, unsafe_allow_html=True)
-
-x1 = bm['Reading_Level']
-x2 = df1['Reading_Level']
-
-x3 = df0['Reading_Level']
-
-
-rt=list(bm['Web_Link'])
-rt.extend(list(df1['Web_Link']))
-rt.extend(list(df0['Web_Link']))
-
-colors = [theme[0], theme[4],theme[2]]
-if author_name:
-    group_labels = ['Ideal Bench Marks ', str(author_name), str('Comparison Data')]
-else:
-    group_labels = ['Ideal Bench Marks  ', str(cached_author_name), str('Comparison Data')]
-
-fig = ff.create_distplot([x1, x2, x3], group_labels, bin_size=1,colors=colors,rug_text=rt)
-
-hover_trace = [t for t in fig['data'] if 'text' in t]
-
-fig.update_layout(title_text='Benchmarks versus scraped Author')
-fig.update_layout(width=900, height=600)#, hovermode='x')
-
-st.write(fig)
-
-#ARTCORPUS = pickle.load(open('traingDats.p','rb'))
-#acorpus = ''
-#for t in ARTCORPUS:
-#    if 'tokens' in t.keys():
-#        for s in t['tokens']:
-#            acorpus+=str(' ')+s
+    main()

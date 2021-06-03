@@ -7,67 +7,66 @@ import numpy as np
 import requests
 from bs4 import BeautifulSoup
 
-from .crawl import collect_pubs, convert_pdf_to_txt#,process
-from .scrape import get_driver
-from .t_analysis import text_proc
+from .crawl import collect_pubs, convert_pdf_to_txt  # ,process
+from .online_app_backend import get_driver
 from .utils import black_string
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-if 'DYNO' in os.environ:
+
+from .t_analysis import text_proc
+
+if "DYNO" in os.environ:
     heroku = True
 else:
     heroku = False
-def process(link):
-    urlDat = {}
 
-    #if heroku:
-    #    wait = WebDriverWait(driver, 10)
-    #    wait.until(lambda driver: driver.current_url != link)
-    #    link = cddriver.current_url
-    if str('pdf') not in link:
-        driver = get_driver()
-        driver.get(link)
- 
-        crude_html = driver.page_source
+REDIRECT = False
 
-        soup = BeautifulSoup(crude_html, 'html.parser')
-        for script in soup(["script", "style"]):
-            script.extract()    # rip it out
-        text = soup.get_text()
-        #wt = copy.copy(text)
-        #organize text
-        lines = (line.strip() for line in text.splitlines())  # break into lines and remove leading and trailing space on each
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  ")) # break multi-headlines into a line each
-        text = '\n'.join(chunk for chunk in chunks if chunk) # drop blank lines
-        buffered = str(text)
 
-        driver.close()
-        driver.quit() 
-        driver = None
-        del driver
+def coauthor(soup):
+    from_pub = soup.find_all("#gs_res_ccl_top a")
+    to_pub = soup.find_all("#gs_res_ccl_mid .gs_r")
+    ca = soup.find(lambda tag: "coauthor" in tag.text)
+    if ca is not None:
+        print(ca.text, "worked 1")
+    ca = soup.find(lambda tag: "co-author" in tag.text)
+    if ca is not None:
+        print(ca.text, "worked 0.5")
+    return soup
 
-    else:
-        pdf_file = requests.get(link, stream=True)
-        buffered = convert_pdf_to_txt(pdf_file)
-    urlDat['link'] = link
-    urlDat['page_rank'] = 'benchmark'    
-    urlDat = text_proc(buffered,urlDat)
-    
-    return urlDat
 
-#try:
+def try_grobid(link, response):
+    with open(link, "wb") as f:
+        f.write(response.content)
+        path = os.getcwd() + str(link)
+    os.subprocess(
+        str("python3 grobid_client_python/grobid_client.py --input ")
+        + str(path)
+        + str("--output ")
+        + str(path)
+        + "_grobid "
+        + str("--include_raw_affiliations")
+        + str(" processFulltextDocument")
+    )
+    os.subprocess(str("cat ") + str(path) + str("_grobid"))
+
+
+# try:
 #    assert os.path.isfile('../BenchmarkCorpus/benchmarks.p')
 #    with open('../BenchmarkCorpus/benchmarks.p','rb') as f:
 #        urlDats = pickle.load(f)
-#except:
+# except:
 
-def mess_length(word_length,bcm):
-    with open('bcm.p','rb') as f:
-        big_complex_mess = pickle.load(big_complex_mess,f)
+
+def mess_length(word_length, bcm):
+    with open("bcm.p", "rb") as f:
+        big_complex_mess = pickle.load(big_complex_mess, f)
     reduced = big_complex_mess[0:word_length]
     urlDat = {}
-    pmegmess = text_proc(reduced,urlDat)
+    pmegmess = text_proc(reduced, urlDat)
     return mess_length, pmegmess
+
+
 """
 def get_greg_nicholas():
     urlDat = {}
@@ -76,7 +75,7 @@ def get_greg_nicholas():
     #pdf_file = requests.get(link, stream=True)
     #bufferd = convert_pdf_to_txt(pdf_file)
     #File_object = open(r"local_text.txt","Access_Mode")
-    file1 = open("local_text.txt","r") 
+    file1 = open("local_text.txt","r")
     txt = file1.readlines()
     new_str = ''
     for i in txt:
@@ -93,57 +92,72 @@ def get_greg_nicholas():
     return urlDat
 """
 
+
 def get_bmarks():
-    xkcd_self_sufficient = str('http://splasho.com/upgoer5/library.php')
-    high_standard = str('https://elifesciences.org/download/aHR0cHM6Ly9jZG4uZWxpZmVzY2llbmNlcy5vcmcvYXJ0aWNsZXMvMjc3MjUvZWxpZmUtMjc3MjUtdjIucGRm/elife-27725-v2.pdf?_hash=WA%2Fey48HnQ4FpVd6bc0xCTZPXjE5ralhFP2TaMBMp1c%3D')
-    the_science_of_writing = str('https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf')
-    pmeg = str('http://www.elsewhere.org/pomo/') # Note this is so obfuscated, even the english language classifier rejects it.
-    this_manuscript = str('https://www.overleaf.com/read/dqkttvmqjvhn')
-    this_readme = str('https://github.com/russelljjarvis/ScienceAccessibility')
-    links = [xkcd_self_sufficient,high_standard,the_science_of_writing,this_manuscript,this_readme ]
-    urlDats = list(map(process,links))
+    xkcd_self_sufficient = str("http://splasho.com/upgoer5/library.php")
+    high_standard = str(
+        "https://elifesciences.org/download/aHR0cHM6Ly9jZG4uZWxpZmVzY2llbmNlcy5vcmcvYXJ0aWNsZXMvMjc3MjUvZWxpZmUtMjc3MjUtdjIucGRm/elife-27725-v2.pdf?_hash=WA%2Fey48HnQ4FpVd6bc0xCTZPXjE5ralhFP2TaMBMp1c%3D"
+    )
+    the_science_of_writing = str(
+        "https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf"
+    )
+    pmeg = str(
+        "http://www.elsewhere.org/pomo/"
+    )  # Note this is so obfuscated, even the english language classifier rejects it.
+    this_manuscript = str("https://www.overleaf.com/read/dqkttvmqjvhn")
+    this_readme = str("https://github.com/russelljjarvis/ScienceAccessibility")
+    links = [
+        xkcd_self_sufficient,
+        high_standard,
+        the_science_of_writing,
+        this_manuscript,
+        this_readme,
+    ]
+    urlDats = list(map(process, links))
 
     pmegs = []
-    for i in range(0,9):
-       p = process(pmeg)
-       if p is not None:
-           pmegs.append(p) # grab this constantly changing page 10 times to get the mean value.
+    for i in range(0, 9):
+        p = process(pmeg)
+        if p is not None:
+            pmegs.append(
+                p
+            )  # grab this constantly changing page 10 times to get the mean value.
     if pmegs[0] is not None:
         urlDats.append(process(pmegs[0]))
-    big_complex_mess = ''
+    big_complex_mess = ""
     urlDat = {}
     for p in pmegs:
         if p is not None:
-            for s in p['tokens']:
-                big_complex_mess += s+str(' ')
-    bcm = ''
+            for s in p["tokens"]:
+                big_complex_mess += s + str(" ")
+    bcm = ""
     for p in pmegs[0:2]:
         if p is not None:
-            for s in p['tokens']:
-                bcm += s+str(' ')
+            for s in p["tokens"]:
+                bcm += s + str(" ")
 
-    pmegmess_2 = text_proc(bcm,urlDat)
-    #import pdb; pdb.set_trace()
-    with open('bcm.p','wb') as f:
-        pickle.dump(big_complex_mess,f)
+    pmegmess_2 = text_proc(bcm, urlDat)
+    # import pdb; pdb.set_trace()
+    with open("bcm.p", "wb") as f:
+        pickle.dump(big_complex_mess, f)
 
-    urlDats[-1]['standard'] = np.mean([p['standard'] for p in pmegs])
-    #import pdb
-    #pdb.set_trace()
-    urlDats[-1]['sp'] = np.mean([p['sp'] for p in pmegs])
-    urlDats[-1]['gf'] = np.mean([p['gf'] for p in pmegs])
-    with open('benchmarks.p','wb') as f:
-        pickle.dump(urlDats,f)
+    urlDats[-1]["standard"] = np.mean([p["standard"] for p in pmegs])
+    # import pdb
+    # pdb.set_trace()
+    urlDats[-1]["sp"] = np.mean([p["sp"] for p in pmegs])
+    urlDats[-1]["gf"] = np.mean([p["gf"] for p in pmegs])
+    with open("benchmarks.p", "wb") as f:
+        pickle.dump(urlDats, f)
 
     return urlDats
 
 
 def check_self_contained(file_name):
-    royal = '../BenchmarkCorpus/' +str(file_name)
+    royal = "../BenchmarkCorpus/" + str(file_name)
     klpdr = open(royal)
     strText = klpdr.read()
-    urlDat = {'link':'local_resource_royal'}
-    klpdfr = text_proc(strText,urlDat, WORD_LIM = 100)
+    urlDat = {"link": "local_resource_royal"}
+    klpdfr = text_proc(strText, urlDat, WORD_LIM=100)
     return klpdfr
 
 
@@ -153,6 +167,6 @@ def getText(filename):
     doc = docx.Document(filename)
     fullText = []
     for para in doc.paragraphs:
-        txt = para.text.encode('ascii', 'ignore')
+        txt = para.text.encode("ascii", "ignore")
         fullText.append(txt)
-    return '\n'.join(fullText)
+    return "\n".join(fullText)
