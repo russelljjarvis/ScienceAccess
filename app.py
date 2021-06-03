@@ -333,7 +333,6 @@ def main():
         )
 
         my_expander.markdown("\n")
-        my_expander.markdown("-----")
 
         my_expander.markdown(
             """
@@ -343,7 +342,6 @@ def main():
 		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 		"""
         )
-        my_expander.markdown("-----")
 	
 	
         st.markdown("\n\n")
