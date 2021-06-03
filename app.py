@@ -308,7 +308,7 @@ def main():
                 )
             )
 
-	my_expander.markdown("# Information about Readability")
+        my_expander.markdown("# Information about Readability")
 
         my_expander = st.beta_expander("Expand Information about Readability")
         # if my_expander:
