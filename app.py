@@ -172,7 +172,7 @@ def show_hardest_passage(ar: List = []) -> str:
 
                         st.markdown("---")
 
-                        st.error("### A hard to read passage from the authors work.")
+                        st.error("### Some hard to read passage(s) from the authors work.")
                         from nltk import word_tokenize
 
                         tokens = word_tokenize(ar[i]["hard_snippet"])
@@ -185,6 +185,7 @@ def show_hardest_passage(ar: List = []) -> str:
 
 
                         st.warning(string_from_tokens)  # [0:200])
+                        st.warning("...")  # [0:200])
 
                         return ar[i]
     return None
@@ -206,6 +207,7 @@ def clouds_big_words(sci_corpus):
 
 verbose = 0
 
+from science_access.t_analysis import text_proc
 
 def main():
     st.title("Search Reading Complexity of an Author")
@@ -326,10 +328,20 @@ def main():
         for paper in ar:
             grab_set_auth.extend(paper["tokens"])
         artset = list(grab_setr)
-        artset.extend(not_want_list)
+        #artset.extend(not_want_list)
         # auth_set = grab_set_auth
         # exclusive = [i for i in grab_set_auth if i not in artset]
         fig = fast_art_cloud(grab_set_auth)
+
+        giant_string = create_giant_strings(grab_set_auth,not_want_list)
+        #st.markdown(giant_string)
+        urlDat = text_proc(giant_string,urlDat={},verbose=False)
+
+        #st.markdown(urlDat.values())
+        #st.markdown(urlDat.keys())
+
+        st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
+        st.markdown(urlDat["standard"])
         hard = show_hardest_passage(ar)
         # if hard is not None:
         # 	st.markdown(hard)
