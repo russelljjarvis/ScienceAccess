@@ -306,7 +306,7 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to the ART Corpus, an existing corpus of publicly licenced scientific papers.
+			### {0} was on average more difficult to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licenced scientific papers.
 			""".format(
                     author_name
                 )
