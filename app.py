@@ -132,7 +132,7 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
 
 def show_author_alias(ar: List = []) -> None:
     """
-    Synpopsis show the hardest to read passage from the entire query to the app user.
+    Synopsis show the hardest to read passage from the entire query to the app user.
     """
     largest = 0
     li = 0
@@ -145,7 +145,7 @@ def show_author_alias(ar: List = []) -> None:
 
 def show_hardest_passage(ar: List = []) -> str:
     """
-    Synpopsis show the hardest to read passage from the entire query to the app user.
+    Synopsis show the hardest to read passage from the entire query to the app user.
     """
     largest = 0
     li = 0
@@ -194,11 +194,10 @@ def show_hardest_passage(ar: List = []) -> str:
 def clouds_big_words(sci_corpus):
     if len(sci_corpus) != 0:
 
-        st.markdown("-----")
         st.markdown(""" ### Word Length Word Cloud 	""")
         st.markdown(
             """
-		based on the largest words found in the mined text.
+		This word cloud is based on the largest words found in the mined text.
 		These words are likely culprits that hindered readability.
 		"""
         )
@@ -211,13 +210,14 @@ from science_access.t_analysis import text_proc
 
 def main():
     st.title("Search Reading Complexity of an Author")
-    st.sidebar.title("Explanations and Options")
+    st.sidebar.title("Code Information")
 
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
-        """Entering a middle initial followed by ```.``` can change the accuracy of results."""
+        """Entering a middle initial may improve search accuracy."""
     )
-    st.markdown("""Eg. Sayali S```.``` Phatak""")
+    st.markdown("-----")
+
     ar = None
     if author_name:
         ar, author_score, scraped_labels = check_cache(author_name, verbose)
@@ -228,16 +228,25 @@ def main():
             ar, author_name, scraped_labels, author_score, art_df
         )
 
-    st.markdown("-----")
-    my_expander = st.sidebar.beta_expander("source code")
-
-    my_expander.markdown("[Github](https://github.com/russelljjarvis/ScienceAccess)")
+    
+    my_expander = st.sidebar.beta_expander("")
 
     my_expander.markdown(
-        """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+        """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+    )
+    
+    my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
+
+    my_expander.markdown(
+	"""[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
     )
 
+
     if "df_author" in locals():
+
+        st.markdown("-----")
+        #st.markdown("#### Results")
+
         st.markdown(
             """
 			### There were a total number of {0} documents mined during this query.
@@ -245,24 +254,26 @@ def main():
                 len(df_author)
             )
         )
-
+	
         push_frame_to_screen(df_author, scraped_labels)
-
-        temp = "{0} Summary Readability versus large sample of science".format(
-            author_name
-        )
-        labels = [temp, "ART Corpus readability"]
-        values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
-
-        #df_concat_art = pd.concat([rd_df, df_author])
+		
+	#df_concat_art = pd.concat([rd_df, df_author])
         df_concat_art = pd.concat([rd_df,df_author])
 
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
         st.write(fig_art)
+	
+	
+        #temp = "{0} Summary Readability versus large sample of science".format(
+        #    author_name
+        #)
+        #labels = [temp, "ART Corpus readability"]
+        #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #st.write(fig)
+
 
         # df_concat_art = pd.concat([art_df, df_author])
         # fig_art = px.box(
@@ -284,6 +295,7 @@ def main():
         )
 
         """
+		We can think of reading level in a similar way to grade level. 
 		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
         # try:
@@ -301,22 +313,55 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to the ART Corpus.
+			### {0} was on average more difficult to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licenced scientific papers.
 			""".format(
                     author_name
                 )
             )
 
+        my_expander = st.beta_expander("Expand for more information about readability")
+        # if my_expander:
+
+        my_expander.markdown(
+            """
+		### Here are a few additional established text sources of known complexity.
+		Note that in general, we can equate reading level with grade level.
+		"""
+        )
+
+        my_expander.markdown(
+            """
+		| Text Source | Mean Complexity | Description |
+		|----------|----------|:-------------:|
+		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
+		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
+		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
+		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
+		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
+		"""
+        )
+
+        my_expander.markdown("\n\n")
+
+        my_expander.markdown(
+            """
+		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
+		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
+		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
+		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
+		"""
+        )
+	
+	
         st.markdown("\n\n")
         st.markdown("-----")
-
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
-		The word cloud is based on the most common words found in the mined text.
-		This word cloud is for humans to validate text mining work.
-		This is because the word cloud frequency often matches a writer's
-		own knowledge of concepts in their work, therefore it can to help
-		instill trust in text-mining results.
+		This word cloud is based on the most common words found in the mined text.
+		It is for humans to validate the text mining work. As the word cloud 
+		frequency often matches a writer's own knowledge of concepts in their work, 
+		it may also help instill trust in text-mining results.
 		"""
 
         grab_setr = []
@@ -372,80 +417,7 @@ def main():
                     "sci_corpus": sci_corpus,
                 }
         st.markdown("\n")
-
-        if np.mean(author_score) < np.mean(bio_chem_level):
-            st.markdown(
-                """
-			### {0} was on average easier to read relative to the ART Corpus.
-			""".format(
-                    author_name
-                )
-            )
-
-        if np.mean(author_score) >= np.mean(bio_chem_level):
-            st.markdown(
-                """
-			### {0} was on average more difficult to read relative to the ART Corpus.
-			""".format(
-                    author_name
-                )
-            )
-
-        st.markdown("-----")
-
-        st.markdown("-----")
-        st.markdown("\n\n")
-
-        st.markdown(
-            """
-		### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(author_score)), 3
-            )
-        )
-
-        my_expander.markdown("# Information about Readability")
-
-        my_expander = st.beta_expander("Expand Information about Readability")
-        # if my_expander:
-        my_expander.markdown("""-----""")
-
-        my_expander.markdown(
-            """
-		### Here are a few additional established text sources of known complexity.
-		Note that in general, we can equate reading level with grade level.
-		"""
-        )
-
-        my_expander.markdown(
-            """
-		| Text Source | Mean Complexity | Description |
-		|----------|----------|:-------------:|
-		| [Upgoer 5](https://splasho.com/upgoer5/library.php)                             | 7     | library using only the 10,000 most commonly occurring English words |
-		| [Readability of science declining](https://elifesciences.org/articles/27725)   |  9.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-		| [Science of writing](https://cseweb.ucsd.edu/~swanson/papers/science-of-writing.pdf) | 14.0 | example of a scientific article discussing writing to a broad audience in an academic context |
-		| Wikipedia                                                                       | 14.9   | free, popular, crowdsourced encyclopedia generated from self-nominating volunteers  |
-		| [Post-Modern Essay Generator](http://www.elsewhere.org/journal/pomo/)           | 16.5   | generates output consisting of sentences that obey the rules of written English, but without restraints on the semantic conceptual references   |
-		| [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
-		"""
-        )
-
-        my_expander.markdown("\n")
-        my_expander.markdown("-----")
-
-        my_expander.markdown(
-            """
-		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
-		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
-		#### [Here is a source](http://nces.ed.gov/naal/pdf/2006470.pdf) about variation in adult literacy:
-		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
-		"""
-        )
-        my_expander.markdown("-----")
-
-        """
-		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
-		"""
-
+       
         st.markdown("-----")
         st.markdown("\n\n\n\n")
 
@@ -455,8 +427,7 @@ def main():
         # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
         # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
-        st.markdown("-----")
-        st.markdown("\n\n")
+        st.markdown("\n")
         grab_setr = []
         grab_set1 = []
 
