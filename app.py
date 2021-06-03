@@ -216,7 +216,8 @@ def main():
     st.markdown(
         """Entering a middle initial may improve search accuracy."""
     )
-	
+    st.markdown("-----")
+
     ar = None
     if author_name:
         ar, author_score, scraped_labels = check_cache(author_name, verbose)
@@ -244,7 +245,7 @@ def main():
     if "df_author" in locals():
 
         st.markdown("-----")
-        st.markdown(""" ### Results """)
+        st.markdown(""" #### Results """)
 
         st.markdown(
             """
