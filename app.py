@@ -249,6 +249,16 @@ def main():
 
         push_frame_to_screen(df_author, scraped_labels)
 
+	#df_concat_art = pd.concat([rd_df, df_author])
+        df_concat_art = pd.concat([rd_df,df_author])
+
+        fig_art = px.box(
+            df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+        )
+        st.write(fig_art)
+	
+	
+	
         temp = "{0} Summary Readability versus large sample of science".format(
             author_name
         )
@@ -257,13 +267,6 @@ def main():
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         st.write(fig)
 
-        #df_concat_art = pd.concat([rd_df, df_author])
-        df_concat_art = pd.concat([rd_df,df_author])
-
-        fig_art = px.box(
-            df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-        )
-        st.write(fig_art)
 
         # df_concat_art = pd.concat([art_df, df_author])
         # fig_art = px.box(
