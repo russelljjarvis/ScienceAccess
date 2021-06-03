@@ -88,7 +88,7 @@ from nltk.tokenize import word_tokenize
 import streamlit as st
 
 
-def generate_from_lengths(self, words, max_font_size=25, verbose=False):  # noqa: C901
+def generate_from_lengths(self, words, max_font_size=30, verbose=False):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
     ----------
@@ -109,7 +109,7 @@ def generate_from_lengths(self, words, max_font_size=25, verbose=False):  # noqa
     frequencies = frequencies[:self.max_words]
     """
     # largest entry will be 1
-    self.max_words = 26
+    self.max_words = 15
     words = word_tokenize(words)
     wordss = list(set(words))
     wordss = [word for word in wordss if len(word)]
@@ -126,9 +126,24 @@ def generate_from_lengths(self, words, max_font_size=25, verbose=False):  # noqa
     real_frequencies = [w for w in frequencies if w is not None]
 
     frequencies = sorted(frequencies, key=lambda item: item[1],reverse=True)
-    if len(frequencies)>25:
-        frequencies = frequencies[0:25]
-    max_frequency = float(frequencies[0][1])
+    ##
+    #
+    # new
+    ##
+    max_frequencya = float(frequencies[0][1])
+    max_frequencyb = float(frequencies[-1][1])
+    if max_frequencya<max_frequencyb:
+        max_frequency = max_frequencyb
+    if max_frequencyb<max_frequencya:
+        max_frequency = max_frequencya
+    if len(frequencies)>15 and max_frequencya<max_frequencyb:
+        frequencies = frequencies[-15::]
+    elif len(frequencies)>15 and max_frequencya<max_frequencyb:
+        frequencies = frequencies[0:15]
+
+    #
+    #
+    ###
 
     #real_frequencies = [(wrapper)(w) for w in frequencies]
     #frequencies = sorted(real_frequencies, key=lambda item: item[1])#, reverse=True)
