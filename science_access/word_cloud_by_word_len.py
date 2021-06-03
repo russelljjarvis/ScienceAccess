@@ -88,7 +88,7 @@ from nltk.tokenize import word_tokenize
 import streamlit as st
 
 
-def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # noqa: C901
+def generate_from_lengths(self, words, max_font_size=25, verbose=False):  # noqa: C901
     """Create a word_cloud from words and frequencies.
     Parameters
     ----------
@@ -109,7 +109,7 @@ def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # no
     frequencies = frequencies[:self.max_words]
     """
     # largest entry will be 1
-    self.max_words = 31
+    self.max_words = 26
     words = word_tokenize(words)
     wordss = list(set(words))
     wordss = [word for word in wordss if len(word)]
@@ -126,8 +126,8 @@ def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # no
     real_frequencies = [w for w in frequencies if w is not None]
 
     frequencies = sorted(frequencies, key=lambda item: item[1],reverse=True)
-    if len(frequencies)>30:
-        frequencies = frequencies[0:30]
+    if len(frequencies)>25:
+        frequencies = frequencies[0:25]
     max_frequency = float(frequencies[0][1])
 
     #real_frequencies = [(wrapper)(w) for w in frequencies]
@@ -161,7 +161,7 @@ def generate_from_lengths(self, words, max_font_size=None, verbose=False):  # no
 
     if max_font_size is None:
         # if not provided use default font_size
-        max_font_size = self.max_font_size
+        max_font_size = self.max_font_size*6.5
 
     if max_font_size is None:
         # figure out a good font size by trying to draw with

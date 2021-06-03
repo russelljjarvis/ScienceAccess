@@ -431,7 +431,7 @@ def update_web_form_full_text(NAME, tns):
     author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
         NAME, tns, more_links
     )
-    author_results, visit_urls = visit_link(NAME, tns, more_links)
+    author_results, visit_urls = visit_link_unpaywall(NAME, tns, more_links)
     author_results.extend(author_results_temp)
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
@@ -448,7 +448,7 @@ def enter_name_here(scholar_page, name, tns):
     #df = pd.concat([df0,df1])
     #author_results=author_results0
     #author_results.extend(author_results1)
-    return df0, datay, author_results0 
+    return df0, datay, author_results0
 
 
 def find_nearest(array, value):
