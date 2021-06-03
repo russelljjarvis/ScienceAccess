@@ -242,6 +242,8 @@ def main():
 	"""[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
     )
 
+    st.markdown("-----")
+
     if "df_author" in locals():
         st.markdown(
             """
@@ -250,12 +252,9 @@ def main():
                 len(df_author)
             )
         )
-
-        st.markdown("-----")
 	
         push_frame_to_screen(df_author, scraped_labels)
-	
-	
+		
 	#df_concat_art = pd.concat([rd_df, df_author])
         df_concat_art = pd.concat([rd_df,df_author])
 
