@@ -210,12 +210,12 @@ from science_access.t_analysis import text_proc
 
 def main():
     st.title("Search Reading Complexity of an Author")
-    st.sidebar.title("Explanations and Options")
+    st.sidebar.title("Code Information")
 
-    author_name = st.text_input("Enter Author Name:")
-    st.markdown(
-        """Entering a middle initial followed by "." can change the accuracy of results (e.g. Sayali S. Phatak)."""
-    )
+    author_name = st.text_input("Enter Author Name (entering a middle initial followed by "." can change the accuracy of results (e.g. Sayali S. Phatak):")
+    #st.markdown(
+    #    """Entering a middle initial followed by "." can change the accuracy of results (e.g. Sayali S. Phatak)."""
+    #)
 	
     ar = None
     if author_name:
@@ -229,9 +229,9 @@ def main():
 
     st.markdown("-----")
     
-    my_expander = st.sidebar.beta_expander("Source Code")
+    my_expander = st.sidebar.beta_expander("")
 
-    my_expander.markdown("[Github](https://github.com/russelljjarvis/ScienceAccess)")
+    my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
 
     my_expander.markdown(
         """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
