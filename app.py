@@ -108,7 +108,7 @@ bio_chem_level = art_df["Reading_Level"]
 def check_cache(author_name: str, verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
-        # flag = False
+        flag = False
         if not flag:
             ar = call_from_front_end(author_name)
             scraped_labels, author_score = frame_to_lists(ar)
@@ -166,6 +166,8 @@ def show_hardest_passage(ar: List = []) -> str:
     largest = 0
     li = 0
     smallest = 0
+    mean = np.mean([a["standard"] for i, a in enumerate(ar)])
+
     for i, a in enumerate(ar):
         if a["standard"] >= largest and len(ar[i]["hard_snippet"]):
             largest = a["standard"]
@@ -174,7 +176,7 @@ def show_hardest_passage(ar: List = []) -> str:
             smallest = a["standard"]
 
     for i, a in enumerate(ar):
-        if a["standard"] == largest or a["standard"] == smallest:
+        if a["standard"] == largest or a["standard"] > mean:
 
             if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
                 if len(ar[i]["hard_snippet"]):
@@ -182,13 +184,15 @@ def show_hardest_passage(ar: List = []) -> str:
                         str("can log in with their society credentials")
                         not in ar[i]["hard_snippet"]
                     ):
-                        # if "semantic" in ar[i].keys():
 
                         st.markdown("---")
 
                         st.markdown("### A hard to read passage from the authors work.")
+                        from nltk import word_tokenize
 
-                        st.success(ar[i]["hard_snippet"])  # [0:200])
+                        tokens = word_tokenize(ar[i]["hard_snippet"])
+
+                        st.success(tokens[0:90])  # [0:200])
 
                         return ar[i]
     return None
@@ -215,11 +219,11 @@ def main():
     st.title("Search Reading Complexity of an Author")
     st.sidebar.title("Explanations and Options")
 
-    author_name = st.sidebar.text_input("Enter Author Name:")
-    st.sidebar.markdown(
+    author_name = st.text_input("Enter Author Name:")
+    st.markdown(
         """Entering a middle initial followed by ```.``` can change the accuracy of results."""
     )
-    st.sidebar.markdown("""Eg. Sayali S```.``` Phatak""")
+    st.markdown("""Eg. Sayali S```.``` Phatak""")
     ar = None
     if author_name:
         ar, author_score, scraped_labels = check_cache(author_name, verbose)
@@ -258,7 +262,9 @@ def main():
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         st.write(fig)
 
-        df_concat_art = pd.concat([rd_df, df_author])
+        #df_concat_art = pd.concat([rd_df, df_author])
+        df_concat_art = pd.concat([rd_df,df_author])
+
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
