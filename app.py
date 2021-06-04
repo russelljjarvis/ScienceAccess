@@ -253,14 +253,14 @@ def main():
 	
         push_frame_to_screen(df_author, scraped_labels)
 	
-        st.markdown("\n")
+        st.markdown("\n\n")
 	
         if len(author_score) == 0:
             st.warning("Author Not Found")
         
         st.markdown(
             """
-			### The average reading level of the mined work was {0}, with a median level of {2}.""".format(
+			### The average reading level of this work was {0}, with a median level of {2}.""".format(
                 round(np.mean(author_score)), 3,round(np.median(author_score)), 3
             )
         )
@@ -310,7 +310,7 @@ def main():
         if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			{0} was on average easier to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licensed scientific papers.
+			{0} was on average easier to read relative to the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -319,7 +319,7 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			{0} was on average more difficult to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licensed scientific papers.
+			{0} was on average more difficult to read relative to the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -330,7 +330,7 @@ def main():
         if np.mean(author_score) < np.mean(rd_level):
             st.markdown(
                 """
-			{0} was on average easier to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4).
+			{0} was on average easier to read relative to the collection of scientiific papers analyzed in The Readability of scientific texts is decreasing over time.
 			""".format(
                     author_name
                 )
@@ -339,7 +339,7 @@ def main():
         if np.mean(author_score) >= np.mean(rd_level):
             st.markdown(
                 """
-			{0} was on average more difficult to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4)..
+			{0} was on average more difficult to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time.
 			""".format(
                     author_name
                 )
