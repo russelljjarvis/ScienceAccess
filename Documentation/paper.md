@@ -60,7 +60,15 @@ The mined text is compared against the ART Corpus as a side-by-side boxplot of r
 
 Sentiment is also calculated to see overall how positive or negative the text scores are and to cross validate the overall approach. It is expected that science papers should have high objectivity and thus low sentiment polarity. Lastly, a word cloud is generated that shows the most commonly used words in the mined text. 
 
-### Reproducibility
-This large hierarchy of software dependencies might act as an impediment to reproducibility. To address this issue we did two things. First, we deployed a [live version of the application](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py). Second, we created a Docker file and associated Docker container that acts as a self-documenting software environment clone. All code used for this tool can be found on GitHub, which can be run by downloading the github repository and then either building a docker container or running it using the terminal.
+### Scientific Application
+This work belongs to an emerging scientific discipline that seeks to quantify and understand scientific writing scientifically. Readability metrics have improved in robustness since the publication of the document "the Readability of Science is Declining over Time". The data set obtained from the Readability of Science is Declininig over Time used a custom implementation of the Flesch reading grade metric, which sometimes yielded negative results, and may have under reported very high readability results. Given the availability of newer more robust readability metrics, its important to test and calibrate the newer readability metrics against current scientific documents. Text-stats standard obtains a readability metric by averaging over 9 different readability metrics. The presence of frequency word clouds, and large word word-clouds, and hard passages make it possible to sanity check the text-stat metrics as applied to scientific documents. Word clouds usually bolster a high readability metric.
 
- 
+Generally other science text scraping tools might seek to achieve our results by scraping Google Scholar. However, we present new and reusable methods for mining scientific literature by utilizing many free and newly available APIs dedicated responsible disseminating science documents. The tool we described in this document is extensible such that code from various modules could be re-applied to ask more specific questions about readability of science documents. 
+
+Because you can download results from the science accessibility app. The tool makes it possible to compare two different scientific authors in the same field, and to compare their readability metrics. A comparison between two or more authors of the same field could be used to clarify, if some fields really are generally harder to understand, or if some authors from any field are just generally harder to understand.
+
+
+### Reproducibility
+Software dependencies can act as an impediment to reproducibility. To mitigate reproducibility difficulty caused by a constantly changing network of software dependencies we did two things. First, we deployed a [live version of the application](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py). Second, we created a Docker file and associated Docker container that acts as a self-documenting software environment clone. All code used for this tool can be found on GitHub, which can be run by downloading the github repository and then either building a docker container or running it using the terminal.
+
+
