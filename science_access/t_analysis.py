@@ -272,24 +272,27 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 
 			if wc > 0 and sc > 0:
-				if "semantic" in urlDat.keys() or urlDat["standard"]>75:
+				if "semantic" in urlDat.keys() or urlDat["standard"]>95:
 
-					meanv, total, hard_snippet = complexityAlongtheText(
-						corpus, chunk_length=512
-					)
-					urlDat["standard_unbiased"] = meanv
-					urlDat["standard"] = total
-					#if this_is_science:
-					urlDat["hard_snippet"] = hard_snippet
 					#else:
 					#    urlDat["hard_snippet"] = None
 					urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=512)
 					fre = FRE(wc, sc, sylCount)
+
 					if "semantic" in urlDat.keys():
 						if urlDat["semantic"]:
 							ndc = NDC(
 								remainingText, wc, sc
 							)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
+				if not "fre_unbiased" in urlDat.keys() and urlDat["standard"]>100:
+					meanv, total, hard_snippet = complexityAlongtheText(
+						corpus, chunk_length=256
+					)
+					urlDat["standard_unbiased"] = meanv
+					urlDat["standard"] = total
+					#if this_is_science:
+					urlDat["hard_snippet"] = hard_snippet
+
 						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
 						#urlDat["standard"] = ndc[0]
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python

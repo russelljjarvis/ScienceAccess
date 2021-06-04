@@ -403,23 +403,10 @@ def process(link):  # , REDIRECT=False):
         response = requests.get(link)
         #crude_html = response.json()
         import html
+        #st.success("html hanged...")
 
-        crude_html = html.unescape(response.text)
-        """
-        try:
-            #driver.get(link)
-            #crude_html = driver.page_source
-        except:
-            try:
-                driver = get_driver()
-                driver.get(link)
-                crude_html = driver.page_source
-            except:
-                # st.text("failed on link")
-                st.text(link)
-                urlDat = {}
-                return urlDat
-        """
+        #crude_html = html.unescape(response.text)
+        crude_html =  response.text
         soup = BeautifulSoup(crude_html, "html.parser")
         for script in soup(["script", "style"]):
             script.extract()  # rip it out
@@ -433,8 +420,12 @@ def process(link):  # , REDIRECT=False):
         )  # break multi-headlines into a line each
         text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
         buffered = str(text)
+        #st.success("html worked")
     else:
+
         try:
+            st.success("pdf hanged...")
+
             filename = Path("this_pdf.pdf")
             response = requests.get(link, timeout=10)
 
@@ -447,10 +438,11 @@ def process(link):  # , REDIRECT=False):
 
         except:
             buffered = ""
-        # url = 'http://www.hrecos.org//images/Data/forweb/HRTVBSH.Metadata.pdf'
+        #st.success("pdf worked")
 
     urlDat["link"] = link
     urlDat = text_proc(buffered, urlDat)
+    #st.success("some entity processed")
 
     return urlDat
 

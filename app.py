@@ -464,7 +464,7 @@ def main():
             st.markdown("""## Conducting a slower but more thorough search...""")
 
 
-            full_ar = call_from_front_end(author_name,fast=False)
+            full_ar = call_from_front_end(author_name,tns=5,fast=False)
             scraped_labels, author_score = frame_to_lists(full_ar)
             df_author, merged_df = data_frames_from_scrape(
                 full_ar, author_name, scraped_labels, author_score, art_df
