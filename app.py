@@ -294,11 +294,11 @@ def main():
                 len(df_author)
             )
         )
-        if genre == "tables":
+        if genre == "tables" or tables:
             push_frame_to_screen(df_author, scraped_labels)
 
         df_concat_art = pd.concat([rd_df,df_author])
-        if genre == "scatter plots":
+        if genre == "scatter plots" or scatter_plots:
             fig_art = px.box(
                 df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
             )
@@ -458,7 +458,18 @@ def main():
             df_author, merged_df = data_frames_from_scrape(
                 full_ar, author_name, scraped_labels, author_score, art_df
             )
-            push_frame_to_screen(df_author)
+
+            if genre == "tables" or tables:
+                push_frame_to_screen(df_author, scraped_labels)
+
+            df_concat_art = pd.concat([rd_df,df_author])
+            if genre == "scatter plots" or scatter_plots:
+                fig_art = px.box(
+                    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+                )
+                st.write(fig_art)
+
+            #push_frame_to_screen(df_author, scraped_labels))
 
             #st.write(full_ar)
 
