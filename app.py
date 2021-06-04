@@ -189,6 +189,7 @@ def clouds_big_words(sci_corpus):
             """
 		This word cloud is based on the largest words found in the mined text.
 		The biggest words here are likely detracted from readability.
+
 		"""
         )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
@@ -204,7 +205,7 @@ def main():
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
         """Entering a middle initial followed by a period '.' may improve search accuracy."""
-    )
+
     st.markdown("-----")
 
     ar = None
@@ -235,6 +236,7 @@ def main():
             "sentiment"
         ),
     )
+
 
     if genre =="defaults":
         scatter_plots = True
@@ -313,13 +315,7 @@ def main():
         #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         #st.write(fig)
 
-
-        # df_concat_art = pd.concat([art_df, df_author])
-        # fig_art = px.box(
-        #    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-        # )
-        # st.write(fig_art)
-
+	
         df0 = df_concat_art
 
         st.markdown("-----")
@@ -391,15 +387,13 @@ def main():
 		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 		"""
         )
-
-
         st.markdown("\n\n")
         st.markdown("-----")
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		This word cloud is based on the most common words found in the mined text.
-		It is for humans to validate the text mining work. As the word cloud
-		frequency often matches a writer's own knowledge of concepts in their work,
+		It is for humans to validate the text mining work. As the word cloud 
+		frequency often matches a writer's own knowledge of concepts in their work, 
 		it may also help instill trust in text-mining results.
 		"""
 
@@ -489,8 +483,6 @@ def main():
                     "author_score": author_score,
                     "sci_corpus": sci_corpus,
                 }
-        st.markdown("\n")
-
         st.markdown("-----")
         st.markdown("\n\n\n\n")
 
