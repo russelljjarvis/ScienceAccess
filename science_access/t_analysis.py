@@ -275,7 +275,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 				if "semantic" in urlDat.keys() or urlDat["standard"]>75:
 
 					meanv, total, hard_snippet = complexityAlongtheText(
-						corpus, chunk_length=128
+						corpus, chunk_length=512
 					)
 					urlDat["standard_unbiased"] = meanv
 					urlDat["standard"] = total
@@ -283,7 +283,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 					urlDat["hard_snippet"] = hard_snippet
 					#else:
 					#    urlDat["hard_snippet"] = None
-					urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=256)
+					urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=512)
 					fre = FRE(wc, sc, sylCount)
 					if "semantic" in urlDat.keys():
 						if urlDat["semantic"]:
@@ -293,9 +293,11 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
 						#urlDat["standard"] = ndc[0]
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
-			print(urlDat["standard"])
+			#print(urlDat["standard"])
 			if "fre_unbiased" in urlDat.keys():
 				if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
+					urlDat["standard"] = urlDat["fre_unbiased"]
+				if urlDat["standard"] == 0 and urlDat["fre_unbiased"]>0:
 					urlDat["standard"] = urlDat["fre_unbiased"]
 			#if (
 			#    urlDat["standard_unbiased"] < urlDat["standard"]
@@ -318,7 +320,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			urlDat["wcount"] = textstat.lexicon_count(str(tokens))
 			word_lim = bool(urlDat["wcount"] > WORD_LIM)
 			urlDat["tokens"] = tokens
-			print(urlDat["tokens"])
+			#print(urlDat["tokens"])
 
 			if len(tokens):
 				lexicon = textstat.lexicon_count(corpus, True)
@@ -338,7 +340,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 		if urlDat["standard"] == 0:
 			if verbose:
 				st.text('gets here')
-			return {}
+			#return {}
 
 	return urlDat
 

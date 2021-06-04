@@ -86,6 +86,7 @@ with open("trainingDats.p", "rb") as f:
     art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
+art_df = art_df[(art_df["Reading_Level"] > 0)]
 
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
@@ -188,7 +189,7 @@ def clouds_big_words(sci_corpus):
         st.markdown(
             """
 		This word cloud is based on the largest words found in the mined text.
-		The biggest words here are likely detracted from readability.
+		The biggest words presented here are likely detractors from overall readability.
 		"""
         )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
@@ -298,6 +299,9 @@ def main():
             push_frame_to_screen(df_author, scraped_labels)
 
         df_concat_art = pd.concat([rd_df,df_author])
+        df_concat_art = pd.concat([df_concat_art,art_df])
+        #art_df = art_df[(art_df["Reading_Level"] > 0)]
+
         if genre == "scatter plots" or scatter_plots:
             fig_art = px.box(
                 df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
