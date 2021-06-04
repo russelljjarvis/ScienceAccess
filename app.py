@@ -231,7 +231,7 @@ def main():
     
     my_expander = st.sidebar.beta_expander("click to expand")
     my_expander.markdown(
-        """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend."""
+        """This search applies [dissemin](https://dissemin.readthedocs.io/en/latest/api.html) API backend."""
     )
     
     my_expander.markdown("[Source Code](https://github.com/mcgurrgurr/ScienceAccess) for this Tool.")
