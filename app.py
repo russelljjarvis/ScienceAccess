@@ -257,8 +257,8 @@ def main():
 	
         push_frame_to_screen(df_author, scraped_labels)
 		
-        df_concat_art = pd.concat([rd_df, df_author])
         df_concat_art = pd.concat([rd_df,df_author])
+	df_concat_art = pd.concat([df_concat_art,art_df])
 
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
