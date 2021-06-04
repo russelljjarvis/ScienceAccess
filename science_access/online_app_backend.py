@@ -225,7 +225,7 @@ def semantic_scholar_alias(NAME):
             all_coauthors = paper["authors"]
             for co_name in all_coauthors:
                 key = co_name["name"]
-                if NAME.split(" ")[0] in key.split(" ")[0]
+                if NAME.split(" ")[0] in key.split(" ")[0]:
                     author = sch.author(co_name["authorId"], timeout=32)
 
                     if "aliases" in author.keys():
