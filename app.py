@@ -264,7 +264,7 @@ def main():
 	
         st.markdown(""" The boxplots above show data for the scraped author with two other sources. The first is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
 		     an existing library of publicly licenced scientific papers. The second is a [collection of papers](https://github.com/elifesciences-publications/readabilityinscience) 
-		     analyzed in an [article published in eLife](https://elifesciences.org/articles/27725#s4) exploring the readability of scientific articles. 
+		     analyzed in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). It is an article published in eLife exploring the readability of scientific articles. 
 		    """)
 		     
 		    
@@ -306,7 +306,7 @@ def main():
         if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to the ART Corpus.
+			### {0} was on average easier to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licensed scientific papers.
 			""".format(
                     author_name
                 )
@@ -320,7 +320,25 @@ def main():
                     author_name
                 )
             )
+	
+        if np.mean(author_score) < np.mean(art_df):
+            st.markdown(
+                """
+			### {0} was on average easier to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4).
+			""".format(
+                    author_name
+                )
+            )
 
+        if np.mean(author_score) >= np.mean(art_df):
+            st.markdown(
+                """
+			### {0} was on average more difficult to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4)..
+			""".format(
+                    author_name
+                )
+            )
+	
         my_expander = st.beta_expander("Expand for more information about readability")
         # if my_expander:
 
