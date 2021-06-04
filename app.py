@@ -261,7 +261,7 @@ def main():
         
         st.markdown(
             """
-			### The average reading level of this work was {0}, with a median level of {2}.""".format(
+			### The average reading level of this work is {0}, with a median level of {2}.""".format(
                 round(np.mean(author_score)), 3,round(np.median(author_score)), 3
             )
         )
@@ -331,7 +331,7 @@ def main():
         if np.mean(author_score) < np.mean(rd_level):
             st.markdown(
                 """
-			{0} was on average easier to read relative to the collection of papers analyzed in The Readability of scientific texts is decreasing over time.
+			{0} was on average easier to read relative to the collection of papers analyzed in The Readability of Scientific Texts is Decreasing Over Time.
 			""".format(
                     author_name
                 )
@@ -340,7 +340,7 @@ def main():
         if np.mean(author_score) >= np.mean(rd_level):
             st.markdown(
                 """
-			{0} was on average more difficult to read relative to the collection of papers analyzed in The Readability of scientific texts is decreasing over time.
+			{0} was on average more difficult to read relative to the collection of papers analyzed in The Readability of Scientific Texts is Decreasing Over Time.
 			""".format(
                     author_name
                 )
