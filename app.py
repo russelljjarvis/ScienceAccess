@@ -203,7 +203,7 @@ def main():
 
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
-        """Entering a middle initial may improve search accuracy."""
+        """Entering a middle initial followed by a period '.' may improve search accuracy."""
     )
     st.markdown("-----")
 
@@ -211,7 +211,9 @@ def main():
     if author_name:
         ar, author_score, scraped_labels = check_cache(author_name, verbose)
         if len(ar) == 0:
-            st.warning("Author Not Found")
+            st.error("Author Not Found")
+            st.warning("Try a different spelling of author name")
+
     if ar is not None:
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
@@ -229,7 +231,8 @@ def main():
             "tables",
             "full text scrape",
             "word clouds",
-            "hard passages"
+            "hard passages",
+            "sentiment"
         ),
     )
 
@@ -241,6 +244,7 @@ def main():
         tstatistics = False
         fulltext = True
         hard_passages = False
+        sentiment = False
     if genre=="t-statistics":
         scatter_plots = True
         tables = True
@@ -255,6 +259,15 @@ def main():
         pie_charts = True
         tstatistics = True
         fulltext = True
+    if genre =="sentiment":
+        scatter_plots = True
+        tables = True
+        word_clouds = True
+        pie_charts = False
+        tstatistics = False
+        fulltext = True
+        hard_passages = False
+        sentiment = True
 
     my_expander = st.sidebar.beta_expander("Code Information")
 
@@ -439,10 +452,15 @@ def main():
             clouds_big_words(sci_corpus)
 
         if fulltext:
-            st.markdown("""Conducting a more thorough search""")
+            st.markdown("""Conducting a slower but more thorough search...""")
             full_ar = call_from_front_end(author_name,fast=False)
-            st.write(full_ar)
+            scraped_labels, author_score = frame_to_lists(full_ar)
+            df_author, merged_df = data_frames_from_scrape(
+                full_ar, author_name, scraped_labels, author_score, art_df
+            )
+            push_frame_to_screen(df_author)
 
+            #st.write(full_ar)
 
         if verbose:
             st.text(sci_corpus)
@@ -488,7 +506,6 @@ def main():
 
         # fig = fast_art_cloud(exclusive)
         # st.markdown("-----")
-
         sentiment = []
         uniqueness = []
         for block in trainingDats:
@@ -506,24 +523,25 @@ def main():
                     np.mean(average_reading_time), author_name, len(ar)
                 )
             )
+        if sentiment:
 
-        st.markdown("""### Sentiment""")
-        st.markdown(
-            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
-					""".format(
-                temp, author_name
+            st.markdown("""### Sentiment""")
+            st.markdown(
+                """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
+    					""".format(
+                    temp, author_name
+                )
             )
-        )
 
-        temp = "{0} positive sentiment".format(author_name)
-        labels = [temp, "ART Corpus positive sentiment"]
-        values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+            temp = "{0} positive sentiment".format(author_name)
+            labels = [temp, "ART Corpus positive sentiment"]
+            values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
 
-        # urlDat["reading_time"]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
+            # urlDat["reading_time"]
+            fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+            st.write(fig)
 
-        st.markdown("\n")
+            st.markdown("\n")
 
 
 if __name__ == "__main__":

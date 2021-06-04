@@ -281,7 +281,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 					urlDat["hard_snippet"] = hard_snippet
 					#else:
 					#    urlDat["hard_snippet"] = None
-					#urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=64)
+					urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=64)
 					fre = FRE(wc, sc, sylCount)
 					if "semantic" in urlDat.keys():
 						if urlDat["semantic"]:
@@ -293,9 +293,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
 			print(urlDat["standard"])
-
-			#if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
-			#	urlDat["standard"] = urlDat["fre_unbiased"]
+			if "fre_unbiased" in urlDat.keys():
+				if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
+					urlDat["standard"] = urlDat["fre_unbiased"]
 			#if (
 			#    urlDat["standard_unbiased"] < urlDat["standard"]
 			#    and urlDat["standard_unbiased"] > 0
