@@ -488,7 +488,7 @@ def main():
         st.write(fig)
 
         st.markdown("\n")
-
+        st.markdown("-----")
         st.markdown(""" The tool we describe consists of a text analysis service and an author search service. These services were created by 
 	using or extending many existing Free and Open Source (FOS) tools, including streamlit, requests, WordCloud, TextStat, and The Natural Language Tool Kit. 
 	The tool has the capability to retrieve journal hosting links and journal article content (both html and PDF) from application programming interfaces 
