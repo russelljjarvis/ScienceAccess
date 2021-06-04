@@ -326,7 +326,7 @@ def main():
                 )
             )
 	
-        st.markdown("\n")
+        #st.markdown("\n")
 
         if np.mean(author_score) < np.mean(rd_level):
             st.markdown(
