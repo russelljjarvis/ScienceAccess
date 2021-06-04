@@ -194,7 +194,7 @@ def show_hardest_passage(ar: List = []) -> str:
 def clouds_big_words(sci_corpus):
     if len(sci_corpus) != 0:
 
-        st.markdown(""" ### Word Length Word Cloud 	""")
+        st.header("Word Length Word Cloud")
         st.markdown(
             """
 		This word cloud is based on the largest words found in the mined text.
@@ -383,7 +383,7 @@ def main():
 	
         st.markdown("\n\n")
         st.markdown("-----")
-        st.markdown(""" ### Word Frequency Word Cloud""")
+        st.header("Word Frequency Word Cloud")
         """
 		This word cloud is based on the most common words found in the mined text.
 		It is for humans to validate the text mining work, as the word cloud 
@@ -496,7 +496,7 @@ def main():
                 )
             )
 
-        st.markdown("""### Sentiment""")
+        st.header("Sentiment")
         st.markdown(
             """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
 					""".format(
