@@ -253,7 +253,7 @@ def main():
 	
         push_frame_to_screen(df_author, scraped_labels)
 	
-	st.markdown("\n")
+        st.markdown("\n")
 	
         if len(author_score) == 0:
             st.warning("Author Not Found")
