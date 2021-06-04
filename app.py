@@ -277,7 +277,7 @@ def main():
 	     analyzed for readability in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). 
 	    """)
         
-	df_concat_art = pd.concat([rd_df,df_author])
+        df_concat_art = pd.concat([rd_df,df_author])
         df_concat_art = pd.concat([df_concat_art,art_df])
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
