@@ -11,7 +11,6 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 """
 import nltk
-
 nltk.download("punkt")
 nltk.download("cmudict")
 
@@ -94,14 +93,9 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
         #flag = author_name in db
         flag = False
         if not flag:
-            ar = call_from_front_end(author_name)
+            ar = call_from_front_end(author_name,fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
 
-            ##
-            # This shelve
-            # caching wont scale on heroku.
-            # need TinyDb on Amazon
-            ##
             if len(db.keys()) < 11:
                 db[author_name] = {
                     "ar": ar,
@@ -122,11 +116,6 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
 
             scraped_labels = temp["scraped_labels"]
 
-        # experimental = [
-        #    np.mean([a["standard_len"], a["ndc"]])
-        #    for a in ar
-        #    if "standard_len" in a.keys()
-        # ]
     return ar, author_score, scraped_labels
 
 
@@ -137,6 +126,7 @@ def show_author_alias(ar: List = []) -> None:
     largest = 0
     li = 0
     for i, a in enumerate(ar):
+        st.text(a.keys())
         if "aliases" in a.keys():
             st.markdown(a["aliases"])
             break
@@ -210,7 +200,6 @@ from science_access.t_analysis import text_proc
 
 def main():
     st.title("Search Reading Complexity of an Author")
-    st.sidebar.title("Code Information")
 
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
@@ -227,14 +216,52 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
+    st.sidebar.title("Options")
+    st.sidebar.markdown("Options")
 
-    
-    my_expander = st.sidebar.beta_expander("")
+    genre = st.sidebar.radio(
+        "Choose Graph Layout/Option:",
+        (
+            "defaults",
+            "scatter plots",
+            "pie charts",
+            "t-statistics",
+            "tables",
+            "full text scrape",
+            "word clouds",
+            "hard passages"
+        ),
+    )
+
+    if genre =="defaults":
+        scatter_plots = True
+        tables = True
+        word_clouds = True
+        pie_charts = False
+        tstatistics = False
+        fulltext = True
+        hard_passages = False
+    if genre=="t-statistics":
+        scatter_plots = True
+        tables = True
+        word_clouds = True
+        pie_charts = False
+        tstatistics = True
+        fulltext = False
+    if genre=="full text scrape":
+        scatter_plots = True
+        tables = True
+        word_clouds = True
+        pie_charts = True
+        tstatistics = True
+        fulltext = True
+
+    my_expander = st.sidebar.beta_expander("Code Information")
 
     my_expander.markdown(
         """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
-    
+
     my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
 
     my_expander.markdown(
@@ -254,18 +281,17 @@ def main():
                 len(df_author)
             )
         )
-	
-        push_frame_to_screen(df_author, scraped_labels)
-		
-	#df_concat_art = pd.concat([rd_df, df_author])
-        df_concat_art = pd.concat([rd_df,df_author])
+        if genre == "tables":
+            push_frame_to_screen(df_author, scraped_labels)
 
-        fig_art = px.box(
-            df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-        )
-        st.write(fig_art)
-	
-	
+        df_concat_art = pd.concat([rd_df,df_author])
+        if genre == "scatter plots":
+            fig_art = px.box(
+                df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+            )
+            st.write(fig_art)
+
+
         #temp = "{0} Summary Readability versus large sample of science".format(
         #    author_name
         #)
@@ -295,7 +321,7 @@ def main():
         )
 
         """
-		We can think of reading level in a similar way to grade level. 
+		We can think of reading level in a similar way to grade level.
 		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
         # try:
@@ -352,59 +378,71 @@ def main():
 		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 		"""
         )
-	
-	
+
+
         st.markdown("\n\n")
         st.markdown("-----")
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		This word cloud is based on the most common words found in the mined text.
-		It is for humans to validate the text mining work. As the word cloud 
-		frequency often matches a writer's own knowledge of concepts in their work, 
+		It is for humans to validate the text mining work. As the word cloud
+		frequency often matches a writer's own knowledge of concepts in their work,
 		it may also help instill trust in text-mining results.
 		"""
 
-        grab_setr = []
-        grab_set_auth = []
+        if word_clouds:
+            grab_setr = []
+            grab_set_auth = []
 
-        for paper in trainingDats:
-            grab_setr.extend(paper["tokens"])
+            for paper in ar:
+                grab_set_auth.extend(paper["tokens"])
+            artset = list(grab_setr)
+            #artset.extend(not_want_list)
+            # auth_set = grab_set_auth
 
-        for paper in ar:
-            grab_set_auth.extend(paper["tokens"])
-        artset = list(grab_setr)
-        #artset.extend(not_want_list)
-        # auth_set = grab_set_auth
-        # exclusive = [i for i in grab_set_auth if i not in artset]
-        fig = fast_art_cloud(grab_set_auth)
+            fig = fast_art_cloud(grab_set_auth)
+            for paper in trainingDats:
+                grab_setr.extend(paper["tokens"])
 
-        giant_string = create_giant_strings(grab_set_auth,not_want_list)
+            exclusive = [i for i in grab_set_auth if i not in artset]
+
+        #giant_string = create_giant_strings(grab_set_auth,not_want_list)
         #st.markdown(giant_string)
-        urlDat = text_proc(giant_string,urlDat={},verbose=False)
+        #urlDat = text_proc(giant_string,urlDat={},verbose=False)
+        #show_author_alias(ar)
+        #from science_access.online_app_backend import author_to_affiliations, author_to_urls,author_to_affiliations
+        #urls = author_to_urls(author_name)
+        #st.text(urls)
+
+        #affiliations = author_to_affiliations(author_name)
+        #st.text(affiliations)
 
         #st.markdown(urlDat.values())
         #st.markdown(urlDat.keys())
 
         #st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
         #st.markdown(urlDat["standard"])
-        #hard = show_hardest_passage(ar)
-        # if hard is not None:
-        # 	st.markdown(hard)
-        show_author_alias(ar)
+        if hard_passages:
+            hard = show_hardest_passage(ar)
+            if hard is not None:
+                st.markdown(hard)
 
         st.markdown("-----")
         # fast_art_cloud(sci_corpus)
-        clouds_by_big_words = True
-        if clouds_by_big_words:
+        #word_clouds = True
+        if word_clouds:
             grab_set_auth = []
             for paper in ar:
                 if "semantic" in paper.keys():
                     grab_set_auth.extend(paper["tokens"])
             sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
-            try:
-                clouds_big_words(sci_corpus)
-            except:
-                pass
+            clouds_big_words(sci_corpus)
+
+        if fulltext:
+            st.markdown("""Conducting a more thorough search""")
+            full_ar = call_from_front_end(author_name,fast=False)
+            st.write(full_ar)
+
 
         if verbose:
             st.text(sci_corpus)
@@ -417,7 +455,7 @@ def main():
                     "sci_corpus": sci_corpus,
                 }
         st.markdown("\n")
-       
+
         st.markdown("-----")
         st.markdown("\n\n\n\n")
 

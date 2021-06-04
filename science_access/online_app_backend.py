@@ -20,16 +20,16 @@ import numpy as np
 
 from tqdm.auto import tqdm
 import streamlit as st
-import dask
+#import dask
 import requests
 
 from .crawl import collect_pubs
 from .t_analysis import text_proc
 
-if "DYNO" in os.environ:
-    heroku = True
-else:
-    heroku = False
+#if "DYNO" in os.environ:
+#    heroku = True
+#else:
+#    heroku = False
 
 #from selenium.webdriver.firefox.options import Options
 #from selenium.common.exceptions import NoSuchElementException
@@ -120,7 +120,7 @@ class tqdm:
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
 
-
+"""
 def author_to_affiliations(NAME):
     response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
     author_papers = response.json()
@@ -144,7 +144,7 @@ def author_to_affiliations(NAME):
             except:
                 pass
     return affilations
-
+"""
 
 def author_to_urls(NAME):
     """
@@ -265,8 +265,12 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
         response = requests.get(r)
         response = response.json()
         urlDat = None
-        records = p["records"][0]
-        if "doi" in records.keys():
+        urlDat = process(response)
+
+        #for p in author_papers["papers"]:
+
+        #records = p["records"][0]
+        if "doi" in visit_urls[index].keys():
             visit_urls.append(records["doi"])
 
         if "url_for_pdf" in response.keys():
@@ -278,7 +282,6 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
             res = response["url_for_landing_page"]
             visit_more_urls.append(res)
 
-            urlDat = process(res)
         if "doi_url" in response.keys() and urlDat is None:
             res = response["doi_url"]
             visit_more_urls.append(res)
@@ -415,11 +418,17 @@ def process(link):  # , REDIRECT=False):
     return urlDat
 
 
-def update_web_form(NAME, tns):
-    more_links = unpaywall_semantic_links(NAME, tns)
-    author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
-        NAME, tns, more_links
-    )
+def update_web_form(NAME, tns,fast=True):
+    if fast:
+        more_links = unpaywall_semantic_links(NAME, tns)
+
+        author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
+            NAME, tns, more_links
+        )
+    else:
+        df, met, author_results = update_web_form_full_text(NAME, tns)
+
+
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
     met = metricss(ar)
@@ -427,12 +436,13 @@ def update_web_form(NAME, tns):
     return df, met, author_results
 
 def update_web_form_full_text(NAME, tns):
-    more_links = unpaywall_semantic_links(NAME, tns)
-    author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
-        NAME, tns, more_links
-    )
-    author_results, visit_urls = visit_link_unpaywall(NAME, tns, more_links)
-    author_results.extend(author_results_temp)
+    #more_links = unpaywall_semantic_links(NAME, tns)
+    #author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
+    #    NAME, tns, more_links
+    #)
+    urls_to_visit = unpaywall_semantic_links(NAME, tns)#, more_links)
+    author_results, visited_urls = visit_link(NAME, tns, urls_to_visit)
+    #author_results.extend(author_results_temp)
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
     met = metricss(ar)
@@ -440,16 +450,16 @@ def update_web_form_full_text(NAME, tns):
     return df, met, author_results
 
 
-
-def enter_name_here(scholar_page, name, tns):
-    df0, datay, author_results0 = update_web_form_full_text(scholar_page, tns)
+"""
+def enter_name_here(scholar_page, name, tns,fast=True):
+    df0, datay, author_results0 = update_web_form_full_text(scholar_page, tns,fast=fast)
     #except:
     #df1, datay, author_results1 = update_web_form(scholar_page, tns)
     #df = pd.concat([df0,df1])
     #author_results=author_results0
     #author_results.extend(author_results1)
     return df0, datay, author_results0
-
+"""
 
 def find_nearest(array, value):
     array = np.asarray(array)
@@ -470,8 +480,8 @@ def ar_manipulation(ar: List = []):
 
 #def call_from_front_end(NAME: str = "", OPENACCESS: bool = True, tns: int = 16):
 
-def call_from_front_end(NAME="", OPENACCESS=True,tns=16):
-    df, datay, ar = update_web_form(NAME, tns)
+def call_from_front_end(NAME="", OPENACCESS=True,tns=16,fast=True):
+    df, datay, ar = update_web_form(NAME, tns,fast=fast)
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
 
