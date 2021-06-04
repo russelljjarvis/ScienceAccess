@@ -242,7 +242,7 @@ def main():
 
         st.markdown("-----")
 
-	st.header("Results for the mined text")
+        st.header("Results for the mined text")
         if len(author_score) == 0:
             st.warning("Author Not Found")
 	
