@@ -241,10 +241,10 @@ def main():
     if "df_author" in locals():
 
         st.markdown("-----")
-        #st.markdown("#### Results")
 
-        st.markdown("\n\n")
-        st.markdown("\n\n")
+        if len(author_score) == 0:
+            st.warning("Author Not Found")
+	
         st.markdown(
             """
 			### There were a total number of {0} documents mined during this query.
@@ -255,8 +255,8 @@ def main():
 	
         push_frame_to_screen(df_author, scraped_labels)
 	
-        if len(author_score) == 0:
-            st.warning("Author Not Found")
+        st.markdown("\n\n")
+        st.markdown("\n\n")
         
         st.markdown(
             """
