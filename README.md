@@ -14,11 +14,11 @@
 # Overview 
 Non-science writing is often expressed with a less complex and more engaging writing style. This makes it accessible to a broad audience. In contrast, there is research demonstrating that the content of scientific writing is often more complex. This is due, at least in part, to the tendency of scientists to use jargon-heavy language. This can make it inaccessible to many individuals. 
 
-This dashboard application allows the user to search for a scientific author. It first performs a web search to gather this author's published works. It then shows the readability score for each published work returned from the web scrape as well as an overall score for that individual. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text sources with known complexity. [Read more about the application here](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/paper.md).
+This dashboard application allows the user to search for a scientific author. It first performs a web search to gather this author's published works. It then shows the readability score for each published work returned from the web scrape as well as an overall score for that individual. In addition, the application returns the most common and complex words used, sentiment, and a comparison to other text sources with known complexity. [Read more about the application here](https://github.com/mcgurrgurr/ScienceAccess/blob/master/Documentation/paper.md).
 
 More accessible science writing allows knowledge to be more readily transferred into public awareness, as well as between scientists of different fields. Objectively describing the complexity of different writing styles allows us to prescribe how to shift academic science writing into a more accessible niche, where science can better compete with pseudo-science and blogs.
 
-If you're interested in [contributing](https://github.com/russelljjarvis/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/russelljjarvis/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
+If you're interested in [contributing](https://github.com/mcgurrgurr/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/mcgurrgurr/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
 
 # Running the application using Docker
 ```
