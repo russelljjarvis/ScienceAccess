@@ -272,7 +272,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 
 			if wc > 0 and sc > 0:
-				if "semantic" in urlDat.keys() or urlDat["standard"]>50:
+				if "semantic" in urlDat.keys() or urlDat["standard"]>75:
 
 					meanv, total, hard_snippet = complexityAlongtheText(
 						corpus, chunk_length=128
