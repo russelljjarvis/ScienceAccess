@@ -254,6 +254,7 @@ def main():
         push_frame_to_screen(df_author, scraped_labels)
 	
         st.markdown("\n\n")
+        st.markdown("\n\n")
 	
         if len(author_score) == 0:
             st.warning("Author Not Found")
@@ -330,7 +331,7 @@ def main():
         if np.mean(author_score) < np.mean(rd_level):
             st.markdown(
                 """
-			{0} was on average easier to read relative to the collection of scientiific papers analyzed in The Readability of scientific texts is decreasing over time.
+			{0} was on average easier to read relative to the collection of papers analyzed in The Readability of scientific texts is decreasing over time.
 			""".format(
                     author_name
                 )
@@ -339,7 +340,7 @@ def main():
         if np.mean(author_score) >= np.mean(rd_level):
             st.markdown(
                 """
-			{0} was on average more difficult to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time.
+			{0} was on average more difficult to read relative to the collection of papers analyzed in The Readability of scientific texts is decreasing over time.
 			""".format(
                     author_name
                 )
