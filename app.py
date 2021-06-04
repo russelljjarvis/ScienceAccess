@@ -270,7 +270,7 @@ def main():
 		Reading level is comparable to grade level. 
 		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
-	
+        st.markdown("-----")
         df_concat_art = pd.concat([rd_df,df_author])
         df_concat_art = pd.concat([df_concat_art,art_df])
 
