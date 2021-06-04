@@ -242,6 +242,7 @@ def main():
 
         st.markdown("-----")
 
+	st.header("Results for the mined text")
         if len(author_score) == 0:
             st.warning("Author Not Found")
 	
@@ -273,7 +274,7 @@ def main():
         st.markdown("\n\n")
         st.markdown("-----")
 	
-        st.markdown(""" ### Comparing the mined text to that of other academic texts""")
+        st.header("Comparing the mined text to that of other academic texts")
         st.markdown(""" The boxplots in the figure below show data for the mined text relative to two other data sources. The first source is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
 	     an existing library of publicly licenced scientific papers. The second source is a [collection of academic papers](https://github.com/elifesciences-publications/readabilityinscience) 
 	     analyzed for readability in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). 
