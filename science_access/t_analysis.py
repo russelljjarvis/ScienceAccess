@@ -270,27 +270,31 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			remainingText = " ".join(remainingText)
 			remainingText = remainingText.lower()
 			if wc > 0 and sc > 0:
-				meanv, total, hard_snippet = complexityAlongtheText(
-					corpus, chunk_length=64
-				)
-				urlDat["standard_unbiased"] = meanv
-				urlDat["standard"] = total
-				#if this_is_science:
-				urlDat["hard_snippet"] = hard_snippet
-				#else:
-				#    urlDat["hard_snippet"] = None
-				#urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=64)
-				fre = FRE(wc, sc, sylCount)
 				if "semantic" in urlDat.keys():
-					if urlDat["semantic"]:
-						ndc = NDC(
-							remainingText, wc, sc
-						)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
+
+					meanv, total, hard_snippet = complexityAlongtheText(
+						corpus, chunk_length=128
+					)
+					urlDat["standard_unbiased"] = meanv
+					urlDat["standard"] = total
+					#if this_is_science:
+					urlDat["hard_snippet"] = hard_snippet
+					#else:
+					#    urlDat["hard_snippet"] = None
+					#urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=64)
+					fre = FRE(wc, sc, sylCount)
+					if "semantic" in urlDat.keys():
+						if urlDat["semantic"]:
+							ndc = NDC(
+								remainingText, wc, sc
+							)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
 						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
 						#urlDat["standard"] = ndc[0]
 			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
+			print(urlDat["standard"])
 
+			print(urlDat["tokens"])
 			#if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
 			#	urlDat["standard"] = urlDat["fre_unbiased"]
 			#if (
