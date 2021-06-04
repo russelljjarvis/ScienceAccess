@@ -280,9 +280,9 @@ def main():
         st.write(fig_art)
 	
 	
-        st.markdown(""" The boxplots above show data for the scraped author with two other sources. The first is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
-		     an existing library of publicly licenced scientific papers. The second is a [collection of papers](https://github.com/elifesciences-publications/readabilityinscience) 
-		     analyzed in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). It is an article published in eLife exploring the readability of scientific articles. 
+        st.markdown(""" The boxplots in the figure above show data for the mined text relative to two other data sources. The first source is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
+		     an existing library of publicly licenced scientific papers. The second source is a [collection of academic papers](https://github.com/elifesciences-publications/readabilityinscience) 
+		     analyzed for readability in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). 
 		    """)
 		     
 		    
