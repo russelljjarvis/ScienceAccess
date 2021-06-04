@@ -269,8 +269,10 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 
 			remainingText = " ".join(remainingText)
 			remainingText = remainingText.lower()
+			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
+
 			if wc > 0 and sc > 0:
-				if "semantic" in urlDat.keys():
+				if "semantic" in urlDat.keys() or urlDat["standard"]>55:
 
 					meanv, total, hard_snippet = complexityAlongtheText(
 						corpus, chunk_length=128
@@ -290,7 +292,6 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 							)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
 						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
 						#urlDat["standard"] = ndc[0]
-			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
 			print(urlDat["standard"])
 			if "fre_unbiased" in urlDat.keys():

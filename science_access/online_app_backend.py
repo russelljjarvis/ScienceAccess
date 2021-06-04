@@ -206,6 +206,43 @@ def visit_link(NAME, tns, more_links):
 
     return author_results, visit_urls
 
+def semantic_scholar_alias(NAME):
+    """
+    inputs a URL that's full of publication orientated links, preferably the
+    authors scholar page.
+    """
+
+    author_results = []
+    aliases = None
+    #dois, coauthors, titles
+    dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    # alias_dict = {}
+    inv_alias_dict = {}
+    velocity = {}
+    for d in dois:
+        paper = sch.paper(d, timeout=32)
+        if "authors" in paper.keys():
+            all_coauthors = paper["authors"]
+            for co_name in all_coauthors:
+                key = co_name["name"]
+                if NAME.split(" ")[0] in key.split(" ")[0]
+                    author = sch.author(co_name["authorId"], timeout=32)
+
+                    if "aliases" in author.keys():
+                        aliases = author["aliases"]
+                        return aliases
+                    #for a in aliases:
+                    #    inv_alias_dict[a] = key
+                #pprint(inv_alias_dict)
+                #if not key in inv_alias_dict.keys():
+                #    inv_alias_dict[key] = key
+                #print(author.keys(), "keys")
+                #if "citationVelocity" in author.keys():
+                #    velocity[key] = author["citationVelocity"]
+    #inv_alias_dict = {v: k for k, v in inv_alias_dict.items()}
+    #return inv_alias_dict#, velocity
+
+
 import streamlit as st
 def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     """
