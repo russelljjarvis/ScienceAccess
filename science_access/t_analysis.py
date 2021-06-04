@@ -294,7 +294,6 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 				# https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
 			print(urlDat["standard"])
 
-			print(urlDat["tokens"])
 			#if urlDat["fre_unbiased"]< urlDat["standard"] and urlDat["fre_unbiased"]>0:
 			#	urlDat["standard"] = urlDat["fre_unbiased"]
 			#if (
@@ -318,6 +317,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			urlDat["wcount"] = textstat.lexicon_count(str(tokens))
 			word_lim = bool(urlDat["wcount"] > WORD_LIM)
 			urlDat["tokens"] = tokens
+			print(urlDat["tokens"])
 
 			if len(tokens):
 				lexicon = textstat.lexicon_count(corpus, True)
