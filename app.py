@@ -198,14 +198,15 @@ def clouds_big_words(sci_corpus):
 verbose = 0
 
 from science_access.t_analysis import text_proc
+from science_access.online_app_backend import semantic_scholar_alias
 
 def main():
     st.title("Search Reading Complexity of an Author")
 
     author_name = st.text_input("Enter Author Name:")
-    st.markdown(
-        """Entering a middle initial followed by a period '.' may improve search accuracy."""
-    )
+    #st.markdown(
+    #    """Entering a middle initial followed by a period '.' may improve search accuracy."""
+    #)
     st.markdown("-----")
 
     ar = None
@@ -312,7 +313,6 @@ def main():
             )
             st.write(fig_art)
 
-        from science_access.online_app_backend import semantic_scholar_alias
         alias_dict = semantic_scholar_alias(author_name)
         st.markdown("""To emphasize the importance of the exact search string and it's relationship to the results.
         Here are some different aliases this author may have published under:""")
@@ -468,7 +468,7 @@ def main():
             st.markdown("""## Conducting a slower but more thorough search...""")
 
 
-            full_ar = call_from_front_end(author_name,tns=5,fast=False)
+            full_ar = call_from_front_end(author_name,tns=9,fast=False)
             scraped_labels, author_score = frame_to_lists(full_ar)
             df_author, merged_df = data_frames_from_scrape(
                 full_ar, author_name, scraped_labels, author_score, art_df

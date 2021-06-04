@@ -184,6 +184,13 @@ def author_to_urls(NAME):
             dois.append(li[1])
     return dois, coauthors, titles, visit_urls
 
+def check_link(link):
+    if link is not None:
+        urlDatTemp = process(link)
+        return urlDatTemp
+
+import dask
+from dask import delayed,compute
 
 def visit_link(NAME, tns, more_links):
     """
@@ -194,15 +201,18 @@ def visit_link(NAME, tns, more_links):
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_urls.extend(more_links)
-    for index, link in enumerate(
-        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
-    ):
-        if link is not None:
-            urlDatTemp = process(link)
-            author_results.append(urlDatTemp)
+    #for index, link in enumerate(
+    #    tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+    #):
+    for i in visit_urls[0:tns]:
+        author_results.append(dask.delayed(check_link)(i))#.compute()
+
+    #        author_results.append(urlDatTemp)
     author_results = [
-        urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
+        urlDat for urlDat in list(compute(author_results)) if not isinstance(urlDat, type(None))
     ]
+    for urlDat in author_results:
+        st.markdown(urlDat)
 
     return author_results, visit_urls
 
@@ -393,6 +403,7 @@ def convert_pdf_to_txt(content, verbose=False):
     else:
         return str("")
 
+import html
 
 def process(link):  # , REDIRECT=False):
     urlDat = {}
@@ -402,7 +413,6 @@ def process(link):  # , REDIRECT=False):
     if str("pdf") not in link:
         response = requests.get(link)
         #crude_html = response.json()
-        import html
         #st.success("html hanged...")
 
         #crude_html = html.unescape(response.text)
@@ -424,7 +434,7 @@ def process(link):  # , REDIRECT=False):
     else:
 
         try:
-            st.success("pdf hanged...")
+            #st.success("pdf hanged...")
 
             filename = Path("this_pdf.pdf")
             response = requests.get(link, timeout=10)
@@ -518,6 +528,7 @@ def call_from_front_end(NAME="", OPENACCESS=True,tns=16,fast=True):
 def metricss(rg):
     if isinstance(rg, list):
         pub_count = len(rg)
+        rg = [r for r in rg if type(r) is type(dict())]
         mean_standard = np.mean([r["standard"] for r in rg if "standard" in r.keys()])
         return mean_standard
     else:
@@ -538,7 +549,7 @@ def metricsp(rg):
 def filter_empty(the_list):
     the_list = [tl for tl in the_list if tl is not None]
     the_list = [tl for tl in the_list if type(tl) is not type(str(""))]
-
+    the_list = [tl for tl in the_list if type(tl) is type(dict())]
     return [tl for tl in the_list if "standard" in tl.keys()]
 
 

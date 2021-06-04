@@ -2,7 +2,6 @@ regex
 PyPDF2
 pycld2
 nltk
-selenium
 delver
 pdfminer
 semanticscholar
@@ -22,5 +21,4 @@ tabulate
 chart_studio
 tqdm
 pipenv
-JPype1
 bokeh

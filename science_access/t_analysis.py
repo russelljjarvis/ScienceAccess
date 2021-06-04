@@ -322,10 +322,12 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			tokens = [w.lower() for w in tokens]  # make everything lower case
 			urlDat["wcount"] = textstat.lexicon_count(str(tokens))
 			word_lim = bool(urlDat["wcount"] > WORD_LIM)
-			urlDat["tokens"] = tokens
 			#print(urlDat["tokens"])
 
 			if len(tokens):
+				if "semantic" in urlDat.keys():
+					urlDat["tokens"] = tokens
+
 				lexicon = textstat.lexicon_count(corpus, True)
 				urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
 				urlDat["unique_words"] = len(set(tokens))
