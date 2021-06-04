@@ -261,7 +261,7 @@ def main():
 		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
         
-	st.markdown("\n\n")
+        st.markdown("\n\n")
         st.markdown("\n\n")
         st.markdown(
             """
