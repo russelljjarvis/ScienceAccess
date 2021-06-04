@@ -272,7 +272,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
 
 			if wc > 0 and sc > 0:
-				if "semantic" in urlDat.keys() or urlDat["standard"]>40:
+				if "semantic" in urlDat.keys() or urlDat["standard"]>50:
 
 					meanv, total, hard_snippet = complexityAlongtheText(
 						corpus, chunk_length=128
@@ -283,7 +283,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 					urlDat["hard_snippet"] = hard_snippet
 					#else:
 					#    urlDat["hard_snippet"] = None
-					urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=64)
+					urlDat["fre_unbiased"] = freeAlongtheText(corpus, chunk_length=256)
 					fre = FRE(wc, sc, sylCount)
 					if "semantic" in urlDat.keys():
 						if urlDat["semantic"]:
