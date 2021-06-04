@@ -295,16 +295,10 @@ def main():
                 round(np.mean(author_score)), 3,round(np.median(author_score)), 3
             )
         )
-        st.markdown(
-            """
-			### The median reading level of the mined work was {0}.""".format(
-                round(np.median(author_score)), 3
-            )
-        )
-	
+        
         """
-		We can think of reading level in a similar way to grade level. 
-		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		Reading level is comparable to grade level. 
+		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
         # try:
 
