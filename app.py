@@ -291,8 +291,8 @@ def main():
             st.warning("Author Not Found")
         st.markdown(
             """
-			### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(author_score)), 3
+			### The average reading level of the mined work was {}, with a median level of {}.""".format(
+                round(np.mean(author_score)), 3,round(np.median(author_score)), 3
             )
         )
         st.markdown(
