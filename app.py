@@ -311,7 +311,7 @@ def main():
         if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to the ART Corpus.
+			### {0} was on average easier to read relative to the collection of papers in the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -320,7 +320,7 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to the ART Corpus.
+			### {0} was on average more difficult to read relative to the collection of papers in the ART Corpus.
 			""".format(
                     author_name
                 )
