@@ -321,7 +321,7 @@ def main():
                 )
             )
 	
-        if np.mean(author_score) < np.mean(art_df):
+        if np.mean(author_score) < np.mean(rd_df):
             st.markdown(
                 """
 			### {0} was on average easier to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4).
@@ -330,7 +330,7 @@ def main():
                 )
             )
 
-        if np.mean(author_score) >= np.mean(art_df):
+        if np.mean(author_score) >= np.mean(rd_df):
             st.markdown(
                 """
 			### {0} was on average more difficult to read relative to the collection of scientiific papers analyzed in the article entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4)..
