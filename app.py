@@ -252,10 +252,13 @@ def main():
         )
 	
         push_frame_to_screen(df_author, scraped_labels)
-		
+	
+	st.markdown("\n")
+	
         if len(author_score) == 0:
             st.warning("Author Not Found")
-        st.markdown(
+        
+	st.markdown(
             """
 			### The average reading level of the mined work was {0}, with a median level of {2}.""".format(
                 round(np.mean(author_score)), 3,round(np.median(author_score)), 3
