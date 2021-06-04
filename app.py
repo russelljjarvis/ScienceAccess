@@ -271,7 +271,6 @@ def main():
 		"""
        
         st.markdown("\n\n")
-        st.markdown("\n\n")
         st.markdown("-----")
 	
         st.markdown(""" ### Comparing the mined text to that of other academic texts""")
