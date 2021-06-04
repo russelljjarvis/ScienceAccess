@@ -253,6 +253,8 @@ def main():
         pie_charts = False
         tstatistics = True
         fulltext = False
+        sentiment = False
+
     if genre=="full text scrape":
         scatter_plots = True
         tables = True
@@ -260,6 +262,8 @@ def main():
         pie_charts = True
         tstatistics = True
         fulltext = True
+        sentiment = False
+
     if genre =="sentiment":
         scatter_plots = True
         tables = True
