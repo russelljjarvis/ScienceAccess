@@ -260,10 +260,12 @@ def main():
 		Reading level is comparable to grade level. 
 		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
-	
+        
+	st.markdown("\n\n")
+        st.markdown("\n\n")
         st.markdown(
             """
-			There were a total number of {0} documents mined during this query.
+			### There were a total number of {0} documents mined during this query.
 			""".format(
                 len(df_author)
             )
