@@ -93,7 +93,7 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
         #flag = author_name in db
         flag = False
         if not flag:
-            ar = call_from_front_end(author_name,fast=True)
+            ar = call_from_front_end(author_name,tns=10,fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
 
             if len(db.keys()) < 11:
@@ -304,6 +304,11 @@ def main():
             )
             st.write(fig_art)
 
+        from science_access.online_app_backend import semantic_scholar_alias
+        alias_dict = semantic_scholar_alias(author_name)
+        st.markdown("""To emphasize the importance of the exact search string and it's relationship to the results.
+        Here are some different aliases this author may have published under:""")
+        st.markdown(alias_dict)
 
         #temp = "{0} Summary Readability versus large sample of science".format(
         #    author_name
@@ -453,10 +458,6 @@ def main():
 
         if fulltext:
             st.markdown("""## Conducting a slower but more thorough search...""")
-            from science_access.online_app_backend import semantic_scholar_alias
-            alias_dict = semantic_scholar_alias(author_name)
-            st.markdown("""Here are some different aliases this author may have published under:""")
-            st.text(alias_dict)
 
 
             full_ar = call_from_front_end(author_name,fast=False)
