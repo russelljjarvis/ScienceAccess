@@ -386,9 +386,9 @@ def main():
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		This word cloud is based on the most common words found in the mined text.
-		It is for humans to validate the text mining work. As the word cloud 
-		frequency often matches a writer's own knowledge of concepts in their work, 
-		it may also help instill trust in text-mining results.
+		It is for humans to validate the text mining work, as the word cloud 
+		frequency often matches a writer's own knowledge of concepts in their work. 
+		It may also help instill trust in text-mining results.
 		"""
 
         grab_setr = []
