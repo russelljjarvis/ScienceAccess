@@ -253,6 +253,20 @@ def main():
 	
         push_frame_to_screen(df_author, scraped_labels)
 		
+	if len(author_score) == 0:
+            st.warning("Author Not Found")
+        st.markdown(
+            """
+			### The average reading level of the mined work was {0}, with a median level of {2}.""".format(
+                round(np.mean(author_score)), 3,round(np.median(author_score)), 3
+            )
+        )
+        
+        """
+		Reading level is comparable to grade level. 
+		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		"""
+	
         df_concat_art = pd.concat([rd_df,df_author])
         df_concat_art = pd.concat([df_concat_art,art_df])
 
@@ -285,21 +299,7 @@ def main():
 
         df0 = df_concat_art
 
-        st.markdown("-----")
 
-        if len(author_score) == 0:
-            st.warning("Author Not Found")
-        st.markdown(
-            """
-			### The average reading level of the mined work was {0}, with a median level of {2}.""".format(
-                round(np.mean(author_score)), 3,round(np.median(author_score)), 3
-            )
-        )
-        
-        """
-		Reading level is comparable to grade level. 
-		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
-		"""
         # try:
 
         st.markdown("\n")
