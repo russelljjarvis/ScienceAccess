@@ -43,7 +43,7 @@ By entering an author’s name into the search box, a system of API calls and we
 
 
 ### Running the Application
-[Verifying the Application From a Live Host](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py)
+[Verifying the Application From a Live Host](https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py)
 
 Downloading the application from Github
 ```
