@@ -234,7 +234,7 @@ def main():
         """This search applies [dissemin](https://dissemin.readthedocs.io/en/latest/api.html) API backend."""
     )
     
-    my_expander.markdown("[Source Code](https://github.com/mcgurrgurr/ScienceAccess) for this Tool.")
+    my_expander.markdown("[Source Code](https://github.com/mcgurrgurr/ScienceAccess) for this tool.")
     my_expander.markdown("[Source Code](https://github.com/russelljjarvis/ScienceAccess) and [link to](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py) an expansion of this tool that is currently in progress.")
     my_expander.markdown("[Rationale for this project.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)")
 
