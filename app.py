@@ -95,11 +95,6 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
         if not flag:
             ar = call_from_front_end(author_name,fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
-            from science_access.online_app_backend import semantic_scholar_alias
-            alias_dict,velocity = semantic_scholar_alias(author_name)
-            st.markdown("""Here are some different aliases this author may have published under:""")
-            st.text(alias_dict.items())
-
 
             if len(db.keys()) < 11:
                 db[author_name] = {
@@ -458,6 +453,12 @@ def main():
 
         if fulltext:
             st.markdown("""## Conducting a slower but more thorough search...""")
+            from science_access.online_app_backend import semantic_scholar_alias
+            alias_dict = semantic_scholar_alias(author_name)
+            st.markdown("""Here are some different aliases this author may have published under:""")
+            st.text(alias_dict)
+
+
             full_ar = call_from_front_end(author_name,fast=False)
             scraped_labels, author_score = frame_to_lists(full_ar)
             df_author, merged_df = data_frames_from_scrape(
