@@ -235,7 +235,7 @@ def main():
     )
     
     my_expander.markdown("[Source Code](https://github.com/mcgurrgurr/ScienceAccess) for this Tool")
-    my_expander.markdown("[Source Code](https://github.com/russelljjarvis/ScienceAccess) Exploring Expansion of this Tool")
+    my_expander.markdown("[Source Code](https://github.com/russelljjarvis/ScienceAccess) and [link to](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py) an adaptive expansion of this tool")
     my_expander.markdown("[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)")
 
     if "df_author" in locals():
