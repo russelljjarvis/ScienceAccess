@@ -489,7 +489,18 @@ def main():
 
         st.markdown("\n")
 
-
+        st.markdown(""" The tool we describe consists of a text analysis service and an author search service. These services were created by 
+	using or extending many existing Free and Open Source (FOS) tools, including streamlit, requests, WordCloud, TextStat, and The Natural Language Tool Kit. 
+	The tool has the capability to retrieve journal hosting links and journal article content (both html and PDF) from application programming interfaces 
+	(APIs) and journal hosting websites. Several python libraries helped with querying and gaining access to open science scholarly research documents, 
+	and python-requests were used to obtain content from three different APIs, including [dissemin](https://dissemin.readthedocs.io/en/latest/api.html), 
+	[semantic-scholar](https://www.semanticscholar.org/), and [unpaywall](https://unpaywall.org/faq).
+        """)
+	
+        st.markdown("\n")
+        st.markdown("\n")
+        st.markdown("License ScienceAccess is released under the CC BY-NC 2.0. By using ScienceAccess, you are agreeing to its usage terms.")
+	
 if __name__ == "__main__":
 
     main()
