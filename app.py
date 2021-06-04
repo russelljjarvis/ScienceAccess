@@ -245,8 +245,17 @@ def main():
 
         st.markdown("\n\n")
         st.markdown("\n\n")
+        st.markdown(
+            """
+			### There were a total number of {0} documents mined during this query.
+			""".format(
+                len(df_author)
+            )
+        )
 	
-        if len(author_score) == 0:
+        push_frame_to_screen(df_author, scraped_labels)
+	
+	    if len(author_score) == 0:
             st.warning("Author Not Found")
         
         st.markdown(
@@ -260,20 +269,11 @@ def main():
 		Reading level is comparable to grade level. 
 		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
-        
+       
         st.markdown("\n\n")
         st.markdown("\n\n")
-        st.markdown(
-            """
-			### There were a total number of {0} documents mined during this query.
-			""".format(
-                len(df_author)
-            )
-        )
-	
-        push_frame_to_screen(df_author, scraped_labels)
-	
         st.markdown("-----")
+	
         st.markdown(""" ### Comparing the mined text to that of other academic texts""")
         st.markdown(""" The boxplots in the figure below show data for the mined text relative to two other data sources. The first source is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
 	     an existing library of publicly licenced scientific papers. The second source is a [collection of academic papers](https://github.com/elifesciences-publications/readabilityinscience) 
