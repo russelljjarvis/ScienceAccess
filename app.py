@@ -272,21 +272,17 @@ def main():
 		"""
         st.markdown("-----")
         st.markdown(""" ### Comparing the mined text to that of other academic text""")
-	
-        df_concat_art = pd.concat([rd_df,df_author])
+        st.markdown(""" The boxplots in the figure below show data for the mined text relative to two other data sources. The first source is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
+	     an existing library of publicly licenced scientific papers. The second source is a [collection of academic papers](https://github.com/elifesciences-publications/readabilityinscience) 
+	     analyzed for readability in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). 
+	    """)
+        
+	df_concat_art = pd.concat([rd_df,df_author])
         df_concat_art = pd.concat([df_concat_art,art_df])
-
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
         st.write(fig_art)
-	
-	
-        st.markdown(""" The boxplots in the figure above show data for the mined text relative to two other data sources. The first source is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
-		     an existing library of publicly licenced scientific papers. The second source is a [collection of academic papers](https://github.com/elifesciences-publications/readabilityinscience) 
-		     analyzed for readability in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). 
-		    """)
-		     
 		    
         #temp = "{0} Summary Readability versus large sample of science".format(
         #    author_name
@@ -295,7 +291,6 @@ def main():
         #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
         #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         #st.write(fig)
-
 
         # df_concat_art = pd.concat([art_df, df_author])
         # fig_art = px.box(
