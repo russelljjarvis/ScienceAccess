@@ -231,12 +231,12 @@ def main():
     
     my_expander = st.sidebar.beta_expander("click to expand")
     my_expander.markdown(
-        """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+        """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend."""
     )
     
     my_expander.markdown("[Source Code](https://github.com/mcgurrgurr/ScienceAccess) for this Tool.")
     my_expander.markdown("[Source Code](https://github.com/russelljjarvis/ScienceAccess) and [link to](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py) an expansion of this tool that is currently in progress.")
-    my_expander.markdown("[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)")
+    my_expander.markdown("[Rationale for this project.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)")
 
     if "df_author" in locals():
 
