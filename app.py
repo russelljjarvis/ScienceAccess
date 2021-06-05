@@ -67,19 +67,24 @@ from science_access.enter_author_name import (
     extra_options,
 )
 
+##
+# load in readabilityofscience delcining data set.
+##
 rd_df = pd.read_csv("Figure4_SourceData1.csv")
 
 rd_df.rename(
     columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
 )
+
 rd_df = rd_df[["Reading_Level", "Origin"]]
+
 rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
 
 rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
 max = np.max(rd_df["Reading_Level"])
-rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
+#rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+#rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
 with open("trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
@@ -227,6 +232,7 @@ def main():
         "Choose Graph Layout/Option:",
         (
             "defaults",
+            "switch reference data",
             "scatter plots",
             "pie charts",
             "t-statistics",
@@ -247,6 +253,11 @@ def main():
         fulltext = True
         hard_passages = False
         sentiment = False
+        ref_data = True
+
+    if "switch reference data":
+        ref_data = not ref_data
+
     if genre=="t-statistics":
         scatter_plots = True
         tables = True
@@ -303,9 +314,14 @@ def main():
         if genre == "tables" or tables:
             push_frame_to_screen(df_author, scraped_labels)
 
-        df_concat_art = pd.concat([rd_df,df_author])
-        df_concat_art = pd.concat([df_concat_art,art_df])
-        #art_df = art_df[(art_df["Reading_Level"] > 0)]
+
+        if ref_data:
+            df_concat_art = pd.concat([df_concat_art,df_author])
+        else:
+            df_concat_art = pd.concat([rd_df,df_author])
+            st.markdown("""Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm. It contains negative values and is downward biased.
+            To illustrate the strength of the new approach. Toggle the data set to the ART corpus, which was analysed using the newer textstat standard algorithm.
+            """)
 
         if genre == "scatter plots" or scatter_plots:
             fig_art = px.box(
@@ -313,18 +329,21 @@ def main():
             )
             st.write(fig_art)
 
-        alias_dict = semantic_scholar_alias(author_name)
+
+
+        alias_list = semantic_scholar_alias(author_name)
         st.markdown("""To emphasize the importance of the exact search string and it's relationship to the results.
         Here are some different aliases this author may have published under:""")
-        st.markdown(alias_dict)
-
-        #temp = "{0} Summary Readability versus large sample of science".format(
-        #    author_name
-        #)
-        #labels = [temp, "ART Corpus readability"]
-        #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        #st.write(fig)
+        for al in alias_list:
+            st.markdown(alias_list)
+        if pie_charts:
+            temp = "{0} Summary Readability versus large sample of science".format(
+                author_name
+                )
+            labels = [temp, "ART Corpus readability"]
+            values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+            fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+            st.write(fig)
 
 
         # df_concat_art = pd.concat([art_df, df_author])
@@ -371,17 +390,17 @@ def main():
                 )
             )
 
-        my_expander = st.beta_expander("Expand for more information about readability")
+        ri_expander = st.beta_expander("Expand for more information about readability")
         # if my_expander:
 
-        my_expander.markdown(
+        ri_expander.markdown(
             """
 		### Here are a few additional established text sources of known complexity.
 		Note that in general, we can equate reading level with grade level.
 		"""
         )
 
-        my_expander.markdown(
+        ri_expander.markdown(
             """
 		| Text Source | Mean Complexity | Description |
 		|----------|----------|:-------------:|
@@ -394,9 +413,9 @@ def main():
 		"""
         )
 
-        my_expander.markdown("\n\n")
+        ri_expander.markdown("\n\n")
 
-        my_expander.markdown(
+        ri_expander.markdown(
             """
 		[Readability Metric Alogrithms and Background](https://en.wikipedia.org/wiki/Readability)
 		[Gunning Fog Readability Metric Alogrithm](https://en.wikipedia.org/wiki/Gunning_fog_index)
@@ -432,25 +451,10 @@ def main():
 
             exclusive = [i for i in grab_set_auth if i not in artset]
 
-        #giant_string = create_giant_strings(grab_set_auth,not_want_list)
-        #st.markdown(giant_string)
-        #urlDat = text_proc(giant_string,urlDat={},verbose=False)
-        #show_author_alias(ar)
-        #author_to_affiliations, author_to_urls,author_to_affiliations
-        #urls = author_to_urls(author_name)
-        #st.text(urls)
-
-        #affiliations = author_to_affiliations(author_name)
-        #st.text(affiliations)
-
-        #st.markdown(urlDat.values())
-        #st.markdown(urlDat.keys())
-
-        #st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
-        #st.markdown(urlDat["standard"])
         if hard_passages:
             hard = show_hardest_passage(ar)
             if hard is not None:
+                st.markdown("""Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text""")
                 st.markdown(hard)
 
         st.markdown("-----")
@@ -475,7 +479,7 @@ def main():
             )
 
             if genre == "tables" or tables:
-                push_frame_to_screen(df_author, scraped_labels)
+                st.write(df_author)#, scraped_labels)
 
             df_concat_art = pd.concat([rd_df,df_author])
             if genre == "scatter plots" or scatter_plots:
