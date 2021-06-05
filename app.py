@@ -254,7 +254,7 @@ def main():
         hard_passages = False
         sentiment = False
         ref_data = True
-
+    ref_data = True
     if "switch reference data":
         ref_data = not ref_data
 
