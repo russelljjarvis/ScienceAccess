@@ -227,6 +227,7 @@ def main():
         )
     st.sidebar.title("Options")
     st.sidebar.markdown("Options")
+    ref_data = True
 
     genre = st.sidebar.radio(
         "Choose Graph Layout/Option:",
@@ -244,6 +245,17 @@ def main():
         ),
     )
 
+    if genre=="switch reference data":
+        ref_data = not ref_data
+        scatter_plots = True
+        tables = True
+        word_clouds = True
+        pie_charts = False
+        tstatistics = False
+        fulltext = True
+        hard_passages = False
+        sentiment = False
+
     if genre =="defaults":
         scatter_plots = True
         tables = True
@@ -254,9 +266,6 @@ def main():
         hard_passages = False
         sentiment = False
         ref_data = True
-    ref_data = True
-    if "switch reference data":
-        ref_data = not ref_data
 
     if genre=="t-statistics":
         scatter_plots = True
