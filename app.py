@@ -229,8 +229,9 @@ def main():
     st.sidebar.markdown("Options")
     ref_data = True
 
-    genre = st.sidebar.radio(
-        "Choose Graph Layout/Option:",
+
+    genre = st.sidebar.multiselect(
+        "Choose (multiple) Graph Layout/Options:",
         (
             "defaults",
             "switch reference data",
@@ -241,7 +242,8 @@ def main():
             "full text scrape",
             "word clouds",
             "hard passages",
-            "sentiment"
+            "sentiment",
+            "show author aliases"
         ),
     )
 
