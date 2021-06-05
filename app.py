@@ -335,7 +335,7 @@ def main():
         st.markdown("""To emphasize the importance of the exact search string and it's relationship to the results.
         Here are some different aliases this author may have published under:""")
         for al in alias_list:
-            st.markdown(alias_list)
+            st.markdown(al)
         if pie_charts:
             temp = "{0} Summary Readability versus large sample of science".format(
                 author_name
