@@ -86,6 +86,15 @@ max = np.max(rd_df["Reading_Level"])
 #rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 #rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
+# @st.cache(persist=True)
+def get_table_download_link_csv(df,author_name):
+    import base64
+
+    csv = df.to_csv().encode()
+    b64 = base64.b64encode(csv).decode()
+    href = f'<a href="data:file/csv;base64,{b64}" download="author_data.csv" target="_blank">Download csv file</a>'
+    return href
+
 with open("trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
     art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
@@ -149,41 +158,46 @@ def show_hardest_passage(ar: List = []) -> str:
     mean = np.mean([a["standard"] for i, a in enumerate(ar)])
 
     for i, a in enumerate(ar):
-        if a["standard"] >= largest and len(ar[i]["hard_snippet"]):
-            largest = a["standard"]
-            li = i
-        if a["standard"] < smallest:
-            smallest = a["standard"]
+            if "hard_snippet" in ar[i].keys():
+                if ar[i]["hard_snippet"] is not None:
+                    if a["standard"] >= largest and len(ar[i]["hard_snippet"]):
+                        largest = a["standard"]
+                        li = i
+                    if a["standard"] < smallest:
+                        smallest = a["standard"]
 
     for i, a in enumerate(ar):
         if a["standard"] == largest or a["standard"] > mean:
 
-            if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
-                if len(ar[i]["hard_snippet"]):
-                    if (
-                        str("can log in with their society credentials")
-                        not in ar[i]["hard_snippet"]
-                    ):
+            if "hard_snippet" in ar[i].keys():
+                #if ar[i]["hard_snippet"] is not None:
+                if ar[i]["hard_snippet"] is not None:
+
+                    if len(ar[i]["hard_snippet"]):
+                        if (
+                            str("can log in with their society credentials")
+                            not in ar[i]["hard_snippet"]
+                        ):
 
 
-                        st.markdown("---")
+                            st.markdown("---")
 
-                        st.error("### Some hard to read passage(s) from the authors work.")
-                        from nltk import word_tokenize
+                            st.error("### Some hard to read passage(s) from the authors work.")
+                            from nltk import word_tokenize
 
-                        tokens = word_tokenize(ar[i]["hard_snippet"])
-                        #string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
-                        #string_from_tokens2 = "..."
-                        #string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
+                            tokens = word_tokenize(ar[i]["hard_snippet"])
+                            #string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
+                            #string_from_tokens2 = "..."
+                            #string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
 
-                        #string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
-                        string_from_tokens = create_giant_strings(tokens, not_want_list)
+                            #string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
+                            string_from_tokens = create_giant_strings(tokens, not_want_list)
 
 
-                        st.warning(string_from_tokens)  # [0:200])
-                        st.warning("...")  # [0:200])
+                            st.warning(string_from_tokens)  # [0:200])
+                            st.warning("...")  # [0:200])
 
-                        return ar[i]
+                            return ar[i]
     return None
 
 
@@ -225,77 +239,38 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
-    st.sidebar.title("Options")
-    st.sidebar.markdown("Options")
-    ref_data = True
+    #st.sidebar.title("Options")
+    #st.sidebar.markdown("Options")
+    #ref_data = True
 
 
-    genre = st.sidebar.multiselect(
-        "Choose (multiple) Graph Layout/Options:",
-        (
-            "defaults",
-            "switch reference data",
-            "scatter plots",
-            "pie charts",
-            "t-statistics",
-            "tables",
-            "full text scrape",
-            "word clouds",
-            "hard passages",
-            "sentiment",
-            "show author aliases"
-        ),
-    )
-
-    if genre=="switch reference data":
-        ref_data = not ref_data
-        scatter_plots = True
-        tables = True
-        word_clouds = True
-        pie_charts = False
-        tstatistics = False
-        fulltext = True
-        hard_passages = False
-        sentiment = False
-
-    if genre =="defaults":
-        scatter_plots = True
-        tables = True
-        word_clouds = True
-        pie_charts = False
-        tstatistics = False
-        fulltext = True
-        hard_passages = False
-        sentiment = False
-        ref_data = True
-
-    if genre=="t-statistics":
-        scatter_plots = True
-        tables = True
-        word_clouds = True
-        pie_charts = False
-        tstatistics = True
-        fulltext = False
-        sentiment = False
-
-    if genre=="full text scrape":
-        scatter_plots = True
-        tables = True
-        word_clouds = True
-        pie_charts = True
-        tstatistics = True
-        fulltext = True
-        sentiment = False
-
-    if genre =="sentiment":
-        scatter_plots = True
-        tables = True
-        word_clouds = True
-        pie_charts = False
-        tstatistics = False
-        fulltext = True
-        hard_passages = False
-        sentiment = True
+    #custom = st.sidebar.radio("custom/default",("default","custom"))
+    #if custom == "custom":
+    #    genre = st.sidebar.multiselect(
+    #        "Choose (multiple) Graph Layout/Options:",
+    #        (
+    #            "defaults",
+    #            "switch reference data",
+    #            "scatter plots",
+    #            "compare authors"
+    #            "pie charts",
+    #            "tables",
+    #            "full text mine",
+    #            "word clouds",
+    #            "hard passages",
+    #            "show author aliases",
+    #            "ART reference data",
+    #            "ReadabilityScienceDeclining reference data"
+    #        ),
+    #    )
+    #else:
+    genre=[]
+    genre.append("scatter plots")
+    genre.append("tables")
+    genre.append("pie charts")
+    genre.append("word clouds")
+    genre.append("hard passages")
+    genre.append("ART reference data")
 
     my_expander = st.sidebar.beta_expander("Code Information")
 
@@ -322,19 +297,26 @@ def main():
                 len(df_author)
             )
         )
-        if genre == "tables" or tables:
-            push_frame_to_screen(df_author, scraped_labels)
 
 
-        if ref_data:
-            df_concat_art = pd.concat([df_concat_art,df_author])
-        else:
-            df_concat_art = pd.concat([rd_df,df_author])
+
+        if "tables" in genre:
+            st.write(df_author)#, scraped_labels)
+            #get_table_download_link_csv(df_author,author_name)
+            st.markdown(get_table_download_link_csv(df_author,author_name), unsafe_allow_html=True)
+
             st.markdown("""Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm. It contains negative values and is downward biased.
             To illustrate the strength of the new approach. Toggle the data set to the ART corpus, which was analysed using the newer textstat standard algorithm.
             """)
 
-        if genre == "scatter plots" or scatter_plots:
+        if "scatter plots" in genre:
+            ref_choice = st.radio("switch reference data",("ART Corpus","Readability of Science is Decreasing Over Time"))
+            if ref_choice == "ART Corpus":
+                df_concat_art = pd.concat([art_df,df_author])
+            else:
+                df_concat_art = pd.concat([rd_df,df_author])
+            #df0 = df_concat_art
+
             fig_art = px.box(
                 df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
             )
@@ -347,7 +329,7 @@ def main():
         Here are some different aliases this author may have published under:""")
         for al in alias_list:
             st.markdown(al)
-        if pie_charts:
+        if "pie charts" in genre:
             temp = "{0} Summary Readability versus large sample of science".format(
                 author_name
                 )
@@ -363,7 +345,6 @@ def main():
         # )
         # st.write(fig_art)
 
-        df0 = df_concat_art
 
         st.markdown("-----")
 
@@ -446,7 +427,7 @@ def main():
 		it may also help instill trust in text-mining results.
 		"""
 
-        if word_clouds:
+        if "word clouds" in genre:
             grab_setr = []
             grab_set_auth = []
 
@@ -462,16 +443,15 @@ def main():
 
             exclusive = [i for i in grab_set_auth if i not in artset]
 
-        if hard_passages:
+        if "hard passages" in genre:
             hard = show_hardest_passage(ar)
             if hard is not None:
                 st.markdown("""Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text""")
                 st.markdown(hard)
 
         st.markdown("-----")
-        # fast_art_cloud(sci_corpus)
-        #word_clouds = True
-        if word_clouds:
+
+        if "word clouds" in genre:
             grab_set_auth = []
             for paper in ar:
                 if "semantic" in paper.keys():
@@ -479,7 +459,7 @@ def main():
             sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
             clouds_big_words(sci_corpus)
 
-        if fulltext:
+        if "full text" in genre:
             st.markdown("""## Conducting a slower but more thorough search...""")
 
 
@@ -489,15 +469,17 @@ def main():
                 full_ar, author_name, scraped_labels, author_score, art_df
             )
 
-            if genre == "tables" or tables:
-                st.write(df_author)#, scraped_labels)
+        if "tables" in genre:
+            push_frame_to_screen(df_author,scraped_labels)
+            st.markdown(get_table_download_link_csv(df_author,author_name), unsafe_allow_html=True)
 
-            df_concat_art = pd.concat([rd_df,df_author])
-            if genre == "scatter plots" or scatter_plots:
-                fig_art = px.box(
-                    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-                )
-                st.write(fig_art)
+
+        df_concat_art = pd.concat([rd_df,df_author])
+        if "scatter plots" in genre:
+            fig_art = px.box(
+                df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+            )
+            st.write(fig_art)
 
             #push_frame_to_screen(df_author, scraped_labels))
 
