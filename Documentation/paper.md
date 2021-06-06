@@ -1,5 +1,5 @@
 -----
-title: 'Interactive Exploration in the Readability of Science Authors'
+title: 'Interactive Exploration of the Readability of Science Authors'
 
 tags:
   - readability
@@ -22,7 +22,7 @@ authors:
     affiliation: Field Ecologist, University of Melbourne
   - name: Rebecca Featherston affiliation: Monash University
 
-date: April  2021
+date: June  2021
 Bibliography: paper.bib
 
 ### Summary
