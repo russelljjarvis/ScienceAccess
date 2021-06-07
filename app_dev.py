@@ -64,7 +64,7 @@ from science_access.enter_author_name import (
 from science_access.enter_author_name import (
     frame_to_lists,
     try_and_update_cache,
-    extra_options
+    extra_options,
 )
 
 ##
@@ -114,7 +114,7 @@ def get_table_download_link_csv(object_to_download, author_name):
 
     # some strings <-> bytes conversions necessary here
     b64 = base64.b64encode(object_to_download.encode()).decode()
-    author_name = str("download file ")+author_name+str(".csv")
+    author_name = str("download file ") + author_name + str(".csv")
     return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
 
 
@@ -123,7 +123,7 @@ with open("trainingDats.p", "rb") as f:
     art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
-art_df = art_df[(art_df["Reading_Level"] > 0)]
+# art_df = art_df[(art_df["Reading_Level"] > 0)]
 
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
@@ -294,7 +294,7 @@ def main():
     genre.append("tables")
     genre.append("pie charts")
     genre.append("word clouds")
-    #genre.append("hard passages")
+    # genre.append("hard passages")
     genre.append("ART reference data")
 
     my_expander = st.sidebar.beta_expander("Code Information")
@@ -327,7 +327,7 @@ def main():
         if "tables" in genre:
             df_temp = copy.copy(df_author)
             del df_temp["Origin"]
-            df_temp.rename(columns={"Web_Link":"Title"},inplace=True)
+            df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
             st.table(df_temp)  # , scraped_labels)
             # get_table_download_link_csv(df_author,author_name)
             st.markdown(
@@ -500,25 +500,26 @@ def main():
             clouds_big_words(sci_corpus)
         alias_list = semantic_scholar_alias(author_name)
 
-        #my_expander = st.beta_expander("Full Text Score Re calculation")
-        #ft = my_expander.radio("Do Full Text",("Yes","No"))
-        #if ft=="Yes":
-        #if "full text" in genre:
+        # my_expander = st.beta_expander("Full Text Score Re calculation")
+        # ft = my_expander.radio("Do Full Text",("Yes","No"))
+        # if ft=="Yes":
+        # if "full text" in genre:
 
-        st.markdown("""## Conduct a slower but more thorough search...""")
+        st.markdown(
+            """## Conduct a slower but more rigorous search of the full texts..."""
+        )
 
         st.markdown(
             """The exact search string match in literature search has an import relationship to the results.
         Here are some different aliases this author may have published under:"""
         )
-        #for al in alias_list:
+        # for al in alias_list:
         #    st.markdown(al)
-        alias_list.insert(0,"previously selected name")
-        author_name1 = st.radio("choose name",alias_list)
+        alias_list.insert(0, "previously selected name")
+        author_name1 = st.radio("choose name", alias_list)
         if author_name == "previously selected name":
             author_name = author_name1
         full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
-        #st.markdown(full_ar_new)
 
         scraped_labels_new, author_score = frame_to_lists(full_ar_new)
         df_author_new, merged_df = data_frames_from_scrape(
@@ -532,14 +533,16 @@ def main():
                     unsafe_allow_html=True,
                 )
                 st.markdown("""### Here you can see""")
-                st.markdown("""how full texts are longer by nature, longer texts are harder to read, the full text items
+                st.markdown(
+                    """how full texts are longer by nature, longer texts are harder to read, the full text items
                 by the same name having higher reading complexity
-                """)
+                """
+                )
                 scraped_labels_new.extend(scraped_labels)
-                df_author_new = pd.concat([df_author,df_author_new])
-                #push_frame_to_screen(df_author_new, scraped_labels_new)
-
+                st.markdown("# Full texts")
                 st.write(df_author_new)
+                st.markdown("# Abstracts")
+                st.write(df_author)
 
             df_concat_art_new = pd.concat([art_df, df_author_new])
             if "scatter plots" in genre:
@@ -553,54 +556,8 @@ def main():
                 )
                 st.write(fig_art)
 
-                # push_frame_to_screen(df_author, scraped_labels))
-
-                # st.write(full_ar)
-
         if verbose:
             st.text(sci_corpus)
-        #with shelve.open("fast_graphs_splash.p") as db:
-        #    if not author_name in db.keys():
-        #        db[author_name] = {
-        #            "ar": ar,
-        #            "scraped_labels": scraped_labels,
-        #            "author_score": author_score,
-        #            "sci_corpus": sci_corpus,
-        #        }
-        #st.markdown("\n")
-
-        #st.markdown("-----")
-        #st.markdown("\n\n\n\n")
-
-        # sci_corpus = create_giant_strings(ar, not_want_list)
-        # bio_corpus = create_giant_strings(trainingDats, not_want_list)
-
-        # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
-        # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
-
-        #st.markdown("\n")
-        #grab_setr = []
-        #grab_set1 = []
-
-        #for block in trainingDats:
-        #    grab_setr.extend(block["tokens"])
-        #for block in ar:
-        #    grab_set1.extend(block["tokens"])
-
-        #artset = list(grab_setr)
-        #artset.extend(not_want_list)
-        #autset = list(set(grab_set1))
-        #exclusive = [i for i in autset if i not in artset]
-        # inclusive = [i for i in autset if i in artset]
-        # st.markdown(
-        #    "### Concepts that differentiate {0} from other science".format(
-        #        author_name
-        #    )
-        # )
-        # exclusive = create_giant_strings(ar, exclusive)
-
-        # fig = fast_art_cloud(exclusive)
-        # st.markdown("-----")
 
         if "reading_time" in ar[0].keys():
             average_reading_time = [np.mean([r["reading_time"] for r in ar])]

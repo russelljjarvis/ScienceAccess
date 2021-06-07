@@ -111,6 +111,8 @@ def zipf_plot(word_counts_fz):
 
 # @st.cache
 from typing import List
+
+
 def art_cloud_wl(acorpus):
     WC = WordCloud(background_color="white")
     WC.generate_from_lengths = MethodType(generate_from_lengths, WC)
@@ -118,12 +120,12 @@ def art_cloud_wl(acorpus):
     if type(acorpus) is not type(str()):
         temp_str = ""
         for a in acorpus:
-            temp_str+=a+" "
+            temp_str += a + " "
         acorpus = temp_str
-        #tokens = word_tokenize(acorpus)
-        #if len(tokens):
+        # tokens = word_tokenize(acorpus)
+        # if len(tokens):
         #    wordcloud = WC.generate_from_lengths(tokens)
-    #if type(acorpus) is type(""):
+    # if type(acorpus) is type(""):
     wordcloud = WC.generate_from_lengths(acorpus)
 
     if not "wordcloud" in locals():
@@ -138,11 +140,12 @@ def art_cloud_wl(acorpus):
     st.pyplot(fig, use_column_width=True)
     return biggest_words, word_counts_fz, fig
 
-'''
+
+"""
 def zipf_wrapper(acorpus):
     tokens = list(word_tokenize(acorpus))
     zipf_plot(tokens)
-'''
+"""
 
 # @st.cache
 
@@ -155,11 +158,11 @@ def art_cloud(acorpus):
     fig = plt.figure()
     # increase resolution by changing figure size
     # figsize=(25,25))
-    #if type(acorpus) is type(list()):
+    # if type(acorpus) is type(list()):
     if type(acorpus) is not type(str()):
         temp_str = ""
         for a in acorpus:
-            temp_str+=a+" "
+            temp_str += a + " "
         acorpus = temp_str
     wordcloud = WC.generate(acorpus)
     # interpolation "nearest decreases resolution."
@@ -168,7 +171,10 @@ def art_cloud(acorpus):
     plt.tight_layout(pad=0)
     return wordcloud, fig, plt
 
+
 from typing import Any
+
+
 def fast_art_cloud(acorpus):
     wordcloud, fig, plt = art_cloud(acorpus)
     st.pyplot(fig)

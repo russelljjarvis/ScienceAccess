@@ -125,28 +125,28 @@ def generate_from_lengths(self, words, max_font_size=30, verbose=False):  # noqa
     frequencies = [(word, word_len / max_len) for word, word_len in zip(words, sizes)]
     real_frequencies = [w for w in frequencies if w is not None]
 
-    frequencies = sorted(frequencies, key=lambda item: item[1],reverse=True)
+    frequencies = sorted(frequencies, key=lambda item: item[1], reverse=True)
     ##
     #
     # new
     ##
     max_frequencya = float(frequencies[0][1])
     max_frequencyb = float(frequencies[-1][1])
-    if max_frequencya<max_frequencyb:
+    if max_frequencya < max_frequencyb:
         max_frequency = max_frequencyb
-    if max_frequencyb<max_frequencya:
+    if max_frequencyb < max_frequencya:
         max_frequency = max_frequencya
-    if len(frequencies)>15 and max_frequencya<max_frequencyb:
+    if len(frequencies) > 15 and max_frequencya < max_frequencyb:
         frequencies = frequencies[-15::]
-    elif len(frequencies)>15 and max_frequencya<max_frequencyb:
+    elif len(frequencies) > 15 and max_frequencya < max_frequencyb:
         frequencies = frequencies[0:15]
 
     #
     #
     ###
 
-    #real_frequencies = [(wrapper)(w) for w in frequencies]
-    #frequencies = sorted(real_frequencies, key=lambda item: item[1])#, reverse=True)
+    # real_frequencies = [(wrapper)(w) for w in frequencies]
+    # frequencies = sorted(real_frequencies, key=lambda item: item[1])#, reverse=True)
     self.word_counts_fz = None
     self.word_counts_fz = frequencies
 
@@ -176,7 +176,7 @@ def generate_from_lengths(self, words, max_font_size=30, verbose=False):  # noqa
 
     if max_font_size is None:
         # if not provided use default font_size
-        max_font_size = self.max_font_size*6.5
+        max_font_size = self.max_font_size * 6.5
 
     if max_font_size is None:
         # figure out a good font size by trying to draw with
@@ -185,7 +185,7 @@ def generate_from_lengths(self, words, max_font_size=30, verbose=False):  # noqa
             # we only have one word. We make it big!
             font_size = self.height
         else:
-            if hasattr(self,'layout_'):
+            if hasattr(self, "layout_"):
                 sizes = [x[1] for x in self.layout_]
             try:
                 font_size = int(2 * sizes[0] * sizes[1] / (sizes[0] + sizes[1]))

@@ -22,7 +22,7 @@ try:
     from nltk.corpus import cmudict
 except:
 
-    nltk.download('cmudict')
+    nltk.download("cmudict")
     from nltk.corpus import cmudict
 
 import re

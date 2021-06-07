@@ -6,8 +6,9 @@ import copy
 import semanticscholar as sch
 
 import os.path
-#import pdb
-#import pickle
+
+# import pdb
+# import pickle
 from collections import OrderedDict
 
 import numpy as np
@@ -20,10 +21,12 @@ import numpy as np
 
 from tqdm.auto import tqdm
 import streamlit as st
-#import dask
+
+# import dask
 import requests
 
 from .t_analysis import text_proc
+
 
 class tqdm:
     def __init__(self, iterable, title=None):
@@ -42,6 +45,7 @@ class tqdm:
             self.i += 1
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
+
 
 def author_to_urls(NAME):
     """
@@ -69,7 +73,7 @@ def author_to_urls(NAME):
 
     visit_urls = [i for i in visit_urls if "FIGSHARE" not in i]
     visit_urls = [i for i in visit_urls if "figshare" not in i]
-    #visit_urls = [i for i in visit_urls if "doi" in i]
+    # visit_urls = [i for i in visit_urls if "doi" in i]
     dois = []
 
     for link in visit_urls:
@@ -81,39 +85,43 @@ def author_to_urls(NAME):
             dois.append(li[1])
     return dois, coauthors, titles, visit_urls
 
+
 def check_link(link):
     if link is not None:
         urlDatTemp = process(link)
         return urlDatTemp
 
-import dask
-from dask import delayed,compute
 
-def visit_link(NAME, tns):#, more_links):
+import dask
+from dask import delayed, compute
+
+
+def visit_link(NAME, tns):  # , more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
 
     author_results = []
-    #dois, coauthors, titles, visit_urls
+    # dois, coauthors, titles, visit_urls
     author_results, visit_more_urls = visit_link_unpaywall(NAME)
 
-    #visit_urls.extend(more_links)
-    #for index, link in enumerate(
+    # visit_urls.extend(more_links)
+    # for index, link in enumerate(
     #    tqdm(visit_urls, title="Text mining via API calls. Please wait.")
-    #):
-    #for i in visit_urls[0:tns]:
+    # ):
+    # for i in visit_urls[0:tns]:
     #    author_results.append(dask.delayed(visit_link_unpaywall)(i))#.compute()
 
     #        author_results.append(urlDatTemp)
     author_results = [
         urlDat for urlDat in list(author_results) if not isinstance(urlDat, type(None))
     ]
-    #for urlDat in author_results:
+    # for urlDat in author_results:
     #    st.markdown(urlDat)
 
     return author_results, visit_more_urls
+
 
 def semantic_scholar_alias(NAME):
     """
@@ -123,7 +131,7 @@ def semantic_scholar_alias(NAME):
 
     author_results = []
     aliases = None
-    #dois, coauthors, titles
+    # dois, coauthors, titles
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     # alias_dict = {}
     inv_alias_dict = {}
@@ -134,14 +142,21 @@ def semantic_scholar_alias(NAME):
             all_coauthors = paper["authors"]
             for co_name in all_coauthors:
                 key = co_name["name"]
-                if NAME.split(" ")[0] in key.split(" ")[0] or key.split(" ")[0] in NAME.split(" ")[0] or NAME.split(" ")[-1] in key.split(" ")[-1]:
+                if (
+                    NAME.split(" ")[0] in key.split(" ")[0]
+                    or key.split(" ")[0] in NAME.split(" ")[0]
+                    or NAME.split(" ")[-1] in key.split(" ")[-1]
+                ):
                     author = sch.author(co_name["authorId"], timeout=32)
 
                     if "aliases" in author.keys():
                         aliases = author["aliases"]
                         return aliases
 
+
 import streamlit as st
+
+
 def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -151,9 +166,9 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     author_results = []
     aliases = None
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    #for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
+    # for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
 
-    for d in tqdm(dois,title="visiting abstracts"):
+    for d in tqdm(dois, title="visiting abstracts"):
         paper = sch.paper(d, timeout=8)
         urlDat = {}
         urlDat["semantic"] = True
@@ -162,10 +177,10 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
             urlDat["link"] = paper["title"]
         if aliases is None:
             if "aliases" in paper.keys():
-                urlDat["aliases"] = paper['aliases']
+                urlDat["aliases"] = paper["aliases"]
             else:
                 pass
-        if 'abstract' in paper.keys():
+        if "abstract" in paper.keys():
             urlDat = text_proc(str(paper["abstract"]), urlDat)
             author_results.append(urlDat)
     author_results = [
@@ -174,17 +189,20 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
 
     return author_results, visit_urls
 
+
 from dask import compute
-def visit_link_unpaywall(NAME):#), tns, visit_urls):
+
+
+def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    if len(visit_urls)>30:
-        visit_urls = visit_urls[0:29]
-
+    if len(visit_urls) > 40:
+        visit_urls = visit_urls[0:39]
+    st.warning("too many publications >40 truncating list")
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
@@ -192,7 +210,7 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
         author_results.append(urlDat)
     author_results = list(dask.compute(author_results))
     if len(filter_empty(author_results)):
-        return author_results,visit_urls
+        return author_results, visit_urls
     else:
         for index, link in enumerate(
             tqdm(visit_urls, title="Text mining via API calls. Please wait.")
@@ -200,7 +218,8 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
 
             urlDat = process(link)
             author_results.append(urlDat)
-        return author_results,visit_urls
+        return author_results, visit_urls
+
 
 def unpaywall_semantic_links(NAME, tns, fast=True):
     """
@@ -265,7 +284,9 @@ def convert_pdf_to_txt(content, verbose=False):
     else:
         return str("")
 
+
 import html
+
 
 def process(link):  # , REDIRECT=False):
     urlDat = {}
@@ -279,13 +300,13 @@ def process(link):  # , REDIRECT=False):
 
         return urlDat
     if str("pdf") not in link:
-        #try:
+        # try:
         buffered = ""
         response = requests.get(link)
-        #crude_html = response.json()
-        #st.success("html hanged...")
+        # crude_html = response.json()
+        # st.success("html hanged...")
 
-        #crude_html = html.unescape(response.text)
+        # crude_html = html.unescape(response.text)
         crude_html = response.text
         soup = BeautifulSoup(crude_html, "html.parser")
         for script in soup(["script", "style"]):
@@ -300,8 +321,7 @@ def process(link):  # , REDIRECT=False):
         )  # break multi-headlines into a line each
         text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
         buffered = str(text)
-        #except:
-
+        # except:
 
     else:
 
@@ -319,18 +339,18 @@ def process(link):  # , REDIRECT=False):
 
         except:
             buffered = ""
-        #st.success("pdf worked")
+        # st.success("pdf worked")
 
     urlDat["link"] = link
     urlDat = text_proc(buffered, urlDat)
-    #st.success("some entity processed")
+    # st.success("some entity processed")
 
     return urlDat
 
 
-def update_web_form(NAME, tns,fast=True):
+def update_web_form(NAME, tns, fast=True):
     if fast:
-        more_links = unpaywall_semantic_links(NAME, tns,fast=True)
+        more_links = unpaywall_semantic_links(NAME, tns, fast=True)
 
         author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
             NAME, tns, more_links
@@ -342,11 +362,13 @@ def update_web_form(NAME, tns,fast=True):
     else:
         author_results, visited_urls = visit_link(NAME, tns)
         df = pd.DataFrame(author_results)
-        #st.write(df)
+        # st.write(df)
 
         met = metricss(author_results)
-        #st.markdown(met)
+        # st.markdown(met)
     return df, met, author_results
+
+
 """"
 def update_web_form_full_text(NAME, tns):
     #more_links = unpaywall_semantic_links(NAME, tns)
@@ -374,12 +396,15 @@ def enter_name_here(scholar_page, name, tns,fast=True):
     return df0, datay, author_results0
 """
 
+
 def find_nearest(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
     return idx
 
+
 import pickle
+
 
 def ar_manipulation(ar: List = []):
     ar = [tl for tl in ar if tl is not None]
@@ -392,10 +417,12 @@ def ar_manipulation(ar: List = []):
     trainingDats.extend(ar)
     return (ar, trainingDats)
 
-#def call_from_front_end(NAME: str = "", OPENACCESS: bool = True, tns: int = 16):
 
-def call_from_front_end(NAME="", OPENACCESS=True,tns=16,fast=True):
-    df, datay, ar = update_web_form(NAME, tns,fast=fast)
+# def call_from_front_end(NAME: str = "", OPENACCESS: bool = True, tns: int = 16):
+
+
+def call_from_front_end(NAME="", OPENACCESS=True, tns=16, fast=True):
+    df, datay, ar = update_web_form(NAME, tns, fast=fast)
     (ar, trainingDats) = ar_manipulation(ar)
     return ar
 
