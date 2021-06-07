@@ -168,7 +168,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     # for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
 
-    for d in tqdm(dois, title="visiting links to extract text"):
+    for d in tqdm(dois, title="Visiting links to extract text."):
         paper = sch.paper(d, timeout=8)
         urlDat = {}
         urlDat["semantic"] = True
@@ -228,7 +228,7 @@ def unpaywall_semantic_links(NAME, tns, fast=True):
     """
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
-    for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
+    for index, doi_ in enumerate(tqdm(dois, title="Building suitable links.")):
         if fast:
             r0 = str("https://api.semanticscholar.org/") + str(doi_)
             visit_more_urls.append(r0)
