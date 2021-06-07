@@ -547,7 +547,7 @@ def main():
         st.markdown("\n")
         st.markdown("-----")
 	
-	st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
+        st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
 	full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
 
