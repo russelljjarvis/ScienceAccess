@@ -560,7 +560,7 @@ def main():
         scraped_labels_new, author_score = frame_to_lists(full_ar_new)
         df_author_new, merged_df = data_frames_from_scrape(
             full_ar_new, author_name, scraped_labels, author_score, art_df
-	)
+        )
 	
 	scraped_labels_new.extend(scraped_labels)
         st.markdown("# Full texts:")
