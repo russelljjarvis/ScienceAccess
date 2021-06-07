@@ -301,7 +301,7 @@ def main():
 	
 	
         st.markdown("\n\n")
-        st.markdown("Here are some other names we found with slightly different syntax. Clicking an alternative will restart the search")
+        st.markdown("Here are some other names we found with slightly different syntax")
         alias_list = semantic_scholar_alias(author_name)
         #alias_list.insert(0, "previously selected name")
         author_name1 = st.radio("", alias_list)
