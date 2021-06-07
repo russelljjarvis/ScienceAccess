@@ -433,27 +433,11 @@ def main():
         for paper in ar:
             grab_set_auth.extend(paper["tokens"])
         artset = list(grab_setr)
-        #artset.extend(not_want_list)
-        # auth_set = grab_set_auth
-        # exclusive = [i for i in grab_set_auth if i not in artset]
         fig = fast_art_cloud(grab_set_auth)
-
         giant_string = create_giant_strings(grab_set_auth,not_want_list)
-        #st.markdown(giant_string)
         urlDat = text_proc(giant_string,urlDat={},verbose=False)
-
-        #st.markdown(urlDat.values())
-        #st.markdown(urlDat.keys())
-
-        #st.markdown("### Not Biased By (short) Length of Abstracts Readability Estimate:")
-        #st.markdown(urlDat["standard"])
-        #hard = show_hardest_passage(ar)
-        # if hard is not None:
-        # 	st.markdown(hard)
         show_author_alias(ar)
 
-        st.markdown("-----")
-        # fast_art_cloud(sci_corpus)
         clouds_by_big_words = True
         if clouds_by_big_words:
             grab_set_auth = []
