@@ -539,9 +539,9 @@ def main():
                 st.write(df_author_new)
                 st.markdown("# Abstracts:")
                 st.write(df_author)
-            df_concat_art_new = pd.concat([df_author, df_author_new])
+            df_author_new = pd.concat([df_author, df_author_new])
             st.markdown("# Both:")
-            st.write(df_author)
+            st.write(df_author_new)
 
             st.markdown(
                 get_table_download_link_csv(df_author_new, author_name),
