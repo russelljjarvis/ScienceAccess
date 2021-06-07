@@ -193,8 +193,8 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
         return author_results,visit_urls
     else:
     """
-    if visit_urls>23:
-        visit_urls = visit_urls[0:22]
+    if len(visit_urls)>30:
+        visit_urls = visit_urls[0:29]
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
