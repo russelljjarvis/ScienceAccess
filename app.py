@@ -466,7 +466,7 @@ def main():
         #    except:
         #        pass
 
-	grab_set_auth = []
+        grab_set_auth = []
             for paper in ar:
                 if "semantic" in paper.keys():
                     grab_set_auth.extend(paper["tokens"])
