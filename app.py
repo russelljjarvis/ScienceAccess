@@ -550,12 +550,12 @@ def main():
 	
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
-        #alias_list.insert(0, "previously selected name")
-        #author_name1 = st.radio("choose name", alias_list)
+        alias_list.insert(0, "previously selected name")
+        author_name1 = st.radio("choose name", alias_list)
 	
-        #if author_name == "previously selected name":
-        #    author_name = author_name1
-        #full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
+        if author_name == "previously selected name":
+            author_name = author_name1
+        full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
 
         scraped_labels_new, author_score = frame_to_lists(full_ar_new)
         df_author_new, merged_df = data_frames_from_scrape(
@@ -567,7 +567,7 @@ def main():
             st.markdown("# Full texts:")
             st.write(df_author_new)
             st.markdown("# Abstracts:")
-	    #st.write(df_author)
+	    st.write(df_author)
 	
         st.markdown("\n")
         st.markdown("-----")
