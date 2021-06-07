@@ -108,7 +108,7 @@ def visit_link(NAME, tns):#, more_links):
 
     #        author_results.append(urlDatTemp)
     author_results = [
-        urlDat for urlDat in list(compute(author_results)) if not isinstance(urlDat, type(None))
+        urlDat for urlDat in list(author_results) if not isinstance(urlDat, type(None))
     ]
     #for urlDat in author_results:
     #    st.markdown(urlDat)
@@ -399,12 +399,14 @@ def update_web_form(NAME, tns,fast=True):
         author_results = copy.copy(author_results)
         datax = filter_empty(author_results)
         df = pd.DataFrame(datax)
-
+        met = metricss(author_results)
     else:
         author_results, visited_urls = update_web_form_full_text(NAME, tns)
         df = pd.DataFrame(author_results)
+        st.write(df)
 
-    met = metricss(author_results)
+        met = metricss(author_results)
+        st.markdown(met)
     return df, met, author_results
 
 def update_web_form_full_text(NAME, tns):
