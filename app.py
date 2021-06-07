@@ -584,7 +584,7 @@ def main():
             st.write(fig_art)
         	
             st.markdown("\n\n")
-            st.markdown("You can download these updated results of the search here:")
+            st.markdown("You can download these updated results here:")
             st.markdown(
                 get_table_download_link_csv(df_author_new, author_name),
                 unsafe_allow_html=True,
