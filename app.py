@@ -297,6 +297,10 @@ def main():
                 unsafe_allow_html=True,
         )
 	
+        alias_list = semantic_scholar_alias(author_name)
+        alias_list.insert(0, "previously selected name")
+        author_name1 = st.radio("choose name", alias_list)
+	
         st.markdown("\n\n")
         st.markdown("-----")
 	
@@ -474,17 +478,17 @@ def main():
         sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
         clouds_big_words(sci_corpus)
 	
-        st.markdown("\n")
-        st.markdown("-----")
-        st.markdown("\n\n\n\n")
-        st.header("Hard Passages")
+        #st.markdown("\n")
+        #st.markdown("-----")
+        #st.markdown("\n\n\n\n")
+        #st.header("Hard Passages")
 	
-        hard = show_hardest_passage(ar)
-        if hard is not None:
-            st.markdown(
-                    """Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text"""
-            )
-            st.markdown(hard)
+        #hard = show_hardest_passage(ar)
+        #if hard is not None:
+        #    st.markdown(
+        #            """Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text"""
+        #    )
+        #    st.markdown(hard)
 		
         #if verbose:
         #    st.text(sci_corpus)
@@ -541,9 +545,6 @@ def main():
         st.markdown("-----")
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
-        alias_list = semantic_scholar_alias(author_name)
-        alias_list.insert(0, "previously selected name")
-        author_name1 = st.radio("choose name", alias_list)
 	
         if author_name == "previously selected name":
             author_name = author_name1
