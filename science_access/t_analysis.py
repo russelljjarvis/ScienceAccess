@@ -269,8 +269,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 
 			remainingText = " ".join(remainingText)
 			remainingText = remainingText.lower()
-			urlDat["standard"] = textstat.text_standard(corpus, float_output=True)
-
+			urlDat["standard"] = textstat.text_standard(remainingText, float_output=True)
+			#st.markdown(urlDat["standard"])
 			if wc > 0 and sc > 0:
 				if "semantic" in urlDat.keys() or urlDat["standard"]>95:
 
@@ -284,14 +284,14 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 							ndc = NDC(
 								remainingText, wc, sc
 							)  # calc NDC Index and Perctage Diff Words                                         #calc NDC index
-				if not "fre_unbiased" in urlDat.keys() and urlDat["standard"]>100:
-					meanv, total, hard_snippet = complexityAlongtheText(
-						corpus, chunk_length=256
-					)
-					urlDat["standard_unbiased"] = meanv
-					urlDat["standard"] = total
+				#if not "fre_unbiased" in urlDat.keys() and urlDat["standard"]>100:
+				meanv, total, hard_snippet = complexityAlongtheText(
+					corpus, chunk_length=256
+				)
+				urlDat["standard_unbiased"] = meanv
+					#urlDat["standard"] = total
 					#if this_is_science:
-					urlDat["hard_snippet"] = hard_snippet
+				urlDat["hard_snippet"] = hard_snippet
 
 						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
 						#urlDat["standard"] = ndc[0]
@@ -325,8 +325,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			#print(urlDat["tokens"])
 
 			if len(tokens):
-				if "semantic" in urlDat.keys():
-					urlDat["tokens"] = tokens
+				#if "semantic" in urlDat.keys():
+				urlDat["tokens"] = tokens
 
 				lexicon = textstat.lexicon_count(corpus, True)
 				urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))
