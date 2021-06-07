@@ -572,7 +572,7 @@ def main():
 	
             df_concat_art_new = pd.concat([rd_df,df_author_new])
             df_concat_art_new = pd.concat([df_concat_art_new,df_author])
-            df_concat_art_new = pd.concat([df_concat_art_new,art_df])
+            #df_concat_art_new = pd.concat([df_concat_art_new,art_df])
 	
             st.markdown("\n\n")
             st.markdown("\n\n")
@@ -584,7 +584,7 @@ def main():
             st.write(fig_art)
         	
             st.markdown("\n\n")
-            st.markdown("You can download the results of the search here:")
+            st.markdown("You can download these updated results of the search here:")
             st.markdown(
                 get_table_download_link_csv(df_author_new, author_name),
                 unsafe_allow_html=True,
