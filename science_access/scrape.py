@@ -32,7 +32,6 @@ from delver import Crawler
 C = Crawler()
 import requests
 import io
-import selenium
 
 
 from .crawl import convert_pdf_to_txt
