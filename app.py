@@ -503,17 +503,6 @@ def main():
             uniqueness.append(block["uniqueness"])
             sentiment.append(block["sp"])
         temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
-        if "reading_time" in ar[0].keys():
-            average_reading_time = [np.mean([r["reading_time"] for r in ar])]
-
-            st.markdown("""### Reading Time""")
-            st.markdown(
-                """There were {2} documents. The average reading time
-			per document for author {1} was {0} Minutes.
-			""".format(
-                    np.mean(average_reading_time), author_name, len(ar)
-                )
-            )
 
         st.header("Sentiment")
         st.markdown(
