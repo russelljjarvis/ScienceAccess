@@ -258,7 +258,7 @@ def main():
 
         st.markdown("-----")
 
-        st.header("Results for the mined text")
+        st.header("Results for the mined text. This first pass reviews only abstracts")
         if len(author_score) == 0:
             st.warning("Author Not Found")
 	
@@ -548,7 +548,7 @@ def main():
 
         st.markdown("\n")
         st.markdown("-----")
-        st.header("The search above included only abstracts. Here we conduct a slower but more rigorous search of the full text.")
+        st.header("The search above included results from the abstract text only. Here we conduct a slower but more rigorous search of the full text of each link.")
 	
 	
         if author_name == "previously selected name":
@@ -560,7 +560,7 @@ def main():
             full_ar_new, author_name, scraped_labels, author_score, art_df
         )
 	
-        st.markdown("Full texts are longer by nature, and may thus be harder to read. See here for comparison")
+        st.markdown("### Full texts are longer by nature, and may thus be harder to read. See here for comparison")
 
         if "df_author_new" in locals():
             scraped_labels_new.extend(scraped_labels)
@@ -569,7 +569,16 @@ def main():
             st.markdown("# Abstracts:")
             st.write(df_author)
 	
-        st.markdown("\n")
+            df_concat_art_new = pd.concat([rd_df,df_author_new])
+            df_concat_art_new = pd.concat([df_concat_art_new,art_df])
+	
+	    fig_art = px.box(
+            	df_concat_art_new, x="Origin", y="Reading_Level", points="all", color="Origin"
+            )
+            st.write(fig_art)
+        	
+	
+	st.markdown("\n")
         st.markdown("-----")
 		
         st.markdown(""" The tool we describe consists of a text analysis service and an author search service. These services were created by 
