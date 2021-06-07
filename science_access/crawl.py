@@ -9,10 +9,10 @@ import glob
 import requests
 import os
 
-#import selenium
+# import selenium
 
 # from pyvirtualdisplay import Display
-#from selenium import webdriver
+# from selenium import webdriver
 
 
 import pandas as pd
@@ -44,17 +44,17 @@ CWD = os.getcwd()
 from io import StringIO
 import io
 
-#USE_OA_DOI = False  # if true don't use google scholar use
+# USE_OA_DOI = False  # if true don't use google scholar use
 # crossref over OA_DOI
 
 
-#if not USE_OA_DOI:
+# if not USE_OA_DOI:
 #    from selenium.webdriver.support.ui import WebDriverWait
 #    from selenium.webdriver.support import expected_conditions as EC
 
-#from selenium.common.exceptions import NoSuchElementException
-#import os
-#from selenium import webdriver
+# from selenium.common.exceptions import NoSuchElementException
+# import os
+# from selenium import webdriver
 
 from time import sleep
 import numpy as np
@@ -153,6 +153,7 @@ def collect_hosted_files(url):
         links.append(check_out)
 
     return links
+
 
 """
 def get_driver():

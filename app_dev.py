@@ -528,10 +528,6 @@ def main():
 
         if "df_author_new" in locals():
             if "tables" in genre:
-                st.markdown(
-                    get_table_download_link_csv(df_author_new, author_name),
-                    unsafe_allow_html=True,
-                )
                 st.markdown("""### Here you can see""")
                 st.markdown(
                     """how full texts are longer by nature, longer texts are harder to read, the full text items
@@ -539,12 +535,21 @@ def main():
                 """
                 )
                 scraped_labels_new.extend(scraped_labels)
-                st.markdown("# Full texts")
+                st.markdown("# Full texts:")
                 st.write(df_author_new)
-                st.markdown("# Abstracts")
+                st.markdown("# Abstracts:")
                 st.write(df_author)
+            df_concat_art_new = pd.concat([df_author, df_author_new])
+            st.markdown("# Both:")
+            st.write(df_author)
+
+            st.markdown(
+                get_table_download_link_csv(df_author_new, author_name),
+                unsafe_allow_html=True,
+            )
 
             df_concat_art_new = pd.concat([art_df, df_author_new])
+
             if "scatter plots" in genre:
                 fig_art = px.box(
                     df_concat_art_new,
