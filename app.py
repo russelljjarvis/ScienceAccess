@@ -292,7 +292,7 @@ def main():
         df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
         #st.table(df_temp)  # , scraped_labels)
         # get_table_download_link_csv(df_author,author_name)
-        st.markdown("You can download the results of the search here:"
+        st.markdown("You can download the results of the search here:",
                 get_table_download_link_csv(df_author, author_name),
                 unsafe_allow_html=True,
         )
