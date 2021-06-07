@@ -300,7 +300,7 @@ def main():
         )
 	
         alias_list = semantic_scholar_alias(author_name)
-        if alias_list is None
+        if alias_list = type(None)
 	    continue
         else
             st.markdown("\n\n")
