@@ -560,6 +560,7 @@ def main():
             full_ar_new, author_name, scraped_labels, author_score, art_df
         )
 	
+        st.markdown("\n\n")
         st.markdown("### Full texts are longer by nature, and may thus be harder to read. See here for comparison")
 
         if "df_author_new" in locals():
@@ -578,6 +579,7 @@ def main():
             st.write(fig_art)
         	
 	
+        st.markdown("\n")
         st.markdown("\n")
         st.markdown("-----")
 		
