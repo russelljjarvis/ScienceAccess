@@ -189,13 +189,13 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
         urlDat = None
         try:
             response = requests.get(link)
-            st.markdown(link)
+            #st.markdown(link)
 
-            if r.status_code == 200:
+            #if r.status_code == 200:
 
-                urlDat = process(link)
-                st.markdown(urlDat.keys())
-                st.markdown(urlDat.values())
+            urlDat = process(link)
+            #st.markdown(urlDat.keys())
+            #st.markdown(urlDat.values())
 
         except:
             urlDat = None
@@ -338,47 +338,48 @@ def process(link):  # , REDIRECT=False):
     if link is None:
         return None
     if str("pdf") not in link:
-        try:
-            response = requests.get(link)
-            #crude_html = response.json()
-            #st.success("html hanged...")
+        #try:
+        buffered = ""
+        response = requests.get(link)
+        #crude_html = response.json()
+        #st.success("html hanged...")
 
-            #crude_html = html.unescape(response.text)
-            crude_html = response.text
-            soup = BeautifulSoup(crude_html, "html.parser")
-            for script in soup(["script", "style"]):
-                script.extract()  # rip it out
+        #crude_html = html.unescape(response.text)
+        crude_html = response.text
+        soup = BeautifulSoup(crude_html, "html.parser")
+        for script in soup(["script", "style"]):
+            script.extract()  # rip it out
 
-            text = soup.get_text()
-            lines = (
-                line.strip() for line in text.splitlines()
-            )  # break into lines and remove leading and trailing space on each
-            chunks = (
-                phrase.strip() for line in lines for phrase in line.split("  ")
-            )  # break multi-headlines into a line each
-            text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
-            buffered = str(text)
-        except:
-            buffered = ""
+        text = soup.get_text()
+        lines = (
+            line.strip() for line in text.splitlines()
+        )  # break into lines and remove leading and trailing space on each
+        chunks = (
+            phrase.strip() for line in lines for phrase in line.split("  ")
+        )  # break multi-headlines into a line each
+        text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
+        buffered = str(text)
+        #except:
+
 
         #st.success("html worked")
     else:
 
-        try:
-            #st.success("pdf hanged...")
+        #try:
+        #st.success("pdf hanged...")
 
-            filename = Path("this_pdf.pdf")
-            response = requests.get(link, timeout=10)
+        filename = Path("this_pdf.pdf")
+        response = requests.get(link, timeout=10)
 
-            filename.write_bytes(response.content)
+        filename.write_bytes(response.content)
 
-            reader = PyPDF2.PdfFileReader("this_pdf.pdf")
-            buffered = ""
-            for p in range(1, reader.numPages):
-                buffered += str(reader.getPage(p).extractText())
+        reader = PyPDF2.PdfFileReader("this_pdf.pdf")
+        buffered = ""
+        for p in range(1, reader.numPages):
+            buffered += str(reader.getPage(p).extractText())
 
-        except:
-            buffered = ""
+        #except:
+        #    buffered = ""
         #st.success("pdf worked")
 
     urlDat["link"] = link
@@ -396,7 +397,7 @@ def update_web_form(NAME, tns,fast=True):
             NAME, tns, more_links
         )
     else:
-        df, met, author_results = update_web_form_full_text(NAME, tns)
+        author_results, visited_urls = update_web_form_full_text(NAME, tns)
 
 
     ar = copy.copy(author_results)
@@ -413,11 +414,11 @@ def update_web_form_full_text(NAME, tns):
     #urls_to_visit = unpaywall_semantic_links(NAME, tns,fast=False)#, more_links)
     author_results, visited_urls = visit_link(NAME, tns)
     #author_results.extend(author_results_temp)
-    ar = copy.copy(author_results)
-    datax = filter_empty(ar)
-    met = metricss(ar)
-    df = pd.DataFrame(datax)
-    return df, met, author_results
+    #ar = copy.copy(author_results)
+    #datax = filter_empty(ar)
+    #met = metricss(ar)
+    #df = pd.DataFrame(datax)
+    return author_results, visited_urls
 
 
 """

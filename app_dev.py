@@ -294,7 +294,7 @@ def main():
     genre.append("tables")
     genre.append("pie charts")
     genre.append("word clouds")
-    genre.append("hard passages")
+    #genre.append("hard passages")
     genre.append("ART reference data")
 
     my_expander = st.sidebar.beta_expander("Code Information")
@@ -517,11 +517,15 @@ def main():
         author_name1 = st.radio("choose name",alias_list)
         if author_name == "No Choice":
             author_name = author_name1
-        full_ar = call_from_front_end(author_name, tns=9, fast=False)
-        scraped_labels, author_score = frame_to_lists(full_ar)
+        full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
+        st.markdown(full_ar_new)
+
+        scraped_labels, author_score = frame_to_lists(full_ar_new)
         df_author_new, merged_df = data_frames_from_scrape(
-            full_ar, author_name, scraped_labels, author_score, art_df
+            full_ar_new, author_name, scraped_labels, author_score, art_df
         )
+        st.table(df_author_new)
+
         if "df_author_new" in locals():
             if "tables" in genre:
                 push_frame_to_screen(df_author_new, scraped_labels)
