@@ -572,7 +572,7 @@ def main():
             df_concat_art_new = pd.concat([rd_df,df_author_new])
             df_concat_art_new = pd.concat([df_concat_art_new,art_df])
 	
-	    fig_art = px.box(
+            fig_art = px.box(
             	df_concat_art_new, x="Origin", y="Reading_Level", points="all", color="Origin"
             )
             st.write(fig_art)
