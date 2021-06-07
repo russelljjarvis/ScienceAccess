@@ -437,9 +437,11 @@ def main():
         giant_string = create_giant_strings(grab_set_auth,not_want_list)
         urlDat = text_proc(giant_string,urlDat={},verbose=False)
         show_author_alias(ar)
-
+        
+	
+        st.markdown("-----")
         clouds_by_big_words = True
-        if clouds_by_big_words:
+	if clouds_by_big_words:
             grab_set_auth = []
             for paper in ar:
                 if "semantic" in paper.keys():
