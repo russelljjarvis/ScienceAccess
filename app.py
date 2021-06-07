@@ -294,11 +294,11 @@ def main():
 		"""
        
         df_temp = copy.copy(df_author)
-            del df_temp["Origin"]
-            df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
-            st.table(df_temp)  # , scraped_labels)
-            # get_table_download_link_csv(df_author,author_name)
-            st.markdown(
+        del df_temp["Origin"]
+        df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
+        st.table(df_temp)  # , scraped_labels)
+        # get_table_download_link_csv(df_author,author_name)
+        st.markdown(
                 get_table_download_link_csv(df_author, author_name),
                 unsafe_allow_html=True,
         )
