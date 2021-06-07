@@ -561,7 +561,7 @@ def main():
         )
 	
         st.markdown("\n\n")
-        st.markdown("### Full texts are longer by nature, and may thus be harder to read. See here for comparison")
+        st.markdown("### Full texts are longer by nature, and may thus be harder to read. See here for comparison:")
 
         if "df_author_new" in locals():
             scraped_labels_new.extend(scraped_labels)
@@ -571,9 +571,12 @@ def main():
             st.write(df_author)
 	
             df_concat_art_new = pd.concat([rd_df,df_author_new])
-            df_concat_art_new = pd.concat([df_concat_art_new,art_df])
+            df_concat_art_new = pd.concat([df_concat_art_new,df_author])
+	    df_concat_art_new = pd.concat([df_concat_art_new,art_df])
 	
-            st.markdown("The boxplots in the figure below show data for the full text of the mined work relative to two other data sources.")
+            st.markdown("\n\n")
+            st.markdown("\n\n")
+            st.markdown("### The boxplots in the figure below show data for the full text and abstracts of the mined work relative to two other data sources.")
 		
             fig_art = px.box(
             	df_concat_art_new, x="Origin", y="Reading_Level", points="all", color="Origin"
