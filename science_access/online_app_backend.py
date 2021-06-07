@@ -168,7 +168,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     # for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
 
-    for d in tqdm(dois, title="visiting abstracts"):
+    for d in tqdm(dois, title="visiting links to extract text"):
         paper = sch.paper(d, timeout=8)
         urlDat = {}
         urlDat["semantic"] = True
