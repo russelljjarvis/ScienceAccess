@@ -200,11 +200,11 @@ def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    if len(visit_urls) > 50:
-        visit_urls = visit_urls[0:49]
-        st.warning("too many publications >40 truncating list")
+    #if len(visit_urls) > 50:
+        #visit_urls = visit_urls[0:49]
+        #st.warning("too many publications >40 truncating list")
     for index, link in enumerate(
-        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+        tqdm(visit_urls, title="Building suitable links.")
     ):
         urlDat = dask.delayed(process)(link)
         author_results.append(urlDat)
@@ -213,7 +213,7 @@ def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
         return author_results, visit_urls
     else:
         for index, link in enumerate(
-            tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+            tqdm(visit_urls, title="Visiting links to extract text.")
         ):
 
             urlDat = process(link)
