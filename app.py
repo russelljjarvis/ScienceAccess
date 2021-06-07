@@ -44,6 +44,9 @@ not_want_list.extend(
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
+from science_access.t_analysis import text_proc
+from science_access.online_app_backend import semantic_scholar_alias
+
 
 
 from science_access.enter_author_name import (
@@ -227,8 +230,6 @@ def clouds_big_words(sci_corpus):
 
 
 verbose = 0
-
-from science_access.t_analysis import text_proc
 
 def main():
     st.title("Search Reading Complexity of an Author")
