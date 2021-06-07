@@ -182,7 +182,9 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    """
+    if len(visit_urls)>30:
+        visit_urls = visit_urls[0:29]
+
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
@@ -192,16 +194,13 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
     if len(filter_empty(author_results)):
         return author_results,visit_urls
     else:
-    """
-    if len(visit_urls)>30:
-        visit_urls = visit_urls[0:29]
-    for index, link in enumerate(
-        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
-    ):
+        for index, link in enumerate(
+            tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+        ):
 
-        urlDat = process(link)
-        author_results.append(urlDat)
-    return author_results,visit_urls
+            urlDat = process(link)
+            author_results.append(urlDat)
+        return author_results,visit_urls
 
 def unpaywall_semantic_links(NAME, tns, fast=True):
     """
@@ -304,24 +303,22 @@ def process(link):  # , REDIRECT=False):
         #except:
 
 
-        #st.success("html worked")
     else:
 
-        #try:
-        #st.success("pdf hanged...")
+        try:
 
-        filename = Path("this_pdf.pdf")
-        response = requests.get(link, timeout=10)
+            filename = Path("this_pdf.pdf")
+            response = requests.get(link, timeout=10)
 
-        filename.write_bytes(response.content)
+            filename.write_bytes(response.content)
 
-        reader = PyPDF2.PdfFileReader("this_pdf.pdf")
-        buffered = ""
-        for p in range(1, reader.numPages):
-            buffered += str(reader.getPage(p).extractText())
+            reader = PyPDF2.PdfFileReader("this_pdf.pdf")
+            buffered = ""
+            for p in range(1, reader.numPages):
+                buffered += str(reader.getPage(p).extractText())
 
-        #except:
-        #    buffered = ""
+        except:
+            buffered = ""
         #st.success("pdf worked")
 
     urlDat["link"] = link
