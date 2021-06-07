@@ -441,7 +441,7 @@ def main():
 	
         st.markdown("-----")
         clouds_by_big_words = True
-	if clouds_by_big_words:
+        if clouds_by_big_words:
             grab_set_auth = []
             for paper in ar:
                 if "semantic" in paper.keys():
