@@ -293,7 +293,7 @@ def main():
 		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
 		"""
        
-         df_temp = copy.copy(df_author)
+        df_temp = copy.copy(df_author)
             del df_temp["Origin"]
             df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
             st.table(df_temp)  # , scraped_labels)
