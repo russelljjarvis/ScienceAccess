@@ -454,18 +454,27 @@ def main():
         exclusive = [i for i in grab_set_auth if i not in artset]
 	
         st.markdown("-----")
-        clouds_by_big_words = True
-        if clouds_by_big_words:
-            grab_set_auth = []
+        #clouds_by_big_words = True
+        #if clouds_by_big_words:
+        #    grab_set_auth = []
+        #    for paper in ar:
+        #        if "semantic" in paper.keys():
+        #            grab_set_auth.extend(paper["tokens"])
+        #    sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
+        #    try:
+        #        clouds_big_words(sci_corpus)
+        #    except:
+        #        pass
+
+	grab_set_auth = []
             for paper in ar:
                 if "semantic" in paper.keys():
                     grab_set_auth.extend(paper["tokens"])
             sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
-            try:
-                clouds_big_words(sci_corpus)
-            except:
-                pass
-
+            clouds_big_words(sci_corpus)
+	
+	
+	
         if verbose:
             st.text(sci_corpus)
         with shelve.open("fast_graphs_splash.p") as db:
@@ -524,6 +533,7 @@ def main():
 	
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
+        alias_list = semantic_scholar_alias(author_name)
         alias_list.insert(0, "previously selected name")
         author_name1 = st.radio("choose name", alias_list)
 	
