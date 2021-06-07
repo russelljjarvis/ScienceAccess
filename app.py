@@ -424,20 +424,34 @@ def main():
 		It may also help instill trust in text-mining results.
 		"""
 
+        #grab_setr = []
+        #grab_set_auth = []
+
+        #for paper in trainingDats:
+        #    grab_setr.extend(paper["tokens"])
+
+        #for paper in ar:
+        #    grab_set_auth.extend(paper["tokens"])
+        #artset = list(grab_setr)
+        #fig = fast_art_cloud(grab_set_auth)
+        #giant_string = create_giant_strings(grab_set_auth,not_want_list)
+        #urlDat = text_proc(giant_string,urlDat={},verbose=False)
+        #show_author_alias(ar)
+        
         grab_setr = []
         grab_set_auth = []
-
-        for paper in trainingDats:
-            grab_setr.extend(paper["tokens"])
-
+	
         for paper in ar:
             grab_set_auth.extend(paper["tokens"])
         artset = list(grab_setr)
+            # artset.extend(not_want_list)
+            # auth_set = grab_set_auth
+
         fig = fast_art_cloud(grab_set_auth)
-        giant_string = create_giant_strings(grab_set_auth,not_want_list)
-        urlDat = text_proc(giant_string,urlDat={},verbose=False)
-        show_author_alias(ar)
-        
+        for paper in trainingDats:
+            grab_setr.extend(paper["tokens"])
+	
+        exclusive = [i for i in grab_set_auth if i not in artset]
 	
         st.markdown("-----")
         clouds_by_big_words = True
