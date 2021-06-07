@@ -9,7 +9,7 @@ import glob
 import requests
 import os
 
-import selenium
+#import selenium
 
 # from pyvirtualdisplay import Display
 #from selenium import webdriver
