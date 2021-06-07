@@ -500,46 +500,46 @@ def main():
             clouds_big_words(sci_corpus)
         alias_list = semantic_scholar_alias(author_name)
 
-        my_expander = st.beta_expander("Full Text Score Re calculation")
-
-        ft = my_expander.radio("Do Full Text",("No","Yes"))
-        if ft=="Yes":
+        #my_expander = st.beta_expander("Full Text Score Re calculation")
+        #ft = my_expander.radio("Do Full Text",("Yes","No"))
+        #if ft=="Yes":
         #if "full text" in genre:
 
-            st.markdown("""## Conduct a slower but more thorough search...""")
+        st.markdown("""## Conduct a slower but more thorough search...""")
 
-            st.markdown(
-                """The exact search string match in literature search has an import relationship to the results.
-            Here are some different aliases this author may have published under:"""
-            )
-            #for al in alias_list:
-            #    st.markdown(al)
-            alias_list.insert(0,"No Choice")
-            author_name = st.radio("choose name",alias_list)
-            if author_name != "No Choice":
-                full_ar = call_from_front_end(author_name, tns=9, fast=False)
-                scraped_labels, author_score = frame_to_lists(full_ar)
-                df_author, merged_df = data_frames_from_scrape(
-                    full_ar, author_name, scraped_labels, author_score, art_df
+        st.markdown(
+            """The exact search string match in literature search has an import relationship to the results.
+        Here are some different aliases this author may have published under:"""
+        )
+        #for al in alias_list:
+        #    st.markdown(al)
+        alias_list.insert(0,"No Choice")
+        author_name1 = st.radio("choose name",alias_list)
+        if author_name == "No Choice":
+            author_name = author_name1
+        full_ar = call_from_front_end(author_name, tns=9, fast=False)
+        scraped_labels, author_score = frame_to_lists(full_ar)
+        df_author_new, merged_df = data_frames_from_scrape(
+            full_ar, author_name, scraped_labels, author_score, art_df
+        )
+        if "df_author_new" in locals():
+            if "tables" in genre:
+                push_frame_to_screen(df_author_new, scraped_labels)
+                st.markdown(
+                    get_table_download_link_csv(df_author_new, author_name),
+                    unsafe_allow_html=True,
                 )
 
-                if "tables" in genre:
-                    push_frame_to_screen(df_author, scraped_labels)
-                    st.markdown(
-                        get_table_download_link_csv(df_author, author_name),
-                        unsafe_allow_html=True,
-                    )
-
-                df_concat_art = pd.concat([rd_df, df_author])
-                if "scatter plots" in genre:
-                    fig_art = px.box(
-                        df_concat_art,
-                        x="Origin",
-                        y="Reading_Level",
-                        points="all",
-                        color="Origin",
-                    )
-                    st.write(fig_art)
+            df_concat_art_new = pd.concat([art_df, df_author_new])
+            if "scatter plots" in genre:
+                fig_art = px.box(
+                    df_concat_art_new,
+                    x="Origin",
+                    y="Reading_Level",
+                    points="all",
+                    color="Origin",
+                )
+                st.write(fig_art)
 
                 # push_frame_to_screen(df_author, scraped_labels))
 

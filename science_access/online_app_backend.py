@@ -89,7 +89,7 @@ def check_link(link):
 import dask
 from dask import delayed,compute
 
-def visit_link(NAME, tns, more_links):
+def visit_link(NAME, tns):#, more_links):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
@@ -113,7 +113,7 @@ def visit_link(NAME, tns, more_links):
     #for urlDat in author_results:
     #    st.markdown(urlDat)
 
-    return author_results, visit_urls
+    return author_results, visit_more_urls
 
 def semantic_scholar_alias(NAME):
     """
@@ -151,7 +151,9 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     author_results = []
     aliases = None
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    for d in dois:
+    #for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
+
+    for d in tqdm(dois,title="visiting abstracts"):
         paper = sch.paper(d, timeout=8)
         urlDat = {}
         urlDat["semantic"] = True
@@ -180,7 +182,42 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    visit_more_urls = []
+    #visit_more_urls = []
+    for index, link in enumerate(
+        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+    ):
+        urlDat = None
+        try:
+            response = requests.get(link)
+            st.markdown(link)
+
+            if r.status_code == 200:
+
+                urlDat = process(link)
+                st.markdown(urlDat.keys())
+                st.markdown(urlDat.values())
+
+        except:
+            urlDat = None
+        author_results.append(urlDat)
+    author_results = [
+        urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
+    ]
+    return author_results, visit_urls
+
+    """
+        st.markdown(response)
+        try:
+            st.markdown(response.text)
+
+        except:
+            pass
+        try:
+            #response = response.json()
+            st.markdown(response.values())
+            st.markdown(response.keys())
+        except:
+            pass
     for index, doi_ in enumerate(
         tqdm(dois, title="Text mining via API calls. Please wait.")
     ):
@@ -189,39 +226,45 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
             + str(doi_)
             + str("?email=russelljarvis@protonmail.com")
         )
+        #t.markdown(r)
         response = requests.get(r)
         response = response.json()
+        #st.markdown(response.values())
+        #st.markdown(response.keys())
         urlDat = None
-        urlDat = process(response)
 
-        #for p in author_papers["papers"]:
-
-        #records = p["records"][0]
-        if "doi" in visit_urls[index].keys():
-            visit_urls.append(records["doi"])
+        if "url" in response.keys():
+            res = response["url"]
+            visit_more_urls.append(res)
             urlDat = process(res)
+            st.markdown(urlDat)
 
-        if "url_for_pdf" in response.keys():
+        #elif "doi_url" in response.keys():
+        #    res = response["doi_url"]
+        #    visit_more_urls.append(res)
+
+        #    urlDat = process(res)
+
+        #elif "doi" in response.keys():
+        #    res = response["doi"]
+        #    visit_urls.append(res)
+        #    urlDat = process(res)
+
+        elif "url_for_pdf" in response.keys():
             res = response["url_for_pdf"]
             visit_more_urls.append(res)
 
             urlDat = process(res)
-        if "url_for_landing_page" in response.keys() and urlDat is None:
+        elif "url_for_landing_page" in response.keys():
             res = response["url_for_landing_page"]
             visit_more_urls.append(res)
             urlDat = process(res)
 
-        if "doi_url" in response.keys() and urlDat is None:
-            res = response["doi_url"]
-            visit_more_urls.append(res)
-
+        else:
             urlDat = process(res)
 
-        author_results.append(urlDat)
-    author_results = [
-        urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
-    ]
-    return author_results, visit_more_urls
+        #st.markdown(urlDat)
+    """
 
 
 def unpaywall_semantic_links(NAME, tns, fast=True):
@@ -235,7 +278,6 @@ def unpaywall_semantic_links(NAME, tns, fast=True):
         if fast:
             r0 = str("https://api.semanticscholar.org/") + str(doi_)
             visit_more_urls.append(r0)
-            #st.markdown(visit_more_urls[-1])
         if not fast:
 
             r = (
@@ -259,7 +301,6 @@ def unpaywall_semantic_links(NAME, tns, fast=True):
             if "doi_url" in response.keys():
                 res = response["doi_url"]
                 visit_more_urls.append(res)
-    #st.markdown(visit_more_urls)
     return visit_more_urls
 
 
@@ -297,25 +338,29 @@ def process(link):  # , REDIRECT=False):
     if link is None:
         return None
     if str("pdf") not in link:
-        response = requests.get(link)
-        #crude_html = response.json()
-        #st.success("html hanged...")
+        try:
+            response = requests.get(link)
+            #crude_html = response.json()
+            #st.success("html hanged...")
 
-        #crude_html = html.unescape(response.text)
-        crude_html =  response.text
-        soup = BeautifulSoup(crude_html, "html.parser")
-        for script in soup(["script", "style"]):
-            script.extract()  # rip it out
+            #crude_html = html.unescape(response.text)
+            crude_html = response.text
+            soup = BeautifulSoup(crude_html, "html.parser")
+            for script in soup(["script", "style"]):
+                script.extract()  # rip it out
 
-        text = soup.get_text()
-        lines = (
-            line.strip() for line in text.splitlines()
-        )  # break into lines and remove leading and trailing space on each
-        chunks = (
-            phrase.strip() for line in lines for phrase in line.split("  ")
-        )  # break multi-headlines into a line each
-        text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
-        buffered = str(text)
+            text = soup.get_text()
+            lines = (
+                line.strip() for line in text.splitlines()
+            )  # break into lines and remove leading and trailing space on each
+            chunks = (
+                phrase.strip() for line in lines for phrase in line.split("  ")
+            )  # break multi-headlines into a line each
+            text = "\n".join(chunk for chunk in chunks if chunk)  # drop blank lines
+            buffered = str(text)
+        except:
+            buffered = ""
+
         #st.success("html worked")
     else:
 
@@ -346,7 +391,6 @@ def process(link):  # , REDIRECT=False):
 def update_web_form(NAME, tns,fast=True):
     if fast:
         more_links = unpaywall_semantic_links(NAME, tns,fast=True)
-        #st.markdown(more_links)
 
         author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
             NAME, tns, more_links
@@ -366,8 +410,8 @@ def update_web_form_full_text(NAME, tns):
     #author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
     #    NAME, tns, more_links
     #)
-    urls_to_visit = unpaywall_semantic_links(NAME, tns,fast=False)#, more_links)
-    author_results, visited_urls = visit_link(NAME, tns, urls_to_visit)
+    #urls_to_visit = unpaywall_semantic_links(NAME, tns,fast=False)#, more_links)
+    author_results, visited_urls = visit_link(NAME, tns)
     #author_results.extend(author_results_temp)
     ar = copy.copy(author_results)
     datax = filter_empty(ar)
@@ -396,6 +440,7 @@ import pickle
 
 def ar_manipulation(ar: List = []):
     ar = [tl for tl in ar if tl is not None]
+    ar = [tl for tl in ar if type(tl) is type(dict())]
     ar = [tl for tl in ar if type(tl) is not type(str(""))]
     ar = [tl for tl in ar if "standard" in tl.keys()]
     with open("trainingDats.p", "rb") as f:
