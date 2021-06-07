@@ -299,10 +299,9 @@ def main():
                 unsafe_allow_html=True,
         )
 	
+	alias_list = None
         alias_list = semantic_scholar_alias(author_name)
-        if alias_list = type(None)
-	    continue
-        else
+        if alias_list is not None
             st.markdown("\n\n")
             st.markdown("Here are some other names we found with slightly different syntax")
             #alias_list.insert(0, "previously selected name")
