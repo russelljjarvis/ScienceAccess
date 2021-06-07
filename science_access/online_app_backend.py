@@ -168,7 +168,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     # for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
 
-    for d in tqdm(dois, title="Visiting links to extract text."):
+    for d in tqdm(dois, title="Visiting links to extract text from the abstract."):
         paper = sch.paper(d, timeout=8)
         urlDat = {}
         urlDat["semantic"] = True
@@ -213,7 +213,7 @@ def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
         return author_results, visit_urls
     else:
         for index, link in enumerate(
-            tqdm(visit_urls, title="Visiting links to extract text.")
+            tqdm(visit_urls, title="Visiting links to extract full text.")
         ):
 
             urlDat = process(link)
