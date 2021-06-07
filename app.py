@@ -573,11 +573,20 @@ def main():
             df_concat_art_new = pd.concat([rd_df,df_author_new])
             df_concat_art_new = pd.concat([df_concat_art_new,art_df])
 	
+            st.markdown("The boxplots in the figure below show data for the full text of the mined work relative to two other data sources.")
+		
             fig_art = px.box(
             	df_concat_art_new, x="Origin", y="Reading_Level", points="all", color="Origin"
             )
             st.write(fig_art)
         	
+            st.markdown("\n\n")
+            st.markdown("You can download the results of the search here:")
+            st.markdown(
+                get_table_download_link_csv(df_author_new, author_name),
+                unsafe_allow_html=True,
+            )
+	
 	
         st.markdown("\n")
         st.markdown("\n")
