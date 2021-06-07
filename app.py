@@ -476,18 +476,7 @@ def main():
                     "author_score": author_score,
                     "sci_corpus": sci_corpus,
                 }
-        st.markdown("\n")
-       
-        st.markdown("-----")
-        st.markdown("\n\n\n\n")
 
-        # sci_corpus = create_giant_strings(ar, not_want_list)
-        # bio_corpus = create_giant_strings(trainingDats, not_want_list)
-
-        # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
-        # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
-
-        st.markdown("\n")
         grab_setr = []
         grab_set1 = []
 
@@ -500,17 +489,14 @@ def main():
         artset.extend(not_want_list)
         autset = list(set(grab_set1))
         exclusive = [i for i in autset if i not in artset]
-        # inclusive = [i for i in autset if i in artset]
-        # st.markdown(
-        #    "### Concepts that differentiate {0} from other science".format(
-        #        author_name
-        #    )
-        # )
-        # exclusive = create_giant_strings(ar, exclusive)
+	
+	
+	
 
-        # fig = fast_art_cloud(exclusive)
-        # st.markdown("-----")
-
+        st.markdown("\n")
+        st.markdown("-----")
+        st.markdown("\n\n\n\n")
+	
         sentiment = []
         uniqueness = []
         for block in trainingDats:
@@ -541,7 +527,6 @@ def main():
         labels = [temp, "ART Corpus positive sentiment"]
         values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
 
-        # urlDat["reading_time"]
         fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
         st.write(fig)
 
@@ -550,7 +535,6 @@ def main():
 	
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
-        alias_list = semantic_scholar_alias(author_name)
         alias_list.insert(0, "previously selected name")
         author_name1 = st.radio("choose name", alias_list)
 	
