@@ -12,16 +12,16 @@ authors:
     affiliation: Previous PhD Neuroscience, Arizona State University
   - name: Patrick McGurrin
     affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
-  - name: Bradley G Lusk
-    affiliation: Science The Earth; Mesa, AZ 85201, USA
+    - name: Rebecca Featherston
+    affiliation: Monash University
   - name: Marc Skov Madsen
     affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted.
   - name: Shivam Bansal
     affiliation: Senior Data Scientist, H2O.ai
+  - name: Bradley G Lusk
+    affiliation: Science The Earth; Mesa, AZ 85201, USA
   - name: Elise King
     affiliation: Field Ecologist, University of Melbourne
-  - name: Rebecca Featherston
-    affiliation: Monash University
 
 date: April  2021
 Bibliography: paper.bib
@@ -74,6 +74,6 @@ Because a user can download results from the science accessibility app. The tool
 No one has an educational grade level corresponding to 80 or 100 years of education. The reading grade level doesn't directly map onto higher values of readability above 16 etc. Therefore the analogy of readability scores to highest level of education attainment has to be taken somewhat loosely.
 
 ### Reproducibility
-Although we agree with the established conclusion that the readability of science is declining over time[@Plavén-Sigray:2017], a complicating factor that needs to be addressed, the readability metric of choice is also changing over time. It is therefore very important to understand readability assessments of science historically and reproducible code workflows can assist with this. Although the code for the analysis the readability of science is decreasing over time is freely available on GitHub, it is not shareable in any meaningful way as it depends on python packages that are not supported in python3.
+Although we agree with the established conclusion that the readability of science is declining over time[@Plavén-Sigray:2017], a complicating factor that needs to be addressed is that, although the readability of science is increasing over time. the readability metric of choice is also changing over time. It is therefore important to understand readability assessments of science historically, the only way to achieve a long term historical understanding of readability in science, is to create (always) reproducible code workflows can assist with this. Although the code for the analysis [the Readability of Science is Decreasing over Time](https://github.com/wiheto/readabilityinscience) is freely available on GitHub, it is not shareable in any meaningful way as it depends on python packages that are not supported in python3, and the environment does not exist as a Docker container.
 
-Software dependencies can act as an impediment to reproducibility. To mitigate reproducibility difficulty caused by a constantly changing network of software dependencies we did two things. First, we deployed a [live version of the application](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py). Second, we created a Docker file and associated Docker container that acts as a self-documenting software environment clone. All code used for this tool can be found on GitHub, which can be run by downloading the github repository and then either building a docker container or running it using the terminal.
+Software dependencies can act as an impediment to reproducibility. To mitigate reproducibility difficulty caused by evolving software dependencies we did two things. First, we deployed a [live version of the application](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py). Second, we created a Docker file and associated Docker container that acts as a self-documenting software environment clone. All code used for this tool can be found on GitHub, which can be run by downloading the github repository and then either building a docker container or running it using the terminal.

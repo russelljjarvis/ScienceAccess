@@ -23,84 +23,7 @@ import streamlit as st
 #import dask
 import requests
 
-from .crawl import collect_pubs
 from .t_analysis import text_proc
-
-#if "DYNO" in os.environ:
-#    heroku = True
-#else:
-#    heroku = False
-
-#from selenium.webdriver.firefox.options import Options
-#from selenium.common.exceptions import NoSuchElementException
-#from selenium import webdriver
-
-#global driver
-
-"""
-def get_driver():
-
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--no-sandbox")
-    # driver = webdriver.Firefox(options=options)
-
-    try:
-        driver = webdriver.Firefox(options=options)
-        return driver
-    except:
-        try:
-            options.binary_location = "/app/vendor/firefox/firefox"
-            driver = webdriver.Firefox(options=options)
-            GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
-            driver = webdriver.Firefox(
-                options=options, executable_path=GECKODRIVER_PATH
-            )
-            return driver
-        except:
-            try:
-                chrome_options = webdriver.ChromeOptions()
-                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-                chrome_options.add_argument("--headless")
-                chrome_options.add_argument("--disable-dev-shm-usage")
-                chrome_options.add_argument("--no-sandbox")
-                driver = webdriver.Chrome(
-                    executable_path=os.environ.get("CHROMEDRIVER_PATH"),
-                    chrome_options=chrome_options,
-                )
-                return driver
-            except:
-                try:
-                    GECKODRIVER_PATH = str(os.getcwd()) + str("/geckodriver")
-                    options.binary_location = str("./firefox")
-                    driver = webdriver.Firefox(
-                        options=options, executable_path=GECKODRIVER_PATH
-                    )
-                    return driver
-                except:
-                    os.system(
-                        "wget wget https://ftp.mozilla.org/pub/firefox/releases/45.0.2/linux-x86_64/en-GB/firefox-45.0.2.tar.bz2"
-                    )
-                    os.system(
-                        "wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
-                    )
-                    os.system("tar -xf geckodriver-v0.26.0-linux64.tar.gz")
-                    os.system("tar xvf firefox-45.0.2.tar.bz2")
-                    GECKODRIVER_PATH = str(os.getcwd()) + str(
-                        "/geckodriver-v0.26.0-linux64"
-                    )
-                    options.binary_location = str(os.getcwd()) +str("/firefox")
-                    driver = webdriver.Firefox(
-                        options=options, executable_path=GECKODRIVER_PATH
-                    )
-                    return driver
-
-    return driver
-
-
-driver = get_driver()
-"""
 
 class tqdm:
     def __init__(self, iterable, title=None):
@@ -119,32 +42,6 @@ class tqdm:
             self.i += 1
             current_prog = self.i / self.length
             self.prog_bar.progress(current_prog)
-
-"""
-def author_to_affiliations(NAME):
-    response = requests.get("https://dissem.in/api/search/?authors=" + str(NAME))
-    author_papers = response.json()
-    visit_urls = []
-    coauthors = []
-    titles = []
-    affilations = {}
-    for p in author_papers["papers"]:
-        coauthors_ = p["authors"]
-        records = p["records"][0]
-        if "doi" in records.keys():
-            visit_urls.append(records["doi"])
-            try:
-                import crossref_commons.retrieval
-
-                doi_to_affil = crossref_commons.retrieval.get_publication_as_json(
-                    records["doi"]
-                )
-                key = stored["author"][0]["given"] + stored["author"][0]["family"]
-                affilations[key] = doi_to_affil["author"][0]["affiliation"]
-            except:
-                pass
-    return affilations
-"""
 
 def author_to_urls(NAME):
     """
@@ -172,7 +69,7 @@ def author_to_urls(NAME):
 
     visit_urls = [i for i in visit_urls if "FIGSHARE" not in i]
     visit_urls = [i for i in visit_urls if "figshare" not in i]
-    visit_urls = [i for i in visit_urls if "doi" in i]
+    #visit_urls = [i for i in visit_urls if "doi" in i]
     dois = []
 
     for link in visit_urls:
@@ -199,20 +96,22 @@ def visit_link(NAME, tns, more_links):
     """
 
     author_results = []
-    dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    visit_urls.extend(more_links)
+    #dois, coauthors, titles, visit_urls
+    author_results, visit_more_urls = visit_link_unpaywall(NAME)
+
+    #visit_urls.extend(more_links)
     #for index, link in enumerate(
     #    tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     #):
-    for i in visit_urls[0:tns]:
-        author_results.append(dask.delayed(check_link)(i))#.compute()
+    #for i in visit_urls[0:tns]:
+    #    author_results.append(dask.delayed(visit_link_unpaywall)(i))#.compute()
 
     #        author_results.append(urlDatTemp)
     author_results = [
         urlDat for urlDat in list(compute(author_results)) if not isinstance(urlDat, type(None))
     ]
-    for urlDat in author_results:
-        st.markdown(urlDat)
+    #for urlDat in author_results:
+    #    st.markdown(urlDat)
 
     return author_results, visit_urls
 
@@ -241,17 +140,6 @@ def semantic_scholar_alias(NAME):
                     if "aliases" in author.keys():
                         aliases = author["aliases"]
                         return aliases
-                    #for a in aliases:
-                    #    inv_alias_dict[a] = key
-                #pprint(inv_alias_dict)
-                #if not key in inv_alias_dict.keys():
-                #    inv_alias_dict[key] = key
-                #print(author.keys(), "keys")
-                #if "citationVelocity" in author.keys():
-                #    velocity[key] = author["citationVelocity"]
-    #inv_alias_dict = {v: k for k, v in inv_alias_dict.items()}
-    #return inv_alias_dict#, velocity
-
 
 import streamlit as st
 def visit_semantic_scholar_abstracts(NAME, tns, more_links):
@@ -266,9 +154,10 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     for d in dois:
         paper = sch.paper(d, timeout=8)
         urlDat = {}
+        urlDat["semantic"] = True
+
         if "url" in paper.keys():
             urlDat["link"] = paper["title"]
-        urlDat["semantic"] = True
         if aliases is None:
             if "aliases" in paper.keys():
                 urlDat["aliases"] = paper['aliases']
@@ -283,17 +172,8 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
 
     return author_results, visit_urls
 
-"""
-def get_aliases_and_papers(paper, NAME):
-    if "authors" in paper.keys():
-        for author_ in paper["authors"]:
-            if NAME in author_:
-                if "aliases" in author_.keys():
-                    aliases = author_["aliases"]
-    return aliases
-"""
 
-def visit_link_unpaywall(NAME, tns, visit_urls):
+def visit_link_unpaywall(NAME):#), tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
@@ -319,6 +199,7 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
         #records = p["records"][0]
         if "doi" in visit_urls[index].keys():
             visit_urls.append(records["doi"])
+            urlDat = process(res)
 
         if "url_for_pdf" in response.keys():
             res = response["url_for_pdf"]
@@ -328,6 +209,7 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
         if "url_for_landing_page" in response.keys() and urlDat is None:
             res = response["url_for_landing_page"]
             visit_more_urls.append(res)
+            urlDat = process(res)
 
         if "doi_url" in response.keys() and urlDat is None:
             res = response["doi_url"]
@@ -342,7 +224,7 @@ def visit_link_unpaywall(NAME, tns, visit_urls):
     return author_results, visit_more_urls
 
 
-def unpaywall_semantic_links(NAME, tns):
+def unpaywall_semantic_links(NAME, tns, fast=True):
     """
     inputs a URL that's full of publication orientated links, preferably the
     authors scholar page.
@@ -350,30 +232,34 @@ def unpaywall_semantic_links(NAME, tns):
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
     for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
-        r0 = str("https://api.semanticscholar.org/") + str(doi_)
-        visit_more_urls.append(r0)
+        if fast:
+            r0 = str("https://api.semanticscholar.org/") + str(doi_)
+            visit_more_urls.append(r0)
+            #st.markdown(visit_more_urls[-1])
+        if not fast:
 
-        r = (
-            str("https://api.unpaywall.org/v2/")
-            + str(doi_)
-            + str("?email=russelljarvis@protonmail")
-        )
-        response = requests.get(r)
-        response = response.json()
-        if "oa_locations" in response.keys():
-            res_list = response["oa_locations"]
-            for res in res_list:
-                if "url_for_pdf" in res.keys():
-                    res_ = res["url_for_pdf"]
-                    visit_more_urls.append(res_)
+            r = (
+                str("https://api.unpaywall.org/v2/")
+                + str(doi_)
+                + str("?email=russelljarvis@protonmail")
+            )
+            response = requests.get(r)
+            response = response.json()
+            if "oa_locations" in response.keys():
+                res_list = response["oa_locations"]
+                for res in res_list:
+                    if "url_for_pdf" in res.keys():
+                        res_ = res["url_for_pdf"]
+                        visit_more_urls.append(res_)
 
-        if "url_for_landing_page" in response.keys():
-            res = response["url_for_landing_page"]
-            visit_more_urls.append(res)
+            if "url_for_landing_page" in response.keys():
+                res = response["url_for_landing_page"]
+                visit_more_urls.append(res)
 
-        if "doi_url" in response.keys():
-            res = response["doi_url"]
-            visit_more_urls.append(res)
+            if "doi_url" in response.keys():
+                res = response["doi_url"]
+                visit_more_urls.append(res)
+    #st.markdown(visit_more_urls)
     return visit_more_urls
 
 
@@ -459,7 +345,8 @@ def process(link):  # , REDIRECT=False):
 
 def update_web_form(NAME, tns,fast=True):
     if fast:
-        more_links = unpaywall_semantic_links(NAME, tns)
+        more_links = unpaywall_semantic_links(NAME, tns,fast=True)
+        #st.markdown(more_links)
 
         author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
             NAME, tns, more_links
@@ -479,7 +366,7 @@ def update_web_form_full_text(NAME, tns):
     #author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
     #    NAME, tns, more_links
     #)
-    urls_to_visit = unpaywall_semantic_links(NAME, tns)#, more_links)
+    urls_to_visit = unpaywall_semantic_links(NAME, tns,fast=False)#, more_links)
     author_results, visited_urls = visit_link(NAME, tns, urls_to_visit)
     #author_results.extend(author_results_temp)
     ar = copy.copy(author_results)

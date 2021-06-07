@@ -154,7 +154,7 @@ def collect_hosted_files(url):
 
     return links
 
-
+"""
 def get_driver():
 
     from selenium.webdriver.firefox.options import Options
@@ -167,9 +167,7 @@ def get_driver():
 
 
 def collect_pubs(url):
-    """
-    Used for scholar which is only html
-    """
+    #Used for scholar which is only html
     # import needs to be inside function  to protect scope.
 
     driver = get_driver()
@@ -201,3 +199,4 @@ def collect_pubs(url):
     driver = None
     del driver
     return links
+"""
