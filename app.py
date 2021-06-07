@@ -301,7 +301,7 @@ def main():
 	
 	
         st.markdown("\n\n")
-        st.markdown("Here are some other names we found. Clicking an alternative will restart the search")
+        st.markdown("Here are some other names we found with slightly different syntax. Clicking an alternative will restart the search")
         alias_list = semantic_scholar_alias(author_name)
         #alias_list.insert(0, "previously selected name")
         author_name1 = st.radio("", alias_list)
@@ -548,7 +548,7 @@ def main():
 
         st.markdown("\n")
         st.markdown("-----")
-        st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
+        st.header("The search above included only abstracts. Here we conduct a slower but more rigorous search of the full text.")
 	
 	
         if author_name == "previously selected name":
@@ -560,6 +560,8 @@ def main():
             full_ar_new, author_name, scraped_labels, author_score, art_df
         )
 	
+        st.markdown("Full texts are longer by nature, and may thus be harder to read. See here for comparison")
+
         if "df_author_new" in locals():
             scraped_labels_new.extend(scraped_labels)
             st.markdown("# Full texts:")
