@@ -256,9 +256,9 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 		#if np.mean([len(t) for t in tokens]) > 50:
 		#	return {}
 		#tokens = [t for t in tokens if len(t) < 50]
-		if verbose:
-			st.text("token input")
-			st.text(tokens)
+		#if verbose:
+		#	st.text("token input")
+		#	st.text(tokens)
 		wc, sc, sylCount, remainingText, wordLen = countWordsSentSyl(
 			tokens, ignoreSingleSentences=1
 		)
@@ -291,7 +291,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 				urlDat["standard_unbiased"] = meanv
 					#urlDat["standard"] = total
 					#if this_is_science:
-				urlDat["hard_snippet"] = hard_snippet
+				if "semantic" in urlDat.keys() :
+					urlDat["hard_snippet"] = hard_snippet
 
 						# urlDat["fre"] = fre  # textstat.text_standard(corpus, float_output=True)
 						#urlDat["standard"] = ndc[0]
@@ -325,8 +326,8 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 			#print(urlDat["tokens"])
 
 			if len(tokens):
-				#if "semantic" in urlDat.keys():
-				urlDat["tokens"] = tokens
+				if "semantic" in urlDat.keys():
+					urlDat["tokens"] = tokens
 
 				lexicon = textstat.lexicon_count(corpus, True)
 				urlDat["uniqueness"] = len(set(tokens)) / float(len(tokens))

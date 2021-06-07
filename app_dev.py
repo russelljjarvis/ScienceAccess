@@ -527,14 +527,17 @@ def main():
 
         if "df_author_new" in locals():
             if "tables" in genre:
-                push_frame_to_screen(df_author_new, scraped_labels_new)
                 st.markdown(
                     get_table_download_link_csv(df_author_new, author_name),
                     unsafe_allow_html=True,
                 )
-
+                st.markdown("""### Here you can see how full texts are longer by nature, longer texts are harder to read, the full text items
+                by the same name having higher reading complexity
+                """)
                 scraped_labels_new.extend(scraped_labels)
                 df_author_new = pd.concat([df_author,df_author_new])
+                push_frame_to_screen(df_author_new, scraped_labels_new)
+
                 st.write(df_author_new)
 
             df_concat_art_new = pd.concat([art_df, df_author_new])
@@ -545,6 +548,7 @@ def main():
                     y="Reading_Level",
                     points="all",
                     color="Origin",
+                    labels="Web_Link",
                 )
                 st.write(fig_art)
 

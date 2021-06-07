@@ -174,7 +174,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
 
     return author_results, visit_urls
 
-
+from dask import compute
 def visit_link_unpaywall(NAME):#), tns, visit_urls):
     """
     inputs a URL that's full of publication orientated links, preferably the
@@ -182,91 +182,22 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    #visit_more_urls = []
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
-        urlDat = None
-        try:
-            response = requests.get(link)
-            #st.markdown(link)
-
-            #if r.status_code == 200:
+        urlDat = dask.delayed(process)(link)
+        author_results.append(urlDat)
+    author_results = list(dask.compute(author_results))
+    if len(filter_empty(author_results)):
+        return author_results,visit_urls
+    else:
+        for index, link in enumerate(
+            tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+        ):
 
             urlDat = process(link)
-            #st.markdown(urlDat.keys())
-            #st.markdown(urlDat.values())
-
-        except:
-            urlDat = None
-        author_results.append(urlDat)
-    #author_results = [
-    #    urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
-    #]
-    #st.markdown(author_results)
-    return author_results, visit_urls
-
-    """
-        st.markdown(response)
-        try:
-            st.markdown(response.text)
-
-        except:
-            pass
-        try:
-            #response = response.json()
-            st.markdown(response.values())
-            st.markdown(response.keys())
-        except:
-            pass
-    for index, doi_ in enumerate(
-        tqdm(dois, title="Text mining via API calls. Please wait.")
-    ):
-        r = (
-            str("https://api.unpaywall.org/v2/")
-            + str(doi_)
-            + str("?email=russelljarvis@protonmail.com")
-        )
-        #t.markdown(r)
-        response = requests.get(r)
-        response = response.json()
-        #st.markdown(response.values())
-        #st.markdown(response.keys())
-        urlDat = None
-
-        if "url" in response.keys():
-            res = response["url"]
-            visit_more_urls.append(res)
-            urlDat = process(res)
-            st.markdown(urlDat)
-
-        #elif "doi_url" in response.keys():
-        #    res = response["doi_url"]
-        #    visit_more_urls.append(res)
-
-        #    urlDat = process(res)
-
-        #elif "doi" in response.keys():
-        #    res = response["doi"]
-        #    visit_urls.append(res)
-        #    urlDat = process(res)
-
-        elif "url_for_pdf" in response.keys():
-            res = response["url_for_pdf"]
-            visit_more_urls.append(res)
-
-            urlDat = process(res)
-        elif "url_for_landing_page" in response.keys():
-            res = response["url_for_landing_page"]
-            visit_more_urls.append(res)
-            urlDat = process(res)
-
-        else:
-            urlDat = process(res)
-
-        #st.markdown(urlDat)
-    """
-
+            author_results.append(urlDat)
+        return author_results,visit_urls
 
 def unpaywall_semantic_links(NAME, tns, fast=True):
     """
@@ -338,6 +269,12 @@ def process(link):  # , REDIRECT=False):
 
     if link is None:
         return None
+    try:
+        response = requests.get(link)
+    except:
+        urlDat["link"] = link
+
+        return urlDat
     if str("pdf") not in link:
         #try:
         buffered = ""
@@ -402,14 +339,14 @@ def update_web_form(NAME, tns,fast=True):
         df = pd.DataFrame(datax)
         met = metricss(author_results)
     else:
-        author_results, visited_urls = update_web_form_full_text(NAME, tns)
+        author_results, visited_urls = visit_link(NAME, tns)
         df = pd.DataFrame(author_results)
         #st.write(df)
 
         met = metricss(author_results)
         #st.markdown(met)
     return df, met, author_results
-
+""""
 def update_web_form_full_text(NAME, tns):
     #more_links = unpaywall_semantic_links(NAME, tns)
     #author_results_temp, visit_urls_temp = visit_semantic_scholar_abstracts(
@@ -424,7 +361,7 @@ def update_web_form_full_text(NAME, tns):
     #df = pd.DataFrame(datax)
     return author_results, visited_urls
 
-
+"""
 """
 def enter_name_here(scholar_page, name, tns,fast=True):
     df0, datay, author_results0 = update_web_form_full_text(scholar_page, tns,fast=fast)
