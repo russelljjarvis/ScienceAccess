@@ -467,7 +467,7 @@ def main():
         #        pass
 
         grab_set_auth = []
-	    for paper in ar:
+            for paper in ar:
                 if "semantic" in paper.keys():
                     grab_set_auth.extend(paper["tokens"])
             sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
