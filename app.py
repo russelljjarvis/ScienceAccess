@@ -562,7 +562,7 @@ def main():
             full_ar_new, author_name, scraped_labels, author_score, art_df
         )
 	
-	if "df_author_new" in locals():
+        if "df_author_new" in locals():
              scraped_labels_new.extend(scraped_labels)
              st.markdown("# Full texts:")
              st.write(df_author_new)
