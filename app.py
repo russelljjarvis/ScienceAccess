@@ -301,7 +301,7 @@ def main():
 	
 	
         alias_list = semantic_scholar_alias(author_name)
-        if alias_list is not None
+        if len(alias_list) > 0
             st.markdown("\n\n")
             st.markdown("Here are some other names we found with slightly different syntax")
             #alias_list.insert(0, "previously selected name")
