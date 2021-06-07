@@ -572,7 +572,7 @@ def main():
 	
             df_concat_art_new = pd.concat([rd_df,df_author_new])
             df_concat_art_new = pd.concat([df_concat_art_new,df_author])
-	    df_concat_art_new = pd.concat([df_concat_art_new,art_df])
+            df_concat_art_new = pd.concat([df_concat_art_new,art_df])
 	
             st.markdown("\n\n")
             st.markdown("\n\n")
