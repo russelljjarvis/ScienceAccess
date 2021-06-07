@@ -200,9 +200,10 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
         except:
             urlDat = None
         author_results.append(urlDat)
-    author_results = [
-        urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
-    ]
+    #author_results = [
+    #    urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
+    #]
+    #st.markdown(author_results)
     return author_results, visit_urls
 
     """
@@ -403,10 +404,10 @@ def update_web_form(NAME, tns,fast=True):
     else:
         author_results, visited_urls = update_web_form_full_text(NAME, tns)
         df = pd.DataFrame(author_results)
-        st.write(df)
+        #st.write(df)
 
         met = metricss(author_results)
-        st.markdown(met)
+        #st.markdown(met)
     return df, met, author_results
 
 def update_web_form_full_text(NAME, tns):

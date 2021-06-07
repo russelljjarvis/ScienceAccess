@@ -513,26 +513,29 @@ def main():
         )
         #for al in alias_list:
         #    st.markdown(al)
-        alias_list.insert(0,"No Choice")
+        alias_list.insert(0,"previously selected name")
         author_name1 = st.radio("choose name",alias_list)
-        if author_name == "No Choice":
+        if author_name == "previously selected name":
             author_name = author_name1
         full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
-        st.markdown(full_ar_new)
+        #st.markdown(full_ar_new)
 
-        scraped_labels, author_score = frame_to_lists(full_ar_new)
+        scraped_labels_new, author_score = frame_to_lists(full_ar_new)
         df_author_new, merged_df = data_frames_from_scrape(
             full_ar_new, author_name, scraped_labels, author_score, art_df
         )
-        st.table(df_author_new)
 
         if "df_author_new" in locals():
             if "tables" in genre:
-                push_frame_to_screen(df_author_new, scraped_labels)
+                push_frame_to_screen(df_author_new, scraped_labels_new)
                 st.markdown(
                     get_table_download_link_csv(df_author_new, author_name),
                     unsafe_allow_html=True,
                 )
+
+                scraped_labels_new.extend(scraped_labels)
+                df_author_new = pd.concat([df_author,df_author_new])
+                st.write(df_author_new)
 
             df_concat_art_new = pd.concat([art_df, df_author_new])
             if "scatter plots" in genre:
