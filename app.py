@@ -520,31 +520,31 @@ def main():
         #exclusive = [i for i in autset if i not in artset]
 		
 
-        st.markdown("\n")
-        st.markdown("-----")
-        st.markdown("\n\n\n\n")
-        st.header("Sentiment")
+        #st.markdown("\n")
+        #st.markdown("-----")
+        #st.markdown("\n\n\n\n")
+        #st.header("Sentiment")
 	
-        sentiment = []
-        uniqueness = []
-        for block in trainingDats:
-            uniqueness.append(block["uniqueness"])
-            sentiment.append(block["sp"])
-        temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
+        #sentiment = []
+        #uniqueness = []
+        #for block in trainingDats:
+        #    uniqueness.append(block["uniqueness"])
+        #    sentiment.append(block["sp"])
+        #temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
 
-        st.markdown(
-            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
-					""".format(
-                temp, author_name
-            )
-        )
+        #st.markdown(
+        #    """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
+	#				""".format(
+        #        temp, author_name
+        #    )
+        #)
 
-        temp = "{0} positive sentiment".format(author_name)
-        labels = [temp, "ART Corpus positive sentiment"]
-        values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+        #temp = "{0} positive sentiment".format(author_name)
+        #labels = [temp, "ART Corpus positive sentiment"]
+        #values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
 
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
+        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #st.write(fig)
 
         st.markdown("\n")
         st.markdown("-----")
