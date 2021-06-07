@@ -568,7 +568,7 @@ def main():
             st.write(df_author_new)
             st.markdown("# Abstracts:")
 	    st.write(df_author)
-		
+	
         st.markdown("\n")
         st.markdown("-----")
 		
