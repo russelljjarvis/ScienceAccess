@@ -566,7 +566,7 @@ def main():
              scraped_labels_new.extend(scraped_labels)
              st.markdown("# Full texts:")
              st.write(df_author_new)
-             st.markdown("# Abstracts:")
+             st.markdown("# Abstracts:") 
 	     st.write(df_author)	
 		
         st.markdown("\n")
