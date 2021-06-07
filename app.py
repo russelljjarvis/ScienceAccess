@@ -565,9 +565,9 @@ def main():
 
         if "df_author_new" in locals():
             scraped_labels_new.extend(scraped_labels)
-            st.markdown("# Full texts:")
+            st.markdown("### Full texts:")
             st.write(df_author_new)
-            st.markdown("# Abstracts:")
+            st.markdown("### Abstracts:")
             st.write(df_author)
 	
             df_concat_art_new = pd.concat([rd_df,df_author_new])
