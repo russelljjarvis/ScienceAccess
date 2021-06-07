@@ -396,14 +396,15 @@ def update_web_form(NAME, tns,fast=True):
         author_results, visit_urls_temp = visit_semantic_scholar_abstracts(
             NAME, tns, more_links
         )
+        author_results = copy.copy(author_results)
+        datax = filter_empty(author_results)
+        df = pd.DataFrame(datax)
+
     else:
         author_results, visited_urls = update_web_form_full_text(NAME, tns)
+        df = pd.DataFrame(author_results)
 
-
-    ar = copy.copy(author_results)
-    datax = filter_empty(ar)
-    met = metricss(ar)
-    df = pd.DataFrame(datax)
+    met = metricss(author_results)
     return df, met, author_results
 
 def update_web_form_full_text(NAME, tns):
