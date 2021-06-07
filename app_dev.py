@@ -11,6 +11,7 @@ Author: [Patrick McGurrin](https://github.com/mcgurrgurr)\n
 
 """
 import nltk
+
 nltk.download("punkt")
 nltk.download("cmudict")
 
@@ -63,8 +64,7 @@ from science_access.enter_author_name import (
 from science_access.enter_author_name import (
     frame_to_lists,
     try_and_update_cache,
-    get_table_download_link,
-    extra_options,
+    extra_options
 )
 
 ##
@@ -83,17 +83,40 @@ rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
 rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
 max = np.max(rd_df["Reading_Level"])
-#rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-#rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
-# @st.cache(persist=True)
-def get_table_download_link_csv(df,author_name):
-    import base64
 
-    csv = df.to_csv().encode()
-    b64 = base64.b64encode(csv).decode()
-    href = f'<a href="data:file/csv;base64,{b64}" download="author_data.csv" target="_blank">Download csv file</a>'
-    return href
+def dontcleankeepdirty():
+    # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
+    rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+    rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
+
+
+import base64
+
+
+def get_table_download_link_csv(object_to_download, author_name):
+    """
+    https://discuss.streamlit.io/t/heres-a-download-function-that-works-for-dataframes-and-txt/4052
+    Generates a link to download the given object_to_download.
+
+    object_to_download (str, pd.DataFrame):  The object to be downloaded.
+    download_filename (str): filename and extension of file. e.g. mydata.csv, some_txt_output.txt
+    download_link_text (str): Text to display for download link.
+
+    Examples:
+    download_link(YOUR_DF, 'YOUR_DF.csv', 'Click here to download data!')
+    download_link(YOUR_STRING, 'YOUR_STRING.txt', 'Click here to download your text!')
+
+    """
+    # download_link_text = author_name
+    if isinstance(object_to_download, pd.DataFrame):
+        object_to_download = object_to_download.to_csv(index=False)
+
+    # some strings <-> bytes conversions necessary here
+    b64 = base64.b64encode(object_to_download.encode()).decode()
+    author_name = str("download file ")+author_name
+    return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
+
 
 with open("trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
@@ -105,10 +128,10 @@ art_df = art_df[(art_df["Reading_Level"] > 0)]
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
-        #flag = author_name in db
+        # flag = author_name in db
         flag = False
         if not flag:
-            ar = call_from_front_end(author_name,tns=10,fast=True)
+            ar = call_from_front_end(author_name, tns=10, fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
 
             if len(db.keys()) < 11:
@@ -158,19 +181,19 @@ def show_hardest_passage(ar: List = []) -> str:
     mean = np.mean([a["standard"] for i, a in enumerate(ar)])
 
     for i, a in enumerate(ar):
-            if "hard_snippet" in ar[i].keys():
-                if ar[i]["hard_snippet"] is not None:
-                    if a["standard"] >= largest and len(ar[i]["hard_snippet"]):
-                        largest = a["standard"]
-                        li = i
-                    if a["standard"] < smallest:
-                        smallest = a["standard"]
+        if "hard_snippet" in ar[i].keys():
+            if ar[i]["hard_snippet"] is not None:
+                if a["standard"] >= largest and len(ar[i]["hard_snippet"]):
+                    largest = a["standard"]
+                    li = i
+                if a["standard"] < smallest:
+                    smallest = a["standard"]
 
     for i, a in enumerate(ar):
         if a["standard"] == largest or a["standard"] > mean:
 
             if "hard_snippet" in ar[i].keys():
-                #if ar[i]["hard_snippet"] is not None:
+                # if ar[i]["hard_snippet"] is not None:
                 if ar[i]["hard_snippet"] is not None:
 
                     if len(ar[i]["hard_snippet"]):
@@ -179,20 +202,22 @@ def show_hardest_passage(ar: List = []) -> str:
                             not in ar[i]["hard_snippet"]
                         ):
 
-
                             st.markdown("---")
 
-                            st.error("### Some hard to read passage(s) from the authors work.")
+                            st.error(
+                                "### Some hard to read passage(s) from the authors work."
+                            )
                             from nltk import word_tokenize
 
                             tokens = word_tokenize(ar[i]["hard_snippet"])
-                            #string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
-                            #string_from_tokens2 = "..."
-                            #string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
+                            # string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
+                            # string_from_tokens2 = "..."
+                            # string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
 
-                            #string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
-                            string_from_tokens = create_giant_strings(tokens, not_want_list)
-
+                            # string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
+                            string_from_tokens = create_giant_strings(
+                                tokens, not_want_list
+                            )
 
                             st.warning(string_from_tokens)  # [0:200])
                             st.warning("...")  # [0:200])
@@ -219,13 +244,14 @@ verbose = 0
 from science_access.t_analysis import text_proc
 from science_access.online_app_backend import semantic_scholar_alias
 
+
 def main():
     st.title("Search Reading Complexity of an Author")
 
     author_name = st.text_input("Enter Author Name:")
-    #st.markdown(
+    # st.markdown(
     #    """Entering a middle initial followed by a period '.' may improve search accuracy."""
-    #)
+    # )
     st.markdown("-----")
 
     ar = None
@@ -239,13 +265,12 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
-    #st.sidebar.title("Options")
-    #st.sidebar.markdown("Options")
-    #ref_data = True
+    # st.sidebar.title("Options")
+    # st.sidebar.markdown("Options")
+    # ref_data = True
 
-
-    #custom = st.sidebar.radio("custom/default",("default","custom"))
-    #if custom == "custom":
+    # custom = st.sidebar.radio("custom/default",("default","custom"))
+    # if custom == "custom":
     #    genre = st.sidebar.multiselect(
     #        "Choose (multiple) Graph Layout/Options:",
     #        (
@@ -263,8 +288,8 @@ def main():
     #            "ReadabilityScienceDeclining reference data"
     #        ),
     #    )
-    #else:
-    genre=[]
+    # else:
+    genre = []
     genre.append("scatter plots")
     genre.append("tables")
     genre.append("pie charts")
@@ -278,17 +303,18 @@ def main():
         """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
 
-    my_expander.markdown("Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)")
-
     my_expander.markdown(
-	"""[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
+        "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
     )
 
+    my_expander.markdown(
+        """[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
+    )
 
     if "df_author" in locals():
 
         st.markdown("-----")
-        #st.markdown("#### Results")
+        # st.markdown("#### Results")
 
         st.markdown(
             """
@@ -298,53 +324,69 @@ def main():
             )
         )
 
-
-
         if "tables" in genre:
-            st.write(df_author)#, scraped_labels)
-            #get_table_download_link_csv(df_author,author_name)
-            st.markdown(get_table_download_link_csv(df_author,author_name), unsafe_allow_html=True)
+            df_temp = copy.copy(df_author)
+            del df_temp["Origin"]
+            df_temp.rename(columns={"Web Link":"Title"},inplace=True)
+            st.table(df_temp)  # , scraped_labels)
+            # get_table_download_link_csv(df_author,author_name)
+            st.markdown(
+                get_table_download_link_csv(df_author, author_name),
+                unsafe_allow_html=True,
+            )
 
-            st.markdown("""Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm. It contains negative values and is downward biased.
+            st.markdown(
+                """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm. It contains negative values and is downward biased.
             To illustrate the strength of the new approach. Toggle the data set to the ART corpus, which was analysed using the newer textstat standard algorithm.
-            """)
+            """
+            )
 
         if "scatter plots" in genre:
             ref_choice = st.radio("switch reference data",("ART Corpus","Readability of Science is Decreasing Over Time"))
-            if ref_choice == "ART Corpus":
-                df_concat_art = pd.concat([art_df,df_author])
-            else:
-                df_concat_art = pd.concat([rd_df,df_author])
-            #df0 = df_concat_art
+            df_concat_art = pd.concat([art_df, df_author])
+            df_concat_decline = pd.concat([rd_df, df_author])
 
-            fig_art = px.box(
-                df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-            )
+            if ref_choice == "ART Corpus":
+                fig_art = px.box(
+                    df_concat_art,
+                    x="Origin",
+                    y="Reading_Level",
+                    points="all",
+                    color="Origin",
+                )
+
+            else:
+
+                fig_art = px.box(
+                    df_concat_decline,
+                    x="Origin",
+                    y="Reading_Level",
+                    points="all",
+                    color="Origin",
+                )
             st.write(fig_art)
 
-
-
         alias_list = semantic_scholar_alias(author_name)
-        st.markdown("""To emphasize the importance of the exact search string and it's relationship to the results.
-        Here are some different aliases this author may have published under:""")
+        st.markdown(
+            """To emphasize the importance of the exact search string and it's relationship to the results.
+        Here are some different aliases this author may have published under:"""
+        )
         for al in alias_list:
             st.markdown(al)
         if "pie charts" in genre:
             temp = "{0} Summary Readability versus large sample of science".format(
                 author_name
-                )
+            )
             labels = [temp, "ART Corpus readability"]
             values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
             st.write(fig)
-
 
         # df_concat_art = pd.concat([art_df, df_author])
         # fig_art = px.box(
         #    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         # )
         # st.write(fig_art)
-
 
         st.markdown("-----")
 
@@ -416,7 +458,6 @@ def main():
 		"""
         )
 
-
         st.markdown("\n\n")
         st.markdown("-----")
         st.markdown(""" ### Word Frequency Word Cloud""")
@@ -434,7 +475,7 @@ def main():
             for paper in ar:
                 grab_set_auth.extend(paper["tokens"])
             artset = list(grab_setr)
-            #artset.extend(not_want_list)
+            # artset.extend(not_want_list)
             # auth_set = grab_set_auth
 
             fig = fast_art_cloud(grab_set_auth)
@@ -446,7 +487,9 @@ def main():
         if "hard passages" in genre:
             hard = show_hardest_passage(ar)
             if hard is not None:
-                st.markdown("""Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text""")
+                st.markdown(
+                    """Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text"""
+                )
                 st.markdown(hard)
 
         st.markdown("-----")
@@ -462,28 +505,33 @@ def main():
         if "full text" in genre:
             st.markdown("""## Conducting a slower but more thorough search...""")
 
-
-            full_ar = call_from_front_end(author_name,tns=9,fast=False)
+            full_ar = call_from_front_end(author_name, tns=9, fast=False)
             scraped_labels, author_score = frame_to_lists(full_ar)
             df_author, merged_df = data_frames_from_scrape(
                 full_ar, author_name, scraped_labels, author_score, art_df
             )
 
         if "tables" in genre:
-            push_frame_to_screen(df_author,scraped_labels)
-            st.markdown(get_table_download_link_csv(df_author,author_name), unsafe_allow_html=True)
+            push_frame_to_screen(df_author, scraped_labels)
+            st.markdown(
+                get_table_download_link_csv(df_author, author_name),
+                unsafe_allow_html=True,
+            )
 
-
-        df_concat_art = pd.concat([rd_df,df_author])
+        df_concat_art = pd.concat([rd_df, df_author])
         if "scatter plots" in genre:
             fig_art = px.box(
-                df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
+                df_concat_art,
+                x="Origin",
+                y="Reading_Level",
+                points="all",
+                color="Origin",
             )
             st.write(fig_art)
 
-            #push_frame_to_screen(df_author, scraped_labels))
+            # push_frame_to_screen(df_author, scraped_labels))
 
-            #st.write(full_ar)
+            # st.write(full_ar)
 
         if verbose:
             st.text(sci_corpus)
