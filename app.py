@@ -119,7 +119,7 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
         #flag = author_name in db
         flag = False
         if not flag:
-            ar = call_from_front_end(author_name)
+            ar = call_from_front_end(author_name, tns=10, fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
 
             ##
