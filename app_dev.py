@@ -327,7 +327,7 @@ def main():
         if "tables" in genre:
             df_temp = copy.copy(df_author)
             del df_temp["Origin"]
-            df_temp.rename(columns={"Web Link":"Title"},inplace=True)
+            df_temp.rename(columns={"Web_Link":"Title"},inplace=True)
             st.table(df_temp)  # , scraped_labels)
             # get_table_download_link_csv(df_author,author_name)
             st.markdown(
@@ -342,7 +342,11 @@ def main():
             )
 
         if "scatter plots" in genre:
-            ref_choice = st.radio("switch reference data",("ART Corpus","Readability of Science is Decreasing Over Time"))
+            ##
+            # memory intensive don't do:
+            # ref_choice = st.radio("switch reference data",("ART Corpus","Readability of Science is Decreasing Over Time"))
+            ##
+            ref_choice = "ART Corpus"
             df_concat_art = pd.concat([art_df, df_author])
             df_concat_decline = pd.concat([rd_df, df_author])
 
