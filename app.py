@@ -546,6 +546,25 @@ def main():
 
         st.markdown("\n")
         st.markdown("-----")
+	
+	st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
+	
+	full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
+
+        scraped_labels_new, author_score = frame_to_lists(full_ar_new)
+        df_author_new, merged_df = data_frames_from_scrape(
+            full_ar_new, author_name, scraped_labels, author_score, art_df
+	
+	scraped_labels_new.extend(scraped_labels)
+        st.markdown("# Full texts:")
+        st.write(df_author_new)
+        st.markdown("# Abstracts:")	
+
+		
+		
+        st.markdown("\n")
+        st.markdown("-----")
+		
         st.markdown(""" The tool we describe consists of a text analysis service and an author search service. These services were created by 
 	using or extending many existing Free and Open Source (FOS) tools, including streamlit, requests, WordCloud, TextStat, and The Natural Language Tool Kit. 
 	The tool has the capability to retrieve journal hosting links and journal article content (both html and PDF) from application programming interfaces 
