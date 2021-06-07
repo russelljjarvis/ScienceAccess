@@ -474,39 +474,46 @@ def main():
         sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
         clouds_big_words(sci_corpus)
 	
+        st.markdown("\n")
+        st.markdown("-----")
+        st.markdown("\n\n\n\n")
+        st.header("Hard Passages")
 	
-	
-        if verbose:
-            st.text(sci_corpus)
-        with shelve.open("fast_graphs_splash.p") as db:
-            if not author_name in db.keys():
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "author_score": author_score,
-                    "sci_corpus": sci_corpus,
-                }
+        hard = show_hardest_passage(ar)
+        if hard is not None:
+            st.markdown(
+                    """Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text"""
+            )
+            st.markdown(hard)
+		
+        #if verbose:
+        #    st.text(sci_corpus)
+        #with shelve.open("fast_graphs_splash.p") as db:
+        #    if not author_name in db.keys():
+        #        db[author_name] = {
+        #            "ar": ar,
+        #            "scraped_labels": scraped_labels,
+        #            "author_score": author_score,
+        #            "sci_corpus": sci_corpus,
+        #        }
 
-        grab_setr = []
-        grab_set1 = []
+        #grab_setr = []
+        #grab_set1 = []
 
-        for block in trainingDats:
-            grab_setr.extend(block["tokens"])
-        for block in ar:
-            grab_set1.extend(block["tokens"])
+        #for block in trainingDats:
+        #    grab_setr.extend(block["tokens"])
+        #for block in ar:
+        #    grab_set1.extend(block["tokens"])
 
-        artset = list(grab_setr)
-        artset.extend(not_want_list)
-        autset = list(set(grab_set1))
-        exclusive = [i for i in autset if i not in artset]
-	
-	
-	
+        #artset = list(grab_setr)
+        #artset.extend(not_want_list)
+        #autset = list(set(grab_set1))
+        #exclusive = [i for i in autset if i not in artset]
+		
 
         st.markdown("\n")
         st.markdown("-----")
         st.markdown("\n\n\n\n")
-	
         st.header("Sentiment")
 	
         sentiment = []
