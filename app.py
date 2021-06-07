@@ -578,7 +578,7 @@ def main():
             st.write(fig_art)
         	
 	
-	st.markdown("\n")
+        st.markdown("\n")
         st.markdown("-----")
 		
         st.markdown(""" The tool we describe consists of a text analysis service and an author search service. These services were created by 
