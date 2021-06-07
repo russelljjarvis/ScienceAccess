@@ -549,7 +549,7 @@ def main():
 	
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
-	full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
+        full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
 
         scraped_labels_new, author_score = frame_to_lists(full_ar_new)
         df_author_new, merged_df = data_frames_from_scrape(
