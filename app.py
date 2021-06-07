@@ -550,7 +550,7 @@ def main():
 	
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
-	alias_list = semantic_scholar_alias(author_name)
+        alias_list = semantic_scholar_alias(author_name)
         alias_list.insert(0, "previously selected name")
         author_name1 = st.radio("choose name", alias_list)
 	
