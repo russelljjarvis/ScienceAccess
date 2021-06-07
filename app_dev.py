@@ -114,7 +114,7 @@ def get_table_download_link_csv(object_to_download, author_name):
 
     # some strings <-> bytes conversions necessary here
     b64 = base64.b64encode(object_to_download.encode()).decode()
-    author_name = str("download file ")+author_name
+    author_name = str("download file ")+author_name+str(".csv")
     return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
 
 
@@ -515,23 +515,23 @@ def main():
                 full_ar, author_name, scraped_labels, author_score, art_df
             )
 
-        if "tables" in genre:
-            push_frame_to_screen(df_author, scraped_labels)
-            st.markdown(
-                get_table_download_link_csv(df_author, author_name),
-                unsafe_allow_html=True,
-            )
+            if "tables" in genre:
+                push_frame_to_screen(df_author, scraped_labels)
+                st.markdown(
+                    get_table_download_link_csv(df_author, author_name),
+                    unsafe_allow_html=True,
+                )
 
-        df_concat_art = pd.concat([rd_df, df_author])
-        if "scatter plots" in genre:
-            fig_art = px.box(
-                df_concat_art,
-                x="Origin",
-                y="Reading_Level",
-                points="all",
-                color="Origin",
-            )
-            st.write(fig_art)
+            df_concat_art = pd.concat([rd_df, df_author])
+            if "scatter plots" in genre:
+                fig_art = px.box(
+                    df_concat_art,
+                    x="Origin",
+                    y="Reading_Level",
+                    points="all",
+                    color="Origin",
+                )
+                st.write(fig_art)
 
             # push_frame_to_screen(df_author, scraped_labels))
 
