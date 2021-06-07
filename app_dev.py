@@ -43,6 +43,9 @@ not_want_list.extend(
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
+from science_access.t_analysis import text_proc
+from science_access.online_app_backend import semantic_scholar_alias
+
 
 
 from science_access.enter_author_name import (
@@ -241,9 +244,6 @@ def clouds_big_words(sci_corpus):
 
 verbose = 0
 
-from science_access.t_analysis import text_proc
-from science_access.online_app_backend import semantic_scholar_alias
-
 
 def main():
     st.title("Search Reading Complexity of an Author")
@@ -346,7 +346,8 @@ def main():
             # memory intensive don't do:
             # ref_choice = st.radio("switch reference data",("ART Corpus","Readability of Science is Decreasing Over Time"))
             ##
-            ref_choice = "ART Corpus"
+            #ref_choice = "ART Corpus"
+            ref_choice = "Decline"
             df_concat_art = pd.concat([art_df, df_author])
             df_concat_decline = pd.concat([rd_df, df_author])
 
@@ -359,7 +360,7 @@ def main():
                     color="Origin",
                 )
 
-            else:
+            if ref_choice == "Decline":
 
                 fig_art = px.box(
                     df_concat_decline,
