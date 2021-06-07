@@ -182,6 +182,7 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
+    """
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
@@ -191,13 +192,16 @@ def visit_link_unpaywall(NAME):#), tns, visit_urls):
     if len(filter_empty(author_results)):
         return author_results,visit_urls
     else:
-        for index, link in enumerate(
-            tqdm(visit_urls, title="Text mining via API calls. Please wait.")
-        ):
+    """
+    if visit_urls>23:
+        visit_urls = visit_urls[0:22]
+    for index, link in enumerate(
+        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+    ):
 
-            urlDat = process(link)
-            author_results.append(urlDat)
-        return author_results,visit_urls
+        urlDat = process(link)
+        author_results.append(urlDat)
+    return author_results,visit_urls
 
 def unpaywall_semantic_links(NAME, tns, fast=True):
     """
