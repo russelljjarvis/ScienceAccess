@@ -299,7 +299,7 @@ def main():
                 unsafe_allow_html=True,
         )
 	
-	alias_list = None
+        alias_list = None
         alias_list = semantic_scholar_alias(author_name)
         if alias_list is not None
             st.markdown("\n\n")
