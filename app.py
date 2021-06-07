@@ -292,11 +292,15 @@ def main():
         df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
         #st.table(df_temp)  # , scraped_labels)
         # get_table_download_link_csv(df_author,author_name)
-        st.markdown("You can download the results of the search here:",
+        st.markdown("\n\n")
+        st.markdown("You can download the results of the search here:")
+	st.markdown(
                 get_table_download_link_csv(df_author, author_name),
                 unsafe_allow_html=True,
         )
 	
+	
+        st.markdown("\n\n")
         st.markdown("Here are some other names we found. Clicking an alternative will restart the search")
         alias_list = semantic_scholar_alias(author_name)
         #alias_list.insert(0, "previously selected name")
