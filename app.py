@@ -219,13 +219,6 @@ def show_hardest_passage(ar: List = []) -> str:
 def clouds_big_words(sci_corpus):
     if len(sci_corpus) != 0:
 
-        st.header("Word Length Word Cloud")
-        st.markdown(
-            """
-		This word cloud is based on the largest words found in the mined text.
-		These words are likely culprits that hindered readability.
-		"""
-        )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
 
@@ -454,6 +447,14 @@ def main():
         exclusive = [i for i in grab_set_auth if i not in artset]
 	
         st.markdown("-----")
+        st.header("Word Length Word Cloud")
+        st.markdown(
+            """
+		This word cloud is based on the largest words found in the mined text.
+		These words are likely culprits that hindered readability.
+		"""
+        )
+	
         #clouds_by_big_words = True
         #if clouds_by_big_words:
         #    grab_set_auth = []
@@ -506,6 +507,8 @@ def main():
         st.markdown("-----")
         st.markdown("\n\n\n\n")
 	
+        st.header("Sentiment")
+	
         sentiment = []
         uniqueness = []
         for block in trainingDats:
@@ -513,7 +516,6 @@ def main():
             sentiment.append(block["sp"])
         temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
 
-        st.header("Sentiment")
         st.markdown(
             """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
 					""".format(
@@ -530,7 +532,6 @@ def main():
 
         st.markdown("\n")
         st.markdown("-----")
-	
         st.header("The search above included only abstratcs. Here we conduct a slower but more rigorous search of the full text.")
 	
         alias_list = semantic_scholar_alias(author_name)
