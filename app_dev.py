@@ -97,7 +97,7 @@ def dontcleankeepdirty():
 import base64
 
 
-def get_table_download_link_csv(object_to_download, author_name):
+def get_table_download_link_csv(object_to_download, author_name,corpus=False,full_text=False):
     """
     https://discuss.streamlit.io/t/heres-a-download-function-that-works-for-dataframes-and-txt/4052
     Generates a link to download the given object_to_download.
@@ -117,7 +117,13 @@ def get_table_download_link_csv(object_to_download, author_name):
 
     # some strings <-> bytes conversions necessary here
     b64 = base64.b64encode(object_to_download.encode()).decode()
-    author_name = str("download file ") + author_name + str(".csv")
+    if not corpus:
+        if full_text:
+            author_name = str("full text readability csv ") + author_name + str(".csv")
+        else:
+            author_name = str("readability csv ") + author_name + str(".csv")
+    else:
+        author_name = str("collated bag of words file ") + author_name + str(".csv")
     return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
 
 
@@ -481,7 +487,10 @@ def main():
                 grab_setr.extend(paper["tokens"])
 
             exclusive = [i for i in grab_set_auth if i not in artset]
+        #corpus = create_giant_strings(grab_set_auth,not_want_list)
 
+
+        st.markdown(get_table_download_link_csv(pd.DataFrame([{"tokens":grab_set_auth}]), author_name,corpus=True),unsafe_allow_html=True)
         if "hard passages" in genre:
             hard = show_hardest_passage(ar)
             if hard is not None:
@@ -535,9 +544,11 @@ def main():
                 by the same name having higher reading complexity
                 """
                 )
-                scraped_labels_new.extend(scraped_labels)
                 st.markdown("# Full texts:")
-                st.write(df_author_new)
+
+                push_frame_to_screen(df_author_new,scraped_labels_new)
+                scraped_labels_new.extend(scraped_labels)
+
                 st.markdown("# Abstracts:")
                 st.write(df_author)
             df_author_new = pd.concat([df_author, df_author_new])
@@ -545,11 +556,11 @@ def main():
             st.write(df_author_new)
 
             st.markdown(
-                get_table_download_link_csv(df_author_new, author_name),
+                get_table_download_link_csv(df_author_new, author_name,full_text=True),
                 unsafe_allow_html=True,
             )
 
-            df_concat_art_new = pd.concat([art_df, df_author_new])
+            df_concat_art_new = pd.concat([rd_df, df_author_new])
 
             if "scatter plots" in genre:
                 fig_art = px.box(

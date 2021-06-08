@@ -200,9 +200,10 @@ def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    if len(visit_urls) > 50:
-        visit_urls = visit_urls[0:49]
+    if len(visit_urls) > 30:
+        visit_urls = visit_urls[0:29]
         st.warning("too many publications >40 truncating list")
+    """
     for index, link in enumerate(
         tqdm(visit_urls, title="Text mining via API calls. Please wait.")
     ):
@@ -212,13 +213,14 @@ def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
     if len(filter_empty(author_results)):
         return author_results, visit_urls
     else:
-        for index, link in enumerate(
-            tqdm(visit_urls, title="Text mining via API calls. Please wait.")
-        ):
+    """
+    for index, link in enumerate(
+        tqdm(visit_urls, title="Text mining via API calls. Please wait.")
+    ):
 
-            urlDat = process(link)
-            author_results.append(urlDat)
-        return author_results, visit_urls
+        urlDat = process(link)
+        author_results.append(urlDat)
+    return author_results, visit_urls
 
 
 def unpaywall_semantic_links(NAME, tns, fast=True):
@@ -228,7 +230,7 @@ def unpaywall_semantic_links(NAME, tns, fast=True):
     """
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
     visit_more_urls = []
-    for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
+    for index, doi_ in enumerate(dois):#, title="Building Suitable Links")):
         if fast:
             r0 = str("https://api.semanticscholar.org/") + str(doi_)
             visit_more_urls.append(r0)
