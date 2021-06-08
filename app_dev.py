@@ -69,6 +69,7 @@ from science_access.enter_author_name import (
     try_and_update_cache,
     extra_options,
 )
+import base64
 
 ##
 # load in readabilityofscience delcining data set.
@@ -94,7 +95,6 @@ def dontcleankeepdirty():
     rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
 
-import base64
 
 
 def get_table_download_link_csv(object_to_download, author_name,corpus=False,full_text=False):
@@ -142,7 +142,6 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
         if not flag:
             ar = call_from_front_end(author_name, tns=10, fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
-
             if len(db.keys()) < 11:
                 db[author_name] = {
                     "ar": ar,
@@ -153,16 +152,13 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
             """
             We have evaluated this query recently, using cached results...
             """
-
             temp = db[author_name]
             ar = temp["ar"]
             if "standard_sci" in temp.keys():
                 author_score = temp["standard_sci"]
             if "author_score" in temp.keys():
                 author_score = temp["author_score"]
-
             scraped_labels = temp["scraped_labels"]
-
     return ar, author_score, scraped_labels
 
 
@@ -303,20 +299,22 @@ def main():
     # genre.append("hard passages")
     genre.append("ART reference data")
 
-    my_expander = st.sidebar.beta_expander("Code Information")
+    info_expander = st.sidebar.beta_expander("Code Information")
 
-    my_expander.markdown(
+    info_expander.markdown(
         """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
     )
 
-    my_expander.markdown(
+    info_expander.markdown(
         "Source Code: [Github](https://github.com/russelljjarvis/ScienceAccess)"
     )
 
-    my_expander.markdown(
+    info_expander.markdown(
         """[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
     )
 
+    data_expander = st.sidebar.beta_expander("Show Data Download Links")
+	show_links = data_expander.radio("Download Links?",("Yes","No"))
     if "df_author" in locals():
 
         st.markdown("-----")
@@ -336,10 +334,6 @@ def main():
             df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
             st.table(df_temp)  # , scraped_labels)
             # get_table_download_link_csv(df_author,author_name)
-            st.markdown(
-                get_table_download_link_csv(df_author, author_name),
-                unsafe_allow_html=True,
-            )
 
             st.markdown(
                 """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm. It contains negative values and is downward biased.
@@ -489,8 +483,6 @@ def main():
             exclusive = [i for i in grab_set_auth if i not in artset]
         #corpus = create_giant_strings(grab_set_auth,not_want_list)
 
-
-        st.markdown(get_table_download_link_csv(pd.DataFrame([{"tokens":grab_set_auth}]), author_name,corpus=True),unsafe_allow_html=True)
         if "hard passages" in genre:
             hard = show_hardest_passage(ar)
             if hard is not None:
@@ -554,11 +546,22 @@ def main():
             df_author_new = pd.concat([df_author, df_author_new])
             st.markdown("# Both:")
             st.write(df_author_new)
+			if show_links == "Yes":
+		        st.markdown(
+		            get_table_download_link_csv(df_author_new, author_name,full_text=True),
+		            unsafe_allow_html=True,
+		        )
+				st.markdown(
+				    get_table_download_link_csv(df_author, author_name),
+				    unsafe_allow_html=True,
+				)
 
-            st.markdown(
-                get_table_download_link_csv(df_author_new, author_name,full_text=True),
-                unsafe_allow_html=True,
-            )
+				st.markdown(
+					get_table_download_link_csv(pd.DataFrame([{"tokens":grab_set_auth}]), author_name,corpus=True),
+					unsafe_allow_html=True,
+				)
+
+
 
             df_concat_art_new = pd.concat([rd_df, df_author_new])
 
