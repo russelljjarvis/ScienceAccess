@@ -20,35 +20,17 @@ More accessible science writing allows knowledge to be more readily transferred 
 
 If you're interested in [contributing](https://github.com/mcgurrgurr/ScienceAccess/blob/master/CONTRIBUTING.md) or reviewing the [license](https://github.com/mcgurrgurr/ScienceAccess/blob/master/license.md) for use of this application, refer to our documentation to learn more. 
 
-# Running the application using Docker
-```
-git clone https://github.com/russelljjarvis/ScienceAccess.git
-cd ScienceAccess
-
-```
-### Build the container
-
-```
-docker build -t scienceaccess
-```
-### Run the container
-Scraping is memory and CPU intensive. Default docker resources aren't suitable for running the application.
-```
-docker run --shm-size=3gb --cpus=2.0 --memory=1g --memory-swap=1g --rm scienceaccess
-```
-This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
-
-
 
 # Running the application from the terminal
 
-# Install
+### Install
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
 sudo $(which python3) setup.py install
 ```
 
+### Run
 ```
 streamlit run app.py
 ```
