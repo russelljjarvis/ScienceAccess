@@ -1,6 +1,6 @@
 
 -----
-Title: Interactive Exploration of the Readability of Science Authors
+### TITLE: Interactive Exploration of the Readability of Science Authors
 
 tags:
 readability
@@ -8,7 +8,7 @@ science communication
 science writing
 Natural Language Processing
 
-authors:
+### AUTHORS
 - Russell Jarvis affiliation:Previous PhD Computational Neuroscience, Arizona State University
 - Patrick McGurrin affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
 - Bradley G Lusk affiliation: Science The Earth; Mesa, AZ 85201, USA
@@ -79,15 +79,6 @@ The mined text is compared against the ART Corpus and the collection derived fro
 
 Sentiment is also calculated to see overall how positive or negative the text scores are and to cross validate the overall approach. It is expected that science papers should have high objectivity and thus low sentiment polarity. Lastly, two word clouds are generated that show the most commonly used words and the largest words found in the mined text. 
 
-### Conclusions
-Here, we outline a new tool to analyze the complexity of a scientist’s work relative to other online-based text repositories. Rather than providing feedback as to the complexity of a single text as previous tools have done, the tool presented here shows the relative complexity across many texts from the same author, while also comparing the readability of the author’s body of work to a variety of other text types.
-
-Our work expands upon these current readability tools and metrics by better contextualizing the complexity of a written document’s text. Rather than providing feedback as to the complexity of a single text as these other tools do, the tool discussed here demonstrates the relative complexity across many texts from the same author , as well as provides comparison to a variety of other text types.
-
-The goal of this work, in contrast to previous work, is to apply a more data-driven approach to provide established academic authors with statistical insights into their body of published peer reviewed work. This will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text which allows scientists and other experts to use a data-driven approach to monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. By monitoring these readability metrics, scientists may be able to cater their writing to reach broader audiences, contributing to improved global communication and understanding of complex topics.
-
-This tool can apply more broadly to other fields, including philosophy, politics, law, and art. The focus of this work on scientific texts is driven by a desire to  increase public accessibility to scientific journal articles. However, some modifications might be required to fit these other fields (e.g. a web scrape from a different source). We encourage others to use the linked source code to hypothesize, explore, and implement changes to improve the tool and cater it for other fields.
-
 ### Scientific Application
 This work belongs to an emerging scientific discipline that seeks to quantify and understand scientific writing scientifically. Readability metrics have improved in robustness since the publication of the document "the Readability of Science is Declining over Time"[@Plavén-Sigray:2017]. The data set obtained from the Readability of Science is Declininig over Time[@Plavén-Sigray:2017] used a custom implementation of the Flesch reading grade metric, which sometimes yielded negative results, and may have under reported very high readability results. Given the availability of newer more robust readability metrics, it is important to test and calibrate the newer readability metrics against current scientific documents. Text-stats standard obtains a readability metric by averaging over 9 different readability metrics. The presence of frequency word clouds, and large word word-clouds, and hard passages make it possible to sanity check the text-stat metrics as applied to scientific documents. Word clouds act to validate higher readability metrics. Without the word clouds reading grades of >60 might give cause for doubt.
 
@@ -108,7 +99,16 @@ It is very rare for a single scientist to be a sole author of a publication sinc
 By sharing the project source code we hope that other scientists or engineers will help to expand and improve this tool. Improvements include filtering of mined texts and increasing the content that returns from the text analysis, such as a more detailed breakdown of the returned scientific text. For example, it should be possible to provide highlighted snippets of the most difficult to read passages for a given author.
 One other consideration is the idea of calculating the readability score for groups of co-authors. Since scientific documents are often co-authored, the output metrics from the scrapper tool reflect the contributions from a network of co-authors rather a single individual. Capturing the writing contributions of the author searched for and their closest co-authors may help to understand readability with a broader scope.
 
-### References
+### CONCLUSION
+Here, we outline a new tool to analyze the complexity of a scientist’s work relative to other online-based text repositories. Rather than providing feedback as to the complexity of a single text as previous tools have done, the tool presented here shows the relative complexity across many texts from the same author, while also comparing the readability of the author’s body of work to a variety of other text types.
+
+Our work expands upon these current readability tools and metrics by better contextualizing the complexity of a written document’s text. Rather than providing feedback as to the complexity of a single text as these other tools do, the tool discussed here demonstrates the relative complexity across many texts from the same author , as well as provides comparison to a variety of other text types.
+
+The goal of this work, in contrast to previous work, is to apply a more data-driven approach to provide established academic authors with statistical insights into their body of published peer reviewed work. This will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text which allows scientists and other experts to use a data-driven approach to monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. By monitoring these readability metrics, scientists may be able to cater their writing to reach broader audiences, contributing to improved global communication and understanding of complex topics.
+
+This tool can apply more broadly to other fields, including philosophy, politics, law, and art. The focus of this work on scientific texts is driven by a desire to  increase public accessibility to scientific journal articles. However, some modifications might be required to fit these other fields (e.g. a web scrape from a different source). We encourage others to use the linked source code to hypothesize, explore, and implement changes to improve the tool and cater it for other fields.
+
+### REFERENCES
 [1] Kutner, Mark, Elizabeth Greenberg, and Justin Baer. "A First Look at the Literacy of America's Adults in the 21st Century. NCES 2006-470." The National Center for Education Statistics. (2006).
 
 [2] Plavén-Sigray, Pontus, Granville James Matheson, Björn Christian Schiffler, and William Hedley Thompson. "The readability of scientific texts is decreasing over time." Elife. (2017).
