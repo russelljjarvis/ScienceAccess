@@ -49,24 +49,7 @@ Downloading the application from Github
 ```
 git clone https://github.com/russelljjarvis/ScienceAccess.git
 cd ScienceAccess
-```
-Building and running the container using Docker
-Ensure that you have Docker downloaded on your machine. Scraping is memory and CPU intensive. Default docker resources are not suitable for running the application and thus are manually defined in the code below.
-```
-docker build -t wcomplexity .
-docker run --shm-size=3gb --cpus=2.0 --memory=1g --memory-swap=1g --rm wcomplexity
-```
-This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
-Running the application from the terminal
-
-Manually download and install the Mozilla geckodriver binary.
-```
-which python3
-```
-Place output from above command in
-```
-sudo [output] setup.py install
-
+sudo $(wich python) setup.py install
 streamlit run app.py
 ```
 By either build method, the result is a web interface that prompts the user to enter an author name. After this, a text scraping process occurs.
