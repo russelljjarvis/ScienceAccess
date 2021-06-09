@@ -45,14 +45,8 @@ By entering an author’s name into the search box, a system of API calls and we
 ### Running the Application
 [Verifying the Application From a Live Host](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py)
 
-Downloading the application from Github
-```
-git clone https://github.com/russelljjarvis/ScienceAccess.git
-cd ScienceAccess
-sudo $(wich python) setup.py install
-streamlit run app.py
-```
-By either build method, the result is a web interface that prompts the user to enter an author name. After this, a text scraping process occurs.
+Source code and instructions for building the app are available on [Github](https://github.com/russelljjarvis/ScienceAccess.git).
+
 
 ### Results
 
