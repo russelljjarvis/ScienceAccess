@@ -1,4 +1,4 @@
-#selenium
+
 regex
 PyPDF2
 pycld2

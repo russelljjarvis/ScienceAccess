@@ -186,9 +186,6 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
 	return author_results, visit_urls
 
 
-from dask import compute
-
-
 def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
 	"""
 	inputs a URL that's full of publication orientated links, preferably the
