@@ -32,7 +32,7 @@ sudo $(which python3) setup.py install
 
 ### Run
 ```
-streamlit run app.py
+streamlit run app_dev.py
 ```
 
 
