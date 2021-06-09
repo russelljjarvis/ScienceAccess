@@ -23,7 +23,8 @@ authors:
   - name: Elise King
     affiliation: Field Ecologist, University of Melbourne
 
-date: April  2021
+date: June  2021
+
 Bibliography: paper.bib
 
 ### Summary
@@ -58,8 +59,6 @@ After querying an author, the readability of the author's work is evaluated by a
 | [Art Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/) | 18.68  | library of scientific papers published in The Royal Society of Chemistry |
 
 The mined text is compared against the ART Corpus and the collection derived from “the Readability of Science is Declining over time” as a side-by-side boxplot of readability scores, as well as data points of each individual readability score. This allows the user to easily review the readability of their work with regard to these other sources of scientific text. 
-
-Sentiment is also calculated to see overall how positive or negative the text scores are and to cross validate the overall approach. It is expected that science papers should have high objectivity and thus low sentiment polarity. Lastly, two word clouds are generated that show the most commonly used words and the largest words found in the mined text. 
 
 
 ### Scientific Application

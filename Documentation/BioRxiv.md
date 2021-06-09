@@ -1,6 +1,6 @@
 
 -----
-Title: Interactive Exploration in the Readability of Science Authors
+# Interactive Exploration of the Readability of Science Authors
 
 tags:
 readability
@@ -8,8 +8,8 @@ science communication
 science writing
 Natural Language Processing
 
-authors:
-- Russell Jarvis affiliation: Previous PhD Computational Neuroscience, Arizona State University
+### AUTHORS
+- Russell Jarvis affiliation:Previous PhD Computational Neuroscience, Arizona State University
 - Patrick McGurrin affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
 - Bradley G Lusk affiliation: Science The Earth; Mesa, AZ 85201, USA
 - Rebecca Featherston affiliation: Research Fellow Department of Social Work Monash University
@@ -18,7 +18,7 @@ authors:
 
 date: June 2021
 
-### Introduction
+### ABSTRACT
 To ensure that writing is accessible to the general population, authors must consider the length of written text, as well as sentence structure, vocabulary, and other language features [@Kutner:2006]. While popular magazines, newspapers, and other outlets purposefully cater language for a wide audience, there is a tendency for academic writing to use more complex, jargon-heavy language when publishing their work in scientific journals [@Plavén-Sigray:2017], a trend that is becoming more evident over time [@Ball:2017].
 
 In the age of growing science communication, this tendency for scientists to use more complex language can carry over when writing in more mainstream media, such as blogs and social media [@Yong 2010]. This can make public-facing material difficult to comprehend, undermining efforts to communicate scientific topics to the general public [@Shulman:2020]. Information outflow from scientists that is not accessible can contribute to a general misunderstanding of scientific concepts and a disconnect from scientists [@Schulman:2020]. To date over half (57%) of the world's population do not think they know much – if anything – about science. We speculated that this may be due to challenges when attempting to read and understand complex scientific topics.
@@ -45,37 +45,14 @@ By entering an author’s name into the search box, a system of API calls and we
 ### Running the Application
 [Verifying the Application From a Live Host](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py)
 
-Downloading the application from Github
-```
-git clone https://github.com/russelljjarvis/ScienceAccess.git
-cd ScienceAccess
-```
-Building and running the container using Docker
-Ensure that you have Docker downloaded on your machine. Scraping is memory and CPU intensive. Default docker resources are not suitable for running the application and thus are manually defined in the code below.
-```
-docker build -t wcomplexity .
-docker run --shm-size=3gb --cpus=2.0 --memory=1g --memory-swap=1g --rm wcomplexity
-```
-This last command will print two hyperlinks to the terminal. Click on the hyperlink that does not contain the substring local host. This will take you to the application in a browser window.
-Running the application from the terminal
+Source code and instructions for building the app are available on [Github](https://github.com/russelljjarvis/ScienceAccess.git).
 
-Manually download and install the Mozilla geckodriver binary.
-```
-which python3
-```
-Place output from above command in
-```
-sudo [output] setup.py install
-
-streamlit run app.py
-```
-By either build method, the result is a web interface that prompts the user to enter an author name. After this, a text scraping process occurs.
 
 ### Results
 
 After querying an author, the readability of the author's work is evaluated by a variety of pre-established metrics. We used  “text_standard,” a readability consensus score that returns the average estimated school grade level required to understand the text. Results from the dissem query include the number of documents on which the readability score was based. Each mined text is presented to the user in a table with an active link to the source text. This allows the user to verify that the results are correct and also provides individual readability scores for each text source.
 
-The mined text is compared against the ART Corpus as a side-by-side boxplot of readability scores, as well as data points of each individual readability score. This allows the user to easily review the readability of their work with regard to the ART Corpus.
+The mined text is compared against the ART Corpus and the collection derived from “the Readability of Science is Declining over time” as a side-by-side boxplot of readability scores, as well as data points of each individual readability score. This allows the user to easily review the readability of their work with regard to these other sources of scientific text. 
 
 
 
@@ -108,7 +85,16 @@ It is very rare for a single scientist to be a sole author of a publication sinc
 By sharing the project source code we hope that other scientists or engineers will help to expand and improve this tool. Improvements include filtering of mined texts and increasing the content that returns from the text analysis, such as a more detailed breakdown of the returned scientific text. For example, it should be possible to provide highlighted snippets of the most difficult to read passages for a given author.
 One other consideration is the idea of calculating the readability score for groups of co-authors. Since scientific documents are often co-authored, the output metrics from the scrapper tool reflect the contributions from a network of co-authors rather a single individual. Capturing the writing contributions of the author searched for and their closest co-authors may help to understand readability with a broader scope.
 
-### References
+### CONCLUSION
+Here, we outline a new tool to analyze the complexity of a scientist’s work relative to other online-based text repositories. Rather than providing feedback as to the complexity of a single text as previous tools have done, the tool presented here shows the relative complexity across many texts from the same author, while also comparing the readability of the author’s body of work to a variety of other text types.
+
+Our work expands upon these current readability tools and metrics by better contextualizing the complexity of a written document’s text. Rather than providing feedback as to the complexity of a single text as these other tools do, the tool discussed here demonstrates the relative complexity across many texts from the same author , as well as provides comparison to a variety of other text types.
+
+The goal of this work, in contrast to previous work, is to apply a more data-driven approach to provide established academic authors with statistical insights into their body of published peer reviewed work. This will expand upon current readability metrics by computing a more detailed and comparative look at the complexity of written text which allows scientists and other experts to use a data-driven approach to monitor the complexity of their writing relative to other text types, leading to the creation of more accessible online material. By monitoring these readability metrics, scientists may be able to cater their writing to reach broader audiences, contributing to improved global communication and understanding of complex topics.
+
+This tool can apply more broadly to other fields, including philosophy, politics, law, and art. The focus of this work on scientific texts is driven by a desire to  increase public accessibility to scientific journal articles. However, some modifications might be required to fit these other fields (e.g. a web scrape from a different source). We encourage others to use the linked source code to hypothesize, explore, and implement changes to improve the tool and cater it for other fields.
+
+### REFERENCES
 [1] Kutner, Mark, Elizabeth Greenberg, and Justin Baer. "A First Look at the Literacy of America's Adults in the 21st Century. NCES 2006-470." The National Center for Education Statistics. (2006).
 
 [2] Plavén-Sigray, Pontus, Granville James Matheson, Björn Christian Schiffler, and William Hedley Thompson. "The readability of scientific texts is decreasing over time." Elife. (2017).
@@ -128,4 +114,3 @@ One other consideration is the idea of calculating the readability score for gro
 [9] Gopen, George D., and Judith A. Swan. "The science of scientific writing." American Scientist 78, no. 6 (1990): 550-558.
 
 [10] Antonin Delpeuch; a3nm; Ryan Lahfa; translatewiki.net; Xia Li-yao; Steph. No.; Lucas Verney; Evarin; p4bl0; jibe-b; Stefan Beck; nemobis; Virgile Andreani; Martin Monperrus; Kenji Maillard; Jill-Jênn Vie; Golls, "Dissem Software" Zendo, 2019
-
