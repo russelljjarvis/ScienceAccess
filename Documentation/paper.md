@@ -12,7 +12,7 @@ authors:
     affiliation: Previous PhD Neuroscience, Arizona State University
   - name: Patrick McGurrin
     affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
-    - name: Rebecca Featherston
+  - name: Rebecca Featherston
     affiliation: Monash University
   - name: Marc Skov Madsen
     affiliation: Data, Models and Analytics Ninja. PhD, CFA, and Lead Data Scientist Developer at Ørsted.
