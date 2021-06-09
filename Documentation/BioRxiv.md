@@ -1,6 +1,6 @@
 
 -----
-### TITLE: Interactive Exploration of the Readability of Science Authors
+# Interactive Exploration of the Readability of Science Authors
 
 tags:
 readability
