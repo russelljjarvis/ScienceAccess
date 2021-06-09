@@ -9,7 +9,7 @@ science writing
 Natural Language Processing
 
 authors:
-- Russell Jarvis affiliation:Previous PhD Computational Neuroscience, Arizona State University
+- Russell Jarvis affiliation: Previous PhD Computational Neuroscience, Arizona State University
 - Patrick McGurrin affiliation: National Institute of Neurological Disorders and Stroke, National Institutes of Health
 - Bradley G Lusk affiliation: Science The Earth; Mesa, AZ 85201, USA
 - Rebecca Featherston affiliation: Research Fellow Department of Social Work Monash University
@@ -77,7 +77,7 @@ After querying an author, the readability of the author's work is evaluated by a
 
 The mined text is compared against the ART Corpus as a side-by-side boxplot of readability scores, as well as data points of each individual readability score. This allows the user to easily review the readability of their work with regard to the ART Corpus.
 
-Sentiment is also calculated to see overall how positive or negative the text scores are and to cross validate the overall approach. It is expected that science papers should have high objectivity and thus low sentiment polarity. Lastly, a word cloud shows the most commonly used words in the mined text.
+
 
 ### Conclusions
 Here, we outline a new tool to analyze the complexity of a scientist’s work relative to other online-based text repositories. Rather than providing feedback as to the complexity of a single text as previous tools have done, the tool presented here shows the relative complexity across many texts from the same author, while also comparing the readability of the author’s body of work to a variety of other text types.
@@ -128,3 +128,4 @@ One other consideration is the idea of calculating the readability score for gro
 [9] Gopen, George D., and Judith A. Swan. "The science of scientific writing." American Scientist 78, no. 6 (1990): 550-558.
 
 [10] Antonin Delpeuch; a3nm; Ryan Lahfa; translatewiki.net; Xia Li-yao; Steph. No.; Lucas Verney; Evarin; p4bl0; jibe-b; Stefan Beck; nemobis; Virgile Andreani; Martin Monperrus; Kenji Maillard; Jill-Jênn Vie; Golls, "Dissem Software" Zendo, 2019
+

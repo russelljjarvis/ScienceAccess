@@ -33,6 +33,7 @@ import plotly.express as px
 import pandas as pd
 from random import sample
 import click
+import base64
 from typing import List, Any
 
 from science_access.t_analysis import not_want_list
@@ -43,6 +44,9 @@ not_want_list.extend(
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
+from science_access.t_analysis import text_proc
+from science_access.online_app_backend import semantic_scholar_alias
+
 
 
 from science_access.enter_author_name import (
@@ -82,6 +86,27 @@ max = np.max(rd_df["Reading_Level"])
 rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
+
+def get_table_download_link_csv(object_to_download, author_name):
+    """
+    https://discuss.streamlit.io/t/heres-a-download-function-that-works-for-dataframes-and-txt/4052
+    Generates a link to download the given object_to_download.
+    object_to_download (str, pd.DataFrame):  The object to be downloaded.
+    download_filename (str): filename and extension of file. e.g. mydata.csv, some_txt_output.txt
+    download_link_text (str): Text to display for download link.
+    Examples:
+    download_link(YOUR_DF, 'YOUR_DF.csv', 'Click here to download data!')
+    download_link(YOUR_STRING, 'YOUR_STRING.txt', 'Click here to download your text!')
+    """
+    # download_link_text = author_name
+    if isinstance(object_to_download, pd.DataFrame):
+        object_to_download = object_to_download.to_csv(index=False)
+
+    # some strings <-> bytes conversions necessary here
+    b64 = base64.b64encode(object_to_download.encode()).decode()
+    author_name = str("download file ") + author_name + str(".csv")
+    return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
+
 with open("trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
     art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
@@ -91,14 +116,10 @@ bio_chem_level = art_df["Reading_Level"]
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
-<<<<<<< HEAD
-        flag = author_name in db
-=======
         #flag = author_name in db
->>>>>>> e2ea05c0a165b1c09d19fbcd485692376a4bef98
         flag = False
         if not flag:
-            ar = call_from_front_end(author_name)
+            ar = call_from_front_end(author_name, tns=10, fast=True)
             scraped_labels, author_score = frame_to_lists(ar)
 
             ##
@@ -136,7 +157,7 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
 
 def show_author_alias(ar: List = []) -> None:
     """
-    Synpopsis show the hardest to read passage from the entire query to the app user.
+    Synopsis show the hardest to read passage from the entire query to the app user.
     """
     largest = 0
     li = 0
@@ -149,7 +170,7 @@ def show_author_alias(ar: List = []) -> None:
 
 def show_hardest_passage(ar: List = []) -> str:
     """
-    Synpopsis show the hardest to read passage from the entire query to the app user.
+    Synopsis show the hardest to read passage from the entire query to the app user.
     """
     largest = 0
     li = 0
@@ -173,14 +194,23 @@ def show_hardest_passage(ar: List = []) -> str:
                         not in ar[i]["hard_snippet"]
                     ):
 
+
                         st.markdown("---")
 
-                        st.markdown("### A hard to read passage from the authors work.")
+                        st.error("### Some hard to read passage(s) from the authors work.")
                         from nltk import word_tokenize
 
                         tokens = word_tokenize(ar[i]["hard_snippet"])
+                        #string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
+                        #string_from_tokens2 = "..."
+                        #string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
 
-                        st.success(tokens[0:90])  # [0:200])
+                        #string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
+                        string_from_tokens = create_giant_strings(tokens, not_want_list)
+
+
+                        st.warning(string_from_tokens)  # [0:200])
+                        st.warning("...")  # [0:200])
 
                         return ar[i]
     return None
@@ -189,29 +219,21 @@ def show_hardest_passage(ar: List = []) -> str:
 def clouds_big_words(sci_corpus):
     if len(sci_corpus) != 0:
 
-        st.markdown("-----")
-        st.markdown(""" ### Word Length Word Cloud 	""")
-        st.markdown(
-            """
-		based on the largest words found in the mined text.
-		These words are likely culprits that hindered readability.
-		"""
-        )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
 
 verbose = 0
 
-
 def main():
     st.title("Search Reading Complexity of an Author")
-    st.sidebar.title("Explanations and Options")
+    st.sidebar.title("Code Information")
 
     author_name = st.text_input("Enter Author Name:")
     st.markdown(
-        """Entering a middle initial followed by ```.``` can change the accuracy of results."""
+        """Entering a middle initial may improve search accuracy."""
     )
-    st.markdown("""Eg. Sayali S```.``` Phatak""")
+    st.markdown("-----")
+
     ar = None
     if author_name:
         ar, author_score, scraped_labels = check_cache(author_name, verbose)
@@ -222,16 +244,24 @@ def main():
             ar, author_name, scraped_labels, author_score, art_df
         )
 
-    st.markdown("-----")
-    my_expander = st.sidebar.beta_expander("source code")
-
-    my_expander.markdown("[Github](https://github.com/russelljjarvis/ScienceAccess)")
-
+    
+    my_expander = st.sidebar.beta_expander("click to expand")
     my_expander.markdown(
-        """Note: Search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
+        """This search applies [dissemin](https://dissemin.readthedocs.io/en/latest/api.html) API backend."""
     )
+    
+    my_expander.markdown("[Source Code](https://github.com/mcgurrgurr/ScienceAccess) for this tool.")
+    my_expander.markdown("[Source Code](https://github.com/russelljjarvis/ScienceAccess) and [link to](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py) an expansion of this tool that is currently in progress.")
+    my_expander.markdown("[Rationale for this project.](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)")
 
     if "df_author" in locals():
+
+        st.markdown("-----")
+
+        st.header("Results for the mined text. This first pass reviews only abstracts")
+        if len(author_score) == 0:
+            st.warning("Author Not Found")
+	
         st.markdown(
             """
 			### There were a total number of {0} documents mined during this query.
@@ -239,24 +269,68 @@ def main():
                 len(df_author)
             )
         )
-
+	
         push_frame_to_screen(df_author, scraped_labels)
-
-        temp = "{0} Summary Readability versus large sample of science".format(
-            author_name
+	
+        st.markdown("\n\n")
+        st.markdown("\n\n")
+        
+        st.markdown(
+            """
+			### The average reading level of this work is {0}, with a median level of {2}.""".format(
+                round(np.mean(author_score)), 3,round(np.median(author_score)), 3
+            )
         )
-        labels = [temp, "ART Corpus readability"]
-        values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
-
-        #df_concat_art = pd.concat([rd_df, df_author])
+        
+        """
+		Reading level is comparable to grade level. 
+		For reference, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		"""
+       
+        df_temp = copy.copy(df_author)
+        del df_temp["Origin"]
+        df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
+        #st.table(df_temp)  # , scraped_labels)
+        # get_table_download_link_csv(df_author,author_name)
+        st.markdown("\n\n")
+        st.markdown("You can download the results of the search here:")
+        st.markdown(
+                get_table_download_link_csv(df_author, author_name),
+                unsafe_allow_html=True,
+        )
+	
+        #alias_list = None
+        #alias_list = semantic_scholar_alias(author_name)
+        #if alias_list is not None
+        #    st.markdown("\n\n")
+        #    st.markdown("Here are some other names we found with slightly different syntax")
+            #alias_list.insert(0, "previously selected name")
+        #    author_name1 = st.radio("", alias_list)
+	
+	
+        st.markdown("\n\n")
+        st.markdown("-----")
+	
+        st.header("Comparing the mined text to that of other academic texts")
+        st.markdown(""" The boxplots in the figure below show data for the mined text relative to two other data sources. The first source is [ART Corpus]  (https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), 
+	     an existing library of publicly licenced scientific papers. The second source is a [collection of academic papers](https://github.com/elifesciences-publications/readabilityinscience) 
+	     analyzed for readability in the paper entitled [The Readability of scientific texts is decreasing over time](https://elifesciences.org/articles/27725#s4). 
+	    """)
+        
         df_concat_art = pd.concat([rd_df,df_author])
-
+        df_concat_art = pd.concat([df_concat_art,art_df])
         fig_art = px.box(
             df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
         )
         st.write(fig_art)
+		    
+        #temp = "{0} Summary Readability versus large sample of science".format(
+        #    author_name
+        #)
+        #labels = [temp, "ART Corpus readability"]
+        #values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #st.write(fig)
 
         # df_concat_art = pd.concat([art_df, df_author])
         # fig_art = px.box(
@@ -266,27 +340,15 @@ def main():
 
         df0 = df_concat_art
 
-        st.markdown("-----")
 
-        if len(author_score) == 0:
-            st.warning("Author Not Found")
-        st.markdown(
-            """
-			### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(author_score)), 3
-            )
-        )
-
-        """
-		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
-		"""
         # try:
 
         st.markdown("\n")
+	
         if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to the ART Corpus.
+			### {0} was on average easier to read relative to the collection of papers in the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -295,103 +357,34 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to the ART Corpus.
+			### {0} was on average more difficult to read relative to the collection of papers in the ART Corpus.
 			""".format(
                     author_name
                 )
             )
+	
+        #st.markdown("\n")
 
-        st.markdown("\n\n")
-        st.markdown("-----")
-
-        st.markdown(""" ### Word Frequency Word Cloud""")
-        """
-		The word cloud is based on the most common words found in the mined text.
-		This word cloud is for humans to validate text mining work.
-		This is because the word cloud frequency often matches a writer's
-		own knowledge of concepts in their work, therefore it can to help
-		instill trust in text-mining results.
-		"""
-
-        grab_setr = []
-        grab_set_auth = []
-
-        for paper in trainingDats:
-            grab_setr.extend(paper["tokens"])
-
-        for paper in ar:
-            grab_set_auth.extend(paper["tokens"])
-        artset = list(grab_setr)
-        artset.extend(not_want_list)
-        # auth_set = grab_set_auth
-        # exclusive = [i for i in grab_set_auth if i not in artset]
-        fig = fast_art_cloud(grab_set_auth)
-        hard = show_hardest_passage(ar)
-        # if hard is not None:
-        # 	st.markdown(hard)
-        show_author_alias(ar)
-
-        st.markdown("-----")
-        # fast_art_cloud(sci_corpus)
-        clouds_by_big_words = True
-        if clouds_by_big_words:
-            grab_set_auth = []
-            for paper in ar:
-                if "semantic" in paper.keys():
-                    grab_set_auth.extend(paper["tokens"])
-            sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
-            try:
-                clouds_big_words(sci_corpus)
-            except:
-                pass
-
-        if verbose:
-            st.text(sci_corpus)
-        with shelve.open("fast_graphs_splash.p") as db:
-            if not author_name in db.keys():
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "author_score": author_score,
-                    "sci_corpus": sci_corpus,
-                }
-        st.markdown("\n")
-
-        if np.mean(author_score) < np.mean(bio_chem_level):
+        if np.mean(author_score) < np.mean(rd_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to the ART Corpus.
+			### {0} was on average easier to read relative to the collection of papers analyzed in The Readability of Scientific Texts is Decreasing Over Time.
 			""".format(
                     author_name
                 )
             )
 
-        if np.mean(author_score) >= np.mean(bio_chem_level):
+        if np.mean(author_score) >= np.mean(rd_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to the ART Corpus.
+			### {0} was on average more difficult to read relative to the collection of papers analyzed in The Readability of Scientific Texts is Decreasing Over Time.
 			""".format(
                     author_name
                 )
             )
-
-        st.markdown("-----")
-
-        st.markdown("-----")
-        st.markdown("\n\n")
-
-        st.markdown(
-            """
-		### The average reading level of the mined work was {0}.""".format(
-                round(np.mean(author_score)), 3
-            )
-        )
-
-        my_expander.markdown("# Information about Readability")
-
-        my_expander = st.beta_expander("Expand Information about Readability")
+	
+        my_expander = st.beta_expander("Expand for more information about readability")
         # if my_expander:
-        my_expander.markdown("""-----""")
 
         my_expander.markdown(
             """
@@ -413,8 +406,7 @@ def main():
 		"""
         )
 
-        my_expander.markdown("\n")
-        my_expander.markdown("-----")
+        my_expander.markdown("\n\n")
 
         my_expander.markdown(
             """
@@ -424,83 +416,200 @@ def main():
 		Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 		"""
         )
-        my_expander.markdown("-----")
-
+	
+	
+        st.markdown("\n\n")
+        st.markdown("-----")
+        st.header("Word Frequency Word Cloud")
         """
-		For comparison, [the average adult reads at an 8th grade reading level](http://nces.ed.gov/naal/pdf/2006470.pdf).
+		This word cloud is based on the most common words found in the mined text.
+		It is for humans to validate the text mining work, as the word cloud 
+		frequency often matches a writer's own knowledge of concepts in their work. 
+		It may also help instill trust in text-mining results.
 		"""
 
-        st.markdown("-----")
-        st.markdown("\n\n\n\n")
+        #grab_setr = []
+        #grab_set_auth = []
 
-        # sci_corpus = create_giant_strings(ar, not_want_list)
-        # bio_corpus = create_giant_strings(trainingDats, not_want_list)
+        #for paper in trainingDats:
+        #    grab_setr.extend(paper["tokens"])
 
-        # st.markdown('Here is one of the biggest words: {0}'''.format(str(big_words[0][0])))
-        # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
-
-        st.markdown("-----")
-        st.markdown("\n\n")
+        #for paper in ar:
+        #    grab_set_auth.extend(paper["tokens"])
+        #artset = list(grab_setr)
+        #fig = fast_art_cloud(grab_set_auth)
+        #giant_string = create_giant_strings(grab_set_auth,not_want_list)
+        #urlDat = text_proc(giant_string,urlDat={},verbose=False)
+        #show_author_alias(ar)
+        
         grab_setr = []
-        grab_set1 = []
-
-        for block in trainingDats:
-            grab_setr.extend(block["tokens"])
-        for block in ar:
-            grab_set1.extend(block["tokens"])
-
+        grab_set_auth = []
+	
+        for paper in ar:
+            grab_set_auth.extend(paper["tokens"])
         artset = list(grab_setr)
-        artset.extend(not_want_list)
-        autset = list(set(grab_set1))
-        exclusive = [i for i in autset if i not in artset]
-        # inclusive = [i for i in autset if i in artset]
-        # st.markdown(
-        #    "### Concepts that differentiate {0} from other science".format(
-        #        author_name
-        #    )
-        # )
-        # exclusive = create_giant_strings(ar, exclusive)
+            # artset.extend(not_want_list)
+            # auth_set = grab_set_auth
 
-        # fig = fast_art_cloud(exclusive)
-        # st.markdown("-----")
-
-        sentiment = []
-        uniqueness = []
-        for block in trainingDats:
-            uniqueness.append(block["uniqueness"])
-            sentiment.append(block["sp"])
-        temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
-        if "reading_time" in ar[0].keys():
-            average_reading_time = [np.mean([r["reading_time"] for r in ar])]
-
-            st.markdown("""### Reading Time""")
-            st.markdown(
-                """There were {2} documents. The average reading time
-			per document for author {1} was {0} Minutes.
-			""".format(
-                    np.mean(average_reading_time), author_name, len(ar)
-                )
-            )
-
-        st.markdown("""### Sentiment""")
+        fig = fast_art_cloud(grab_set_auth)
+        for paper in trainingDats:
+            grab_setr.extend(paper["tokens"])
+	
+        exclusive = [i for i in grab_set_auth if i not in artset]
+	
+        st.markdown("-----")
+        st.header("Word Length Word Cloud")
         st.markdown(
-            """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
-					""".format(
-                temp, author_name
-            )
+            """
+		This word cloud is based on the largest words found in the mined text.
+		These words are likely culprits that hindered readability.
+		"""
         )
+	
+        #clouds_by_big_words = True
+        #if clouds_by_big_words:
+        #    grab_set_auth = []
+        #    for paper in ar:
+        #        if "semantic" in paper.keys():
+        #            grab_set_auth.extend(paper["tokens"])
+        #    sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
+        #    try:
+        #        clouds_big_words(sci_corpus)
+        #    except:
+        #        pass
 
-        temp = "{0} positive sentiment".format(author_name)
-        labels = [temp, "ART Corpus positive sentiment"]
-        values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+        grab_set_auth = []
+        for paper in ar:
+            if "semantic" in paper.keys():
+                grab_set_auth.extend(paper["tokens"])
+        sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
+        clouds_big_words(sci_corpus)
+	
+        #st.markdown("\n")
+        #st.markdown("-----")
+        #st.markdown("\n\n\n\n")
+        #st.header("Hard Passages")
+	
+        #hard = show_hardest_passage(ar)
+        #if hard is not None:
+        #    st.markdown(
+        #            """Note this text is slightly more disjoint than the original form. NLP pre-processing means that numbers and chemical notation is stripped from the text"""
+        #    )
+        #    st.markdown(hard)
+		
+        #if verbose:
+        #    st.text(sci_corpus)
+        #with shelve.open("fast_graphs_splash.p") as db:
+        #    if not author_name in db.keys():
+        #        db[author_name] = {
+        #            "ar": ar,
+        #            "scraped_labels": scraped_labels,
+        #            "author_score": author_score,
+        #            "sci_corpus": sci_corpus,
+        #        }
 
-        # urlDat["reading_time"]
-        fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        st.write(fig)
+        #grab_setr = []
+        #grab_set1 = []
+
+        #for block in trainingDats:
+        #    grab_setr.extend(block["tokens"])
+        #for block in ar:
+        #    grab_set1.extend(block["tokens"])
+
+        #artset = list(grab_setr)
+        #artset.extend(not_want_list)
+        #autset = list(set(grab_set1))
+        #exclusive = [i for i in autset if i not in artset]
+		
+
+        #st.markdown("\n")
+        #st.markdown("-----")
+        #st.markdown("\n\n\n\n")
+        #st.header("Sentiment")
+	
+        #sentiment = []
+        #uniqueness = []
+        #for block in trainingDats:
+        #    uniqueness.append(block["uniqueness"])
+        #    sentiment.append(block["sp"])
+        #temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
+
+        #st.markdown(
+        #    """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
+	#				""".format(
+        #        temp, author_name
+        #    )
+        #)
+
+        #temp = "{0} positive sentiment".format(author_name)
+        #labels = [temp, "ART Corpus positive sentiment"]
+        #values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+
+        #fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #st.write(fig)
 
         st.markdown("\n")
+        st.markdown("-----")
+        st.header("The search above included results from the abstract text only. Here we conduct a slower but more rigorous search of the full text of each link.")
+	
+	
+        if author_name == "previously selected name":
+            author_name = author_name1
+        full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
 
+        scraped_labels_new, author_score = frame_to_lists(full_ar_new)
+        df_author_new, merged_df = data_frames_from_scrape(
+            full_ar_new, author_name, scraped_labels, author_score, art_df
+        )
+	
+        st.markdown("\n\n")
+        st.markdown("### Full texts are longer by nature, and may thus be harder to read. See here for comparison:")
 
+        if "df_author_new" in locals():
+            scraped_labels_new.extend(scraped_labels)
+            st.markdown("### Full texts:")
+            st.write(df_author_new)
+            st.markdown("### Abstracts:")
+            st.write(df_author)
+	
+            df_concat_art_new = pd.concat([rd_df,df_author_new])
+            #df_concat_art_new = pd.concat([df_concat_art_new,df_author])
+            df_concat_art_new = pd.concat([df_concat_art_new,art_df])
+	
+            st.markdown("\n\n")
+            st.markdown("\n\n")
+            st.markdown("### The boxplots in the figure below show data for the full text of the mined work relative to two other data sources.")
+		
+            fig_art = px.box(
+            	df_concat_art_new, x="Origin", y="Reading_Level", points="all", color="Origin"
+            )
+            st.write(fig_art)
+        	
+            st.markdown("\n\n")
+            st.markdown("You can download these updated results here:")
+            st.markdown(
+                get_table_download_link_csv(df_author_new, author_name),
+                unsafe_allow_html=True,
+            )
+	
+   
+	
+        st.markdown("\n")
+        st.markdown("\n")
+        st.markdown("-----")
+		
+        st.markdown(""" The tool we describe consists of a text analysis service and an author search service. These services were created by 
+	using or extending many existing Free and Open Source (FOS) tools, including streamlit, requests, WordCloud, TextStat, and The Natural Language Tool Kit. 
+	The tool has the capability to retrieve journal hosting links and journal article content (both html and PDF) from application programming interfaces 
+	(APIs) and journal hosting websites. Several python libraries helped with querying and gaining access to open science scholarly research documents, 
+	and python-requests were used to obtain content from three different APIs, including [dissemin](https://dissemin.readthedocs.io/en/latest/api.html), 
+	[semantic-scholar](https://www.semanticscholar.org/), and [unpaywall](https://unpaywall.org/faq).
+        """)
+	
+        st.markdown("\n")
+        st.markdown("\n")
+        st.markdown("License ScienceAccess is released under the CC BY-NC 2.0. By using ScienceAccess, you are agreeing to its usage terms.")
+	
 if __name__ == "__main__":
 
     main()
