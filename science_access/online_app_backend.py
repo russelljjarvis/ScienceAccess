@@ -2,29 +2,18 @@ from typing import List
 import PyPDF2
 from pathlib import Path
 import copy
-
 import semanticscholar as sch
-
 import os.path
-
-# import pdb
-# import pickle
 from collections import OrderedDict
-
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 import streamlit as st
-
 from time import sleep
 import numpy as np
-
 from tqdm.auto import tqdm
 import streamlit as st
-
-# import dask
 import requests
-
 from .t_analysis import text_proc
 
 
@@ -166,11 +155,18 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     author_results = []
     aliases = None
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    # for index, doi_ in enumerate(tqdm(dois, title="Building Suitable Links")):
 
     for d in tqdm(dois, title="visiting abstracts"):
         paper = sch.paper(d, timeout=8)
+
         urlDat = {}
+        if "citationVelocity" in paper.keys():
+            urlDat["citationVelocity"] = paper["citationVelocity"]
+        if "fieldsOfStudy" in paper.keys():
+            urlDat["fieldsOfStudy"] = paper["fieldsOfStudy"]
+        if "numCitedBy" in paper.keys():
+            urlDat["numCitedBy"] = paper["numCitedBy"]
+        #urlDat["influentialCitationCount"] = paper["influentialCitationCount"]
         urlDat["semantic"] = True
 
         if "url" in paper.keys():

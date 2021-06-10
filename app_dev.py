@@ -510,10 +510,6 @@ def main():
             clouds_big_words(sci_corpus)
         alias_list = semantic_scholar_alias(author_name)
 
-        # my_expander = st.beta_expander("Full Text Score Re calculation")
-        # ft = my_expander.radio("Do Full Text",("Yes","No"))
-        # if ft=="Yes":
-        # if "full text" in genre:
 
         st.markdown(
             """## Conduct a slower but more rigorous search of the full texts..."""
