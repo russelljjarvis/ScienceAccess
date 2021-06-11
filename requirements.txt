@@ -1,9 +1,10 @@
-#selenium
+
 regex
 PyPDF2
 pycld2
 nltk
-delver
+#delver
+cython
 pdfminer
 semanticscholar
 pyvirtualdisplay
