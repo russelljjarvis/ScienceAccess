@@ -163,7 +163,7 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
         if "citationVelocity" in paper.keys():
             urlDat["citationVelocity"] = paper["citationVelocity"]
         if "fieldsOfStudy" in paper.keys():
-            urlDat["fieldsOfStudy"] = paper["fieldsOfStudy"]
+            urlDat["fieldsOfStudy"] = str(paper["fieldsOfStudy"])
         if "numCitedBy" in paper.keys():
             urlDat["numCitedBy"] = paper["numCitedBy"]
         #urlDat["influentialCitationCount"] = paper["influentialCitationCount"]
