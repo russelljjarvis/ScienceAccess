@@ -249,7 +249,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
 
         # print(corpus)
         # print(this_is_science, "this_is_science")
-        urlDat["big_words"] = [word for word in corpus if len(word) > 40]
+        urlDat["big_words"] = [word for word in corpus if len(word) > 16]
         ignoreSingleSentences = 1
 
         corpus = cleanup_pretagger_all(corpus)
@@ -309,6 +309,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
                     # urlDat["standard"] = ndc[0]
                 # https://stackoverflow.com/questions/62492797/get-bibliography-list-and-its-count-from-text-python
             # print(urlDat["standard"])
+            """
             if "fre_unbiased" in urlDat.keys():
                 if (
                     urlDat["fre_unbiased"] < urlDat["standard"]
@@ -317,6 +318,7 @@ def text_proc(corpus, urlDat={}, WORD_LIM=30, verbose=False):
                     urlDat["standard"] = urlDat["fre_unbiased"]
                 if urlDat["standard"] == 0 and urlDat["fre_unbiased"] > 0:
                     urlDat["standard"] = urlDat["fre_unbiased"]
+            """
             # if (
             #    urlDat["standard_unbiased"] < urlDat["standard"]
             #    and urlDat["standard_unbiased"] > 0
