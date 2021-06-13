@@ -554,7 +554,9 @@ def main():
                     ['', 'Test Statistic', 'p-value'],
                     ['Sample Data', twosample_results[0], twosample_results[1]]
                 ]
-
+                #import plotly.plotly as py
+                #import plotly.graph_objs as go
+                from plotly.tools import FigureFactory as FF
                 twosample_table = FF.create_table(matrix_twosample, index=True)
                 st.write(twosample_table)
                 #py.iplot(twosample_table, filename='twosample-table')
