@@ -73,7 +73,7 @@ import base64
 ##
 # load in readabilityofscience delcining data set.
 ##
-rd_df = pd.read_csv("Figure4_SourceData1.csv")
+rd_df = pd.read_csv("data/Figure4_SourceData1.csv")
 
 rd_df.rename(
     columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
@@ -126,7 +126,7 @@ def get_table_download_link_csv(
     return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
 
 
-with open("trainingDats.p", "rb") as f:
+with open("data/trainingDats.p", "rb") as f:
     trainingDats = pickle.load(f)
     art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
@@ -135,7 +135,7 @@ bio_chem_level = art_df["Reading_Level"]
 
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
-    with shelve.open("fast_graphs_splash.p") as db:
+    with shelve.open("data/fast_graphs_splash.p") as db:
         # flag = author_name in db
         flag = False
         if not flag:
@@ -312,8 +312,6 @@ def main():
         """[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
     )
 
-    data_expander = st.sidebar.beta_expander("Show Data Download Links")
-    show_links = data_expander.radio("Download Links?", ("Yes", "No"))
     if "df_author" in locals():
 
         st.markdown("-----")
@@ -545,6 +543,27 @@ def main():
             df_author_new = pd.concat([df_author, df_author_new])
             st.markdown("# Both:")
             st.write(df_author_new)
+            #show_links == "Yes"
+
+            ttest_expander = st.beta_expander("Show ttest")
+            show_ttest = ttest_expander.radio("ttest?", ("Yes", "No"))
+            if show_ttest:
+                twosample_results = scipy.stats.ttest_ind(bio_chem_level, author_score)
+
+                matrix_twosample = [
+                    ['', 'Test Statistic', 'p-value'],
+                    ['Sample Data', twosample_results[0], twosample_results[1]]
+                ]
+
+                twosample_table = FF.create_table(matrix_twosample, index=True)
+                st.write(twosample_table)
+                #py.iplot(twosample_table, filename='twosample-table')
+
+
+            data_expander = st.beta_expander("Show Data Download Links")
+            show_links = data_expander.radio("Download Links?", ("Yes", "No"))
+
+
             if show_links == "Yes":
                 st.markdown(
                     get_table_download_link_csv(
