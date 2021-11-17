@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "MarcSkovMadsen",
+      "name": "Marc Skov Madsen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42288570?v=4",
+      "profile": "http://datamodelsanalytics.com",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ScienceAccess",
+  "projectOwner": "russelljjarvis",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
