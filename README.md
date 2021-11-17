@@ -1,6 +1,6 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <p align="center">
@@ -52,6 +52,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="http://datamodelsanalytics.com"><img src="https://avatars.githubusercontent.com/u/42288570?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marc Skov Madsen</b></sub></a><br /><a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=MarcSkovMadsen" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mcgurrgurr"><img src="https://avatars.githubusercontent.com/u/34006725?v=4?s=100" width="100px;" alt=""/><br /><sub><b>pmcg</b></sub></a><br /><a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=mcgurrgurr" title="Code">💻</a> <a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=mcgurrgurr" title="Documentation">📖</a> <a href="#ideas-mcgurrgurr" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-mcgurrgurr" title="Design">🎨</a> <a href="#infra-mcgurrgurr" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
