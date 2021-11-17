@@ -13,6 +13,19 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mcgurrgurr",
+      "name": "pmcg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/34006725?v=4",
+      "profile": "https://github.com/mcgurrgurr",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "design",
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
