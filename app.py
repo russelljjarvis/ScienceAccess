@@ -80,6 +80,13 @@ rd_df.rename(
 )
 
 rd_df = rd_df[["Reading_Level", "Origin"]]
+def dontcleankeepdirty(rd_df):
+    # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
+    rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+    rd_df = rd_df[(rd_df["Reading_Level"] >= 10)]
+    return rd_df
+rd_df=dontcleankeepdirty(rd_df)
+
 
 rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
 
@@ -87,12 +94,6 @@ rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
 max = np.max(rd_df["Reading_Level"])
 
-
-def dontcleankeepdirty(rd_df):
-    # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
-    rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-    rd_df = rd_df[(rd_df["Reading_Level"] >= 10)]
-    return rd_df
 
 
 def get_table_download_link_csv(
@@ -323,7 +324,6 @@ def main():
             ##
             # ref_choice = "ART Corpus"
             #ref_choice = "Decline"
-            rd_df=dontcleankeepdirty(rd_df)
             df_concat_art = pd.concat([art_df, df_author])
             df_concat_art = pd.concat([rd_df, df_concat_art])
 
