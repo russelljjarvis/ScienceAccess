@@ -91,7 +91,7 @@ max = np.max(rd_df["Reading_Level"])
 def dontcleankeepdirty():
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-    rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
+    rd_df = rd_df[(rd_df["Reading_Level"] >= 10)]
 
 
 def get_table_download_link_csv(
@@ -321,7 +321,8 @@ def main():
             # ref_choice = st.radio("switch reference data",("ART Corpus","Readability of Science is Decreasing Over Time"))
             ##
             # ref_choice = "ART Corpus"
-            ref_choice = "Decline"
+            #ref_choice = "Decline"
+            rd_df=dontcleankeepdirty(rd_df)
             df_concat_art = pd.concat([art_df, df_author])
             df_concat_art = pd.concat([rd_df, df_concat_art])
 
