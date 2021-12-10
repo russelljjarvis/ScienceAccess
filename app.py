@@ -88,10 +88,11 @@ rd_level = rd_df["Reading_Level"]
 max = np.max(rd_df["Reading_Level"])
 
 
-def dontcleankeepdirty():
+def dontcleankeepdirty(rd_df):
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
     rd_df = rd_df[(rd_df["Reading_Level"] >= 10)]
+    return rd_df
 
 
 def get_table_download_link_csv(
