@@ -613,31 +613,31 @@ def main():
                     np.mean(average_reading_time), author_name, len(ar)
                 )
             )
-        if "sentiment" in genre:
-            sentiment = []
-            uniqueness = []
-            for block in trainingDats:
-                uniqueness.append(block["uniqueness"])
-                sentiment.append(block["sp"])
-            temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
+        #if "sentiment" in genre:
+        #    sentiment = []
+        #    uniqueness = []
+        #    for block in trainingDats:
+        #        uniqueness.append(block["uniqueness"])
+        #        sentiment.append(block["sp"])
+        #    temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
 
-            st.markdown("""### Sentiment""")
-            st.markdown(
-                """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
-						""".format(
-                    temp, author_name
-                )
-            )
+        #    st.markdown("""### Sentiment""")
+        #    st.markdown(
+        #        """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
+		#				""".format(
+        #            temp, author_name
+        #        )
+        #    )
 
-            temp = "{0} positive sentiment".format(author_name)
-            labels = [temp, "ART Corpus positive sentiment"]
-            values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
+        #    temp = "{0} positive sentiment".format(author_name)
+        #    labels = [temp, "ART Corpus positive sentiment"]
+        #    values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
 
             # urlDat["reading_time"]
-            fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-            st.write(fig)
+        #    fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #    st.write(fig)
 
-            st.markdown("\n")
+        #    st.markdown("\n")
 
 
 if __name__ == "__main__":
