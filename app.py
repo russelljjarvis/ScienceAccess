@@ -90,7 +90,9 @@ rd_df=dontcleankeepdirty(rd_df)
 def cleankeepdirty(rd_df):
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     #rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-    rd_df = rd_df[(rd_df["Reading_Level"] <55)]
+    rd_df = rd_df[(rd_df["Reading_Level"] <50)]
+    rd_df = rd_df[(rd_df["Reading_Level"] >10)]
+
     return rd_df
 
 rd_df["Origin"] = ["ReadabilityScienceDeclining" for i in rd_df["Origin"]]
@@ -529,7 +531,8 @@ def main():
                 st.markdown("# Abstracts:")
                 st.write(df_author)
             df_author_new = pd.concat([df_author, df_author_new])
-            df_author_new = df_author_new[(df_author_new["Reading_Level"] <55)]
+            df_author_new = df_author_new[(df_author_new["Reading_Level"] <50)]
+            df_author_new = df_author_new[(df_author_new["Reading_Level"] >10)]
 
             st.markdown("# Both:")
 
