@@ -1,0 +1,52 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "MarcSkovMadsen",
+      "name": "Marc Skov Madsen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42288570?v=4",
+      "profile": "http://datamodelsanalytics.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+
+      "login": "russelljjarvis",
+      "name": "Russell Jarvis",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7786645?v=4",
+      "profile": "https://russelljjarvis.github.io/home/",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "design",
+        "infra"
+      ]
+    }
+    {   
+      "login": "mcgurrgurr",
+      "name": "pmcg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/34006725?v=4",
+      "profile": "https://github.com/mcgurrgurr",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas",
+        "design",
+        "infra"
+      ]
+    }
+
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ScienceAccess",
+  "projectOwner": "russelljjarvis",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
