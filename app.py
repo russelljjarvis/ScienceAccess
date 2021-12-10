@@ -310,8 +310,8 @@ def main():
             # get_table_download_link_csv(df_author,author_name)
 
             st.markdown(
-                """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm, and it contains negative values and is downward biased.
-			The second plot contains a comparison to the ART corpus data set, which was analysed using the newer textstat standard algorithm.
+                """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm, and it contains (cleaned) negative values and is downward biased.
+			The plot also contains a comparison to the ART corpus data set, which was analysed using the newer textstat standard algorithm.
 			"""
             )
 
