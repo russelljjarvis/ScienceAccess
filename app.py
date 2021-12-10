@@ -139,14 +139,17 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
         # flag = author_name in db
         flag = False
         if not flag:
-            ar = call_from_front_end(author_name, tns=10, fast=True)
-            scraped_labels, author_score = frame_to_lists(ar)
-            if len(db.keys()) < 11:
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "author_score": author_score,
-                }
+            try:
+                ar = call_from_front_end(author_name, tns=10, fast=True)
+                scraped_labels, author_score = frame_to_lists(ar)
+                if len(db.keys()) < 11:
+                    db[author_name] = {
+                        "ar": ar,
+                        "scraped_labels": scraped_labels,
+                        "author_score": author_score,
+                    }
+            except:
+                st.error("This authors results are hard to fetch and cause technical issues, sorry.")
         else:
             """
             We have evaluated this query recently, using cached results...
@@ -250,9 +253,6 @@ def main():
     st.title("Search Reading Complexity of an Author")
 
     author_name = st.text_input("Enter Author Name:")
-    # st.markdown(
-    #    """Entering a middle initial followed by a period '.' may improve search accuracy."""
-    # )
     st.markdown("-----")
 
     ar = None
@@ -266,30 +266,7 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
-    # st.sidebar.title("Options")
-    # st.sidebar.markdown("Options")
-    # ref_data = True
 
-    # custom = st.sidebar.radio("custom/default",("default","custom"))
-    # if custom == "custom":
-    #    genre = st.sidebar.multiselect(
-    #        "Choose (multiple) Graph Layout/Options:",
-    #        (
-    #            "defaults",
-    #            "switch reference data",
-    #            "scatter plots",
-    #            "compare authors"
-    #            "pie charts",
-    #            "tables",
-    #            "full text mine",
-    #            "word clouds",
-    #            "hard passages",
-    #            "show author aliases",
-    #            "ART reference data",
-    #            "ReadabilityScienceDeclining reference data"
-    #        ),
-    #    )
-    # else:
     genre = []
     genre.append("scatter plots")
     genre.append("tables")
@@ -298,7 +275,7 @@ def main():
     # genre.append("hard passages")
     genre.append("ART reference data")
 
-    info_expander = st.sidebar.beta_expander("Code Information")
+    info_expander = st.sidebar.expander("Code Information")
 
     info_expander.markdown(
         """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
@@ -368,14 +345,14 @@ def main():
                 )
             st.write(fig_art)
 
-        if "pie charts" in genre:
-            temp = "{0} Summary Readability versus large sample of science".format(
-                author_name
-            )
-            labels = [temp, "ART Corpus readability"]
-            values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-            fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-            st.write(fig)
+        #if "pie charts" in genre:
+        #    temp = "{0} Summary Readability versus large sample of science".format(
+        #        author_name
+        #    )
+        #    labels = [temp, "ART Corpus readability"]
+        #    values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
+        #    fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
+        #    st.write(fig)
 
         # df_concat_art = pd.concat([art_df, df_author])
         # fig_art = px.box(
@@ -419,7 +396,7 @@ def main():
                 )
             )
 
-        ri_expander = st.beta_expander("Expand for more information about readability")
+        ri_expander = st.expander("Expand for more information about readability")
         # if my_expander:
 
         ri_expander.markdown(
@@ -498,26 +475,27 @@ def main():
             sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
             clouds_big_words(sci_corpus)
         alias_list = semantic_scholar_alias(author_name)
-
-        # my_expander = st.beta_expander("Full Text Score Re calculation")
+        st.text(alias_list)
+        # my_expander = st.expander("Full Text Score Re calculation")
         # ft = my_expander.radio("Do Full Text",("Yes","No"))
         # if ft=="Yes":
         # if "full text" in genre:
+        if len(alias_list):
 
-        st.markdown(
-            """## Conduct a slower but more rigorous search of the full texts..."""
-        )
+            st.markdown(
+                """## Conduct a slower but more rigorous search of the full texts..."""
+            )
 
-        st.markdown(
-            """The exact search string match in literature search has an import relationship to the results.
-		Here are some different aliases this author may have published under:"""
-        )
-        # for al in alias_list:
-        #    st.markdown(al)
-        alias_list.insert(0, "previously selected name")
-        author_name1 = st.radio("choose name", alias_list)
-        if author_name == "previously selected name":
-            author_name = author_name1
+            st.markdown(
+                """The exact search string match in literature search has an import relationship to the results.
+    		Here are some different aliases this author may have published under:"""
+            )
+            # for al in alias_list:
+            #    st.markdown(al)
+            alias_list.insert(0, "previously selected name")
+            author_name1 = st.radio("choose name", alias_list)
+            if author_name == "previously selected name":
+                author_name = author_name1
         full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
 
         scraped_labels_new, author_score = frame_to_lists(full_ar_new)
@@ -545,7 +523,7 @@ def main():
             st.write(df_author_new)
             #show_links == "Yes"
 
-            ttest_expander = st.beta_expander("Show ttest")
+            ttest_expander = st.expander("Show ttest")
             show_ttest = ttest_expander.radio("ttest?", ("Yes", "No"))
             if show_ttest:
                 twosample_results = scipy.stats.ttest_ind(bio_chem_level, author_score)
@@ -562,7 +540,7 @@ def main():
                 #py.iplot(twosample_table, filename='twosample-table')
 
 
-            data_expander = st.beta_expander("Show Data Download Links")
+            data_expander = st.expander("Show Data Download Links")
             show_links = data_expander.radio("Download Links?", ("Yes", "No"))
 
 
