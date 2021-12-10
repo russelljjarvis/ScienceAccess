@@ -278,7 +278,6 @@ def main():
             ar, author_name, scraped_labels, author_score, art_df
         )
 
-        df_author = df_author[(df_author["Reading_Level"] <55)]
 
 
     genre = []
@@ -336,6 +335,8 @@ def main():
             ##
             # ref_choice = "ART Corpus"
             #ref_choice = "Decline"
+            df_author = df_author[(df_author["Reading_Level"] <55)]
+
             df_concat_art = pd.concat([art_df, df_author])
             df_concat_art = pd.concat([rd_df, df_concat_art])
 
