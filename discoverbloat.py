@@ -30,9 +30,16 @@ import click
 from typing import List, Any
 
 from science_access.t_analysis import not_want_list
-not_want_list.extend(["link","librarian","issue","abstract","science","cookie","publication"])
 
-from science_access.online_app_backend import call_from_front_end,ar_manipulation,	update_web_form_full_text
+not_want_list.extend(
+    ["link", "librarian", "issue", "abstract", "science", "cookie", "publication"]
+)
+
+from science_access.online_app_backend import (
+    call_from_front_end,
+    ar_manipulation,
+    update_web_form_full_text,
+)
 
 
 from science_access.enter_author_name import (
@@ -69,7 +76,7 @@ rd_labels = rd_df["Origin"]
 rd_level = rd_df["Reading_Level"]
 max = np.max(rd_df["Reading_Level"])
 
-#rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+# rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
 rd_df = rd_df[(rd_df["Reading_Level"] > 0)]
 
@@ -79,8 +86,8 @@ with open("data/trainingDats.p", "rb") as f:
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
-#@st.cache(suppress_st_warning=True)
-def check_cache(author_name: str,verbose=0):  # ->Union[]
+# @st.cache(suppress_st_warning=True)
+def check_cache(author_name: str, verbose=0):  # ->Union[]
     with shelve.open("fast_graphs_splash.p") as db:
         flag = author_name in db
         if not flag:
@@ -92,7 +99,7 @@ def check_cache(author_name: str,verbose=0):  # ->Union[]
             # caching wont scale on heroku.
             # need TinyDb on Amazon
             ##
-            if len(db.keys())<11:
+            if len(db.keys()) < 11:
                 db[author_name] = {
                     "ar": ar,
                     "scraped_labels": scraped_labels,
@@ -112,23 +119,27 @@ def check_cache(author_name: str,verbose=0):  # ->Union[]
 
             scraped_labels = temp["scraped_labels"]
 
-        #experimental = [
+        # experimental = [
         #    np.mean([a["standard_len"], a["ndc"]])
         #    for a in ar
         #    if "standard_len" in a.keys()
-        #]
+        # ]
     return ar, author_score, scraped_labels
 
-def show_hardest_passage(ar:List=[])->str:
+
+def show_hardest_passage(ar: List = []) -> str:
     largest = 0
     li = 0
-    for i,a in enumerate(ar):
-        if a["standard"]>largest:
+    for i, a in enumerate(ar):
+        if a["standard"] > largest:
             largest = a["standard"]
-            li=i
+            li = i
     if "hard_snippet" in ar[i].keys() and ar[i]["hard_snippet"] is not None:
         st.markdown("A hard to read passage from the authors work.")
-        if str("can log in with their society credentials") not in ar[i]["hard_snippet"]:
+        if (
+            str("can log in with their society credentials")
+            not in ar[i]["hard_snippet"]
+        ):
             if len(ar[i]["hard_snippet"]):
                 if "semantic" in ar[i].keys():
                     st.error(ar[i]["hard_snippet"])
@@ -149,16 +160,17 @@ def clouds_big_words(sci_corpus):
         )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
-verbose=0
-#def main():
+
+verbose = 0
+# def main():
 #    st.title("Search Reading Complexity of an Author")
 #    author_name = st.text_input("Enter Author Name:")
 #    st.markdown("""Entering a middle initial followed by ```.``` can change the accuracy of results.""")
 #    st.markdown("""Eg. Sayali S```.``` Phatak""")
-NAME = author_name="Brian H. Smith"
+NAME = author_name = "Brian H. Smith"
 
 if author_name:
-	ar, author_score, scraped_labels = check_cache(author_name,verbose)
+    ar, author_score, scraped_labels = check_cache(author_name, verbose)
 if "ar" in locals():
     df_author, merged_df = data_frames_from_scrape(
         ar, author_name, scraped_labels, author_score, art_df
@@ -181,11 +193,11 @@ if "ar" in locals():
     )
     st.write(fig_art)
 
-    #df_concat_art = pd.concat([art_df, df_author])
-    #fig_art = px.box(
+    # df_concat_art = pd.concat([art_df, df_author])
+    # fig_art = px.box(
     #    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-    #)
-    #st.write(fig_art)
+    # )
+    # st.write(fig_art)
 
     df0 = df_concat_art
     st.markdown(
@@ -223,13 +235,13 @@ if "ar" in locals():
         grab_set_auth.extend(paper["tokens"])
     artset = list(grab_setr)
     artset.extend(not_want_list)
-    #auth_set = grab_set_auth
-    #exclusive = [i for i in grab_set_auth if i not in artset]
+    # auth_set = grab_set_auth
+    # exclusive = [i for i in grab_set_auth if i not in artset]
     fig = fast_art_cloud(grab_set_auth)
     hard = show_hardest_passage(ar)
 
     st.markdown("-----")
-    #fast_art_cloud(sci_corpus)
+    # fast_art_cloud(sci_corpus)
     clouds_by_big_words = True
     if clouds_by_big_words:
         grab_set_auth = []
@@ -238,7 +250,7 @@ if "ar" in locals():
                 grab_set_auth.extend(paper["tokens"])
         sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
         clouds_big_words(sci_corpus)
-        #except:
+        # except:
         #    pass
 
     if verbose:
@@ -298,16 +310,15 @@ if "ar" in locals():
     # st.markdown('Here is one of the biggest words: "{0}", you should feed it into PCA of word2vec'.format(str(big_words[0][0])))
 
     st.markdown("-----")
-    #st.markdown("\n\n")
+    # st.markdown("\n\n")
 
     # inclusive = [i for i in autset if i in artset]
-    #st.markdown(
+    # st.markdown(
     #    "### Concepts that differentiate {0} from other science".format(
     #        author_name
     #    )
-    #)
-    #exclusive = create_giant_strings(ar, exclusive)
-
+    # )
+    # exclusive = create_giant_strings(ar, exclusive)
 
     if "reading_time" in ar[0].keys():
         average_reading_time = [np.mean([r["reading_time"] for r in ar])]
@@ -343,9 +354,7 @@ if "ar" in locals():
     )
     st.markdown("-----")
     st.markdown("\n")
-    st.markdown(
-        "[Code Author: Russell J. Jarvis](https://github.com/russelljjarvis/)"
-    )
+    st.markdown("[Code Author: Russell J. Jarvis](https://github.com/russelljjarvis/)")
 
     st.markdown(
         "[Source Code: Github](https://github.com/russelljjarvis/ScienceAccess)"
@@ -374,8 +383,8 @@ if "ar" in locals():
 	Kutner M, Greenberg E, Baer J. National Assessment of Adult Literacy (NAAL): A First Look at the Literacy of America’s Adults in the 21st Century (NCES 2006-470). Washington, DC: National Center for Education Statistics; 2005.
 	"""
 
-    #st.markdown("-----")
+    # st.markdown("-----")
 
 
-#if __name__ == "__main__":
+# if __name__ == "__main__":
 #    main()
