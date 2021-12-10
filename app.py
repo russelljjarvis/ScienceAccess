@@ -83,6 +83,8 @@ rd_df = rd_df[["Reading_Level", "Origin"]]
 def dontcleankeepdirty(rd_df):
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
+    rd_df = rd_df[(rd_df["Reading_Level"] <50)]
+
     rd_df = rd_df[(rd_df["Reading_Level"] >= 10)]
     return rd_df
 rd_df=dontcleankeepdirty(rd_df)
@@ -335,7 +337,7 @@ def main():
             ##
             # ref_choice = "ART Corpus"
             #ref_choice = "Decline"
-            df_author = df_author[(df_author["Reading_Level"] <55)]
+            #df_author = df_author[(df_author["Reading_Level"] <55)]
 
             df_concat_art = pd.concat([art_df, df_author])
             df_concat_art = pd.concat([rd_df, df_concat_art])
