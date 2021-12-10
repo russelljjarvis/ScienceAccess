@@ -310,8 +310,8 @@ def main():
             # get_table_download_link_csv(df_author,author_name)
 
             st.markdown(
-                """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm. It contains negative values and is downward biased.
-			To illustrate the strength of the new approach. Toggle the data set to the ART corpus, which was analysed using the newer textstat standard algorithm.
+                """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm, and it contains negative values and is downward biased.
+			The second plot contains a comparison to the ART corpus data set, which was analysed using the newer textstat standard algorithm.
 			"""
             )
 
@@ -323,27 +323,27 @@ def main():
             # ref_choice = "ART Corpus"
             ref_choice = "Decline"
             df_concat_art = pd.concat([art_df, df_author])
-            df_concat_decline = pd.concat([rd_df, df_author])
+            df_concat_art = pd.concat([rd_df, df_concat_art])
 
-            if ref_choice == "ART Corpus":
-                fig_art = px.box(
-                    df_concat_art,
-                    x="Origin",
-                    y="Reading_Level",
-                    points="all",
-                    color="Origin",
-                )
+            fig_art0 = px.box(
+                df_concat_art,
+                x="Origin",
+                y="Reading_Level",
+                points="all",
+                color="Origin",
+            )
 
-            if ref_choice == "Decline":
 
-                fig_art = px.box(
-                    df_concat_decline,
-                    x="Origin",
-                    y="Reading_Level",
-                    points="all",
-                    color="Origin",
-                )
-            st.write(fig_art)
+
+            #fig_art1 = px.box(
+            #    df_concat_decline,
+            #    x="Origin",
+            #    y="Reading_Level",
+            #    points="all",
+            #    color="Origin",
+            #)
+            st.write(fig_art1)
+            #st.write(fig_art2)
 
         #if "pie charts" in genre:
         #    temp = "{0} Summary Readability versus large sample of science".format(
@@ -381,7 +381,7 @@ def main():
         if np.mean(author_score) < np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average easier to read relative to the ART Corpus.
+			 {0} was on average easier to read relative to the ART Corpus.
 			""".format(
                     author_name
                 )
@@ -390,7 +390,7 @@ def main():
         if np.mean(author_score) >= np.mean(bio_chem_level):
             st.markdown(
                 """
-			### {0} was on average more difficult to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licenced scientific papers.
+			 {0} was on average more difficult to read relative to the [ART Corpus](https://www.aber.ac.uk/en/cs/research/cb/projects/art/art-corpus/), an existing library of publicly licenced scientific papers.
 			""".format(
                     author_name
                 )
@@ -474,28 +474,28 @@ def main():
                     grab_set_auth.extend(paper["tokens"])
             sci_corpus = create_giant_strings(grab_set_auth, not_want_list)
             clouds_big_words(sci_corpus)
-        alias_list = semantic_scholar_alias(author_name)
-        st.text(alias_list)
+        #alias_list = semantic_scholar_alias(author_name)
+        #st.text(alias_list)
         # my_expander = st.expander("Full Text Score Re calculation")
         # ft = my_expander.radio("Do Full Text",("Yes","No"))
         # if ft=="Yes":
         # if "full text" in genre:
-        if len(alias_list):
+        #if len(alias_list):
 
-            st.markdown(
-                """## Conduct a slower but more rigorous search of the full texts..."""
-            )
+        #    st.markdown(
+        #        """## Conduct a slower but more rigorous search of the full texts..."""
+        #    )
 
-            st.markdown(
-                """The exact search string match in literature search has an import relationship to the results.
-    		Here are some different aliases this author may have published under:"""
-            )
+        #    st.markdown(
+        #        """The exact search string match in literature search has an import relationship to the results.
+    	#	Here are some different aliases this author may have published under:"""
+        #    )
             # for al in alias_list:
             #    st.markdown(al)
-            alias_list.insert(0, "previously selected name")
-            author_name1 = st.radio("choose name", alias_list)
-            if author_name == "previously selected name":
-                author_name = author_name1
+        #    alias_list.insert(0, "previously selected name")
+        #    author_name1 = st.radio("choose name", alias_list)
+        #    if author_name == "previously selected name":
+        #        author_name = author_name1
         full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
 
         scraped_labels_new, author_score = frame_to_lists(full_ar_new)
