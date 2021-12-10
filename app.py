@@ -342,7 +342,7 @@ def main():
             #    points="all",
             #    color="Origin",
             #)
-            st.write(fig_art1)
+            st.write(fig_art0)
             #st.write(fig_art2)
 
         #if "pie charts" in genre:
