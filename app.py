@@ -159,6 +159,8 @@ def check_cache(author_name: str, verbose=0):  # ->Union[]
                     }
             except:
                 st.error("This authors results are hard to fetch and cause technical issues, sorry.")
+                st.warning("Try this older and more robust version of the app:")
+                st.warning("https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py")
         else:
             """
             We have evaluated this query recently, using cached results...
