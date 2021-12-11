@@ -486,7 +486,7 @@ def main():
         )
 
         st.markdown("\n\n")
-        st.markdown("-----")
+        #st.markdown("-----")
         st.markdown(""" ### Word Frequency Word Cloud""")
         """
 		This word cloud is based on the most common words found in the mined text.
@@ -514,7 +514,7 @@ def main():
         """
         ### Download Data:
         """
-        
+
         # corpus = create_giant_strings(grab_set_auth,not_want_list)
         st.markdown(
             get_table_download_link_csv(df_author, author_name),
