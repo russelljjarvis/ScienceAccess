@@ -448,12 +448,11 @@ def main():
                 )
             )
         try:
-            ri_expander = st.expander("Code Information")
+            ri_expander = st.expander("Expand for more information about readability")
+
         except:
             st.expander = st.beta_expander
-            ri_expander = st.expander("Code Information")
-        ri_expander = st.expander("Expand for more information about readability")
-        # if my_expander:
+            ri_expander = st.expander("Expand for more information about readability")
 
         ri_expander.markdown(
             """
@@ -511,6 +510,11 @@ def main():
                 grab_setr.extend(paper["tokens"])
 
             exclusive = [i for i in grab_set_auth if i not in artset]
+
+        """
+        ### Download Data:
+        """
+        
         # corpus = create_giant_strings(grab_set_auth,not_want_list)
         st.markdown(
             get_table_download_link_csv(df_author, author_name),
