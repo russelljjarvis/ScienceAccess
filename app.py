@@ -288,7 +288,7 @@ def main():
     st.title("Search Reading Complexity of an Author")
 
     author_name = st.text_input("Enter Author Name:")
-    st.markdown("-----")
+    #st.markdown("-----")
 
     ar = None
     if author_name:
@@ -335,7 +335,7 @@ def main():
 
     if "df_author" in locals():
 
-        st.markdown("-----")
+        #st.markdown("-----")
         # st.markdown("#### Results")
 
         st.markdown(
@@ -412,7 +412,7 @@ def main():
         # )
         # st.write(fig_art)
 
-        st.markdown("-----")
+        #st.markdown("-----")
 
         if len(author_score) == 0:
             st.warning("Author Not Found")
@@ -539,7 +539,7 @@ def main():
                 )
                 st.markdown(hard)
 
-        st.markdown("-----")
+        #st.markdown("-----")
 
         if "word clouds" in genre:
             grab_set_auth = []
