@@ -69,6 +69,9 @@ from science_access.enter_author_name import (
     extra_options,
 )
 import base64
+#try:
+#    st.sidebar.expander
+#except:
 
 ##
 # load in readabilityofscience delcining data set.
@@ -83,16 +86,19 @@ rd_df = rd_df[["Reading_Level", "Origin"]]
 def dontcleankeepdirty(rd_df):
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-    rd_df = rd_df[(rd_df["Reading_Level"] <50)]
+    rd_df = rd_df[(rd_df["Reading_Level"] <80)]
 
     rd_df = rd_df[(rd_df["Reading_Level"] >= 10)]
     return rd_df
 rd_df=dontcleankeepdirty(rd_df)
 
 def cleankeepdirty(rd_df):
+    rd_df.rename(
+        columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
+    )
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     #rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-    rd_df = rd_df[(rd_df["Reading_Level"] <50)]
+    rd_df = rd_df[(rd_df["Reading_Level"] <80)]
     rd_df = rd_df[(rd_df["Reading_Level"] >10)]
 
     return rd_df
@@ -129,11 +135,11 @@ def get_table_download_link_csv(
     b64 = base64.b64encode(object_to_download.encode()).decode()
     if not corpus:
         if full_text:
-            author_name = str("full text readability csv ") + author_name + str(".csv")
+            author_name = str("Download full text readability ") + author_name + str(".csv")
         else:
-            author_name = str("readability csv ") + author_name + str(".csv")
+            author_name = str("Download readability ") + author_name + str(".csv")
     else:
-        author_name = str("collated bag of words file ") + author_name + str(".csv")
+        author_name = str("Download collated bag of words file ") + author_name + str(".csv")
     return f'<a href="data:file/txt;base64,{b64}" download="{author_name}">{author_name}</a>'
 
 
@@ -146,34 +152,50 @@ bio_chem_level = art_df["Reading_Level"]
 
 # @st.cache(suppress_st_warning=True)
 def check_cache(author_name: str, verbose=0):  # ->Union[]
-    with shelve.open("data/fast_graphs_splash.p") as db:
+    #with shelve.open("data/fast_graphs_splash.p") as db:
         # flag = author_name in db
-        flag = False
-        if not flag:
-            try:
-                ar = call_from_front_end(author_name, tns=10, fast=True)
-                scraped_labels, author_score = frame_to_lists(ar)
-                if len(db.keys()) < 11:
-                    db[author_name] = {
-                        "ar": ar,
-                        "scraped_labels": scraped_labels,
-                        "author_score": author_score,
-                    }
-            except:
-                st.error("This authors results are hard to fetch and cause technical issues, sorry.")
-                st.warning("Try this older and more robust version of the app:")
-                st.warning("https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py")
-        else:
-            """
-            We have evaluated this query recently, using cached results...
-            """
-            temp = db[author_name]
-            ar = temp["ar"]
-            if "standard_sci" in temp.keys():
-                author_score = temp["standard_sci"]
-            if "author_score" in temp.keys():
-                author_score = temp["author_score"]
-            scraped_labels = temp["scraped_labels"]
+    flag = False
+    if not flag:
+        try:
+            ar = call_from_front_end(author_name, tns=30, fast=True)
+            #rd_df.rename(
+            #    columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
+            #)
+
+            scraped_labels, author_score = frame_to_lists(ar)
+
+            #if len(db.keys()) < 11:
+            #    db[author_name] = {
+            #        "ar": ar,
+            #        "scraped_labels": scraped_labels,
+            #        "author_score": author_score,
+            #    }
+        except:
+            #try:
+            ar = call_from_front_end(author_name, tns=30, fast=False)
+            #ar = ar[(ar["Reading_Level"] <50)]
+            #ar = ar[(ar["Reading_Level"] >10)]
+
+
+            scraped_labels, author_score = frame_to_lists(ar)
+            #df_author_new, merged_df = data_frames_from_scrape(
+            #    ar, author_name, scraped_labels, author_score, art_df
+            #)
+            #except:
+            #    st.error("This authors results are hard to fetch and cause technical issues, sorry.")
+            #    st.warning("Try this older and more robust version of the app:")
+            #    st.warning("https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py")
+    else:
+        """
+        We have evaluated this query recently, using cached results...
+        """
+        temp = db[author_name]
+        ar = temp["ar"]
+        if "standard_sci" in temp.keys():
+            author_score = temp["standard_sci"]
+        if "author_score" in temp.keys():
+            author_score = temp["author_score"]
+        scraped_labels = temp["scraped_labels"]
     return ar, author_score, scraped_labels
 
 
@@ -279,6 +301,9 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
+        df_author = df_author[(df_author["Reading_Level"] <80)]
+        df_author = df_author[(df_author["Reading_Level"] >10)]
+
 
 
 
@@ -289,8 +314,12 @@ def main():
     genre.append("word clouds")
     # genre.append("hard passages")
     genre.append("ART reference data")
-
-    info_expander = st.sidebar.expander("Code Information")
+    try:
+        info_expander = st.sidebar.expander("Code Information")
+    except:
+        st.sidebar.expander = st.sidebar.beta_expander
+        info_expander = st.sidebar.expander("Code Information")
+        #st.expander = st.beta_expander
 
     info_expander.markdown(
         """This search applies [dissmin](https://dissemin.readthedocs.io/en/latest/api.html) API backend"""
@@ -311,11 +340,17 @@ def main():
 
         st.markdown(
             """
-			### There were a total number of {0} documents mined during this query.
+			There were a total number of {0} documents mined during this abstract driven query, or the scrape involved text reading complexity
+            scores tainted by artifacts.
 			""".format(
                 len(df_author)
             )
         )
+        if len(df_author)==0:
+            st.markdown(
+                """
+    			### Hold tight, conducting an analysis of full texts.
+    			""")
 
         if "tables" in genre:
             df_temp = copy.copy(df_author)
@@ -412,7 +447,11 @@ def main():
                     author_name
                 )
             )
-
+        try:
+            ri_expander = st.expander("Code Information")
+        except:
+            st.expander = st.beta_expander
+            ri_expander = st.expander("Code Information")
         ri_expander = st.expander("Expand for more information about readability")
         # if my_expander:
 
@@ -473,6 +512,20 @@ def main():
 
             exclusive = [i for i in grab_set_auth if i not in artset]
         # corpus = create_giant_strings(grab_set_auth,not_want_list)
+        st.markdown(
+            get_table_download_link_csv(df_author, author_name),
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            get_table_download_link_csv(
+                pd.DataFrame([{"tokens": grab_set_auth}]),
+                author_name,
+                corpus=True,
+            ),
+            unsafe_allow_html=True,
+        )
+
 
         if "hard passages" in genre:
             hard = show_hardest_passage(ar)
@@ -561,30 +614,17 @@ def main():
                 #py.iplot(twosample_table, filename='twosample-table')
 
 
-            data_expander = st.expander("Show Data Download Links")
-            show_links = data_expander.radio("Download Links?", ("Yes", "No"))
+                #data_expander = st.expander("Show Data Download Links")
+                #show_links = data_expander.radio("Download Links?", ("Yes", "No"))
 
 
-            if show_links == "Yes":
-                st.markdown(
-                    get_table_download_link_csv(
-                        df_author_new, author_name, full_text=True
-                    ),
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    get_table_download_link_csv(df_author, author_name),
-                    unsafe_allow_html=True,
-                )
-
-                st.markdown(
-                    get_table_download_link_csv(
-                        pd.DataFrame([{"tokens": grab_set_auth}]),
-                        author_name,
-                        corpus=True,
-                    ),
-                    unsafe_allow_html=True,
-                )
+                #if show_links == "Yes":
+            st.markdown(
+                get_table_download_link_csv(
+                    df_author_new, author_name, full_text=True
+                ),
+                unsafe_allow_html=True,
+            )
 
             df_concat_art_new = pd.concat([rd_df, df_author_new])
 

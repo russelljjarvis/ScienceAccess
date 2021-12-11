@@ -198,8 +198,8 @@ def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
     """
     author_results = []
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
-    if len(visit_urls) > 30:
-        visit_urls = visit_urls[0:29]
+    if len(visit_urls) > 45:
+        visit_urls = visit_urls[0:44]
         st.warning("too many publications >40 truncating list")
     for index, link in enumerate(tqdm(visit_urls, title="Buildiing suitable links.")):
         urlDat = dask.delayed(process)(link)
@@ -369,7 +369,7 @@ def ar_manipulation(ar: List = []):
     ar = [tl for tl in ar if type(tl) is type(dict())]
     ar = [tl for tl in ar if type(tl) is not type(str(""))]
     ar = [tl for tl in ar if "standard" in tl.keys()]
-    with open("trainingDats.p", "rb") as f:
+    with open("data/trainingDats.p", "rb") as f:
         trainingDats = pickle.load(f)
 
     trainingDats.extend(ar)
