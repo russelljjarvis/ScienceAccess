@@ -1,21 +1,19 @@
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
 <p align="center">
-  <img src="app_works.gif" width="700" height="450"/>
+  
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![DOI](https://zenodo.org/badge/256452850.svg)](https://zenodo.org/badge/latestdoi/256452850)
+
 </p>
 
-[Try a live sample of the application](https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py)
+<!--[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)-->
 
-
-[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)
-[![DOI](https://zenodo.org/badge/256452850.svg)](https://zenodo.org/badge/latestdoi/256452850)
+<p align="center">
+  <img src="app_works.gif" width="400" height="250"/>
 
 
 # &TLDR
-Large collections of big words and big concepts are hard to read. Scientists share ideas using large collections of words. We machine read scientific documents in an effort to compare writers with each other, and to promote simpler writing.
+Large collections of big words and big concepts are hard to read. Scientists share ideas using large collections of words. We machine read scientific documents in an effort to compare writers with each other, and to promote simpler writing. [A deployed version of this application lives here.](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py)
 
 # Overview
 <details>
@@ -49,9 +47,6 @@ streamlit run app_dev.py
 
 </details>
 
-License
-ScienceAccess is released under the CC BY-NC 2.0. By using ScienceAccess, you are agreeing to its usage terms.
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -67,9 +62,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
 </table>
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+License
+ScienceAccess is released under the CC BY-NC 2.0. By using ScienceAccess, you are agreeing to its usage terms.
