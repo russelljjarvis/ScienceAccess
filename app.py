@@ -156,8 +156,10 @@ def check_cache(author_name: str, verbose=0):
     aliases = semantic_scholar_alias(author_name)
     if type(aliases) is not None:
         if len(aliases):
-            st.success("Aliases found in semantic scholar API...")
-            st.success("Also try one of these alternative name queries: {0}".format(aliases))
+            try:
+                st.success("Aliases found in semantic scholar API... \n Also try one of these alternative name queries: {0}".format(aliases))
+            except:
+                pass
             #author_name = aliases[0]
 
     with shelve.open("data/fast_graphs_splash.p") as db:
