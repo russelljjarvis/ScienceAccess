@@ -163,12 +163,12 @@ def check_cache(author_name: str, verbose=0):
 
             scraped_labels, author_score = frame_to_lists(ar)
 
-            if len(db.keys()) < 11:
-                db[author_name] = {
-                    "ar": ar,
-                    "scraped_labels": scraped_labels,
-                    "author_score": author_score,
-                }
+            #if len(db.keys()) < 11:
+            #    db[author_name] = {
+            #        "ar": ar,
+            #        "scraped_labels": scraped_labels,
+            #        "author_score": author_score,
+            #    }
         except:
             aliases = semantic_scholar_alias(author_name)
             st.warning("Name as typed not found in semantic scholar API, so checking dissemin...")
