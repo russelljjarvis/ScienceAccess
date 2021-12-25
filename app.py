@@ -159,7 +159,7 @@ def check_cache(author_name: str, verbose=0):
     #flag = False
     if not flag:
         try:
-            ar = call_from_front_end(author_name, tns=30, fast=True)
+            ar = call_from_front_end(author_name, tns=6, fast=True)
 
             scraped_labels, author_score = frame_to_lists(ar)
 
@@ -172,8 +172,9 @@ def check_cache(author_name: str, verbose=0):
         except:
             aliases = semantic_scholar_alias(author_name)
             st.warning("Name as typed not found in semantic scholar API, so checking dissemin...")
-            if len(aliases):
-                st.markdown("Try one of these alternative name phrasings: {0}".format(aliases))
+            if type(aliases) is not None:
+                if len(aliases):
+                    st.markdown("Try one of these alternative name phrasings: {0}".format(aliases))
 
             try:
                 ar = call_from_front_end(author_name, tns=30, fast=False)
