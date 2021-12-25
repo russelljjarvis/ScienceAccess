@@ -37,9 +37,14 @@ from typing import List, Any
 
 from science_access.t_analysis import not_want_list
 
+import base64
+from nltk import word_tokenize
+
+
 not_want_list.extend(
     ["link", "librarian", "issue", "abstract", "science", "cookie", "publication"]
 )
+from plotly.tools import FigureFactory as FF
 
 from science_access.online_app_backend import call_from_front_end
 from science_access.online_app_backend import ar_manipulation
@@ -68,10 +73,7 @@ from science_access.enter_author_name import (
     try_and_update_cache,
     extra_options,
 )
-import base64
-#try:
-#    st.sidebar.expander
-#except:
+from science_access.online_app_backend import semantic_scholar_alias
 
 ##
 # load in readabilityofscience delcining data set.
@@ -98,7 +100,7 @@ def cleankeepdirty(rd_df):
     )
     # previously I deleted negative values, but keeping the nonesensical measurements illustrates our point.
     #rd_df = rd_df.loc[sample(list(rd_df.index), 999)]
-    rd_df = rd_df[(rd_df["Reading_Level"] <80)]
+    rd_df = rd_df[(rd_df["Reading_Level"] <100)]
     rd_df = rd_df[(rd_df["Reading_Level"] >10)]
 
     return rd_df
@@ -148,55 +150,71 @@ with open("data/trainingDats.p", "rb") as f:
     art_df, bio_chem_level, biochem_labels = grab_data_for_splash(trainingDats)
 biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
-# art_df = art_df[(art_df["Reading_Level"] > 0)]
 
-# @st.cache(suppress_st_warning=True)
-def check_cache(author_name: str, verbose=0):  # ->Union[]
-    #with shelve.open("data/fast_graphs_splash.p") as db:
-        # flag = author_name in db
-    flag = False
+def check_cache(author_name: str, verbose=0):
+    big_run_done = False
+
+    with shelve.open("data/fast_graphs_splash.p") as db:
+        flag = author_name in db
+    #flag = False
     if not flag:
         try:
             ar = call_from_front_end(author_name, tns=30, fast=True)
-            #rd_df.rename(
-            #    columns={"flesch_fulltexts": "Reading_Level", "journal": "Origin"}, inplace=True
-            #)
 
             scraped_labels, author_score = frame_to_lists(ar)
 
-            #if len(db.keys()) < 11:
-            #    db[author_name] = {
-            #        "ar": ar,
-            #        "scraped_labels": scraped_labels,
-            #        "author_score": author_score,
-            #    }
+            if len(db.keys()) < 11:
+                db[author_name] = {
+                    "ar": ar,
+                    "scraped_labels": scraped_labels,
+                    "author_score": author_score,
+                }
         except:
-            #try:
-            ar = call_from_front_end(author_name, tns=30, fast=False)
-            #ar = ar[(ar["Reading_Level"] <50)]
-            #ar = ar[(ar["Reading_Level"] >10)]
+            aliases = semantic_scholar_alias(author_name)
+            st.warning("Name as typed not found in semantic scholar API, so checking dissemin...")
+            if len(aliases):
+                st.markdown("Try one of these alternative name phrasings: {0}".format(aliases))
+
+            try:
+                ar = call_from_front_end(author_name, tns=30, fast=False)
+                big_run_done = False
 
 
-            scraped_labels, author_score = frame_to_lists(ar)
-            #df_author_new, merged_df = data_frames_from_scrape(
+                scraped_labels, author_score = frame_to_lists(ar)
+
+                if len(db.keys()) < 11:
+                    db[author_name] = {
+                        "ar": ar,
+                        "scraped_labels": scraped_labels,
+                        "author_score": author_score,
+                    }
+
+                #df_author_new, merged_df = data_frames_from_scrape(
             #    ar, author_name, scraped_labels, author_score, art_df
             #)
-            #except:
+            except:
+                aliases = semantic_scholar_alias(author_name)
+                st.warning("Name as typed not found in semantic scholar API")
+                if len(aliases):
+                    st.markdown("Try one of these alternative name phrasings: {0}".format(aliases))
+
             #    st.error("This authors results are hard to fetch and cause technical issues, sorry.")
             #    st.warning("Try this older and more robust version of the app:")
             #    st.warning("https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py")
     else:
-        """
-        We have evaluated this query recently, using cached results...
-        """
-        temp = db[author_name]
+        st.success("""
+            We have evaluated this query recently, using cached results...
+        """)
+        with shelve.open("data/fast_graphs_splash.p") as db:
+            flag = author_name in db
+            temp = db[author_name]
         ar = temp["ar"]
         if "standard_sci" in temp.keys():
             author_score = temp["standard_sci"]
         if "author_score" in temp.keys():
             author_score = temp["author_score"]
         scraped_labels = temp["scraped_labels"]
-    return ar, author_score, scraped_labels
+    return ar, author_score, scraped_labels, author_score,big_run_done
 
 
 def show_author_alias(ar: List = []) -> None:
@@ -249,14 +267,8 @@ def show_hardest_passage(ar: List = []) -> str:
                             st.error(
                                 "### Some hard to read passage(s) from the authors work."
                             )
-                            from nltk import word_tokenize
 
                             tokens = word_tokenize(ar[i]["hard_snippet"])
-                            # string_from_tokens0 = str([str(i)+str(" ") for i in tokens[0:90]])
-                            # string_from_tokens2 = "..."
-                            # string_from_tokens1 = str([str(i)+str(" ") for i in tokens[-90::]])
-
-                            # string_from_tokens = string_from_tokens0 +string_from_tokens2 + string_from_tokens1
                             string_from_tokens = create_giant_strings(
                                 tokens, not_want_list
                             )
@@ -280,6 +292,11 @@ def clouds_big_words(sci_corpus):
         )
         big_words, word_counts_fz, fig_wl = art_cloud_wl(sci_corpus)
 
+def make_clickable(link):
+    # target _blank to open new window
+    # extract clickable text to display for your link
+    text = link  # .split('=')[1]
+    return f'<a target="_blank" href="{link}">{text}</a>'
 
 verbose = 0
 
@@ -292,7 +309,7 @@ def main():
 
     ar = None
     if author_name:
-        ar, author_score, scraped_labels = check_cache(author_name, verbose)
+        ar, author_score, scraped_labels,author_score, big_run_done = check_cache(author_name, verbose)
         if len(ar) == 0:
             st.error("Author Not Found")
             st.warning("Try a different spelling of author name")
@@ -301,7 +318,7 @@ def main():
         df_author, merged_df = data_frames_from_scrape(
             ar, author_name, scraped_labels, author_score, art_df
         )
-        df_author = df_author[(df_author["Reading_Level"] <80)]
+        df_author = df_author[(df_author["Reading_Level"] <100)]
         df_author = df_author[(df_author["Reading_Level"] >10)]
 
 
@@ -333,6 +350,17 @@ def main():
         """[Rationale for this project](https://github.com/russelljjarvis/ScienceAccess/blob/master/Documentation/BioRxiv.md)"""
     )
 
+    html_string="""
+    <table>
+      <tr>
+        <td align="center"><a href="https://russelljjarvis.github.io/home/"><img src="https://avatars.githubusercontent.com/u/7786645?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Russell Jarvis</b></sub></a><br /><a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=russelljjarvis" title="Code">💻</a> <a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=russelljjarvis" title="Documentation">📖</a> <a href="#ideas-russelljjarvis" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-russelljjarvis" title="Design">🎨</a> <a href="#infra-russelljjarvis" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+        <td align="center"><a href="http://datamodelsanalytics.com"><img src="https://avatars.githubusercontent.com/u/42288570?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marc Skov Madsen</b></sub></a><br /><a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=MarcSkovMadsen" title="Code">💻</a></td>
+      </tr>
+      <td align="center"><a href="https://github.com/mcgurrgurr"><img src="https://avatars.githubusercontent.com/u/34006725?v=4?s=100" width="100px;" alt=""/><br /><sub><b>pmcg</b></sub></a><br /><a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=mcgurrgurr" title="Code">💻</a> <a href="https://github.com/russelljjarvis/ScienceAccess/commits?author=mcgurrgurr" title="Documentation">📖</a> <a href="#ideas-mcgurrgurr" title="Ideas, Planning, & Feedback">🤔</a> <a href="#design-mcgurrgurr" title="Design">🎨</a> <a href="#infra-mcgurrgurr" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    </table>
+    """
+    info_expander.markdown(html_string, unsafe_allow_html=True)
+
     if "df_author" in locals():
 
         #st.markdown("-----")
@@ -355,9 +383,23 @@ def main():
         if "tables" in genre:
             df_temp = copy.copy(df_author)
             del df_temp["Origin"]
-            df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
-            st.table(df_temp)  # , scraped_labels)
-            # get_table_download_link_csv(df_author,author_name)
+            #df_temp.rename(columns={"Web_Link": "Title"}, inplace=True)
+            #push_frame_to_screen(df_temp, author_score)
+
+
+
+            df_links = pd.DataFrame()
+
+            df_links["Web_Link"] = df_temp["Web_Link"]
+            df_links["Reading_Level"] = df_temp["Reading_Level"]
+            df_links.drop_duplicates(subset="Web_Link", inplace=True)
+            df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+            df_links = df_links.to_html(escape=False)
+            st.write(df_links, unsafe_allow_html=True)
+
+            #st.table(df_temp)  # , scraped_labels)
+            get_table_download_link_csv(df_author,author_name)
+
 
             st.markdown(
                 """Note below, the reference data set in the "the Science of Writing is Declining Over Time, was measured using a custom Flestch algorithm, and it contains (cleaned) negative values and is downward biased.
@@ -384,35 +426,7 @@ def main():
                 points="all",
                 color="Origin",
             )
-
-
-
-            #fig_art1 = px.box(
-            #    df_concat_decline,
-            #    x="Origin",
-            #    y="Reading_Level",
-            #    points="all",
-            #    color="Origin",
-            #)
             st.write(fig_art0)
-            #st.write(fig_art2)
-
-        #if "pie charts" in genre:
-        #    temp = "{0} Summary Readability versus large sample of science".format(
-        #        author_name
-        #    )
-        #    labels = [temp, "ART Corpus readability"]
-        #    values = [np.mean([r["standard"] for r in ar]), np.mean(bio_chem_level)]
-        #    fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        #    st.write(fig)
-
-        # df_concat_art = pd.concat([art_df, df_author])
-        # fig_art = px.box(
-        #    df_concat_art, x="Origin", y="Reading_Level", points="all", color="Origin"
-        # )
-        # st.write(fig_art)
-
-        #st.markdown("-----")
 
         if len(author_score) == 0:
             st.warning("Author Not Found")
@@ -499,23 +513,23 @@ def main():
             grab_setr = []
             grab_set_auth = []
 
-            for paper in ar:
-                grab_set_auth.extend(paper["tokens"])
-            artset = list(grab_setr)
-            # artset.extend(not_want_list)
-            # auth_set = grab_set_auth
+            try:
+                for paper in ar:
+                    grab_set_auth.extend(paper["tokens"])
+                artset = list(grab_setr)
 
-            fig = fast_art_cloud(grab_set_auth)
-            for paper in trainingDats:
-                grab_setr.extend(paper["tokens"])
+                fig = fast_art_cloud(grab_set_auth)
 
-            exclusive = [i for i in grab_set_auth if i not in artset]
+                for paper in trainingDats:
+                    grab_setr.extend(paper["tokens"])
+
+                exclusive = [i for i in grab_set_auth if i not in artset]
+            except:
+                pass
 
         """
         ### Download Data:
         """
-
-        # corpus = create_giant_strings(grab_set_auth,not_want_list)
         st.markdown(
             get_table_download_link_csv(df_author, author_name),
             unsafe_allow_html=True,
@@ -570,59 +584,72 @@ def main():
         #    author_name1 = st.radio("choose name", alias_list)
         #    if author_name == "previously selected name":
         #        author_name = author_name1
-        full_ar_new = call_from_front_end(author_name, tns=9, fast=False)
+        if not big_run_done:
+            full_ar_new = call_from_front_end(author_name, tns=40, fast=False)
 
-        scraped_labels_new, author_score = frame_to_lists(full_ar_new)
-        df_author_new, merged_df = data_frames_from_scrape(
-            full_ar_new, author_name, scraped_labels, author_score, art_df
-        )
+            scraped_labels_new, author_score = frame_to_lists(full_ar_new)
+            df_author_new, merged_df = data_frames_from_scrape(
+                full_ar_new, author_name, scraped_labels, author_score, art_df
+            )
 
-        if "df_author_new" in locals():
-            if "tables" in genre:
-                st.markdown("""### Here you can see""")
-                st.markdown(
-                    """how full texts are longer by nature, longer texts are harder to read, the full text items
-				by the same name having higher reading complexity
-				"""
-                )
-                st.markdown("# Full texts:")
+            if "df_author_new" in locals():
+                if "tables" in genre:
+                    st.markdown("""### Here you can see""")
+                    st.markdown(
+                        """how full texts are longer by nature, longer texts are harder to read, the full text items
+    				by the same name having higher reading complexity
+    				"""
+                    )
+                    st.markdown("# Full texts:")
 
-                push_frame_to_screen(df_author_new, scraped_labels_new)
-                scraped_labels_new.extend(scraped_labels)
+                    #push_frame_to_screen(df_author_new, scraped_labels_new)
+                    scraped_labels_new.extend(scraped_labels)
 
-                st.markdown("# Abstracts:")
-                st.write(df_author)
-            df_author_new = pd.concat([df_author, df_author_new])
-            df_author_new = df_author_new[(df_author_new["Reading_Level"] <50)]
-            df_author_new = df_author_new[(df_author_new["Reading_Level"] >10)]
+                    st.markdown("# Abstracts:")
+                    #st.write(df_author)
+                    df_author_new = pd.concat([df_author, df_author_new])
+                    df_author_new = df_author_new[(df_author_new["Reading_Level"] < 100)]
+                    df_author_new = df_author_new[(df_author_new["Reading_Level"] >10)]
 
-            st.markdown("# Both:")
+                    st.markdown("# Both:")
 
-            st.write(df_author_new)
+
+                    df_links = pd.DataFrame()
+
+                    df_links["Web_Link"] = df_author_new["Web_Link"]
+                    df_links["Reading_Level"] = df_author_new["Reading_Level"]
+                    df_links.drop_duplicates(subset="Web_Link", inplace=True)
+                    df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+                    df_links = df_links.to_html(escape=False)
+                    st.write(df_links, unsafe_allow_html=True)
+
+
+            #st.write(df_author_new)
+            #push_frame_to_screen(df_author_new, scraped_labels_new)
+
             #show_links == "Yes"
 
-            ttest_expander = st.expander("Show ttest")
-            show_ttest = ttest_expander.radio("ttest?", ("Yes", "No"))
-            if show_ttest:
-                twosample_results = scipy.stats.ttest_ind(bio_chem_level, author_score)
+            #ttest_expander = st.expander("Show ttest")
+            #show_ttest = ttest_expander.radio("ttest?", ("Yes", "No"))
+            #if show_ttest:
+            twosample_results = scipy.stats.ttest_ind(author_score,bio_chem_level)
 
-                matrix_twosample = [
-                    ['', 'Test Statistic', 'p-value'],
-                    ['Sample Data', twosample_results[0], twosample_results[1]]
-                ]
-                #import plotly.plotly as py
-                #import plotly.graph_objs as go
-                from plotly.tools import FigureFactory as FF
-                twosample_table = FF.create_table(matrix_twosample, index=True)
-                st.write(twosample_table)
-                #py.iplot(twosample_table, filename='twosample-table')
-
-
-                #data_expander = st.expander("Show Data Download Links")
-                #show_links = data_expander.radio("Download Links?", ("Yes", "No"))
+            matrix_twosample = [
+                ['', 'Test Statistic', 'p-value'],
+                ['Sample Data', twosample_results[0], twosample_results[1]]
+            ]
+            #import plotly.plotly as py
+            #import plotly.graph_objs as go
+            twosample_table = FF.create_table(matrix_twosample, index=True)
+            st.write(twosample_table)
+            #py.iplot(twosample_table, filename='twosample-table')
 
 
-                #if show_links == "Yes":
+            #data_expander = st.expander("Show Data Download Links")
+            #show_links = data_expander.radio("Download Links?", ("Yes", "No"))
+
+
+            #if show_links == "Yes":
             st.markdown(
                 get_table_download_link_csv(
                     df_author_new, author_name, full_text=True
