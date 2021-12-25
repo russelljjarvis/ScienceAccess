@@ -180,29 +180,16 @@ def check_cache(author_name: str, verbose=0):
 
                 scraped_labels, author_score = frame_to_lists(ar)
 
-            try:
-                ar = call_from_front_end(author_name, tns=30, fast=False)
-                big_run_done = False
+                try:
+                    ar = call_from_front_end(author_name, tns=30, fast=False)
+                    big_run_done = False
 
 
-                scraped_labels, author_score = frame_to_lists(ar)
+                    scraped_labels, author_score = frame_to_lists(ar)
 
-                if len(db.keys()) < 11:
-                    db[author_name] = {
-                        "ar": ar,
-                        "scraped_labels": scraped_labels,
-                        "author_score": author_score,
-                    }
 
-                #df_author_new, merged_df = data_frames_from_scrape(
-            #    ar, author_name, scraped_labels, author_score, art_df
-            #)
-            except:
-                aliases = semantic_scholar_alias(author_name)
-                st.warning("Name as typed not found in semantic scholar API")
-                if len(aliases):
-                    st.markdown("Try one of these alternative name phrasings: {0}".format(aliases))
-
+                except:
+                    pass
             #    st.error("This authors results are hard to fetch and cause technical issues, sorry.")
             #    st.warning("Try this older and more robust version of the app:")
             #    st.warning("https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py")
