@@ -31,6 +31,9 @@ from science_access.word_cloud_by_word_len import generate_from_lengths
 from science_access.utils import check_passive
 import plotly.graph_objects as go
 
+from typing import List, Any
+import pandas as pd
+
 theme = px.colors.diverging.Portland
 colors = [theme[-1], theme[-2]]
 
@@ -211,12 +214,6 @@ def create_giant_strings(ar, not_want_list):
     return sci_corpus
 
 
-def make_clickable(link):
-    # target _blank to open new window
-    # extract clickable text to display for your link
-    text = link  # .split('=')[1]
-    return f'<a target="_blank" href="{link}">{text}</a>'
-
 
 def extra_options(ar, trainingDats, df1):
 
@@ -353,12 +350,22 @@ def grand_distribution_plot(ar, scraped_labels, standard_sci, df0, author_name="
     return df1, fig
 
 
-from typing import List, Any
-import pandas as pd
 
-# import streamlit as st
-# List
-def push_frame_to_screen(contents: Any, readability_vector: List) -> pd.DataFrame():
+
+def make_clickable(link):
+    # target _blank to open new window
+    # extract clickable text to display for your link
+    text = link  # .split('=')[1]
+    return f'<a target="_blank" href="{link}">{text}</a>'
+df_links["Web_Link"] = contents["Web_Link"]
+df_links["Reading_Level"] = contents["Reading_Level"]
+df_links.drop_duplicates(subset="Web_Link", inplace=True)
+df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+df_links = df_links.to_html(escape=False)
+st.write(df_links, unsafe_allow_html=True)
+
+
+def push_frame_to_screen(contents, readability_vector):# -> pd.DataFrame():
     if type(contents) is type(list()):
         df_links = pd.DataFrame()
         df_links["Web_Link"] = pd.Series(contents)
@@ -367,19 +374,16 @@ def push_frame_to_screen(contents: Any, readability_vector: List) -> pd.DataFram
         df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
         df_links = df_links.to_html(escape=False)
         st.write(df_links, unsafe_allow_html=True)
-
-    if type(contents) is type(pd.DataFrame()):
+    else:
         df_links = pd.DataFrame()
-        try:
-            df_links["Web_Link"] = contents["Web_Link"]
-            df_links["Reading_Level"] = contents["Reading_Level"]
-            df_links.drop_duplicates(subset="Web_Link", inplace=True)
-            df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
-            df_links = df_links.to_html(escape=False)
-            st.write(df_links, unsafe_allow_html=True)
+        #try:
+        df_links["Web_Link"] = contents["Web_Link"]
+        df_links["Reading_Level"] = contents["Reading_Level"]
+        df_links.drop_duplicates(subset="Web_Link", inplace=True)
+        df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+        df_links = df_links.to_html(escape=False)
+        st.write(df_links, unsafe_allow_html=True)
 
-        except:
-            pass
     return df_links
 
 

@@ -17,6 +17,9 @@ from tqdm.auto import tqdm
 import streamlit as st
 from .t_analysis import text_proc
 
+import streamlit as st
+from dask import compute
+
 
 class tqdm:
     """
@@ -145,7 +148,6 @@ def semantic_scholar_alias(NAME):
                         return aliases
 
 
-import streamlit as st
 
 
 def visit_semantic_scholar_abstracts(NAME, tns, more_links):
@@ -159,28 +161,31 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     dois, coauthors, titles, visit_urls = author_to_urls(NAME)
 
     for d in tqdm(dois, title="visiting abstracts"):
-        paper = sch.paper(d, timeout=8)
+        try:
+            paper = sch.paper(d, timeout=16)
 
-        urlDat = {}
-        if "citationVelocity" in paper.keys():
-            urlDat["citationVelocity"] = paper["citationVelocity"]
-        if "fieldsOfStudy" in paper.keys():
-            urlDat["fieldsOfStudy"] = str(paper["fieldsOfStudy"])
-        if "numCitedBy" in paper.keys():
-            urlDat["numCitedBy"] = paper["numCitedBy"]
-        # urlDat["influentialCitationCount"] = paper["influentialCitationCount"]
-        urlDat["semantic"] = True
+            urlDat = {}
+            if "citationVelocity" in paper.keys():
+                urlDat["citationVelocity"] = paper["citationVelocity"]
+            if "fieldsOfStudy" in paper.keys():
+                urlDat["fieldsOfStudy"] = str(paper["fieldsOfStudy"])
+            if "numCitedBy" in paper.keys():
+                urlDat["numCitedBy"] = paper["numCitedBy"]
+            # urlDat["influentialCitationCount"] = paper["influentialCitationCount"]
+            urlDat["semantic"] = True
 
-        if "url" in paper.keys():
-            urlDat["link"] = paper["title"]
-        if aliases is None:
-            if "aliases" in paper.keys():
-                urlDat["aliases"] = paper["aliases"]
-            else:
-                pass
-        if "abstract" in paper.keys():
-            urlDat = text_proc(str(paper["abstract"]), urlDat)
-            author_results.append(urlDat)
+            if "url" in paper.keys():
+                urlDat["link"] = paper["title"]
+            if aliases is None:
+                if "aliases" in paper.keys():
+                    urlDat["aliases"] = paper["aliases"]
+                else:
+                    pass
+            if "abstract" in paper.keys():
+                urlDat = text_proc(str(paper["abstract"]), urlDat)
+                author_results.append(urlDat)
+        except:
+            pass
     author_results = [
         urlDat for urlDat in author_results if not isinstance(urlDat, type(None))
     ]
@@ -188,7 +193,6 @@ def visit_semantic_scholar_abstracts(NAME, tns, more_links):
     return author_results, visit_urls
 
 
-from dask import compute
 
 
 def visit_link_unpaywall(NAME):  # ), tns, visit_urls):
