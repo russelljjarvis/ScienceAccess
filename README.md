@@ -13,7 +13,7 @@
 
 
 # &TLDR
-Large collections of big words and big concepts are hard to read. Scientists share ideas using large collections of words. We machine read scientific documents in an effort to compare writers with each other, and to promote simpler writing. [A deployed version of this application lives here.](https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py)
+Large collections of big words and big concepts are hard to read. Scientists share ideas using large collections of words. We machine read scientific documents in an effort to compare writers with each other, and to promote simpler writing. [A deployed version of this application lives here.](https://share.streamlit.io/russelljjarvis/scienceaccess/app.py)
 
 # Overview
 <details>
