@@ -1,14 +1,16 @@
 
+<p align="center">
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 [![DOI](https://zenodo.org/badge/256452850.svg)](https://zenodo.org/badge/latestdoi/256452850)
+</p>
 
 <!--[![ScienceAccess](https://circleci.com/gh/russelljjarvis/ScienceAccess.svg?style=svg)](https://app.circleci.com/pipelines/github/russelljjarvis/ScienceAccess/)-->
 
 <p align="center">
   <img src="app_works.gif" width="400" height="250"/>
+<p align="center">
+  [Deployed Application](https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py)
 </p>
-
-[Deployed Application](https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py)
 
 
 # &TLDR
