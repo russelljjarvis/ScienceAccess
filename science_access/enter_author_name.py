@@ -357,12 +357,12 @@ def make_clickable(link):
     # extract clickable text to display for your link
     text = link  # .split('=')[1]
     return f'<a target="_blank" href="{link}">{text}</a>'
-df_links["Web_Link"] = contents["Web_Link"]
-df_links["Reading_Level"] = contents["Reading_Level"]
-df_links.drop_duplicates(subset="Web_Link", inplace=True)
-df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
-df_links = df_links.to_html(escape=False)
-st.write(df_links, unsafe_allow_html=True)
+    #df_links["Web_Link"] = contents["Web_Link"]
+    #df_links["Reading_Level"] = contents["Reading_Level"]
+    #df_links.drop_duplicates(subset="Web_Link", inplace=True)
+    #df_links["Web_Link"] = df_links["Web_Link"].apply(make_clickable)
+    #df_links = df_links.to_html(escape=False)
+    #st.write(df_links, unsafe_allow_html=True)
 
 
 def push_frame_to_screen(contents, readability_vector):# -> pd.DataFrame():
