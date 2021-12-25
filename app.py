@@ -153,13 +153,19 @@ bio_chem_level = art_df["Reading_Level"]
 
 def check_cache(author_name: str, verbose=0):
     big_run_done = False
+    aliases = semantic_scholar_alias(author_name)
+    if type(aliases) is not None:
+        if len(aliases):
+            st.success("Alternative name phrasing found in semantic scholar API...")
+            st.success("Also try one of these alternative name phrasings: {0}".format(aliases))
+            #author_name = aliases[0]
 
     with shelve.open("data/fast_graphs_splash.p") as db:
         flag = author_name in db
     #flag = False
     if not flag:
         try:
-            ar = call_from_front_end(author_name, tns=6, fast=True)
+            ar = call_from_front_end(author_name, tns=12, fast=True)
 
             scraped_labels, author_score = frame_to_lists(ar)
 
@@ -170,11 +176,9 @@ def check_cache(author_name: str, verbose=0):
             #        "author_score": author_score,
             #    }
         except:
-            aliases = semantic_scholar_alias(author_name)
-            st.warning("Name as typed not found in semantic scholar API, so checking dissemin...")
-            if type(aliases) is not None:
-                if len(aliases):
-                    st.markdown("Try one of these alternative name phrasings: {0}".format(aliases))
+                ar = call_from_front_end(author_name, tns=6, fast=True)
+
+                scraped_labels, author_score = frame_to_lists(ar)
 
             try:
                 ar = call_from_front_end(author_name, tns=30, fast=False)
