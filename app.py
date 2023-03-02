@@ -152,49 +152,22 @@ biochem_labels = art_df["Origin"]
 bio_chem_level = art_df["Reading_Level"]
 
 def check_cache(author_name: str, verbose=0):
-    big_run_done = False
-    aliases = semantic_scholar_alias(author_name)
-    if type(aliases) is not None:
-        if len(aliases):
-            try:
-                st.success("Aliases found in semantic scholar API... \n Also try one of these alternative name queries: {0}".format(aliases))
-            except:
-                pass
-            #author_name = aliases[0]
-
     with shelve.open("data/fast_graphs_splash.p") as db:
         flag = author_name in db
-    #flag = False
     if not flag:
         try:
             ar = call_from_front_end(author_name, tns=12, fast=True)
-
             scraped_labels, author_score = frame_to_lists(ar)
-
-            #if len(db.keys()) < 11:
-            #    db[author_name] = {
-            #        "ar": ar,
-            #        "scraped_labels": scraped_labels,
-            #        "author_score": author_score,
-            #    }
         except:
                 ar = call_from_front_end(author_name, tns=6, fast=True)
-
                 scraped_labels, author_score = frame_to_lists(ar)
-
                 try:
                     ar = call_from_front_end(author_name, tns=30, fast=False)
                     big_run_done = False
-
-
                     scraped_labels, author_score = frame_to_lists(ar)
-
-
                 except:
                     pass
-            #    st.error("This authors results are hard to fetch and cause technical issues, sorry.")
-            #    st.warning("Try this older and more robust version of the app:")
-            #    st.warning("https://share.streamlit.io/mcgurrgurr/scienceaccess/app.py")
+
     else:
         st.success("""
             We have evaluated this query recently, using cached results...
