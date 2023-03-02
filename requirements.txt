@@ -3,7 +3,7 @@ regex
 PyPDF2
 pycld2
 nltk
-#delver
+scipy
 cython
 pdfminer
 semanticscholar
