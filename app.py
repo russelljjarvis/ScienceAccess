@@ -274,19 +274,22 @@ def main():
     author_name = st.text_input("Enter Author Name:")
     #st.markdown("-----")
 
+        
+    """
     ar = None
     if author_name:
-        ar, author_score, scraped_labels,author_score, big_run_done = check_cache(author_name, verbose)
-        if len(ar) == 0:
-            st.error("Author Not Found")
-            st.warning("Try a different spelling of author name")
+    ar, author_score, scraped_labels,author_score, big_run_done = check_cache(author_name, verbose)
+    if len(ar) == 0:
+        st.error("Author Not Found")
+        st.warning("Try a different spelling of author name")
+    #if ar is not None:
 
-    if ar is not None:
-        df_author, merged_df = data_frames_from_scrape(
-            ar, author_name, scraped_labels, author_score, art_df
-        )
-        df_author = df_author[(df_author["Reading_Level"] <100)]
-        df_author = df_author[(df_author["Reading_Level"] >10)]
+    """
+    df_author, merged_df = data_frames_from_scrape(
+        ar, author_name, scraped_labels, author_score, art_df
+    )
+    df_author = df_author[(df_author["Reading_Level"] <100)]
+    df_author = df_author[(df_author["Reading_Level"] >10)]
 
 
 
@@ -651,31 +654,7 @@ def main():
                     np.mean(average_reading_time), author_name, len(ar)
                 )
             )
-        #if "sentiment" in genre:
-        #    sentiment = []
-        #    uniqueness = []
-        #    for block in trainingDats:
-        #        uniqueness.append(block["uniqueness"])
-        #        sentiment.append(block["sp"])
-        #    temp = np.mean(sentiment) < np.mean([r["sp"] for r in ar])
 
-        #    st.markdown("""### Sentiment""")
-        #    st.markdown(
-        #        """It is {} that the mean sentiment of {}'s writing is more postive relative to that of Readability of the ART Corpus.
-		#				""".format(
-        #            temp, author_name
-        #        )
-        #    )
-
-        #    temp = "{0} positive sentiment".format(author_name)
-        #    labels = [temp, "ART Corpus positive sentiment"]
-        #    values = [np.mean([r["sp"] for r in ar]), np.mean(sentiment)]
-
-            # urlDat["reading_time"]
-        #    fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.3)])
-        #    st.write(fig)
-
-        #    st.markdown("\n")
 
 
 if __name__ == "__main__":
